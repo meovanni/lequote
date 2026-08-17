@@ -65,7 +65,12 @@
 .images {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  align-items: start;
   gap: var(--space-4);
+}
+
+.images > *:nth-child(2) {
+  margin-top: var(--space-6);
 }
 
 @media (min-width: 768px) {

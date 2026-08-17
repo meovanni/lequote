@@ -26,8 +26,19 @@ export function Miele() {
         </Reveal>
 
         <Reveal offset={8} variant="sideRight" className={styles.images}>
-          <ImagePlaceholder label={miele.imageLabel} aspectRatio="4 / 3" variant="miele" />
-          <ImagePlaceholder label={miele.imageLabelAlt} aspectRatio="4 / 3" variant="miele" />
+          <ImagePlaceholder
+            label={miele.imageLabel}
+            aspectRatio="4 / 3"
+            variant="miele"
+            src={miele.image}
+          />
+          <ImagePlaceholder
+            label={miele.imageLabelAlt}
+            aspectRatio="4 / 3"
+            variant="miele"
+            src={miele.imageAlt}
+            fit="contain"
+          />
         </Reveal>
       </div>
     </section>

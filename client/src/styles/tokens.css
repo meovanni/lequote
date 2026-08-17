@@ -29,11 +29,11 @@
   --space-7: 3rem;
   --space-8: 5rem;
 
-  /* Radii — capsule/pillole per bottoni e chip, angoli morbidi per le card */
+  /* Radii — bottoni con angoli morbidi ma squadrati, pillole solo per i chip informativi */
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 22px;
-  --radius-button: 999px;
+  --radius-button: 10px;
   --radius-pill: 999px;
 
   /* Ombre */

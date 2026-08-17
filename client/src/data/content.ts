@@ -56,11 +56,16 @@ export const territorio = {
 export const olio = {
   eyebrow: 'Olio extravergine',
   title: 'L’olio delle due quote',
-  body: 'Raccogliamo le olive a mano o con leggere agevolatrici, mai prima del giusto grado di maturazione, e le portiamo al frantoio entro poche ore per preservarne aromi e proprietà. Ne nasce un olio extravergine a bassa acidità, con note decise di erba appena tagliata, carciofo e una piacevole nota piccante in chiusura.',
-  tags: ['Fruttato medio', 'Note di carciofo', 'Finale piccante ed equilibrato'],
-  note: 'Le nostre piante, alcune secolari, includono varietà tipiche abruzzesi come Dritta e Gentile dell’Entroterra, coltivate sia vicino alla costa sia in collina.',
-  imageLabel: 'Foto: Raccolta delle olive',
-  imageLabelAlt: 'Foto: Bottiglia di olio EVO Le Quote',
+  body: 'Raccogliamo le olive a mano o con leggere agevolatrici, mai prima del giusto grado di maturazione, e le portiamo al frantoio entro poche ore per preservarne aromi e proprietà. Alcune delle nostre piante sono secolari: da qui nasce un extravergine a bassa acidità, con note decise di erba appena tagliata e carciofo.',
+  varieties: [
+    { name: 'Moraiolo', note: 'fruttato intenso, note di carciofo e finale piccante' },
+    { name: 'Leccino', note: 'dolce ed equilibrato, aromi delicati di mandorla' },
+    { name: 'Pendolino', note: 'impollinatore prezioso, aggiunge complessità al blend' },
+  ],
+  imageLabel: 'Foto: Bottiglia di olio EVO Le Quote',
+  imageLabelAlt: 'Foto: Bottiglia di olio EVO Le Quote, retro',
+  image: '/images/bottiglia1.png',
+  imageAlt: '/images/bottiglia2.png',
 }
 
 export const miele = {
@@ -74,6 +79,8 @@ export const miele = {
   ],
   imageLabel: 'Foto: Le arnie tra la macchia mediterranea',
   imageLabelAlt: 'Foto: Vasetti di miele Le Quote',
+  image: '/images/arnie.jpg',
+  imageAlt: '/images/miele.png',
 }
 
 export const contatti = {
