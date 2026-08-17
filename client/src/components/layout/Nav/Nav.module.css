@@ -1,0 +1,136 @@
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  background: rgba(247, 243, 232, 0.68);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border-bottom: 1px solid rgba(35, 49, 66, 0.08);
+  box-shadow: 0 8px 24px -20px rgba(35, 49, 66, 0);
+  transition:
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.navScrolled {
+  border-bottom-color: rgba(35, 49, 66, 0.14);
+  box-shadow: 0 12px 28px -18px rgba(35, 49, 66, 0.22);
+}
+
+.inner {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: var(--space-4) var(--container-pad);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-inchiostro);
+}
+
+.wordmarkLogo {
+  width: auto;
+  height: 20px;
+}
+
+.linksWrap {
+  position: relative;
+  display: none;
+}
+
+.links {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.indicator {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  border-radius: var(--radius-pill);
+  background: rgba(168, 100, 44, 0.16);
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: rgba(35, 49, 66, 0.62);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  transition: color 0.25s ease;
+}
+
+.link:hover {
+  color: var(--color-inchiostro);
+}
+
+.linkActive {
+  color: var(--color-inchiostro);
+}
+
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  color: var(--color-inchiostro);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  top: 0;
+  z-index: var(--z-overlay);
+  background: var(--color-bosco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.overlayOpen {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.overlayLinks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.overlayLinks a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  color: var(--color-bone);
+}
+
+@media (min-width: 860px) {
+  .linksWrap {
+    display: block;
+  }
+
+  .menuButton {
+    display: none;
+  }
+}

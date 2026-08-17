@@ -1,0 +1,84 @@
+.section {
+  --accent: var(--color-miele);
+  background: var(--surface-bg);
+  color: var(--surface-text);
+  padding-block: var(--space-8);
+}
+
+.inner {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+.topoWrapper {
+  margin-block: var(--space-7);
+}
+
+.cards {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-avorio);
+  border: 1px solid var(--surface-border);
+  box-shadow: var(--shadow-card);
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 32px 70px -30px rgba(35, 49, 66, 0.3);
+}
+
+.card h3 {
+  transition: font-weight 0.35s ease;
+}
+
+.card:hover h3 {
+  font-weight: 750;
+}
+
+.quota {
+  align-self: flex-start;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  margin-bottom: var(--space-2);
+}
+
+.quota[data-accent='oliva'] {
+  color: var(--color-oliva);
+  background: rgba(85, 96, 58, 0.15);
+}
+
+.quota[data-accent='miele'] {
+  color: var(--color-miele);
+  background: rgba(168, 100, 44, 0.15);
+}
+
+.place {
+  color: var(--surface-text-muted);
+}
+
+.card :global(.body) {
+  color: var(--surface-text-muted);
+  margin-block: var(--space-2) var(--space-4);
+}
+
+.image {
+  margin-top: var(--space-2);
+}
+
+@media (min-width: 1024px) {
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}

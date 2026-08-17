@@ -1,0 +1,72 @@
+/*
+  Breakpoint di riferimento (non richiamabili via var() dentro @media,
+  ripetuti come valori letterali nei singoli moduli):
+  480px  — phone grande
+  768px  — tablet
+  1024px — piccolo desktop/laptop
+  1280px — desktop
+*/
+
+:root {
+  /* Palette nominata — famiglia oliva/miele del prodotto, approfondita con il
+     mood scuro e drammatico del riferimento (contrasti più netti, meno pastello) */
+  --color-pergamena: #f7f3e8; /* bg chiaro primario */
+  --color-avorio: #efe7d4; /* bg chiaro secondario, alternanza sezioni/card */
+  --color-bosco: #1c2417; /* verde quasi-nero, usato solo per Shop/Footer */
+  --color-miele: #a8642c; /* miele/terracotta, accento primario — testo su sfondo chiaro */
+  --color-miele-tint: #cf9963; /* variante chiara di miele, per testo/eyebrow su sfondo scuro (Bosco) */
+  --color-oliva: #55603a; /* oliva scura, accento secondario */
+  --color-inchiostro: #233142; /* testo su sfondo chiaro — blu inchiostro del logo */
+  --color-bone: #f3eedf; /* testo su sfondo scuro (Bosco) */
+
+  /* Spaziature (scala 4/8px) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 5rem;
+
+  /* Radii — capsule/pillole per bottoni e chip, angoli morbidi per le card */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 22px;
+  --radius-button: 999px;
+  --radius-pill: 999px;
+
+  /* Ombre */
+  --shadow-card: 0 24px 70px -32px rgba(28, 36, 23, 0.32);
+
+  /* Z-index */
+  --z-nav: 100;
+  --z-overlay: 200;
+
+  /* Container */
+  --container-max: 1240px;
+  --container-pad: clamp(1.25rem, 4vw, 3rem);
+}
+
+/* Sistema semantico a superficie: alterna le due tonalita chiare e riserva
+   il verde scuro a pochi momenti puntuali (Shop, Footer) */
+[data-surface='light'] {
+  --surface-bg: var(--color-pergamena);
+  --surface-text: var(--color-inchiostro);
+  --surface-text-muted: rgba(35, 49, 66, 0.66);
+  --surface-border: rgba(35, 49, 66, 0.12);
+}
+
+[data-surface='light-alt'] {
+  --surface-bg: var(--color-avorio);
+  --surface-text: var(--color-inchiostro);
+  --surface-text-muted: rgba(35, 49, 66, 0.66);
+  --surface-border: rgba(35, 49, 66, 0.14);
+}
+
+[data-surface='dark'] {
+  --surface-bg: var(--color-bosco);
+  --surface-text: var(--color-bone);
+  --surface-text-muted: rgba(243, 238, 223, 0.72);
+  --surface-border: rgba(243, 238, 223, 0.16);
+}

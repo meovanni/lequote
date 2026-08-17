@@ -1,0 +1,83 @@
+.section {
+  --accent: var(--color-oliva);
+  background: var(--surface-bg);
+  color: var(--surface-text);
+  padding-block: var(--space-8);
+}
+
+.inner {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+.cards {
+  display: grid;
+  gap: var(--space-5);
+  margin-top: var(--space-7);
+}
+
+.card {
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--surface-border);
+  background: var(--color-avorio);
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 32px 70px -30px rgba(35, 49, 66, 0.3);
+}
+
+.card h3 {
+  transition: font-weight 0.35s ease;
+}
+
+.card:hover h3 {
+  font-weight: 750;
+}
+
+.pin {
+  color: var(--color-oliva);
+  margin-bottom: var(--space-3);
+}
+
+.place {
+  color: var(--surface-text-muted);
+  margin-block: var(--space-1) var(--space-3);
+}
+
+.card :global(.body) {
+  margin-bottom: var(--space-4);
+}
+
+.mapsLink {
+  display: inline-flex;
+  color: var(--color-oliva);
+  border-bottom: 1px solid var(--color-oliva);
+  padding-bottom: 2px;
+}
+
+.general {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+  align-items: baseline;
+  margin-top: var(--space-7);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--surface-border);
+}
+
+.note {
+  width: 100%;
+  color: var(--surface-text-muted);
+}
+
+@media (min-width: 768px) {
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}

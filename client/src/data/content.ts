@@ -1,0 +1,116 @@
+import type { NavItem, TerritoryContent } from '@/types'
+
+export const navItems: NavItem[] = [
+  { id: 'chi-siamo', label: 'Chi siamo' },
+  { id: 'territorio', label: 'Territorio' },
+  { id: 'olio', label: 'Olio' },
+  { id: 'miele', label: 'Miele' },
+  { id: 'contatti', label: 'Contatti' },
+  { id: 'shop', label: 'Shop' },
+]
+
+export const hero = {
+  eyebrow: 'Azienda agricola — Abruzzo',
+  title: 'Le Quote',
+  subtitle: "Dal livello del mare alla quota dell'Appennino abruzzese.",
+  body: "Un'azienda agricola familiare divisa tra due territori profondamente diversi: la Riserva Naturale del Borsacchio, sulla costa di Roseto degli Abruzzi, e le alture di Cerchio, nell'entroterra dell'Aquila. Da qui nascono il nostro olio extravergine e il nostro miele.",
+  ctaPrimary: { label: 'Esplora il territorio', href: '#territorio' },
+  ctaSecondary: { label: 'Scopri i prodotti ↓', href: '#olio' },
+}
+
+export const chiSiamo = {
+  eyebrow: 'Chi siamo',
+  title: 'Una famiglia, due paesaggi',
+  paragraphs: [
+    "Le Quote nasce da una scelta semplice: restare fedeli alla terra, qualunque sia la sua altitudine. Da una parte il vento salmastro della costa adriatica, dall'altra l'aria sottile delle quote appenniniche: due paesaggi che sembrano opposti e che, per noi, sono la stessa casa.",
+    'Coltiviamo olivi e curiamo alveari seguendo il ritmo delle stagioni, con metodi che rispettano il suolo, le piante e chi le vive ogni giorno. Nessuna scorciatoia: solo il tempo necessario perché un frutto o un favo maturino come devono.',
+    'Il nome Le Quote racconta proprio questo: l’azienda vive letteralmente su quote diverse, dal livello del mare fino a ottocento metri, e da questa distanza nasce la varietà dei nostri prodotti.',
+  ],
+  imageLabel: 'Foto: Il lavoro quotidiano tra uliveti e alveari',
+}
+
+export const territorio = {
+  eyebrow: 'Territorio',
+  title: 'Due quote, la stessa terra',
+  intro: 'Ottocento metri di dislivello separano le nostre due sedi. Bastano per raccontare due mondi.',
+  cards: [
+    {
+      id: 'borsacchio',
+      quotaLabel: 'Quota 0–100 m s.l.m.',
+      title: 'Riserva Naturale del Borsacchio',
+      place: 'Roseto degli Abruzzi (TE)',
+      body: 'Tra la costa adriatica e le colline teramane, la Riserva del Borsacchio è un mosaico di calanchi, macchia mediterranea e uliveti che scendono quasi fino al mare. Un microclima mite, ideale per la maturazione lenta delle olive.',
+      imageLabel: 'Foto: Uliveti della Riserva del Borsacchio',
+    },
+    {
+      id: 'cerchio',
+      quotaLabel: 'Quota 700–900 m s.l.m.',
+      title: 'Cerchio, Piana del Fucino',
+      place: "Cerchio, L'Aquila (AQ)",
+      body: "Ai piedi del Monte Argatone, affacciata sulla Piana del Fucino, Cerchio vive di un clima appenninico netto: inverni rigidi, estati fresche e una fioritura intensa che regala nettari decisi ai nostri alveari.",
+      imageLabel: 'Foto: La Piana del Fucino vista da Cerchio',
+    },
+  ] satisfies TerritoryContent[],
+}
+
+export const olio = {
+  eyebrow: 'Olio extravergine',
+  title: 'L’olio delle due quote',
+  body: 'Raccogliamo le olive a mano o con leggere agevolatrici, mai prima del giusto grado di maturazione, e le portiamo al frantoio entro poche ore per preservarne aromi e proprietà. Ne nasce un olio extravergine a bassa acidità, con note decise di erba appena tagliata, carciofo e una piacevole nota piccante in chiusura.',
+  tags: ['Fruttato medio', 'Note di carciofo', 'Finale piccante ed equilibrato'],
+  note: 'Le nostre piante, alcune secolari, includono varietà tipiche abruzzesi come Dritta e Gentile dell’Entroterra, coltivate sia vicino alla costa sia in collina.',
+  imageLabel: 'Foto: Raccolta delle olive',
+  imageLabelAlt: 'Foto: Bottiglia di olio EVO Le Quote',
+}
+
+export const miele = {
+  eyebrow: 'Miele',
+  title: 'Il miele delle nostre quote',
+  body: 'I nostri alveari seguono le fioriture spontanee dei due territori: dalla macchia mediterranea del Borsacchio ai prati d’altura di Cerchio. Ne raccogliamo mieli diversi per colore, profumo e consistenza, sempre smielati a freddo per preservarne enzimi e aromi.',
+  varieties: [
+    { name: 'Miele di acacia', note: 'delicato, cristallizza lentamente' },
+    { name: 'Millefiori', note: 'aromatico, cambia con le stagioni' },
+    { name: 'Melata', note: 'ambrato e intenso, raccolto in quota' },
+  ],
+  imageLabel: 'Foto: Le arnie tra la macchia mediterranea',
+  imageLabelAlt: 'Foto: Vasetti di miele Le Quote',
+}
+
+export const contatti = {
+  eyebrow: 'Contatti',
+  title: 'Vieni a trovarci, a qualsiasi quota',
+  locations: [
+    {
+      name: 'Riserva del Borsacchio',
+      place: 'Roseto degli Abruzzi (TE)',
+      address: '[Indirizzo da confermare]',
+      mapsHref: 'https://maps.google.com/?q=Riserva+del+Borsacchio+Roseto+degli+Abruzzi',
+    },
+    {
+      name: 'Cerchio',
+      place: "Piana del Fucino, L'Aquila (AQ)",
+      address: '[Indirizzo da confermare]',
+      mapsHref: 'https://maps.google.com/?q=Cerchio+AQ',
+    },
+  ],
+  email: 'info@lequote.it',
+  phone: '[Telefono da confermare]',
+  note: 'Scriveteci per visite, degustazioni o informazioni sui nostri prodotti.',
+}
+
+export const shop = {
+  eyebrow: 'Shop',
+  title: "Lo shop online sta arrivando",
+  body: "Stiamo preparando un piccolo negozio per portare l’olio e il miele delle nostre due quote direttamente a casa vostra. Nel frattempo, scriveteci: saremo felici di rispondere di persona.",
+  ctaLabel: 'Scrivici per essere avvisato',
+  ctaHref: 'mailto:info@lequote.it?subject=Avvisami%20quando%20lo%20shop%20apre',
+}
+
+export const footer = {
+  tagline: 'LE QUOTE — Olio e miele, dal mare alla montagna.',
+  legal: '© 2026 Le Quote — Azienda Agricola. P.IVA [da inserire].',
+  social: [
+    { label: 'Instagram', href: '#' },
+    { label: 'Facebook', href: '#' },
+  ],
+}

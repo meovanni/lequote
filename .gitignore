@@ -1,17 +1,28 @@
-```
 # Dependencies
 node_modules/
 
+# Build output
+dist/
+dist-ssr/
+
 # Editors
 .vscode/
+.idea/
 
 # Logs and temp files
 *.log
 *.tmp
 *.swp
+bash.exe.stackdump
 
 # Environment
 .env
 .env.local
 *.env.*
-```
+
+# Claude Code local settings (not shared)
+.claude/settings.local.json
+claude/settings.local.json
+
+# Large media not tracked in git (exceeds GitHub's 100MB file limit)
+client/public/videos/intro_long.mov
