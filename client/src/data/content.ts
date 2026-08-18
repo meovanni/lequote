@@ -68,20 +68,6 @@ export const miele = {
 export const contatti = {
   eyebrow: 'Contatti',
   title: 'Vieni a trovarci, a qualsiasi quota',
-  locations: [
-    {
-      name: 'Riserva del Borsacchio',
-      place: 'Roseto degli Abruzzi (TE)',
-      address: '[Indirizzo da confermare]',
-      mapsHref: 'https://maps.google.com/?q=Riserva+del+Borsacchio+Roseto+degli+Abruzzi',
-    },
-    {
-      name: 'Cerchio',
-      place: "Piana del Fucino, L'Aquila (AQ)",
-      address: '[Indirizzo da confermare]',
-      mapsHref: 'https://maps.google.com/?q=Cerchio+AQ',
-    },
-  ],
   email: 'info@lequote.it',
   phone: '[Telefono da confermare]',
   note: 'Scriveteci per visite, degustazioni o informazioni sui nostri prodotti.',

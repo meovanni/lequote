@@ -22,69 +22,18 @@
   margin-bottom: var(--space-8);
 }
 
-.cards {
-  display: grid;
-  gap: var(--space-5);
-  margin-top: var(--space-7);
-}
-
-.card {
-  padding: var(--space-6);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--surface-border);
-  background: color-mix(in srgb, var(--color-bone) 5%, transparent);
-  transition:
-    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.4s ease;
-}
-
-.card:hover {
-  transform: translateY(-6px);
-  border-color: var(--color-miele-tint);
-}
-
-.card h3 {
-  transition: font-weight 0.35s ease;
-}
-
-.card:hover h3 {
-  font-weight: 750;
-}
-
-.pin {
-  color: var(--color-miele-tint);
-  margin-bottom: var(--space-3);
-}
-
-.place {
-  color: var(--surface-text-muted);
-  margin-block: var(--space-1) var(--space-3);
-}
-
-.card :global(.body) {
-  color: var(--surface-text-muted);
-  margin-bottom: var(--space-4);
-}
-
-.mapsLink {
-  display: inline-flex;
-  color: var(--color-miele-tint);
-  border-bottom: 1px solid var(--color-miele-tint);
-  padding-bottom: 2px;
-}
-
 .general {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2) var(--space-6);
   align-items: baseline;
-  margin-top: var(--space-7);
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--surface-border);
+  justify-content: center;
+  margin-top: var(--space-6);
 }
 
 .note {
   width: 100%;
+  text-align: center;
   color: var(--surface-text-muted);
 }
 
@@ -172,10 +121,6 @@
 }
 
 @media (min-width: 768px) {
-  .cards {
-    grid-template-columns: 1fr 1fr;
-  }
-
   .inner {
     flex-wrap: nowrap;
   }
