@@ -28,7 +28,7 @@ export function Olio() {
         </Reveal>
 
         <Reveal offset={8} className={styles.text}>
-          <SectionHeading title={olio.title} />
+          <SectionHeading title={olio.title} visible />
           <p className="body">{olio.body}</p>
 
           <ul className={styles.varieties}>

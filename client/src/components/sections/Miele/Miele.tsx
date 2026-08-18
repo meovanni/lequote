@@ -12,7 +12,7 @@ export function Miele() {
 
       <div className={styles.inner}>
         <Reveal className={styles.text}>
-          <SectionHeading title={miele.title} />
+          <SectionHeading title={miele.title} visible />
           <p className="body">{miele.body}</p>
 
           <ul className={styles.varieties}>

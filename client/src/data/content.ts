@@ -37,7 +37,7 @@ export const territorio = {
 
 export const olio = {
   eyebrow: 'Olio extravergine',
-  title: 'L’olio delle due quote',
+  title: 'L’olio della riserva',
   body: 'Raccogliamo le olive a mano o con leggere agevolatrici, mai prima del giusto grado di maturazione, e le portiamo al frantoio entro poche ore per preservarne aromi e proprietà. Alcune delle nostre piante sono secolari: da qui nasce un extravergine a bassa acidità, con note decise di erba appena tagliata e carciofo.',
   varieties: [
     { name: 'Moraiolo', note: 'fruttato intenso, note di carciofo e finale piccante' },
@@ -52,7 +52,7 @@ export const olio = {
 
 export const miele = {
   eyebrow: 'Miele',
-  title: 'Il miele delle nostre quote',
+  title: 'Il miele selvatico',
   body: 'I nostri alveari seguono le fioriture spontanee dei due territori: dalla macchia mediterranea del Borsacchio ai prati d’altura di Cerchio. Ne raccogliamo mieli diversi per colore, profumo e consistenza, sempre smielati a freddo per preservarne enzimi e aromi.',
   varieties: [
     { name: 'Miele di acacia', note: 'delicato, cristallizza lentamente' },
