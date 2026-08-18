@@ -1,11 +1,36 @@
 .section {
   --accent: var(--color-miele-tint);
+  position: relative;
+  overflow: hidden;
   background: var(--surface-bg);
   color: var(--surface-text);
   padding-block: var(--space-8);
 }
 
+@keyframes shop-glow-drift {
+  from {
+    transform: translateY(-24px);
+  }
+
+  to {
+    transform: translateY(24px);
+  }
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  inset: -20% -10%;
+  background: radial-gradient(circle at 50% 55%, rgba(156, 101, 48, 0.2), transparent 60%);
+  pointer-events: none;
+  animation: shop-glow-drift linear both;
+  animation-timeline: scroll(root block);
+  animation-range: cover;
+}
+
 .inner {
+  position: relative;
+  z-index: 1;
   max-width: 640px;
   margin-inline: auto;
   padding-inline: var(--container-pad);
@@ -46,7 +71,7 @@
 
 .cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 34px -16px rgba(168, 100, 44, 0.5);
+  box-shadow: 0 16px 34px -16px rgba(156, 101, 48, 0.5);
 }
 
 .cta:hover::after {

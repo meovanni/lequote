@@ -8,7 +8,7 @@ import styles from './Miele.module.css'
 export function Miele() {
   return (
     <section id="miele" data-surface="light-alt" className={styles.section}>
-      <HexPattern />
+      <HexPattern className={styles.hexPattern} />
 
       <div className={styles.inner}>
         <Reveal className={styles.text}>
@@ -16,10 +16,12 @@ export function Miele() {
           <p className="body">{miele.body}</p>
 
           <ul className={styles.varieties}>
-            {miele.varieties.map((variety) => (
-              <li key={variety.name} className={styles.variety}>
-                <span className="display-3">{variety.name}</span>
-                <span className={`${styles.varietyNote} body-sm`}>{variety.note}</span>
+            {miele.varieties.map((variety, index) => (
+              <li key={variety.name}>
+                <Reveal offset={index * 8} variant="up" className={styles.variety}>
+                  <span className="display-3">{variety.name}</span>
+                  <span className={`${styles.varietyNote} body-sm`}>{variety.note}</span>
+                </Reveal>
               </li>
             ))}
           </ul>

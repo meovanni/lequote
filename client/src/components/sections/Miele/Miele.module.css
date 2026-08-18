@@ -2,9 +2,25 @@
   --accent: var(--color-miele);
   position: relative;
   overflow: hidden;
-  background: radial-gradient(circle at 80% 20%, rgba(168, 100, 44, 0.16), transparent 60%), var(--surface-bg);
+  background: radial-gradient(circle at 80% 20%, rgba(156, 101, 48, 0.16), transparent 60%), var(--surface-bg);
   color: var(--surface-text);
   padding-block: var(--space-8);
+}
+
+@keyframes miele-parallax-drift {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-20px);
+  }
+}
+
+.hexPattern {
+  animation: miele-parallax-drift linear both;
+  animation-timeline: view();
+  animation-range: cover 0% cover 100%;
 }
 
 .inner {

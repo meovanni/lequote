@@ -2,7 +2,7 @@
   --accent: var(--color-oliva);
   position: relative;
   overflow: hidden;
-  background: radial-gradient(circle at 20% 25%, rgba(85, 96, 58, 0.14), transparent 60%), var(--surface-bg);
+  background: radial-gradient(circle at 20% 25%, rgba(76, 87, 53, 0.14), transparent 60%), var(--surface-bg);
   color: var(--surface-text);
   padding-block: var(--space-8);
 }

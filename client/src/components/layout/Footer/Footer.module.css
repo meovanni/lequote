@@ -64,6 +64,16 @@
   color: var(--surface-text-muted);
 }
 
+@keyframes footer-wordmark-drift {
+  from {
+    transform: translate(-50%, 28%) translateY(0);
+  }
+
+  to {
+    transform: translate(-50%, 28%) translateY(-25px);
+  }
+}
+
 .bigWordmark {
   position: absolute;
   z-index: 0;
@@ -74,6 +84,9 @@
   opacity: 0.06;
   transform: translate(-50%, 28%);
   pointer-events: none;
+  animation: footer-wordmark-drift linear both;
+  animation-timeline: view();
+  animation-range: cover 0% cover 100%;
 }
 
 @media (min-width: 768px) {

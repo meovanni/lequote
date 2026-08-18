@@ -32,10 +32,12 @@ export function Olio() {
           <p className="body">{olio.body}</p>
 
           <ul className={styles.varieties}>
-            {olio.varieties.map((variety) => (
-              <li key={variety.name} className={styles.variety}>
-                <span className="display-3">{variety.name}</span>
-                <span className={`${styles.varietyNote} body-sm`}>{variety.note}</span>
+            {olio.varieties.map((variety, index) => (
+              <li key={variety.name}>
+                <Reveal offset={index * 8} variant="up" className={styles.variety}>
+                  <span className="display-3">{variety.name}</span>
+                  <span className={`${styles.varietyNote} body-sm`}>{variety.note}</span>
+                </Reveal>
               </li>
             ))}
           </ul>

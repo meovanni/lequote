@@ -11,8 +11,21 @@
   padding-inline: var(--container-pad);
 }
 
+@keyframes territorio-parallax-drift {
+  from {
+    transform: translateY(-14px);
+  }
+
+  to {
+    transform: translateY(14px);
+  }
+}
+
 .topoWrapper {
   margin-block: var(--space-7);
+  animation: territorio-parallax-drift linear both;
+  animation-timeline: view();
+  animation-range: cover 0% cover 100%;
 }
 
 .cards {
@@ -56,12 +69,12 @@
 
 .quota[data-accent='oliva'] {
   color: var(--color-oliva);
-  background: rgba(85, 96, 58, 0.15);
+  background: rgba(76, 87, 53, 0.15);
 }
 
 .quota[data-accent='miele'] {
   color: var(--color-miele);
-  background: rgba(168, 100, 44, 0.15);
+  background: rgba(156, 101, 48, 0.15);
 }
 
 .place {

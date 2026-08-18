@@ -22,8 +22,21 @@
   color: var(--surface-text-muted);
 }
 
+@keyframes chisiamo-image-drift {
+  from {
+    transform: translateY(-20px);
+  }
+
+  to {
+    transform: translateY(20px);
+  }
+}
+
 .image {
   max-width: 420px;
+  animation: chisiamo-image-drift linear both;
+  animation-timeline: scroll(root block);
+  animation-range: entry 0% cover 60%;
 }
 
 @media (min-width: 768px) {
