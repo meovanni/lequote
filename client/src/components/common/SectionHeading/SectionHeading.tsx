@@ -14,7 +14,7 @@ export function SectionHeading({ eyebrow, title, subtitle, align = 'left', class
   return (
     <div className={[styles.heading, styles[align], className].filter(Boolean).join(' ')}>
       <Eyebrow className={styles.eyebrow}>{eyebrow}</Eyebrow>
-      <h2 className={`${styles.title} display-1`}>{title}</h2>
+      <h2 className={`${styles.title} display-1 sr-only`}>{title}</h2>
       {subtitle && <p className={`${styles.subtitle} body-lead`}>{subtitle}</p>}
     </div>
   )

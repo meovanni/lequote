@@ -79,7 +79,13 @@
 }
 
 .title {
+  display: block;
   color: var(--surface-text);
+}
+
+.logo {
+  width: clamp(15rem, 30vw, 27.5rem);
+  height: auto;
 }
 
 .subtitle {
