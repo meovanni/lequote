@@ -1,4 +1,4 @@
-import type { NavItem, TerritoryContent } from '@/types'
+import type { NavItem } from '@/types'
 
 export const navItems: NavItem[] = [
   { id: 'chi-siamo', label: 'Chi siamo' },
@@ -33,24 +33,6 @@ export const territorio = {
   eyebrow: 'Territorio',
   title: 'Due quote, la stessa terra',
   intro: 'Ottocento metri di dislivello separano le nostre due sedi. Bastano per raccontare due mondi.',
-  cards: [
-    {
-      id: 'borsacchio',
-      quotaLabel: 'Quota 0–100 m s.l.m.',
-      title: 'Riserva Naturale del Borsacchio',
-      place: 'Roseto degli Abruzzi (TE)',
-      body: 'Tra la costa adriatica e le colline teramane, la Riserva del Borsacchio è un mosaico di calanchi, macchia mediterranea e uliveti che scendono quasi fino al mare. Un microclima mite, ideale per la maturazione lenta delle olive.',
-      imageLabel: 'Foto: Uliveti della Riserva del Borsacchio',
-    },
-    {
-      id: 'cerchio',
-      quotaLabel: 'Quota 700–900 m s.l.m.',
-      title: 'Cerchio, Piana del Fucino',
-      place: "Cerchio, L'Aquila (AQ)",
-      body: "Ai piedi del Monte Argatone, affacciata sulla Piana del Fucino, Cerchio vive di un clima appenninico netto: inverni rigidi, estati fresche e una fioritura intensa che regala nettari decisi ai nostri alveari.",
-      imageLabel: 'Foto: La Piana del Fucino vista da Cerchio',
-    },
-  ] satisfies TerritoryContent[],
 }
 
 export const olio = {

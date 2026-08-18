@@ -9,7 +9,7 @@ export function Contatti() {
     <section id="contatti" data-surface="light" className={styles.section}>
       <div className={styles.inner}>
         <Reveal>
-          <SectionHeading eyebrow={contatti.eyebrow} title={contatti.title} align="center" />
+          <SectionHeading title={contatti.title} align="center" />
         </Reveal>
 
         <div className={styles.cards}>

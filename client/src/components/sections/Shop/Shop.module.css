@@ -2,6 +2,12 @@
   --accent: var(--color-miele-tint);
   position: relative;
   overflow: hidden;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
   background: var(--surface-bg);
   color: var(--surface-text);
   padding-block: var(--space-8);

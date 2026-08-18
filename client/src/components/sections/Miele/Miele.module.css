@@ -2,6 +2,12 @@
   --accent: var(--color-miele);
   position: relative;
   overflow: hidden;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
   background: radial-gradient(circle at 80% 20%, rgba(156, 101, 48, 0.16), transparent 60%), var(--surface-bg);
   color: var(--surface-text);
   padding-block: var(--space-8);

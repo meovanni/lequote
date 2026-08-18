@@ -1,5 +1,11 @@
 .section {
   --accent: var(--color-oliva);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
   background: var(--surface-bg);
   color: var(--surface-text);
   padding-block: var(--space-8);
@@ -35,8 +41,8 @@
 .image {
   max-width: 420px;
   animation: chisiamo-image-drift linear both;
-  animation-timeline: scroll(root block);
-  animation-range: entry 0% cover 60%;
+  animation-timeline: view();
+  animation-range: cover 0% cover 100%;
 }
 
 @media (min-width: 768px) {

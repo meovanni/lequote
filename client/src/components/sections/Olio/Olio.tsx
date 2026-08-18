@@ -28,7 +28,7 @@ export function Olio() {
         </Reveal>
 
         <Reveal offset={8} className={styles.text}>
-          <SectionHeading eyebrow={olio.eyebrow} title={olio.title} />
+          <SectionHeading title={olio.title} />
           <p className="body">{olio.body}</p>
 
           <ul className={styles.varieties}>

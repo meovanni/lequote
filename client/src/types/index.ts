@@ -17,12 +17,3 @@ export interface ElevationMarker {
 export interface ProductTag {
   label: string
 }
-
-export interface TerritoryContent {
-  id: 'borsacchio' | 'cerchio'
-  quotaLabel: string
-  title: string
-  place: string
-  body: string
-  imageLabel: string
-}

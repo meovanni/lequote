@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { hero } from '@/data/content'
 import { VideoIcon } from '@/components/common/icons/Icons'
-import { Eyebrow } from '@/components/common/Eyebrow/Eyebrow'
 import { Logo } from '@/components/common/Logo/Logo'
 import styles from './Hero.module.css'
 
@@ -51,7 +50,6 @@ export function Hero() {
       </div>
 
       <div className={styles.inner}>
-        <Eyebrow className={styles.eyebrow}>{hero.eyebrow}</Eyebrow>
         <h1 className={styles.title}>
           <Logo className={styles.logo} title={hero.title} />
         </h1>

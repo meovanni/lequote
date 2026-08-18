@@ -9,7 +9,7 @@ export function ChiSiamo() {
     <section id="chi-siamo" data-surface="light-alt" className={styles.section}>
       <div className={styles.inner}>
         <Reveal className={styles.text}>
-          <SectionHeading eyebrow={chiSiamo.eyebrow} title={chiSiamo.title} />
+          <SectionHeading title={chiSiamo.title} />
           <div className={styles.paragraphs}>
             {chiSiamo.paragraphs.map((paragraph) => (
               <p key={paragraph} className="body">
