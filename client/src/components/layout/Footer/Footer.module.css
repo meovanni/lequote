@@ -1,9 +1,91 @@
 .footer {
   position: relative;
   overflow: hidden;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
   background: var(--surface-bg);
   color: var(--surface-text);
-  padding-block: var(--space-7) var(--space-5);
+  padding-block: var(--space-8) var(--space-5);
+}
+
+.contact {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+  margin-bottom: var(--space-8);
+}
+
+.cards {
+  display: grid;
+  gap: var(--space-5);
+  margin-top: var(--space-7);
+}
+
+.card {
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--surface-border);
+  background: color-mix(in srgb, var(--color-bone) 5%, transparent);
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.4s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  border-color: var(--color-miele-tint);
+}
+
+.card h3 {
+  transition: font-weight 0.35s ease;
+}
+
+.card:hover h3 {
+  font-weight: 750;
+}
+
+.pin {
+  color: var(--color-miele-tint);
+  margin-bottom: var(--space-3);
+}
+
+.place {
+  color: var(--surface-text-muted);
+  margin-block: var(--space-1) var(--space-3);
+}
+
+.card :global(.body) {
+  color: var(--surface-text-muted);
+  margin-bottom: var(--space-4);
+}
+
+.mapsLink {
+  display: inline-flex;
+  color: var(--color-miele-tint);
+  border-bottom: 1px solid var(--color-miele-tint);
+  padding-bottom: 2px;
+}
+
+.general {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+  align-items: baseline;
+  margin-top: var(--space-7);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--surface-border);
+}
+
+.note {
+  width: 100%;
+  color: var(--surface-text-muted);
 }
 
 .inner {
@@ -90,6 +172,10 @@
 }
 
 @media (min-width: 768px) {
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+
   .inner {
     flex-wrap: nowrap;
   }

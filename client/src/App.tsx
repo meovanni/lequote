@@ -5,7 +5,6 @@ import { ChiSiamo } from '@/components/sections/ChiSiamo/ChiSiamo'
 import { Territorio } from '@/components/sections/Territorio/Territorio'
 import { Olio } from '@/components/sections/Olio/Olio'
 import { Miele } from '@/components/sections/Miele/Miele'
-import { Contatti } from '@/components/sections/Contatti/Contatti'
 import { Shop } from '@/components/sections/Shop/Shop'
 
 function App() {
@@ -18,7 +17,6 @@ function App() {
         <Territorio />
         <Olio />
         <Miele />
-        <Contatti />
         <Shop />
       </main>
       <Footer />

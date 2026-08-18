@@ -5,8 +5,8 @@ export const navItems: NavItem[] = [
   { id: 'territorio', label: 'Territorio' },
   { id: 'olio', label: 'Olio' },
   { id: 'miele', label: 'Miele' },
-  { id: 'contatti', label: 'Contatti' },
   { id: 'shop', label: 'Shop' },
+  { id: 'contatti', label: 'Contatti' },
 ]
 
 export const hero = {
