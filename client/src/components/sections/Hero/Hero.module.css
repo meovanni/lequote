@@ -27,9 +27,18 @@
   inset: -6% 0;
   overflow: hidden;
   z-index: 0;
-  animation: hero-parallax-drift linear both;
+  animation-name: hero-parallax-drift;
+  animation-duration: 1ms; /* ignorata: il progresso è guidato da animation-timeline */
+  animation-timing-function: linear;
+  animation-fill-mode: both;
   animation-timeline: scroll(root block);
   animation-range: 0 100vh;
+}
+
+@supports not (animation-timeline: scroll()) {
+  .videoLayer {
+    animation: none;
+  }
 }
 
 .video {

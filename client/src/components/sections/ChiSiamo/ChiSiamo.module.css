@@ -40,9 +40,18 @@
 
 .image {
   max-width: 420px;
-  animation: chisiamo-image-drift linear both;
+  animation-name: chisiamo-image-drift;
+  animation-duration: 1ms; /* ignorata: il progresso è guidato da animation-timeline */
+  animation-timing-function: linear;
+  animation-fill-mode: both;
   animation-timeline: view();
   animation-range: cover 0% cover 100%;
+}
+
+@supports not (animation-timeline: view()) {
+  .image {
+    animation: none;
+  }
 }
 
 @media (min-width: 768px) {

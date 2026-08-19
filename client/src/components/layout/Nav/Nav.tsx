@@ -63,7 +63,7 @@ export function Nav() {
     <>
       <header className={[styles.nav, isScrolled ? styles.navScrolled : ''].filter(Boolean).join(' ')}>
         <div className={styles.inner}>
-          <a href="#" className={styles.wordmark}>
+          <a href="#hero" className={styles.wordmark}>
             <Logo className={styles.wordmarkLogo} />
           </a>
 

@@ -5,15 +5,6 @@ export interface NavItem {
   label: string
 }
 
-export interface ElevationMarker {
-  id: 'borsacchio' | 'cerchio'
-  label: string
-  place: string
-  quotaLabel: string
-  xPercent: number
-  yPercent: number
-}
-
 export interface ProductTag {
   label: string
 }

@@ -33,6 +33,8 @@ export const territorio = {
   eyebrow: 'Territorio',
   title: 'Due quote, la stessa terra',
   intro: 'Ottocento metri di dislivello separano le nostre due sedi. Bastano per raccontare due mondi.',
+  imageOliveto: '/images/oliveto.jpg',
+  imageOlivetoLabel: "Foto: Il viale degli ulivi della Riserva del Borsacchio",
 }
 
 export const olio = {
@@ -52,7 +54,7 @@ export const olio = {
 
 export const miele = {
   eyebrow: 'Miele',
-  title: 'Il miele selvatico',
+  title: 'Un miele selvatico',
   body: 'I nostri alveari seguono le fioriture spontanee dei due territori: dalla macchia mediterranea del Borsacchio ai prati d’altura di Cerchio. Ne raccogliamo mieli diversi per colore, profumo e consistenza, sempre smielati a freddo per preservarne enzimi e aromi.',
   varieties: [
     { name: 'Miele di acacia', note: 'delicato, cristallizza lentamente' },

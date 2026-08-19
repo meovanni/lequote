@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react'
+import type { CSSProperties, ReactNode, Ref } from 'react'
 import styles from './Reveal.module.css'
 
 interface RevealProps {
@@ -8,9 +8,10 @@ interface RevealProps {
   /** Firma di movimento della sezione: 'up' (default), 'scale', 'sideLeft', 'sideRight'. */
   variant?: 'up' | 'scale' | 'sideLeft' | 'sideRight'
   className?: string
+  ref?: Ref<HTMLDivElement>
 }
 
-export function Reveal({ children, offset = 0, variant = 'up', className }: RevealProps) {
+export function Reveal({ children, offset = 0, variant = 'up', className, ref }: RevealProps) {
   const style = offset
     ? ({ '--enter-range': `entry ${offset}% entry ${55 + offset}%` } as CSSProperties)
     : undefined
@@ -18,7 +19,7 @@ export function Reveal({ children, offset = 0, variant = 'up', className }: Reve
   const variantClass = variant !== 'up' ? styles[variant] : undefined
 
   return (
-    <div className={[styles.reveal, variantClass, className].filter(Boolean).join(' ')} style={style}>
+    <div ref={ref} className={[styles.reveal, variantClass, className].filter(Boolean).join(' ')} style={style}>
       {children}
     </div>
   )

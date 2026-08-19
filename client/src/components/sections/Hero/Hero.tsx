@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { hero } from '@/data/content'
 import { VideoIcon } from '@/components/common/icons/Icons'
 import { Logo } from '@/components/common/Logo/Logo'
@@ -6,10 +6,35 @@ import styles from './Hero.module.css'
 
 export function Hero() {
   const [showFallback, setShowFallback] = useState(false)
+  const videoRef = useRef<HTMLVideoElement | null>(null)
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setShowFallback(true)
+      return
+    }
+
+    const video = videoRef.current
+    if (!video) return
+
+    const handleFail = () => setShowFallback(true)
+    video.addEventListener('error', handleFail)
+    video.addEventListener('stalled', handleFail)
+
+    // Alcuni browser rifiutano silenziosamente una sorgente non decodificabile senza mai
+    // emettere 'error' (es. codec non supportato in un contenitore riconosciuto): se dopo
+    // qualche secondo non ha ancora dati riproducibili, passiamo al fallback statico.
+    // Caso osservato in Chrome con questo file (HEVC in un contenitore .mov): il browser apre
+    // il contenitore e "riproduce" (readyState 4, currentTime che avanza, nessun error), ma la
+    // traccia video non decodifica mai un fotogramma reale — videoWidth/videoHeight restano 0.
+    const timeout = window.setTimeout(() => {
+      if (video.readyState < 2 || video.videoWidth === 0 || video.videoHeight === 0) handleFail()
+    }, 4000)
+
+    return () => {
+      video.removeEventListener('error', handleFail)
+      video.removeEventListener('stalled', handleFail)
+      window.clearTimeout(timeout)
     }
   }, [])
 
@@ -18,16 +43,17 @@ export function Hero() {
       <div className={styles.videoLayer}>
         {!showFallback && (
           <video
+            ref={videoRef}
             className={styles.video}
             autoPlay
             muted
             loop
             playsInline
-            preload="none"
+            preload="auto"
             aria-hidden="true"
             onError={() => setShowFallback(true)}
           >
-            <source src="/videos/intro_long.mov" type="video/quicktime" />
+            <source src="/videos/intro_long.mov" />
           </video>
         )}
 

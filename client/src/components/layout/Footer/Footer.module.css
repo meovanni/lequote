@@ -115,9 +115,18 @@
   opacity: 0.06;
   transform: translate(-50%, 28%);
   pointer-events: none;
-  animation: footer-wordmark-drift linear both;
+  animation-name: footer-wordmark-drift;
+  animation-duration: 1ms; /* ignorata: il progresso è guidato da animation-timeline */
+  animation-timing-function: linear;
+  animation-fill-mode: both;
   animation-timeline: view();
   animation-range: cover 0% cover 100%;
+}
+
+@supports not (animation-timeline: view()) {
+  .bigWordmark {
+    animation: none;
+  }
 }
 
 @media (min-width: 768px) {

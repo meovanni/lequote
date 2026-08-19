@@ -1,35 +1,257 @@
 .section {
   --accent: var(--color-miele);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+  position: relative;
+  height: 200vh;
   background: var(--surface-bg);
   color: var(--surface-text);
-  padding-block: var(--space-8);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  view-timeline-name: --territorio-reveal;
+  view-timeline-axis: block;
 }
 
-.inner {
+.snapStep {
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  scroll-snap-align: start;
+}
+
+.pinStage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.heading {
+  position: absolute;
+  z-index: 1;
+  top: 12%;
+  left: 50%;
+  width: 100%;
   max-width: var(--container-max);
-  margin-inline: auto;
   padding-inline: var(--container-pad);
+  text-align: center;
+  animation-name: territorio-heading-fade;
+  animation-duration: 1ms; /* ignorata: il progresso è guidato da animation-timeline */
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: --territorio-reveal;
+  animation-range: contain 0% contain 32%;
 }
 
-@keyframes territorio-parallax-drift {
+@keyframes territorio-heading-fade {
   from {
-    transform: translateY(-14px);
+    opacity: 1;
+    transform: translate(-50%, 0);
   }
 
   to {
-    transform: translateY(14px);
+    opacity: 0;
+    transform: translate(-50%, -18px);
   }
 }
 
-.topoWrapper {
-  margin-block: var(--space-7);
-  animation: territorio-parallax-drift linear both;
-  animation-timeline: view();
-  animation-range: cover 0% cover 100%;
+/* La foto è statica e a piena pagina fin dal primo frame: solo la maschera (abruzzo.svg,
+   sagoma reale, non stilizzata) si ingrandisce con lo scroll, rivelando via via più foto
+   invece di ingrandire un ritaglio già inquadrato. Rapporto larghezza/altezza della maschera
+   ricavato dal viewBox di abruzzo.svg, ritagliato sulla vera bounding box della sagoma
+   (270 x 244) così che mask-position:center scali dal centro reale della forma. */
+.maskedPhoto {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: url('/images/abruzzo.svg');
+  mask-image: url('/images/abruzzo.svg');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center 60%;
+  mask-position: center 60%;
+  -webkit-mask-mode: alpha;
+  mask-mode: alpha;
+  -webkit-mask-size: 24vh 21.7vh;
+  mask-size: 24vh 21.7vh;
+  filter: drop-shadow(0 30px 60px color-mix(in srgb, var(--color-inchiostro) 45%, transparent));
+  animation-name: territorio-mask-grow;
+  animation-duration: 1ms; /* ignorata: il progresso è guidato da animation-timeline */
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: --territorio-reveal;
+  animation-range: contain 0% contain 100%;
+}
+
+/* Parallasse: la foto continua a "scorrere" leggermente sotto la maschera mentre questa si
+   ingrandisce, invece di restare perfettamente ferma — dà profondità al reveal. scale(1.18)
+   costante crea il margine di sovrascan necessario perché il translateY verticale non scopra
+   mai un bordo vuoto dell'immagine. */
+.maskedPhoto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: center;
+  animation-name: territorio-photo-parallax;
+  animation-duration: 1ms; /* ignorata: il progresso è guidato da animation-timeline */
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: --territorio-reveal;
+  animation-range: contain 0% contain 100%;
+}
+
+@keyframes territorio-photo-parallax {
+  from {
+    transform: scale(1.18) translateY(6%);
+  }
+
+  to {
+    transform: scale(1.18) translateY(-6%);
+  }
+}
+
+@keyframes territorio-mask-grow {
+  from {
+    -webkit-mask-size: 24vh 21.7vh;
+    mask-size: 24vh 21.7vh;
+  }
+
+  to {
+    /* vmax (non vmin) cosicché, qualunque sia il rapporto larghezza/altezza del viewport,
+       la maschera superi sempre sia la larghezza sia l'altezza dello schermo: a fine scroll
+       nessun bordo della sagoma resta visibile, la foto è scoperta per intero. Il margine è
+       abbondante perché la sagoma è concava (le insenature della costa/dei confini) e non un
+       rettangolo: serve superare la sola bounding box per spingere anche quelle fuori schermo. */
+    -webkit-mask-size: 260vmax 235vmax;
+    mask-size: 260vmax 235vmax;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section {
+    height: auto;
+  }
+
+  .pinStage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-7);
+    padding-block: var(--space-8);
+  }
+
+  .heading,
+  .maskedPhoto,
+  .maskedPhoto img {
+    animation: none;
+  }
+
+  .heading {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+  }
+
+  .maskedPhoto {
+    position: relative;
+    inset: auto;
+    width: min(70vmin, 480px);
+    height: min(70vmin, 480px);
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  .maskedPhoto img {
+    transform: none;
+  }
+}
+
+/* Browser senza scroll-driven animations: niente pin/ingrandimento, la foto è mostrata già
+   rivelata alla dimensione massima, statica. */
+@supports not (animation-timeline: view()) {
+  .section {
+    height: auto;
+  }
+
+  .pinStage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-7);
+    padding-block: var(--space-8);
+  }
+
+  .heading,
+  .maskedPhoto,
+  .maskedPhoto img {
+    animation: none;
+  }
+
+  .heading {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+  }
+
+  .maskedPhoto {
+    position: relative;
+    inset: auto;
+    width: 77.5vh;
+    height: 70vh;
+    max-width: 100%;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  .maskedPhoto img {
+    transform: none;
+  }
+}
+
+/* JS ha rilevato l'assenza nativa di scroll-driven animations (Firefox) ma può eseguire:
+   ripristina il pin che il fallback statico qui sopra aveva collassato, e lascia che
+   Territorio.tsx guidi mask-size/opacità leggendo lo scroll a mano, frame per frame. */
+.jsFallback {
+  height: 200vh;
+}
+
+.jsFallback .pinStage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: block;
+  padding-block: 0;
+}
+
+.jsFallback .heading {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.jsFallback .maskedPhoto {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  max-width: none;
+  -webkit-mask-position: center 60%;
+  mask-position: center 60%;
+}
+
+/* Il transform del parallasse viene applicato inline via JS (Territorio.tsx): l'animazione CSS
+   va disattivata per non entrare in conflitto (le animazioni CSS hanno priorità sullo stile
+   inline sulla stessa proprietà, quindi altrimenti "vincerebbe" restando bloccata sul frame
+   finale, dato che qui animation-timeline non è supportato). */
+.jsFallback .maskedPhoto img {
+  animation: none;
 }
