@@ -35,6 +35,20 @@ export const territorio = {
   intro: 'Ottocento metri di dislivello separano le nostre due sedi. Bastano per raccontare due mondi.',
   imageOliveto: '/images/oliveto.jpg',
   imageOlivetoLabel: "Foto: Il viale degli ulivi della Riserva del Borsacchio",
+  imageApiario: '/images/arnie.jpg',
+  imageApiarioLabel: 'Foto: Gli alveari tra le alture di Cerchio',
+  markers: [
+    {
+      id: 'roseto',
+      place: 'Roseto degli Abruzzi',
+      note: 'La Riserva del Borsacchio, tra macchia mediterranea e uliveti a pochi passi dal mare.',
+    },
+    {
+      id: 'cerchio',
+      place: 'Cerchio',
+      note: "Le alture dell'entroterra aquilano, dove le api raccolgono i mieli di quota.",
+    },
+  ],
 }
 
 export const olio = {

@@ -1,7 +1,7 @@
 .section {
   --accent: var(--color-miele);
   position: relative;
-  height: 200vh;
+  height: 580vh;
   background: var(--surface-bg);
   color: var(--surface-text);
   scroll-snap-align: start;
@@ -40,7 +40,7 @@
   animation-timing-function: linear;
   animation-fill-mode: both;
   animation-timeline: --territorio-reveal;
-  animation-range: contain 0% contain 32%;
+  animation-range: contain 0% contain 8%;
 }
 
 @keyframes territorio-heading-fade {
@@ -55,11 +55,14 @@
   }
 }
 
-/* La foto è statica e a piena pagina fin dal primo frame: solo la maschera (abruzzo.svg,
-   sagoma reale, non stilizzata) si ingrandisce con lo scroll, rivelando via via più foto
-   invece di ingrandire un ritaglio già inquadrato. Rapporto larghezza/altezza della maschera
-   ricavato dal viewBox di abruzzo.svg, ritagliato sulla vera bounding box della sagoma
-   (270 x 244) così che mask-position:center scali dal centro reale della forma. */
+/* Le due foto (oliveto + apiario) sono statiche e a piena pagina fin dal primo frame: solo la
+   maschera (abruzzo.svg, sagoma reale, non stilizzata) si ingrandisce con lo scroll, rivelando
+   via via più foto invece di ingrandire un ritaglio già inquadrato. Rapporto larghezza/altezza
+   della maschera ricavato dal viewBox di abruzzo.svg, ritagliato sulla vera bounding box della
+   sagoma (270 x 244) così che mask-position:center scali dal centro reale della forma.
+   L'ingrandimento si esaurisce entro il 20% del percorso (vedi animation-range): il resto della
+   sequenza è dedicato ai due segnaposto, con la maschera ormai ferma alla sua dimensione
+   finale. */
 .maskedPhoto {
   position: absolute;
   inset: 0;
@@ -71,22 +74,26 @@
   mask-position: center 60%;
   -webkit-mask-mode: alpha;
   mask-mode: alpha;
-  -webkit-mask-size: 24vh 21.7vh;
-  mask-size: 24vh 21.7vh;
+  -webkit-mask-size: 60vh 60vh;
+  mask-size: 60vh 60vh;
   filter: drop-shadow(0 30px 60px color-mix(in srgb, var(--color-inchiostro) 45%, transparent));
   animation-name: territorio-mask-grow;
   animation-duration: 1ms; /* ignorata: il progresso è guidato da animation-timeline */
   animation-timing-function: linear;
   animation-fill-mode: both;
   animation-timeline: --territorio-reveal;
-  animation-range: contain 0% contain 100%;
+  animation-range: contain 0% contain 20%;
 }
 
-/* Parallasse: la foto continua a "scorrere" leggermente sotto la maschera mentre questa si
-   ingrandisce, invece di restare perfettamente ferma — dà profondità al reveal. scale(1.18)
+/* Parallasse: le foto continuano a "scorrere" leggermente sotto la maschera mentre questa si
+   ingrandisce, invece di restare perfettamente ferme — dà profondità al reveal. scale(1.18)
    costante crea il margine di sovrascan necessario perché il translateY verticale non scopra
-   mai un bordo vuoto dell'immagine. */
-.maskedPhoto img {
+   mai un bordo vuoto. Continua per tutta la sequenza (non solo la fase maschera) così lo sfondo
+   resta vivo anche durante i segnaposto. Le due foto (oliveto sotto, apiario sopra) condividono
+   esattamente lo stesso movimento, così la dissolvenza tra loro non "scivola". */
+.photo {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
@@ -110,20 +117,192 @@
   }
 }
 
-@keyframes territorio-mask-grow {
+/* Foto dell'apiario: stessa posizione/parallasse della foto dell'oliveto (sotto di lei nel DOM,
+   sopra nell'ordine di stacking), ma invisibile finché il segnaposto Cerchio non si attiva — a
+   quel punto si dissolve dentro esattamente nella stessa finestra di scroll (66%-74%),
+   sostituendo elegantemente la foto sottostante invece di un taglio netto. Due animation
+   separate (virgola) sullo stesso elemento: la prima (parallasse) condivisa con .photo, la
+   seconda (dissolvenza) propria. */
+.photoApiary {
+  opacity: 0;
+  animation-name: territorio-photo-parallax, territorio-apiary-crossfade;
+  animation-duration: 1ms, 1ms;
+  animation-timing-function: linear, linear;
+  animation-fill-mode: both, both;
+  animation-timeline: --territorio-reveal, --territorio-reveal;
+  animation-range:
+    contain 0% contain 100%,
+    contain 66% contain 74%;
+}
+
+@keyframes territorio-apiary-crossfade {
   from {
-    -webkit-mask-size: 24vh 21.7vh;
-    mask-size: 24vh 21.7vh;
+    opacity: 0;
   }
 
   to {
-    /* vmax (non vmin) cosicché, qualunque sia il rapporto larghezza/altezza del viewport,
-       la maschera superi sempre sia la larghezza sia l'altezza dello schermo: a fine scroll
-       nessun bordo della sagoma resta visibile, la foto è scoperta per intero. Il margine è
-       abbondante perché la sagoma è concava (le insenature della costa/dei confini) e non un
-       rettangolo: serve superare la sola bounding box per spingere anche quelle fuori schermo. */
-    -webkit-mask-size: 260vmax 235vmax;
-    mask-size: 260vmax 235vmax;
+    opacity: 1;
+  }
+}
+
+@keyframes territorio-mask-grow {
+  from {
+    -webkit-mask-size: 60vh 60vh;
+    mask-size: 60vh 60vh;
+  }
+
+  to {
+    /* vmax (non vmin) cosicché, qualunque sia il rapporto larghezza/altezza del viewport, il
+       comportamento resti coerente. La dimensione finale è più contenuta di un pieno schermo:
+       la maschera diventa un riquadro-diagramma stabile su cui si affacciano i segnaposto. */
+    -webkit-mask-size: 40vmax 40vmax;
+    mask-size: 40vmax 40vmax;
+  }
+}
+
+/* Segnaposto (due <ellipse inkscape:label="segno-roseto|segno-cerchio"> aggiunti a
+   abruzzo.svg): la loro posizione a schermo è calcolata in Territorio.tsx dalla geometria
+   finale della maschera (costante dopo il 20% del percorso) e passata come left/top inline;
+   qui viene gestita solo la comparsa/scomparsa in sequenza, in stile "callout" — pallino con
+   anello pulsante + scheda informativa. Tra i due c'è una pausa di scroll deliberata (46%-66%,
+   nessuno dei due è attivo) prima che Cerchio si accenda. */
+.marker {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.85);
+  animation-duration: 1ms; /* ignorata: il progresso è guidato da animation-timeline */
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: --territorio-reveal;
+}
+
+.markerRoseto {
+  animation-name: territorio-marker-roseto;
+  animation-range: contain 20% contain 52%;
+}
+
+.markerCerchio {
+  animation-name: territorio-marker-cerchio;
+  animation-range: contain 66% contain 100%;
+}
+
+@keyframes territorio-marker-roseto {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.85);
+  }
+
+  25% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  81.25% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.85);
+  }
+}
+
+@keyframes territorio-marker-cerchio {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.85);
+  }
+
+  23.5% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.markerDot {
+  position: relative;
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-miele);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-miele) 25%, transparent);
+}
+
+.markerDot::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-miele);
+  animation: territorio-marker-pulse 2.2s ease-out infinite;
+}
+
+@keyframes territorio-marker-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+.markerCard {
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: max-content;
+  max-width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--surface-bg);
+  border: 1px solid var(--surface-border);
+  box-shadow: var(--shadow-card);
+}
+
+/* Cerchio è tipicamente più a sinistra nel riquadro-diagramma: la sua scheda si apre verso
+   sinistra del pallino invece che verso destra, per restare più centrata sullo schema. */
+.markerCerchio .markerCard {
+  left: auto;
+  right: 22px;
+}
+
+.markerPlace {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--surface-text);
+}
+
+.markerNote {
+  color: var(--surface-text-muted);
+}
+
+/* Sotto i ~640px il riquadro-diagramma è stretto: una scheda offset lateralmente sconfina
+   facilmente fuori viewport in entrambe le direzioni. La si porta sotto, centrata sul
+   pallino, per entrambi i segnaposto. */
+@media (max-width: 640px) {
+  .markerCard,
+  .markerCerchio .markerCard {
+    left: 50%;
+    right: auto;
+    top: 22px;
+    transform: translateX(-50%);
+    max-width: min(78vw, 260px);
   }
 }
 
@@ -143,7 +322,8 @@
 
   .heading,
   .maskedPhoto,
-  .maskedPhoto img {
+  .photo,
+  .marker {
     animation: none;
   }
 
@@ -165,13 +345,23 @@
     mask-size: contain;
   }
 
-  .maskedPhoto img {
+  .photo {
+    position: relative;
+    inset: auto;
     transform: none;
+  }
+
+  .photoApiary,
+  .marker {
+    display: none;
   }
 }
 
-/* Browser senza scroll-driven animations: niente pin/ingrandimento, la foto è mostrata già
-   rivelata alla dimensione massima, statica. */
+/* Browser senza scroll-driven animations: niente pin/ingrandimento, la foto dell'oliveto è
+   mostrata già rivelata alla dimensione massima, statica. I segnaposto (e la foto
+   dell'apiario, che dipende dall'attivazione del segnaposto Cerchio) vengono nascosti perché la
+   loro posizione è calcolata assumendo .maskedPhoto a piena pagina (inset:0), non il riquadro
+   statico più piccolo di questo fallback. */
 @supports not (animation-timeline: view()) {
   .section {
     height: auto;
@@ -188,7 +378,8 @@
 
   .heading,
   .maskedPhoto,
-  .maskedPhoto img {
+  .photo,
+  .marker {
     animation: none;
   }
 
@@ -211,16 +402,24 @@
     mask-size: contain;
   }
 
-  .maskedPhoto img {
+  .photo {
+    position: relative;
+    inset: auto;
     transform: none;
+  }
+
+  .photoApiary,
+  .marker {
+    display: none;
   }
 }
 
 /* JS ha rilevato l'assenza nativa di scroll-driven animations (Firefox) ma può eseguire:
    ripristina il pin che il fallback statico qui sopra aveva collassato, e lascia che
-   Territorio.tsx guidi mask-size/opacità leggendo lo scroll a mano, frame per frame. */
+   Territorio.tsx guidi mask-size/opacità/segnaposto/dissolvenza leggendo lo scroll a mano,
+   frame per frame. */
 .jsFallback {
-  height: 200vh;
+  height: 580vh;
 }
 
 .jsFallback .pinStage {
@@ -248,10 +447,29 @@
   mask-position: center 60%;
 }
 
-/* Il transform del parallasse viene applicato inline via JS (Territorio.tsx): l'animazione CSS
-   va disattivata per non entrare in conflitto (le animazioni CSS hanno priorità sullo stile
-   inline sulla stessa proprietà, quindi altrimenti "vincerebbe" restando bloccata sul frame
-   finale, dato che qui animation-timeline non è supportato). */
-.jsFallback .maskedPhoto img {
+.jsFallback .photo {
+  position: absolute;
+  inset: 0;
+}
+
+/* Il blocco "@supports not (animation-timeline: view())" qui sopra nasconde .photoApiary e
+   .marker (display:none) perché in quel fallback statico la loro posizione/logica, calcolata
+   assumendo .maskedPhoto a piena pagina, non avrebbe senso. Qui invece .maskedPhoto TORNA a
+   piena pagina (regola precedente), quindi vanno resi di nuovo visibili. */
+.jsFallback .photoApiary {
+  display: block;
+}
+
+.jsFallback .marker {
+  display: block;
+}
+
+/* Il transform/opacità del parallasse/segnaposto/dissolvenza viene applicato inline via JS
+   (Territorio.tsx): l'animazione CSS va disattivata per non entrare in conflitto (le
+   animazioni CSS hanno priorità sullo stile inline sulla stessa proprietà, quindi altrimenti
+   "vincerebbe" restando bloccata sul frame finale, dato che qui animation-timeline non è
+   supportato). */
+.jsFallback .photo,
+.jsFallback .marker {
   animation: none;
 }
