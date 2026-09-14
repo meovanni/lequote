@@ -1,0 +1,50 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-color",
+        "value": "#10150c",
+        "createdAt": "2026-08-20T14:52:23.209Z",
+        "reason": "pre-existing hero video-fallback/overlay scrim gradient, predates DESIGN.md, out of scope for animate-only edit"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "#2a3521",
+        "createdAt": "2026-08-20T14:52:23.459Z",
+        "reason": "pre-existing hero video-fallback/overlay scrim gradient, predates DESIGN.md, out of scope for animate-only edit"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgba(0, 0, 0, 0.18)",
+        "createdAt": "2026-08-20T14:52:23.848Z",
+        "reason": "pre-existing hero video-fallback/overlay scrim gradient, predates DESIGN.md, out of scope for animate-only edit"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgba(16, 21, 12, 0.35)",
+        "createdAt": "2026-08-20T14:52:24.150Z",
+        "reason": "pre-existing hero video-fallback/overlay scrim gradient, predates DESIGN.md, out of scope for animate-only edit"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgba(16, 21, 12, 0.32)",
+        "createdAt": "2026-08-20T14:52:24.430Z",
+        "reason": "pre-existing hero video-fallback/overlay scrim gradient, predates DESIGN.md, out of scope for animate-only edit"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgba(16, 21, 12, 0.78)",
+        "createdAt": "2026-08-20T14:52:24.780Z",
+        "reason": "pre-existing hero video-fallback/overlay scrim gradient, predates DESIGN.md, out of scope for animate-only edit"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgba(255, 255, 255, 0.4)",
+        "createdAt": "2026-08-21T10:37:10.443Z",
+        "reason": "pre-existing CTA sheen-sweep highlight, same technique as Hero's .ctaPrimary::after (rgba(255,255,255,0.32)); documented in DESIGN.md as the site's signature primary-button gesture, not new drift"
+      }
+    ]
+  }
+}

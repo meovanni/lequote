@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-20T00:00:00Z",
+  "title": "Design System: Le Quote",
+  "extensions": {
+    "colorMeta": {
+      "honey-brass": {
+        "role": "primary",
+        "displayName": "Aged Honey Brass",
+        "canonical": "#9c6530",
+        "tonalRamp": ["#3b2612", "#6d4722", "#9c6530", "#c58344", "#d4a273", "#e0bc9a", "#edd8c4", "#f9f2eb"]
+      },
+      "honey-brass-tint": {
+        "role": "primary-tint",
+        "displayName": "Honey Brass Tint",
+        "canonical": "#cc9a5e",
+        "tonalRamp": ["#3a2812", "#6c4b22", "#9b6b31", "#c48a45", "#d3a874", "#dfc09a", "#eddbc5", "#f9f3ec"]
+      },
+      "olive-leaf": {
+        "role": "secondary",
+        "displayName": "Deep Olive Leaf",
+        "canonical": "#4c5735",
+        "tonalRamp": ["#2a301d", "#4e5936", "#6f7f4d", "#8fa267", "#abb98d", "#c2cdad", "#dce2cf", "#f3f5ef"]
+      },
+      "night-grove": {
+        "role": "surface-dark",
+        "displayName": "Night Grove",
+        "canonical": "#1c2417",
+        "tonalRamp": ["#242f1e", "#445738", "#617c50", "#7ea06a", "#9fb78f", "#b9cbae", "#d7e1d0", "#f2f5ef"]
+      },
+      "warm-parchment": {
+        "role": "surface-light",
+        "displayName": "Warm Parchment",
+        "canonical": "#f7f3e8",
+        "tonalRamp": ["#392f14", "#6a5825", "#977d35", "#c0a049", "#d0b877", "#ddcc9d", "#ebe1c6", "#f8f5ec"]
+      },
+      "soft-ivory": {
+        "role": "surface-light-alt",
+        "displayName": "Soft Ivory",
+        "canonical": "#efe7d4",
+        "tonalRamp": ["#382d15", "#685527", "#957937", "#bd9b4d", "#cdb479", "#dbc99e", "#eae0c7", "#f8f5ec"]
+      },
+      "ink": {
+        "role": "text",
+        "displayName": "Deep Ink Blue",
+        "canonical": "#233142",
+        "tonalRamp": ["#1b2532", "#31455d", "#476385", "#5f81aa", "#87a0bf", "#a8bbd1", "#cdd8e4", "#eef2f6"]
+      },
+      "bone": {
+        "role": "text-on-dark",
+        "displayName": "Bone",
+        "canonical": "#f3eedf",
+        "tonalRamp": ["#382f15", "#685827", "#947d38", "#bca04d", "#cdb879", "#dbcc9f", "#eae1c7", "#f8f5ec"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headline only." },
+      "headline": { "displayName": "Headline", "purpose": "Section titles (Chi siamo, Territorio, Olio, Miele)." },
+      "title": { "displayName": "Title", "purpose": "Product subtitles." },
+      "body": { "displayName": "Body", "purpose": "Running copy; body-lead and body-sm variants for intros and captions." },
+      "label": { "displayName": "Label", "purpose": "Nav, buttons, figures; eyebrow variant for kickers above titles." }
+    },
+    "shadows": [
+      {
+        "name": "card",
+        "value": "0 24px 70px -32px rgba(28, 36, 23, 0.32)",
+        "purpose": "The one UI shadow in the system: floating callout cards at rest, photo frames on hover only."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Default easing for lifts, presses, and the nav indicator's slide between links."
+      },
+      {
+        "name": "scroll-driven-duration",
+        "value": "1ms",
+        "purpose": "Required explicit animation-duration on every animation-timeline-driven rule. Real progress comes from the timeline, but omitting this breaks in engines that default duration to 0s."
+      }
+    ],
+    "breakpoints": [
+      { "name": "phone-lg", "value": "480px" },
+      { "name": "tablet", "value": "768px" },
+      { "name": "laptop-sm", "value": "1024px" },
+      { "name": "desktop", "value": "1280px" },
+      { "name": "nav-collapse", "value": "860px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The site's one interactive color, with a signature sheen-sweep hover and press-scale feedback.",
+      "html": "<button class=\"ds-btn-primary\">Esplora il territorio</button>",
+      "css": ".ds-btn-primary { position: relative; display: inline-flex; align-items: center; overflow: hidden; padding: 12px 24px; background: #9c6530; color: #f3eedf; border: none; border-radius: 10px; font-family: 'DM Mono', ui-monospace, monospace; font-weight: 500; font-size: 0.8125rem; letter-spacing: 0.1em; text-transform: uppercase; transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease; } .ds-btn-primary::after { content: ''; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.32) 50%, transparent 70%); transform: translateX(-120%); transition: transform 0.6s ease; } .ds-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -14px rgba(156,101,48,0.55); } .ds-btn-primary:hover::after { transform: translateX(120%); } .ds-btn-primary:active { transform: translateY(0) scale(0.97); } .ds-btn-primary:focus-visible { outline: 2px solid #cc9a5e; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Outline button for a page's lower-priority action; no sheen (reserved for primary).",
+      "html": "<button class=\"ds-btn-secondary\">Scopri i prodotti</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; padding: 12px 24px; color: #233142; background: transparent; border: 1px solid rgba(35,49,66,0.12); border-radius: 10px; font-family: 'DM Mono', ui-monospace, monospace; font-weight: 500; font-size: 0.8125rem; letter-spacing: 0.1em; text-transform: uppercase; transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-secondary:hover { border-color: #cc9a5e; background: rgba(204,154,94,0.14); transform: translateY(-2px); } .ds-btn-secondary:active { transform: translateY(0) scale(0.97); } .ds-btn-secondary:focus-visible { outline: 2px solid #cc9a5e; outline-offset: 2px; }"
+    },
+    {
+      "name": "Floating Callout Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "The system's one component allowed a resting shadow, because it floats above a photo rather than sitting on a page surface (Territorio's map-marker callouts).",
+      "html": "<div class=\"ds-card\"><span class=\"ds-card-place\">Roseto degli Abruzzi</span><p class=\"ds-card-note\">La Riserva del Borsacchio, tra macchia mediterranea e uliveti a pochi passi dal mare.</p></div>",
+      "css": ".ds-card { position: relative; display: flex; flex-direction: column; gap: 2px; width: max-content; max-width: 240px; padding: 12px 16px; border-radius: 6px; background: #f7f3e8; border: 1px solid rgba(35,49,66,0.12); box-shadow: 0 24px 70px -32px rgba(28,36,23,0.32); } .ds-card-place { font-family: 'Fraunces Variable', 'Fraunces', 'Iowan Old Style', Georgia, serif; font-size: 1.05rem; color: #233142; } .ds-card-note { font-family: 'Instrument Sans Variable', 'Instrument Sans', sans-serif; font-size: 0.875rem; font-weight: 500; line-height: 1.5; color: rgba(35,49,66,0.66); }"
+    },
+    {
+      "name": "Nav Bar",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Sticky frosted-glass nav with a single sliding indicator line marking the active link, rather than per-link highlight boxes.",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-nav-word\">Le Quote</span><div class=\"ds-nav-links\"><a class=\"ds-nav-link is-active\" href=\"#\">Territorio</a><a class=\"ds-nav-link\" href=\"#\">Olio</a><a class=\"ds-nav-link\" href=\"#\">Miele</a><div class=\"ds-nav-indicator\"></div></div></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px clamp(1.25rem, 4vw, 3rem); background: rgba(247,243,232,0.68); backdrop-filter: blur(16px) saturate(160%); border-bottom: 1px solid rgba(35,49,66,0.08); } .ds-nav-word { font-family: 'Fraunces Variable', 'Fraunces', 'Iowan Old Style', Georgia, serif; color: #233142; } .ds-nav-links { position: relative; display: flex; align-items: center; gap: 8px; } .ds-nav-link { position: relative; display: inline-flex; align-items: center; padding: 8px 12px; border-radius: 999px; color: rgba(35,49,66,0.62); font-family: 'DM Mono', ui-monospace, monospace; font-size: 0.8125rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.25s ease; } .ds-nav-link:hover, .ds-nav-link.is-active { color: #233142; } .ds-nav-indicator { position: absolute; bottom: 2px; left: 0; height: 1.5px; width: 64px; border-radius: 999px; background: rgba(156,101,48,0.7); transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), width 0.4s cubic-bezier(0.16,1,0.3,1); }"
+    },
+    {
+      "name": "Photo Frame",
+      "kind": "custom",
+      "refersTo": "photo-frame",
+      "description": "The site's recurring image frame: largest radius in the system, reserved for photography; hover-lift reveals the one UI shadow.",
+      "html": "<div class=\"ds-photo-frame\"><span class=\"ds-photo-frame-caption\">Foto: Il viale degli ulivi della Riserva del Borsacchio</span></div>",
+      "css": ".ds-photo-frame { position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: 22px; border: 1px solid rgba(76,87,53,0.3); overflow: hidden; background: radial-gradient(circle at 78% 12%, rgba(76,87,53,0.3), transparent 55%), linear-gradient(155deg, #1c2417 0%, #34402a 100%); transition: transform 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s ease; } .ds-photo-frame:hover { transform: translateY(-4px); box-shadow: 0 24px 70px -32px rgba(28,36,23,0.32); } .ds-photo-frame-caption { position: absolute; left: 16px; bottom: 16px; display: inline-flex; align-items: center; padding: 8px 12px; border-radius: 999px; background: rgba(16,21,12,0.55); backdrop-filter: blur(6px); color: #f3eedf; font-family: 'Instrument Sans Variable', 'Instrument Sans', sans-serif; font-size: 0.875rem; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Il Registro del Frantoio (The Frantoio Ledger)",
+    "overview": "The system reads like a farm's own record book, not a marketing brochure: precise, unhurried, and grounded in specific facts rather than adjectives. A warm-parchment canvas carries most of the site; one honey-brass accent is spent deliberately, the way a ledger uses red ink, only where it marks an action or a place. Nothing glows, nothing floats without reason, and the two products (oil, honey) never compete visually with the two places that produce them. The site's single most expressive gesture, the Territorio scroll-reveal, is itself built from a real geographic silhouette rather than an invented shape, in keeping with the ledger's commitment to fact over flourish.",
+    "keyCharacteristics": [
+      "Warm-neutral canvas (parchment/ivory) with exactly one spent-sparingly accent color, not a rotating palette.",
+      "A dark surface (night-grove) reserved for precisely two sections, marking a shift in register rather than a \"dark mode.\"",
+      "Motion is scroll-driven and structural (reveals, a pinned map sequence), never decorative or idle.",
+      "Flat-by-default surfaces; a shadow only appears as a state response or on genuinely floating content.",
+      "Typography does the emotional work the palette deliberately withholds: one serif display family carries all warmth and personality."
+    ],
+    "rules": [
+      {
+        "name": "The Two-Accent Discipline Rule",
+        "body": "Honey Brass is the only interactive/wayfinding color; Olive Leaf is the only non-interactive structural accent. They never share a job, and a third accent hue is never introduced without revising this file.",
+        "section": "colors"
+      },
+      {
+        "name": "The One-Serif Rule",
+        "body": "Every display need (hero, headline, title, card title) is Fraunces at a different point on its own variable axes, never a second serif introduced for contrast. Emphasis inside a headline uses italic or heavier weight of the same face.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-Until-Floating Rule",
+        "body": "A shadow is either a hover response or a signal that the element is a floating overlay, never a resting-state decoration on a primary surface.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do author scroll-linked motion with explicit longhand (animation-name, animation-duration: 1ms, animation-timing-function, animation-fill-mode, animation-timeline, animation-range) plus an @supports not (animation-timeline: ...) fallback.",
+      "Do keep Night Grove confined to exactly Shop and Footer; it marks a closing register, not a general dark mode.",
+      "Do give every primary CTA the sheen + lift + press pattern so buttons feel like one family.",
+      "Do reserve pill radius for interactive or informational chips only."
+    ],
+    "donts": [
+      "Don't introduce Tailwind, Motion/Framer, or GSAP. The native-CSS, zero-animation-library architecture is deliberate and load-bearing.",
+      "Don't use em dashes in shipped copy or headings.",
+      "Don't add a shadow at rest to a primary page surface; Card shadow is a hover/floating-state signal only.",
+      "Don't introduce a third accent hue, or a second dark surface, without revising DESIGN.md."
+    ]
+  }
+}
