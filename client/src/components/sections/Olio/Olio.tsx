@@ -9,27 +9,23 @@ export function Olio() {
     <section id="olio" data-surface="light" className={styles.section}>
       <div className={styles.inner}>
         <Reveal variant="sideLeft" className={styles.images}>
-          <ImagePlaceholder
-            label={olio.imageLabel}
-            aspectRatio="1 / 1"
-            variant="oliva"
-            src={olio.image}
-            fit="cover"
-            container={false}
-          />
+          <ImagePlaceholder label={olio.imageLabel} aspectRatio="3 / 5" variant="oliva" src={olio.image} fit="cover" />
           <ImagePlaceholder
             label={olio.imageLabelAlt}
-            aspectRatio="1 / 1"
+            aspectRatio="3 / 5"
             variant="oliva"
             src={olio.imageAlt}
             fit="cover"
-            container={false}
           />
         </Reveal>
 
-        <Reveal offset={8} className={styles.text}>
-          <SectionHeading title={olio.title} visible />
-          <p className="body">{olio.body}</p>
+        <div className={styles.text}>
+          <Reveal offset={8}>
+            <SectionHeading title={olio.title} visible />
+          </Reveal>
+          <Reveal offset={14}>
+            <p className="body-lead">{olio.body}</p>
+          </Reveal>
 
           <ul className={styles.varieties}>
             {olio.varieties.map((variety, index) => (
@@ -41,7 +37,7 @@ export function Olio() {
               </li>
             ))}
           </ul>
-        </Reveal>
+        </div>
       </div>
     </section>
   )

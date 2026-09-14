@@ -23,9 +23,17 @@
 .paragraphs {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
   margin-top: var(--space-5);
   color: var(--surface-text-muted);
+}
+
+/* La prima riga porta il peso della sezione (stessa voce dei sottotitoli di Hero/Territorio,
+   riusata qui): più grande, colore pieno, con un respiro in più sotto prima delle due frasi di
+   dettaglio che restano allo stesso peso del resto del sito. */
+.lead {
+  color: var(--surface-text);
+  margin-bottom: var(--space-2);
 }
 
 @keyframes chisiamo-image-drift {

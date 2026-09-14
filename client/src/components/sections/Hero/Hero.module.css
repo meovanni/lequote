@@ -102,6 +102,57 @@
   max-width: 46rem;
 }
 
+/* Ingresso in scena all'apertura della pagina: il lettore incontra logo, sottotitolo, corpo e
+   azioni in sequenza invece che tutti insieme, come una prima riga letta ad alta voce. Non è
+   legata allo scroll (l'Hero è già in vista al caricamento): un'unica animazione temporizzata,
+   sfasata per elemento. */
+@keyframes hero-intro-rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.title,
+.subtitle,
+.body,
+.actions {
+  animation-name: hero-intro-rise;
+  animation-duration: 700ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
+}
+
+.title {
+  animation-delay: 60ms;
+}
+
+.subtitle {
+  animation-delay: 200ms;
+}
+
+.body {
+  animation-delay: 320ms;
+}
+
+.actions {
+  animation-delay: 440ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title,
+  .subtitle,
+  .body,
+  .actions {
+    animation: none;
+  }
+}
+
 .title {
   display: block;
   color: var(--surface-text);

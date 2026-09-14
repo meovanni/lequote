@@ -4,14 +4,9 @@
   width: 100%;
   display: flex;
   align-items: flex-end;
-  border-radius: var(--radius-lg);
-  border: 1px solid color-mix(in srgb, var(--accent-color, var(--color-oliva)) 30%, transparent);
   overflow: hidden;
-  background:
-    radial-gradient(circle at 78% 12%, color-mix(in srgb, var(--accent-color, var(--color-oliva)) 30%, transparent), transparent 55%),
-    linear-gradient(155deg, var(--color-bosco) 0%, color-mix(in srgb, var(--accent-color, var(--color-oliva)) 55%, var(--color-bosco)) 100%);
   transition:
-    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 0.35s ease;
 }
 
@@ -32,14 +27,14 @@
 .placeholder:hover,
 .photo:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-card);
+  /*box-shadow: var(--shadow-card);*/
 }
 
 .photoImg {
   width: 100%;
   height: 100%;
   display: block;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .photo:hover .photoImg {

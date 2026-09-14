@@ -8,16 +8,18 @@ export function ChiSiamo() {
   return (
     <section id="chi-siamo" data-surface="light-alt" className={styles.section}>
       <div className={styles.inner}>
-        <Reveal className={styles.text}>
-          <SectionHeading title={chiSiamo.title} />
+        <div className={styles.text}>
+          <Reveal>
+            <SectionHeading title={chiSiamo.title} visible />
+          </Reveal>
           <div className={styles.paragraphs}>
-            {chiSiamo.paragraphs.map((paragraph) => (
-              <p key={paragraph} className="body">
-                {paragraph}
-              </p>
+            {chiSiamo.paragraphs.map((paragraph, index) => (
+              <Reveal key={paragraph} offset={6 + index * 6}>
+                <p className={index === 0 ? `${styles.lead} body-lead` : 'body'}>{paragraph}</p>
+              </Reveal>
             ))}
           </div>
-        </Reveal>
+        </div>
 
         <Reveal offset={8} variant="scale" className={styles.image}>
           <ImagePlaceholder label={chiSiamo.imageLabel} aspectRatio="4 / 5" variant="oliva" />

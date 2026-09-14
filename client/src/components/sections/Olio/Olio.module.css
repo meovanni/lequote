@@ -8,9 +8,42 @@
   justify-content: center;
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  background: radial-gradient(circle at 20% 25%, rgba(76, 87, 53, 0.14), transparent 60%), var(--surface-bg);
+  background: var(--surface-bg);
   color: var(--surface-text);
   padding-block: var(--space-8);
+}
+
+/* Ogni altra sezione con questo tipo di sfondo (Miele, Shop) ha un accenno di vita durante la
+   sosta sullo scroll, non solo all'ingresso: qui l'alone radiale, prima statico, prende lo
+   stesso trattamento (pseudo-elemento sovradimensionato che scorre in verticale). */
+@keyframes olio-glow-drift {
+  from {
+    transform: translateY(-22px);
+  }
+
+  to {
+    transform: translateY(22px);
+  }
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  inset: -15% -10%;
+  background: radial-gradient(circle at 20% 25%, rgba(76, 87, 53, 0.14), transparent 60%);
+  pointer-events: none;
+  animation-name: olio-glow-drift;
+  animation-duration: 1ms; /* ignorata: il progresso è guidato da animation-timeline */
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: view();
+  animation-range: cover 0% cover 100%;
+}
+
+@supports not (animation-timeline: view()) {
+  .section::before {
+    animation: none;
+  }
 }
 
 .inner {
@@ -24,19 +57,33 @@
   align-items: center;
 }
 
+/* Due bottiglie appaiate con lo stesso gap ovunque leggevano come una griglia prudente, non
+   una composizione voluta: qui si sovrappongono leggermente, come una vera fotografia di
+   prodotto le affiancherebbe, invece di stare ciascuna nel proprio riquadro equidistante. */
 .images {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: start;
-  gap: var(--space-4);
+  grid-template-columns: 1.05fr 1fr;
+  align-items: end;
+}
+
+.images > *:first-child {
+  z-index: 1;
+  margin-right: -12%;
 }
 
 .images > *:nth-child(2) {
-  margin-top: var(--space-6);
+  margin-bottom: -6%;
 }
 
 .text :global(.body) {
   color: var(--surface-text-muted);
+  margin-block: var(--space-4);
+}
+
+/* Riempie il gradino tra il titolo (52px) e l'elenco varietà (24px): senza, il corpo restava a
+   17px, un salto netto senza passaggi intermedi. */
+.text :global(.body-lead) {
+  color: var(--surface-text);
   margin-block: var(--space-4);
 }
 
@@ -55,12 +102,11 @@
   padding-block: var(--space-3);
   padding-left: var(--space-4);
   border-bottom: 1px solid var(--surface-border);
-  border-left: 3px solid var(--color-oliva);
-  transition: padding-left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .variety:hover {
-  padding-left: calc(var(--space-4) + var(--space-2));
+  transform: translateX(var(--space-2));
 }
 
 .variety span:first-child {

@@ -38,6 +38,22 @@ export function VideoIcon({ className }: IconProps) {
   )
 }
 
+export function PlusIcon({ className }: IconProps) {
+  return (
+    <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M8 2.5v11M2.5 8h11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+export function MinusIcon({ className }: IconProps) {
+  return (
+    <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M2.5 8h11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 export function PinIcon({ className }: IconProps) {
   return (
     <svg className={className} width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">

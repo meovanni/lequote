@@ -1,4 +1,4 @@
-import type { NavItem } from '@/types'
+import type { NavItem, ShopFulfillmentOption, ShopProduct } from '@/types'
 
 export const navItems: NavItem[] = [
   { id: 'chi-siamo', label: 'Chi siamo' },
@@ -10,7 +10,7 @@ export const navItems: NavItem[] = [
 ]
 
 export const hero = {
-  eyebrow: 'Azienda agricola — Abruzzo',
+  eyebrow: 'Azienda agricola, Abruzzo',
   title: 'Le Quote',
   subtitle: "Dal livello del mare alla quota dell'Appennino abruzzese.",
   body: "Un'azienda agricola familiare divisa tra due territori profondamente diversi: la Riserva Naturale del Borsacchio, sulla costa di Roseto degli Abruzzi, e le alture di Cerchio, nell'entroterra dell'Aquila. Da qui nascono il nostro olio extravergine e il nostro miele.",
@@ -91,15 +91,82 @@ export const contatti = {
 
 export const shop = {
   eyebrow: 'Shop',
-  title: "Lo shop online sta arrivando",
-  body: "Stiamo preparando un piccolo negozio per portare l’olio e il miele delle nostre due quote direttamente a casa vostra. Nel frattempo, scriveteci: saremo felici di rispondere di persona.",
-  ctaLabel: 'Scrivici per essere avvisato',
-  ctaHref: 'mailto:info@lequote.it?subject=Avvisami%20quando%20lo%20shop%20apre',
+  title: 'Richiedi il tuo ordine',
+  intro:
+    'Scegli i prodotti e le quantità: ti rispondiamo noi per confermare disponibilità, tempi e costo di spedizione o ritiro.',
+  fulfillmentLabel: 'Come vuoi ricevere il tuo ordine?',
+  fulfillmentOptions: [
+    { id: 'spedizione', label: 'Spedizione', note: 'A casa tua, in tutta Italia.' },
+    { id: 'ritiro', label: 'Ritiro in azienda', note: 'Vieni a trovarci a Roseto degli Abruzzi o a Cerchio.' },
+  ] satisfies ShopFulfillmentOption[],
+  addressLabel: 'Indirizzo di spedizione',
+  addressPlaceholder: 'Via, città, CAP',
+  formPhaseLabel: 'I tuoi dati',
+  confirmationSummaryLabel: 'Hai richiesto',
+  nameLabel: 'Nome e cognome',
+  emailLabel: 'Email',
+  phoneLabel: 'Telefono (facoltativo)',
+  noteLabel: 'Note (facoltativo)',
+  ctaLabel: 'Invia la richiesta',
+  ctaHelp: 'Si apre il tuo programma di posta con tutti i dettagli già pronti da inviare.',
+  confirmationTitle: 'Richiesta pronta',
+  confirmationBody:
+    "Si è aperto il tuo programma di posta con la richiesta già compilata: invia l'email e ti rispondiamo il prima possibile. Se non si è aperto nulla, scrivici direttamente a",
+  selectionErrorLabel: 'Scegli almeno un prodotto prima di inviare la richiesta.',
+  fulfillmentErrorLabel: "Scegli come vuoi ricevere l'ordine.",
+  nameErrorLabel: 'Il nome è obbligatorio.',
+  emailErrorLabel: 'Inserisci un indirizzo email valido.',
+  addressErrorLabel: "L'indirizzo di spedizione è obbligatorio.",
+  fallbackEmail: 'info@lequote.it',
 }
 
+// Ogni formato avrà una propria foto (image), non ancora disponibile: lasciata assente
+// (ImagePlaceholder mostra il riquadro segnaposto) finché non viene fornita, con il percorso
+// atteso indicato nel commento accanto a ciascuna riga, pronto da valorizzare.
+export const shopCatalog = [
+  {
+    id: 'olio',
+    name: 'Olio Extravergine',
+    note: 'Il blend della riserva: Moraiolo, Leccino e Pendolino.',
+    variants: [
+      {
+        id: 'olio-750ml',
+        label: 'Bottiglia 750 ml',
+        price: 15,
+        imageLabel: 'Foto: Bottiglia di olio EVO Le Quote da 750 ml',
+      }, // image: '/images/olio-750ml.jpg'
+      {
+        id: 'olio-5l',
+        label: 'Latta 5 L',
+        price: 75,
+        imageLabel: 'Foto: Latta di olio EVO Le Quote da 5 litri',
+      }, // image: '/images/olio-5l.jpg'
+    ],
+  },
+  {
+    id: 'miele',
+    name: 'Miele',
+    note: 'Smielato a freddo, per preservarne enzimi e aromi.',
+    variants: [
+      {
+        id: 'miele-250g',
+        label: 'Vasetto 250 g',
+        price: 5,
+        imageLabel: 'Foto: Vasetto di miele Le Quote da 250 g',
+      }, // image: '/images/miele-250g.jpg'
+      {
+        id: 'miele-500g',
+        label: 'Vasetto 500 g',
+        price: 8,
+        imageLabel: 'Foto: Vasetto di miele Le Quote da 500 g',
+      }, // image: '/images/miele-500g.jpg'
+    ],
+  },
+] satisfies ShopProduct[]
+
 export const footer = {
-  tagline: 'LE QUOTE — Olio e miele, dal mare alla montagna.',
-  legal: '© 2026 Le Quote — Azienda Agricola. P.IVA [da inserire].',
+  tagline: 'LE QUOTE: Olio e miele, dal mare alla montagna.',
+  legal: '© 2026 Le Quote, Azienda Agricola. P.IVA [da inserire].',
   social: [
     { label: 'Instagram', href: '#' },
     { label: 'Facebook', href: '#' },

@@ -66,7 +66,7 @@ export function Hero() {
             >
               <VideoIcon className={styles.videoPlaceholderIcon} />
               <span className={`${styles.videoPlaceholderLabel} mono-label`}>
-                VIDEO — Dal Borsacchio alle quote di Cerchio
+                VIDEO: Dal Borsacchio alle quote di Cerchio
               </span>
             </div>
           </div>

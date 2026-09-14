@@ -54,6 +54,13 @@
   margin-block: var(--space-4);
 }
 
+/* Riempie il gradino tra il titolo (52px) e l'elenco varietà (24px): senza, il corpo restava a
+   17px, un salto netto senza passaggi intermedi. */
+.text :global(.body-lead) {
+  color: var(--surface-text);
+  margin-block: var(--space-4);
+}
+
 .varieties {
   display: flex;
   flex-direction: column;
@@ -69,12 +76,11 @@
   padding-block: var(--space-3);
   padding-left: var(--space-4);
   border-bottom: 1px solid var(--surface-border);
-  border-left: 3px solid var(--color-miele);
-  transition: padding-left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .variety:hover {
-  padding-left: calc(var(--space-4) + var(--space-2));
+  transform: translateX(var(--space-2));
 }
 
 .variety span:first-child {

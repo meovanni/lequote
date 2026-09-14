@@ -237,7 +237,7 @@ export function Territorio() {
             >
               <span className={styles.markerDot} aria-hidden="true" />
               <div className={styles.markerCard}>
-                <span className={styles.markerPlace}>{rosetoContent.place}</span>
+                <span className={`${styles.markerPlace} display-3`}>{rosetoContent.place}</span>
                 <p className={`${styles.markerNote} body-sm`}>{rosetoContent.note}</p>
               </div>
             </div>
@@ -249,7 +249,7 @@ export function Territorio() {
             >
               <span className={styles.markerDot} aria-hidden="true" />
               <div className={styles.markerCard}>
-                <span className={styles.markerPlace}>{cerchioContent.place}</span>
+                <span className={`${styles.markerPlace} display-3`}>{cerchioContent.place}</span>
                 <p className={`${styles.markerNote} body-sm`}>{cerchioContent.note}</p>
               </div>
             </div>

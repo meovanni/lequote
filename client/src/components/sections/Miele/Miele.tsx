@@ -11,9 +11,13 @@ export function Miele() {
       <HexPattern className={styles.hexPattern} />
 
       <div className={styles.inner}>
-        <Reveal className={styles.text}>
-          <SectionHeading title={miele.title} visible />
-          <p className="body">{miele.body}</p>
+        <div className={styles.text}>
+          <Reveal>
+            <SectionHeading title={miele.title} visible />
+          </Reveal>
+          <Reveal offset={6}>
+            <p className="body-lead">{miele.body}</p>
+          </Reveal>
 
           <ul className={styles.varieties}>
             {miele.varieties.map((variety, index) => (
@@ -25,7 +29,7 @@ export function Miele() {
               </li>
             ))}
           </ul>
-        </Reveal>
+        </div>
 
         <Reveal offset={8} variant="sideRight" className={styles.images}>
           <ImagePlaceholder

@@ -264,11 +264,11 @@
   top: 50%;
   transform: translateY(-50%);
   width: max-content;
-  max-width: 240px;
+  max-width: 280px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: var(--space-3) var(--space-4);
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-sm);
   background: var(--surface-bg);
   border: 1px solid var(--surface-border);
@@ -282,9 +282,10 @@
   right: 22px;
 }
 
+/* Il nome del luogo usa lo stesso ruolo display-3 dei nomi varietà in Olio/Miele (era un
+   1.05rem inventato lì per lì, sotto il gradino più piccolo che il sistema già definisce): la
+   card è il payoff dell'intera sequenza di scroll, merita la stessa voce del resto del sito. */
 .markerPlace {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
   color: var(--surface-text);
 }
 

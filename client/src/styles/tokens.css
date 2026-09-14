@@ -19,6 +19,12 @@
   --color-inchiostro: #233142; /* testo su sfondo chiaro — blu inchiostro del logo */
   --color-bone: #f3eedf; /* testo su sfondo scuro (Bosco) */
 
+  /* Unico colore semantico fuori dai due accenti di brand: errori di validazione nei form
+     (prima comparsa nel sito con il flusso Shop). Rosso mattone, intonato alla temperatura
+     calda della palette invece di un rosso saturo generico. */
+  --color-error: #a8402c; /* testo su sfondo chiaro */
+  --color-error-tint: #e2836a; /* variante chiara per testo su sfondo scuro (Bosco) */
+
   /* Spaziature (scala 4/8px) */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
