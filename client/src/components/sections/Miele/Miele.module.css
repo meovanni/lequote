@@ -8,9 +8,15 @@
   justify-content: center;
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  background: radial-gradient(circle at 80% 20%, rgba(156, 101, 48, 0.16), transparent 60%), var(--surface-bg);
+  background: var(--surface-bg);
   color: var(--surface-text);
   padding-block: var(--space-8);
+}
+
+.elevation {
+  display: inline-flex;
+  margin-bottom: var(--space-4);
+  color: var(--surface-accent);
 }
 
 @keyframes miele-parallax-drift {
@@ -84,11 +90,11 @@
 }
 
 .variety span:first-child {
-  transition: font-weight 0.3s ease;
+  transition: color 0.25s ease;
 }
 
 .variety:hover span:first-child {
-  font-weight: 750;
+  color: var(--surface-accent);
 }
 
 .variety span:first-child {
@@ -113,5 +119,12 @@
 @media (min-width: 768px) {
   .inner {
     grid-template-columns: 1.1fr 0.9fr;
+  }
+}
+
+/* Scroll nativo sul telefono: nessuna animazione legata allo scroll (lib/nativeScroll.ts). */
+@media (pointer: coarse), (hover: none), (max-width: 1024px) {
+  .hexPattern {
+    animation: none;
   }
 }

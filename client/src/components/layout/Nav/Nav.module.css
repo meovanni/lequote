@@ -2,19 +2,15 @@
   position: sticky;
   top: 0;
   z-index: var(--z-nav);
-  background: rgba(247, 243, 232, 0.68);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border-bottom: 1px solid rgba(35, 49, 66, 0.08);
-  box-shadow: 0 8px 24px -20px rgba(35, 49, 66, 0);
-  transition:
-    box-shadow 0.35s ease,
-    border-color 0.35s ease;
+  /* Barra piatta, senza vetro né ombra: la separazione dalla pagina è solo il filo inferiore,
+     che si fa visibile appena la pagina scorre. */
+  background: color-mix(in srgb, var(--color-pergamena) 94%, transparent);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.35s ease;
 }
 
 .navScrolled {
   border-bottom-color: rgba(35, 49, 66, 0.14);
-  box-shadow: 0 12px 28px -18px rgba(35, 49, 66, 0.22);
 }
 
 .inner {

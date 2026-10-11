@@ -79,3 +79,12 @@
     animation: none;
   }
 }
+
+/* Sul telefono il contenuto deve seguire il dito al pixel: un blocco che scivola mentre lo si
+   trascina (e torna indietro invertendo la direzione) fa sembrare lo scroll rotto. Stessa
+   condizione dello snap in styles/global.css. */
+@media (pointer: coarse), (hover: none), (max-width: 1024px) {
+  .reveal {
+    animation: none;
+  }
+}

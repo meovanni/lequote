@@ -5,6 +5,10 @@ import { CloseIcon, MenuIcon } from '@/components/common/icons/Icons'
 import { Logo } from '@/components/common/Logo/Logo'
 import styles from './Nav.module.css'
 
+// Fuori dal componente: un array nuovo a ogni render ricreava l'IntersectionObserver di
+// useActiveSection (dipendenza dell'effetto) a ogni aggiornamento della barra.
+const SECTION_IDS = navItems.map((item) => item.id)
+
 interface IndicatorRect {
   left: number
   width: number
@@ -14,7 +18,7 @@ export function Nav() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [indicator, setIndicator] = useState<IndicatorRect | null>(null)
-  const activeId = useActiveSection(navItems.map((item) => item.id))
+  const activeId = useActiveSection(SECTION_IDS)
   const linksWrapRef = useRef<HTMLDivElement | null>(null)
   const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({})
 

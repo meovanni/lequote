@@ -8,20 +8,18 @@
 */
 
 :root {
-  /* Palette nominata — famiglia oliva/miele del prodotto, approfondita con il
-     mood scuro e drammatico del riferimento (contrasti più netti, meno pastello) */
+  /* Palette nominata — famiglia oliva/miele del prodotto (vedi DESIGN.md) */
   --color-pergamena: #f7f3e8; /* bg chiaro primario */
   --color-avorio: #efe7d4; /* bg chiaro secondario, alternanza sezioni/card */
-  --color-bosco: #1c2417; /* verde quasi-nero, usato solo per Shop/Footer */
+  --color-bosco: #1c2417; /* verde quasi-nero, fasce scure alternate */
   --color-miele: #9c6530; /* miele/ottone antico, accento primario — testo su sfondo chiaro */
-  --color-miele-tint: #cc9a5e; /* variante chiara di miele, per testo/eyebrow su sfondo scuro (Bosco) */
-  --color-oliva: #4c5735; /* oliva scura, accento secondario */
+  --color-miele-tint: #cc9a5e; /* variante chiara di miele, per testo/badge su sfondo scuro (Bosco) */
+  --color-oliva: #4c5735; /* oliva scura, accento strutturale */
   --color-inchiostro: #233142; /* testo su sfondo chiaro — blu inchiostro del logo */
   --color-bone: #f3eedf; /* testo su sfondo scuro (Bosco) */
 
-  /* Unico colore semantico fuori dai due accenti di brand: errori di validazione nei form
-     (prima comparsa nel sito con il flusso Shop). Rosso mattone, intonato alla temperatura
-     calda della palette invece di un rosso saturo generico. */
+  /* Unico colore semantico fuori dai due accenti di brand: errori di validazione nei form.
+     Rosso mattone, intonato alla temperatura calda della palette. */
   --color-error: #a8402c; /* testo su sfondo chiaro */
   --color-error-tint: #e2836a; /* variante chiara per testo su sfondo scuro (Bosco) */
 
@@ -34,16 +32,18 @@
   --space-6: 2rem;
   --space-7: 3rem;
   --space-8: 5rem;
+  --space-9: 8rem;
 
-  /* Radii — bottoni con angoli morbidi ma squadrati, pillole solo per i chip informativi */
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 22px;
-  --radius-button: 10px;
+  /* Radii — sistema "sotto vetro": pillole per ogni bottone, badge e tag; 16px per card e
+     cornici foto; 32px per i contenitori grandi. Nessuna ombra nel sistema. */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 32px;
+  --radius-button: 999px;
   --radius-pill: 999px;
 
-  /* Ombre */
-  --shadow-card: 0 24px 70px -32px rgba(28, 36, 23, 0.32);
+  /* Movimento */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Z-index */
   --z-nav: 100;
@@ -54,25 +54,34 @@
   --container-pad: clamp(1.25rem, 4vw, 3rem);
 }
 
-/* Sistema semantico a superficie: alterna le due tonalita chiare e riserva
-   il verde scuro a pochi momenti puntuali (Shop, Footer) */
+/* Sistema semantico a superficie: le due tonalità chiare si alternano con fasce bosco a
+   tutta larghezza (Hero, Olio, Filiera, Shop, Footer). Mai due fasce bosco consecutive. */
 [data-surface='light'] {
   --surface-bg: var(--color-pergamena);
   --surface-text: var(--color-inchiostro);
-  --surface-text-muted: rgba(35, 49, 66, 0.66);
-  --surface-border: rgba(35, 49, 66, 0.12);
+  --surface-text-muted: rgba(35, 49, 66, 0.7);
+  --surface-border: rgba(35, 49, 66, 0.14);
+  --surface-card: var(--color-avorio);
+  --surface-accent: var(--color-miele);
+  --surface-accent-text: var(--color-bone);
 }
 
 [data-surface='light-alt'] {
   --surface-bg: var(--color-avorio);
   --surface-text: var(--color-inchiostro);
-  --surface-text-muted: rgba(35, 49, 66, 0.66);
-  --surface-border: rgba(35, 49, 66, 0.14);
+  --surface-text-muted: rgba(35, 49, 66, 0.7);
+  --surface-border: rgba(35, 49, 66, 0.16);
+  --surface-card: var(--color-pergamena);
+  --surface-accent: var(--color-miele);
+  --surface-accent-text: var(--color-bone);
 }
 
 [data-surface='dark'] {
   --surface-bg: var(--color-bosco);
   --surface-text: var(--color-bone);
   --surface-text-muted: rgba(243, 238, 223, 0.72);
-  --surface-border: rgba(243, 238, 223, 0.16);
+  --surface-border: rgba(243, 238, 223, 0.18);
+  --surface-card: rgba(243, 238, 223, 0.06);
+  --surface-accent: var(--color-miele-tint);
+  --surface-accent-text: var(--color-bosco);
 }

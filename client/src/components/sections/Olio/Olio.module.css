@@ -13,37 +13,10 @@
   padding-block: var(--space-8);
 }
 
-/* Ogni altra sezione con questo tipo di sfondo (Miele, Shop) ha un accenno di vita durante la
-   sosta sullo scroll, non solo all'ingresso: qui l'alone radiale, prima statico, prende lo
-   stesso trattamento (pseudo-elemento sovradimensionato che scorre in verticale). */
-@keyframes olio-glow-drift {
-  from {
-    transform: translateY(-22px);
-  }
-
-  to {
-    transform: translateY(22px);
-  }
-}
-
-.section::before {
-  content: '';
-  position: absolute;
-  inset: -15% -10%;
-  background: radial-gradient(circle at 20% 25%, rgba(76, 87, 53, 0.14), transparent 60%);
-  pointer-events: none;
-  animation-name: olio-glow-drift;
-  animation-duration: 1ms; /* ignorata: il progresso è guidato da animation-timeline */
-  animation-timing-function: linear;
-  animation-fill-mode: both;
-  animation-timeline: view();
-  animation-range: cover 0% cover 100%;
-}
-
-@supports not (animation-timeline: view()) {
-  .section::before {
-    animation: none;
-  }
+.elevation {
+  display: inline-flex;
+  margin-bottom: var(--space-4);
+  color: var(--surface-accent);
 }
 
 .inner {
@@ -110,11 +83,11 @@
 }
 
 .variety span:first-child {
-  transition: font-weight 0.3s ease;
+  transition: color 0.25s ease;
 }
 
 .variety:hover span:first-child {
-  font-weight: 750;
+  color: var(--surface-accent);
 }
 
 .variety span:first-child {

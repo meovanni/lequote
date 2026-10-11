@@ -13,36 +13,6 @@
   padding-block: var(--space-8);
 }
 
-@keyframes shop-glow-drift {
-  from {
-    transform: translateY(-24px);
-  }
-
-  to {
-    transform: translateY(24px);
-  }
-}
-
-.section::before {
-  content: '';
-  position: absolute;
-  inset: -20% -10%;
-  background: radial-gradient(circle at 50% 55%, rgba(156, 101, 48, 0.2), transparent 60%);
-  pointer-events: none;
-  animation-name: shop-glow-drift;
-  animation-duration: 1ms; /* ignorata: il progresso è guidato da animation-timeline */
-  animation-timing-function: linear;
-  animation-fill-mode: both;
-  animation-timeline: scroll(root block);
-  animation-range: cover;
-}
-
-@supports not (animation-timeline: scroll()) {
-  .section::before {
-    animation: none;
-  }
-}
-
 /* Stesso container-max delle altre sezioni (Olio, Miele, Territorio): Shop era l'unica
    eccezione (prima 760px fisso, poi senza limite), e su schermi larghi un modulo/catalogo
    senza limite di larghezza legge come meno curato, non come più moderno. */
@@ -460,38 +430,26 @@
   border-top: 1px solid var(--surface-border);
 }
 
+/* Stessa forma dei bottoni condivisi (.btn in global.css): pillola piena, nessuna ombra. Qui
+   resta il miele pieno anche su bosco, perché è l'unica azione che chiude la richiesta. */
 .cta {
-  position: relative;
   display: inline-flex;
   align-items: center;
-  overflow: hidden;
-  padding: var(--space-3) var(--space-6);
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.875rem var(--space-6);
   background: var(--color-miele);
   color: var(--color-bone);
   border-radius: var(--radius-button);
   transition:
-    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.25s ease;
-}
-
-.cta::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.4) 50%, transparent 70%);
-  transform: translateX(-120%);
-  transition: transform 0.6s ease;
+    background-color 0.22s ease,
+    transform 0.22s var(--ease-out);
 }
 
 .cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 34px -16px rgba(156, 101, 48, 0.5);
-}
-
-.cta:hover::after {
-  transform: translateX(120%);
+  background: color-mix(in srgb, var(--color-miele) 82%, var(--color-bone));
 }
 
 .cta:active {
-  transform: translateY(0) scale(0.97);
+  transform: scale(0.98);
 }

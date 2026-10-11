@@ -13,6 +13,18 @@ html {
   scroll-snap-type: y mandatory;
 }
 
+/* Sul touch lo snap obbligatorio combatte lo scroll inerziale: con sezioni più alte dello
+   schermo (Filiera, Domande, i passi interni di Territorio) ogni gesto verso l'alto veniva
+   riportato all'inizio della sezione, e ogni cambio di altezza (tab di Filiera, tastiera sul
+   modulo d'ordine) faceva riagganciare la pagina. Lì basta lo scroll nativo. Non basta
+   pointer: coarse: alcuni browser mobili (modalità desktop, certe impostazioni) dichiarano un
+   puntatore fine, quindi vale anche per gli schermi stretti e per chi non ha hover. */
+@media (pointer: coarse), (hover: none), (max-width: 1024px) {
+  html {
+    scroll-snap-type: none;
+  }
+}
+
 html,
 body {
   height: 100%;
@@ -55,8 +67,8 @@ section[id] {
 }
 
 ::selection {
-  background: var(--color-miele);
-  color: var(--color-inchiostro);
+  background: var(--color-miele-tint);
+  color: var(--color-bosco);
 }
 
 /* Visivamente nascosto ma presente per screen reader / SEO (heading hierarchy) */
@@ -73,9 +85,100 @@ section[id] {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-miele);
+  outline: 2px solid var(--surface-accent, var(--color-miele));
   outline-offset: 3px;
   border-radius: var(--radius-sm);
+}
+
+/* Link per saltare al contenuto: invisibile finché non riceve il focus da tastiera. */
+.skip-link {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: calc(var(--z-overlay) + 1);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--color-bosco);
+  color: var(--color-bone);
+  transform: translateY(-200%);
+  transition: transform 0.2s var(--ease-out);
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* Bottoni condivisi: pillola, nessuna ombra, nessun riflesso. Il colore viene dalla superficie
+   in cui il bottone si trova (data-surface), così lo stesso bottone vale su chiaro e su bosco. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  padding: 0.875rem var(--space-5);
+  border-radius: var(--radius-button);
+  border: 1.5px solid transparent;
+  transition:
+    background-color 0.22s ease,
+    border-color 0.22s ease,
+    color 0.22s ease,
+    transform 0.22s var(--ease-out);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: var(--surface-accent);
+  color: var(--surface-accent-text);
+}
+
+.btn-primary:hover {
+  background: color-mix(in srgb, var(--surface-accent) 82%, var(--surface-text));
+}
+
+.btn-ghost {
+  border-color: currentColor;
+  color: var(--surface-text);
+}
+
+.btn-ghost:hover {
+  background: color-mix(in srgb, var(--surface-text) 8%, transparent);
+}
+
+.btn[disabled],
+.btn[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Etichetta "da campione": pillola solo contornata, mai piena, mai cliccabile. */
+.specimen-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.375rem 0.625rem;
+  border: 1.5px solid currentColor;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+/* Badge: l'unico pieno di accento, per brevi segnali funzionali ("In corso"). */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.625rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-miele-tint);
+  color: var(--color-bosco);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.75rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
 }
 
 @media (prefers-reduced-motion: reduce) {

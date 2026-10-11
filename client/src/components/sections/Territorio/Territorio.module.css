@@ -1,5 +1,13 @@
 .section {
   --accent: var(--color-miele);
+  /* Dimensioni iniziale e finale della maschera; devono combaciare con maskFromPx/maskToPx in
+     Territorio.tsx. La finale resta sempre più grande dell'iniziale: con il solo 40vmax, su un
+     telefono in verticale (vmax = altezza) la sagoma partiva da 60vh e scendeva a 40vh, cioè si
+     rimpiccioliva scorrendo in avanti invece di crescere. In svh, come .pinStage: sul telefono la
+     barra del browser che compare e sparisce cambia vh/innerHeight, e i segnaposto (calcolati in
+     JS) si staccavano dalla sagoma. */
+  --mask-from: min(60svh, 60vw);
+  --mask-to: max(40vw, 40svh, min(66svh, 92vw));
   position: relative;
   height: 580vh;
   background: var(--surface-bg);
@@ -74,9 +82,8 @@
   mask-position: center 60%;
   -webkit-mask-mode: alpha;
   mask-mode: alpha;
-  -webkit-mask-size: 60vh 60vh;
-  mask-size: 60vh 60vh;
-  filter: drop-shadow(0 30px 60px color-mix(in srgb, var(--color-inchiostro) 45%, transparent));
+  -webkit-mask-size: var(--mask-from) var(--mask-from);
+  mask-size: var(--mask-from) var(--mask-from);
   animation-name: territorio-mask-grow;
   animation-duration: 1ms; /* ignorata: il progresso è guidato da animation-timeline */
   animation-timing-function: linear;
@@ -147,16 +154,13 @@
 
 @keyframes territorio-mask-grow {
   from {
-    -webkit-mask-size: 60vh 60vh;
-    mask-size: 60vh 60vh;
+    -webkit-mask-size: var(--mask-from) var(--mask-from);
+    mask-size: var(--mask-from) var(--mask-from);
   }
 
   to {
-    /* vmax (non vmin) cosicché, qualunque sia il rapporto larghezza/altezza del viewport, il
-       comportamento resti coerente. La dimensione finale è più contenuta di un pieno schermo:
-       la maschera diventa un riquadro-diagramma stabile su cui si affacciano i segnaposto. */
-    -webkit-mask-size: 40vmax 40vmax;
-    mask-size: 40vmax 40vmax;
+    -webkit-mask-size: var(--mask-to) var(--mask-to);
+    mask-size: var(--mask-to) var(--mask-to);
   }
 }
 
@@ -234,7 +238,7 @@
   height: 10px;
   border-radius: 50%;
   background: var(--color-miele);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-miele) 25%, transparent);
+  outline: 4px solid color-mix(in srgb, var(--color-miele) 25%, transparent);
 }
 
 .markerDot::after {
@@ -269,10 +273,10 @@
   flex-direction: column;
   gap: var(--space-1);
   padding: var(--space-4) var(--space-5);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   background: var(--surface-bg);
-  border: 1px solid var(--surface-border);
-  box-shadow: var(--shadow-card);
+  /* Callout flottante senza ombra: lo distingue la superficie piena e il filo da 1.5px. */
+  border: 1.5px solid var(--surface-text);
 }
 
 /* Cerchio è tipicamente più a sinistra nel riquadro-diagramma: la sua scheda si apre verso
@@ -473,4 +477,84 @@
 .jsFallback .photo,
 .jsFallback .marker {
   animation: none;
+}
+
+/* Telefono e schermi stretti (lib/nativeScroll.ts): niente pin da 580vh né sequenza guidata dallo
+   scroll. Su WebKit lo scroll inerziale veloce con un cambio di direzione faceva saltare la
+   pagina. La sezione diventa statica: titolo, sagoma già rivelata e, sotto, le due schede dei
+   luoghi una dopo l'altra (left/top calcolati in JS non valgono con position: static). */
+@media (pointer: coarse), (hover: none), (max-width: 1024px) {
+  .section {
+    height: auto;
+    padding-block: var(--space-8);
+  }
+
+  .snapStep {
+    display: none;
+  }
+
+  .pinStage {
+    position: relative;
+    height: auto;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-6);
+    padding-inline: var(--container-pad);
+  }
+
+  .heading,
+  .maskedPhoto,
+  .photo,
+  .marker {
+    animation: none;
+  }
+
+  .heading {
+    position: relative;
+    top: auto;
+    left: auto;
+    padding-inline: 0;
+    transform: none;
+  }
+
+  .maskedPhoto {
+    position: relative;
+    inset: auto;
+    width: min(100%, 480px);
+    aspect-ratio: 270 / 244;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  .photo {
+    transform: none;
+  }
+
+  .photoApiary {
+    display: none;
+  }
+
+  .marker,
+  .markerCerchio {
+    position: static;
+    width: min(100%, 480px);
+    opacity: 1;
+    transform: none;
+  }
+
+  .markerDot {
+    display: none;
+  }
+
+  .markerCard,
+  .markerCerchio .markerCard {
+    position: static;
+    width: 100%;
+    max-width: none;
+    transform: none;
+  }
 }

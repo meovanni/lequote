@@ -13,6 +13,7 @@ export function Miele() {
       <div className={styles.inner}>
         <div className={styles.text}>
           <Reveal>
+            <span className={`${styles.elevation} specimen-tag specimen`}>{miele.elevation}</span>
             <SectionHeading title={miele.title} visible />
           </Reveal>
           <Reveal offset={6}>

@@ -1,6 +1,6 @@
 ---
 name: Le Quote
-description: Brochure site for a family farm spanning two Abruzzo elevations, told through a quiet warm-neutral canvas, one honey accent, and a real-geography scroll reveal.
+description: Brochure and (soon) shop for a family farm spanning two Abruzzo elevations, told through a warm-neutral canvas alternating with deep grove-green bands, whisper-weight serif headlines, and a real-geography scroll reveal.
 colors:
   honey-brass: "#9c6530"
   honey-brass-tint: "#cc9a5e"
@@ -14,23 +14,24 @@ typography:
   display:
     fontFamily: "'Fraunces Variable', 'Fraunces', 'Iowan Old Style', Georgia, serif"
     fontSize: "clamp(2.75rem, 6vw + 1rem, 6rem)"
-    fontWeight: 560
+    fontWeight: 340
     lineHeight: 0.98
-    letterSpacing: "-0.01em"
-    fontVariation: "'opsz' 144, 'SOFT' 15"
+    letterSpacing: "-0.02em"
+    fontVariation: "'opsz' 144, 'SOFT' 0"
   headline:
     fontFamily: "'Fraunces Variable', 'Fraunces', 'Iowan Old Style', Georgia, serif"
     fontSize: "clamp(2rem, 3.2vw + 1rem, 3.25rem)"
-    fontWeight: 540
-    lineHeight: 1.08
-    letterSpacing: "-0.005em"
-    fontVariation: "'opsz' 96, 'SOFT' 10"
+    fontWeight: 340
+    lineHeight: 1.05
+    letterSpacing: "-0.018em"
+    fontVariation: "'opsz' 96, 'SOFT' 0"
   title:
     fontFamily: "'Fraunces Variable', 'Fraunces', 'Iowan Old Style', Georgia, serif"
     fontSize: "clamp(1.5rem, 2vw + 1rem, 2.25rem)"
-    fontWeight: 520
-    lineHeight: 1.15
-    fontVariation: "'opsz' 72, 'SOFT' 8"
+    fontWeight: 360
+    lineHeight: 1.12
+    letterSpacing: "-0.015em"
+    fontVariation: "'opsz' 72, 'SOFT' 0"
   body:
     fontFamily: "'Instrument Sans Variable', 'Instrument Sans', sans-serif"
     fontSize: "clamp(1rem, 0.3vw + 0.95rem, 1.0625rem)"
@@ -42,10 +43,9 @@ typography:
     fontWeight: 500
     letterSpacing: "0.1em"
 rounded:
-  sm: "6px"
-  md: "12px"
-  lg: "22px"
-  button: "10px"
+  sm: "8px"
+  card: "16px"
+  lg: "32px"
   pill: "999px"
 spacing:
   "1": "4px"
@@ -56,135 +56,145 @@ spacing:
   "6": "32px"
   "7": "48px"
   "8": "80px"
+  "9": "128px"
 components:
   button-primary:
     backgroundColor: "{colors.honey-brass}"
     textColor: "{colors.bone}"
-    rounded: "{rounded.button}"
-    padding: "12px 24px"
+    rounded: "{rounded.pill}"
+    padding: "14px 24px"
   button-secondary:
     backgroundColor: "transparent"
     textColor: "{colors.ink}"
-    rounded: "{rounded.button}"
-    padding: "12px 24px"
+    border: "1.5px solid currentColor"
+    rounded: "{rounded.pill}"
+    padding: "14px 24px"
+  specimen-tag:
+    backgroundColor: "transparent"
+    border: "1.5px solid currentColor"
+    rounded: "{rounded.pill}"
+    padding: "6px 10px"
+    fontFamily: "{typography.label.fontFamily}"
   card:
-    backgroundColor: "{colors.warm-parchment}"
+    backgroundColor: "{colors.soft-ivory}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.sm}"
-    padding: "12px 16px"
+    rounded: "{rounded.card}"
+    padding: "16px"
 ---
 
 # Design System: Le Quote
 
 ## Overview
 
-**Creative North Star: "Il Registro del Frantoio" (The Frantoio Ledger)**
+**Creative North Star: "Il Registro sotto vetro" (The Ledger Under Glass)**
 
-The system reads like a farm's own record book, not a marketing brochure: precise, unhurried, and grounded in specific facts rather than adjectives. A warm-parchment canvas carries most of the site; one honey-brass accent is spent deliberately, the way a ledger uses red ink, only where it marks an action or a place. Nothing glows, nothing floats without reason, and the two products (oil, honey) never compete visually with the two places that produce them. The site's single most expressive gesture, the Territorio scroll-reveal, is itself built from a real geographic silhouette rather than an invented shape, in keeping with the ledger's commitment to fact over flourish.
+The farm's own record book, set out like a specimen under laboratory glass. The system keeps the original ledger idea (precise, unhurried, fact over adjective) and adopts the restraint of a botanical-clinical reference (Seed): whisper-weight headlines, perfectly flat surfaces, pill-shaped controls, mono "specimen labels" for codes and dates, and a calm alternation between warm-parchment and deep grove-green bands. Credibility comes from typographic confidence and chromatic silence, not visual volume. This matters more now that the site carries legally-relevant traceability content: it must read as a reference, not an advert.
 
-Confirmed rejections: no Tailwind, no animation library (Motion/Framer/GSAP), no AI-purple or glass-panel decoration, no generic three-card feature grids, no em dashes in shipped copy or headings.
+What stays Le Quote, not Seed: the palette (honey, olive, grove, parchment, the logo's ink blue), the one serif family (Fraunces), and the Territorio signature reveal. Seed's lime accent and its sans-serif display voice are deliberately not adopted.
+
+Confirmed rejections: no Tailwind, no animation library (Motion/Framer/GSAP), no box-shadows or drop-shadows, no decorative gradients (a functional legibility scrim over video/photo is the single exception), no AI-purple or glass-panel decoration, no generic three-card feature grids, no em dashes in shipped copy or headings.
 
 **Key Characteristics:**
-- Warm-neutral canvas (parchment/ivory) with exactly one spent-sparingly accent color, not a rotating palette.
-- A dark surface (night-grove) reserved for precisely two sections, marking a shift in register rather than a "dark mode."
-- Motion is scroll-driven and structural (reveals, a pinned map sequence), never decorative or idle.
-- Flat-by-default surfaces; a shadow only appears as a state response or on genuinely floating content.
-- Typography does the emotional work the palette deliberately withholds: one serif display family carries all warmth and personality.
+- Warm-neutral canvas alternating with full-bleed Night Grove bands as page rhythm.
+- One spent-sparingly interactive accent (Honey Brass), one structural accent (Olive Leaf).
+- Whisper-weight Fraunces (300 to 380) for every display role.
+- Flat, shadowless surfaces; hierarchy from colour contrast, weight and space only.
+- Pills for every button, badge and tag; 16px cards; 32px large containers.
+- Mono specimen tags (DM Mono, outlined pill) for lot codes, harvest years, step numbers, analysis figures.
 
 ## Colors
 
-A near-monochrome warm-neutral field with two functional accents pulled directly from the product (honey, olive) and one dark register reserved for closing moments.
-
 ### Primary
-- **Aged Honey Brass** (#9c6530): the site's one call-to-action and wayfinding color — primary buttons, the nav's active-link indicator, Territorio's map-marker dots. If something is clickable or marks "you are here," it is this color; nothing else claims that job.
+- **Aged Honey Brass** (#9c6530): the one call-to-action and wayfinding colour on light surfaces: primary buttons, active nav indicator, map-marker dots, focus ring.
+- **Honey Brass Tint** (#cc9a5e): the same role on Night Grove, plus the one "switched on" accent for small badges (the role Seed gives its lime). Never a surface larger than a badge.
 
 ### Secondary
-- **Deep Olive Leaf** (#4c5735): structural accent, not interactive — the Olio section's variety-list rule, ambient radial tints behind a couple of sections. Reads as "context," never as an action.
+- **Deep Olive Leaf** (#4c5735): structural, never interactive: rules, timeline bars for the olive line, small markers.
 
 ### Neutral
-- **Warm Parchment** (#f7f3e8): primary light background, most sections.
-- **Soft Ivory** (#efe7d4): secondary light background, used to alternate rhythm between adjoining sections.
-- **Night Grove** (#1c2417): near-black warm green, background for exactly Shop and Footer — text is Bone against it.
-- **Deep Ink Blue** (#233142): primary text and icon color on light surfaces (also the logo's ink).
-- **Bone** (#f3eedf): primary text color on Night Grove.
+- **Warm Parchment** (#f7f3e8): primary light surface.
+- **Soft Ivory** (#efe7d4): secondary light surface and card fill on parchment.
+- **Night Grove** (#1c2417): dark surface for the alternating bands (Hero, Olio, Filiera, Shop, Footer).
+- **Deep Ink Blue** (#233142): text on light surfaces (the logo's ink).
+- **Bone** (#f3eedf): text on Night Grove.
+- **Error Brick** (#a8402c, tint #e2836a on dark): form validation only.
 
 ### Named Rules
-**The Two-Accent Discipline Rule.** Honey Brass is the only interactive/wayfinding color; Olive Leaf is the only non-interactive structural accent. They never share a job, and a third accent hue is never introduced without revising this file — the "same land, two elevations" premise depends on the palette staying this small.
+**The Two-Accent Discipline Rule.** Honey is the only interactive/wayfinding colour; Olive is the only structural accent. They never share a job; no third hue without revising this file.
+
+**The Rhythm Rule.** Sections alternate between light (parchment/ivory) and Night Grove at full bleed. Two light sections may sit together; two dark sections may not.
 
 ## Typography
 
-**Display Font:** Fraunces Variable (with Iowan Old Style, Georgia, serif fallback)
-**Body Font:** Instrument Sans Variable (with Instrument Sans, sans-serif fallback)
-**Label/Mono Font:** DM Mono (with ui-monospace, monospace fallback)
-
-**Character:** A warm, optically-tuned serif carries every headline and title (softness and optical size shift per role via variable-font axes, never a second serif family); a neutral humanist sans carries reading text; a mono face marks anything functional — labels, nav, figures, eyebrows — in uppercase with wide tracking, standing in for "the metadata line" of the ledger.
+**Display:** Fraunces Variable. **Body:** Instrument Sans Variable. **Label/Mono:** DM Mono.
 
 ### Hierarchy
-- **Display** (weight 560, `clamp(2.75rem, 6vw + 1rem, 6rem)`, line-height 0.98): hero headline only.
-- **Headline** (weight 540, `clamp(2rem, 3.2vw + 1rem, 3.25rem)`, line-height 1.08): section titles (Chi siamo, Territorio, Olio, Miele).
-- **Title** (weight 520, `clamp(1.5rem, 2vw + 1rem, 2.25rem)`, line-height 1.15): product subtitles.
-- **Card title** (weight 540, `clamp(1.25rem, 1vw + 1rem, 1.5rem)`, line-height 1.2): smallest display step, for card- and marker-level titles (e.g. Territorio's place names).
-- **Body** (weight 400, `clamp(1rem, 0.3vw + 0.95rem, 1.0625rem)`, line-height 1.65): running copy. A `body-lead` variant (1.25rem/1.75) exists for section intros; `body-sm` (0.875rem/1.5, weight 500) for captions and card notes.
-- **Label** (weight 500, 0.8125rem, letter-spacing 0.1em, uppercase): nav links, buttons, figures. An `eyebrow` variant tightens to 0.75–0.8125rem with wider tracking (0.14em) for kickers above titles.
+- **Display** (340, `clamp(2.75rem, 6vw + 1rem, 6rem)`, lh 0.98, -0.02em): hero.
+- **Headline** (340, `clamp(2rem, 3.2vw + 1rem, 3.25rem)`, lh 1.05, -0.018em): section titles.
+- **Title** (360, `clamp(1.5rem, 2vw + 1rem, 2.25rem)`, lh 1.12): product subtitles.
+- **Card title** (380, `clamp(1.25rem, 1vw + 1rem, 1.5rem)`, lh 1.2): steps, markers, FAQ questions.
+- **Body** (400, lh 1.65), **body-lead** (1.25rem/1.6), **body-sm** (0.875rem, 500).
+- **Label** (DM Mono 500, 0.8125rem, 0.1em, uppercase): nav, buttons, eyebrows. **Specimen** (DM Mono 400, 0.75rem, 0.04em, no uppercase transform for codes): lot codes, dates, figures, with tabular numbers.
 
 ### Named Rules
-**The One-Serif Rule.** Every display need (hero, headline, title, card title) is Fraunces at a different point on its own variable axes, never a second serif introduced for contrast. Emphasis inside a headline uses italic or heavier weight of the same face, not a mixed family.
+**The Whisper Rule.** Display roles stay between 300 and 380. On Night Grove or over video, every display role sits at the top of the range (380) for legibility. Never 600+ on a headline.
+
+**The One-Serif Rule.** Every display need is Fraunces on its own axes (opsz per role, SOFT 0 for the crisper reference voice). Emphasis inside a headline is italic, not weight.
 
 ## Layout
 
-Full-viewport (`100svh`) sections stacked vertically, each carrying `scroll-snap-align: start` and `scroll-snap-stop: always` against a site-wide `scroll-snap-type: y mandatory` — one scroll gesture reliably advances exactly one section. Content is capped at `max-width: 1240px`, centered, with responsive inline padding `clamp(1.25rem, 4vw, 3rem)`. Spacing follows a 4px-rooted scale (4 / 8 / 12 / 16 / 24 / 32 / 48 / 80px) used consistently for gaps, padding, and section rhythm. Breakpoints are literal values repeated per stylesheet rather than custom-property-driven: 480 / 768 / 1024 / 1280px. The Territorio section is the one deliberate exception to one-section-per-viewport: it pins for an extended scroll distance (580vh) to host a multi-stage sequence, using invisible intermediate snap points so the mandatory site-wide snap behavior still advances in small, controlled steps through it.
+Full-viewport (`100svh`) sections with `scroll-snap-align: start` against site-wide `scroll-snap-type: y mandatory` on mouse devices only. Touch, hover-less and narrow (≤1024px) devices get fully native scrolling: no snap, no scroll-driven animation, no pinned sequence (Territorio becomes a static map plus the two place cards). On WebKit, fast inertial scrolling with a direction change made the page jump elsewhere. The query lives in `client/src/lib/nativeScroll.ts` and is repeated in the stylesheets. Content max-width 1240px, inline padding `clamp(1.25rem, 4vw, 3rem)`. Spacing on a 4/8px scale up to 128px; section vertical padding at least 80px. Content sections use asymmetric two-column splits (roughly 40/60), not equal columns. Breakpoints are literal values per stylesheet: 480 / 768 / 1024 / 1280px. Territorio remains the one pinned multi-stage exception (580vh).
+
+Section order and surfaces: Hero (dark, video/photo) · Chi siamo (ivory) · Territorio (parchment) · Olio (grove) · Miele (ivory) · Filiera (grove) · Stagioni (parchment) · Shop (grove) · Domande (ivory) · Footer (grove).
 
 ## Elevation & Depth
 
-Flat by default. No section or card carries a shadow at rest. A shadow appears only as a state response (photo hover-lift) or to mark content that is genuinely floating above the page (Territorio's map-marker callout cards) — never as ambient decoration. Photographic elements (the hero logo mark, product bottle cutouts, the Territorio mask edge) use `filter: drop-shadow(...)` rather than `box-shadow`, a deliberately separate "photographic depth" vocabulary from the flatter "UI depth" used elsewhere.
-
-### Shadow Vocabulary
-- **Card** (`box-shadow: 0 24px 70px -32px rgba(28, 36, 23, 0.32)`): the one UI shadow in the system. Used on Territorio's marker cards at rest (they are genuinely floating) and on `ImagePlaceholder` photos on hover only.
-
-### Named Rules
-**The Flat-Until-Floating Rule.** A shadow is either a hover response or a signal that the element is a floating overlay, never a resting-state decoration on a primary surface.
+None. The system is shadowless: no box-shadow, no drop-shadow, no glow. Hierarchy comes from surface contrast (ivory card on parchment, bone hairline on grove), weight, and space. A floating callout (Territorio markers) is distinguished by a solid surface fill and a 1.5px hairline, not a shadow. The only gradient allowed is a functional dark scrim over the hero video/photo so Bone text stays legible.
 
 ## Shapes
 
-Soft-but-squared: corners are always rounded, never sharp, but never pill-shaped except where the shape itself signals "interactive chip." Radius scale: `sm` 6px (small cards, marker callouts), `md` 12px (medium containers, video-fallback placeholder), `lg` 22px (`ImagePlaceholder` photo frames — the largest radius in the system, reserved for photography), `button` 10px (its own step, dedicated to CTAs, distinct from card radii), `pill` 999px (reserved exclusively for interactive or informational chips: the nav's active-link underline track, the photo-caption chip — never used on a card or a photo frame).
+`sm` 8px (inputs, small inner elements), `card` 16px (cards, photo frames, panels), `lg` 32px (large containers, the hero media frame on wide screens), `pill` 999px (every button, badge, tag, chip). Square or 4 to 10px corners on buttons are not allowed.
 
 ## Components
 
 ### Buttons
-- **Shape:** `button` radius (10px).
-- **Primary:** Honey Brass background (#9c6530), Bone text (#f3eedf), padding `12px 24px`. Signature gesture: a diagonal white-gradient "sheen" sweeps across on hover (`translateX(-120%)` to `translateX(120%)`, 0.6s), combined with a 2px lift and a warm-tinted shadow; press state scales to 0.97. This exact combination (sheen + lift + press) is the site's one recurring tactile signature and appears on every primary CTA.
-- **Secondary:** transparent background, 1px border in the surface's border token, Ink text. Hover tints the background with Honey Brass Tint at 14% opacity and lifts 2px; no sheen (sheen is primary-only).
+- **Primary:** pill, Honey Brass fill, Bone text, 14px/24px padding, no border, no shadow. Hover: background darkens (`color-mix` with Ink 18%). Press: `scale(0.98)`. Transitions 200 to 250ms.
+- **Secondary (ghost):** pill, transparent, 1.5px solid currentColor. Hover: fills with the surface's text colour at 8%. Used on dark surfaces and over imagery, and as the light-surface counterpart.
+- **Text link with arrow:** no container, 1.5px underline, trailing `→`.
+
+### Specimen Tag
+Outlined pill (1.5px currentColor), DM Mono, 6px/10px padding. The "label on the sample jar": lot codes (`L…`), harvest years, step numbers, analysis figures. Never filled, never a button.
+
+### Badge
+Honey Brass Tint fill, Night Grove text, pill, DM Mono 500 0.75rem. For short functional emphasis ("In corso", "Novità") only.
 
 ### Cards
-- **Corner Style:** `sm` radius (6px).
-- **Background:** Warm Parchment (the section's light surface token).
-- **Shadow Strategy:** Card shadow at rest (see Elevation & Depth) — this is the one component allowed a resting shadow, because it is a floating callout, not a page surface.
-- **Border:** 1px, the surface's border token.
-- **Internal Padding:** `12px 16px` (space-3 / space-4).
-- Positions itself to either side of its anchor (left or right) depending which keeps it inside the frame; collapses to a centered position below the anchor under 640px rather than risking viewport overflow.
+`card` radius, Soft Ivory fill on parchment (or a Bone 6% fill with a Bone 16% hairline on grove), 16 to 24px padding, no shadow, no border on light surfaces.
+
+### Disclosure panel ("Informazioni di legge")
+Native `<details>`/`<summary>`. Summary is a full-width row with a mono label and a `+` that rotates to `×`. Content is a two-column definition list (label / value + normative reference in specimen style). Used wherever mandatory or normative detail would otherwise crowd the narrative.
 
 ### Navigation
-- **Style:** sticky, frosted glass (`backdrop-filter: blur(16px) saturate(160%)` over Warm Parchment at 68% opacity), hairline bottom border.
-- **Typography:** Label scale, lowercase (not the uppercase eyebrow variant).
-- **States:** a single indicator line (Honey Brass at 70% opacity, `pill` radius) slides between links to mark the active one — one shared element in motion, not per-link highlight boxes. The nav's shadow/border only intensify after the page has scrolled (a `navScrolled` state), staying invisible at the top of the page.
-- **Mobile:** collapses to a full-screen Night Grove overlay with Bone text links, opened by a 44×44px minimum-hit-area menu button.
+Sticky, Warm Parchment at 92% with a hairline bottom border (no blur glass, no shadow). Mono label links; a single Honey indicator line slides to the active link. Mobile: full-screen Night Grove overlay.
 
-### Photography (signature primitive)
-- **Style:** `ImagePlaceholder` is the site's recurring image frame — `lg` radius, a thin accent-tinted border, and (for placeholder states without a real photo yet) a diagonal hairline texture over a dark gradient. Real photos hover-lift 4px and reveal the Card shadow; a small pill-shaped caption chip (dark, blurred background, Bone text) can overlay the bottom edge.
+### Photography
+`ImagePlaceholder` frames: `card` radius, no shadow, hover scales the image 1.03 inside the frame. Product cutouts float without a frame and without drop-shadow.
 
-### Territorio Scroll Reveal (signature component)
-A pinned, multi-stage sequence built from the region's real geographic silhouette (not a stylized icon): the mask grows from a small starting size to a fixed "diagram" size using native scroll-driven animation, then two location markers activate in sequence, each opening a Card-style callout, while the underlying photo crossfades from the coastal to the mountain site. This is the system's one bespoke, non-template asset and the clearest expression of the North Star: it treats real geography as content, not decoration.
+### Territorio Scroll Reveal (signature)
+Unchanged mechanics: pinned sequence, real province silhouette mask, two markers, photo crossfade. Only the skin follows this file (flat callouts, whisper type).
 
 ## Do's and Don'ts
 
-### Do:
-- **Do** author scroll-linked motion with explicit longhand (`animation-name`, `animation-duration: 1ms`, `animation-timing-function`, `animation-fill-mode`, `animation-timeline`, `animation-range`) plus an `@supports not (animation-timeline: ...)` fallback — the `animation: name linear both` shorthand silently breaks in engines that default duration to `0s`.
-- **Do** keep Night Grove confined to exactly Shop and Footer; it marks a "closing" register, not a general dark mode.
-- **Do** give every primary CTA the sheen + lift + press pattern so buttons feel like one family.
-- **Do** reserve `pill` radius for interactive or informational chips only.
+### Do
+- Author scroll-linked motion with explicit longhands plus `@supports not (animation-timeline: ...)` fallback.
+- Use specimen tags for any code, date or figure a consumer might check against a label.
+- Keep normative detail available but folded (disclosure panel), the narrative first.
+- Keep copy verifiable: no claim the farm cannot document (no organoleptic or chemical claims without that year's analysis, no generic environmental claims).
 
-### Don't:
-- **Don't** introduce Tailwind, Motion/Framer, or GSAP. The native-CSS, zero-animation-library architecture is deliberate and load-bearing — a hand-built JS fallback already exists for browsers without native scroll-driven animation support, and a library would fight it rather than replace it.
-- **Don't** use em dashes in shipped copy or headings.
-- **Don't** add a shadow at rest to a primary page surface; Card shadow is a hover/floating-state signal only.
-- **Don't** introduce a third accent hue, or a second dark surface, without revising this file — the two-accent, one-dark-register discipline is the whole visual argument for "same land, two elevations."
+### Don't
+- Don't add any shadow, glow or decorative gradient.
+- Don't use weight 600+ on headlines, or a sans-serif display face.
+- Don't put two Night Grove sections next to each other.
+- Don't introduce Seed's lime or any third accent hue.
+- Don't use em dashes in shipped copy or headings.
+- Don't introduce Tailwind, Motion/Framer or GSAP.

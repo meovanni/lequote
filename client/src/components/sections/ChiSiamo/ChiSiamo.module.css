@@ -72,3 +72,10 @@
     justify-self: end;
   }
 }
+
+/* Niente deriva legata allo scroll sul telefono: vedi Reveal.module.css. */
+@media (pointer: coarse), (hover: none), (max-width: 1024px) {
+  .image {
+    animation: none;
+  }
+}

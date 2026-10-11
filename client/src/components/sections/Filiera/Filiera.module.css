@@ -1,0 +1,302 @@
+.section {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  background: var(--surface-bg);
+  color: var(--surface-text);
+  padding-block: var(--space-8) calc(var(--space-8) + var(--space-4));
+}
+
+.inner {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+  display: grid;
+  gap: var(--space-7);
+}
+
+.eyebrow {
+  margin-bottom: var(--space-4);
+  color: var(--surface-accent);
+}
+
+.intro {
+  max-width: 52ch;
+  margin-top: var(--space-4);
+  color: var(--surface-text-muted);
+}
+
+/* Selettore di linea: due pillole affiancate in un binario contornato. */
+.tabs {
+  display: inline-flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border: 1.5px solid var(--surface-border);
+  border-radius: var(--radius-pill);
+}
+
+.tab {
+  min-height: 44px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-pill);
+  color: var(--surface-text-muted);
+  transition:
+    background-color 0.22s ease,
+    color 0.22s ease;
+}
+
+.tab:hover {
+  color: var(--surface-text);
+}
+
+.tabActive,
+.tabActive:hover {
+  background: var(--surface-text);
+  color: var(--surface-bg);
+}
+
+.panel {
+  display: grid;
+  gap: var(--space-6);
+  margin-top: var(--space-6);
+  animation: filiera-panel-in 0.45s var(--ease-out) both;
+}
+
+/* display:grid batterebbe il [hidden] del browser: lo ribadiamo esplicitamente. */
+.panel[hidden] {
+  display: none;
+}
+
+@keyframes filiera-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.panelHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+
+.summary {
+  flex-basis: 100%;
+  max-width: 60ch;
+  color: var(--surface-text-muted);
+}
+
+/* La catena: verticale con un filo a sinistra; orizzontale da 1280px con il filo all'altezza
+   dei numeri. Il filo unisce i passaggi, non decora. */
+.steps {
+  position: relative;
+  display: grid;
+  gap: var(--space-5);
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  position: relative;
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+  padding-left: calc(var(--space-7) + var(--space-2));
+}
+
+.step::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: calc(-1 * var(--space-5));
+  left: 1.25rem;
+  border-left: 1.5px solid var(--surface-border);
+}
+
+.step:last-child::before {
+  display: none;
+}
+
+.stepNumber {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--surface-bg);
+  color: var(--surface-accent);
+}
+
+.stepMeta {
+  display: grid;
+  gap: 0.125rem;
+  color: var(--surface-accent);
+}
+
+.stepPeriod {
+  color: var(--surface-text-muted);
+}
+
+.stepText {
+  max-width: 34ch;
+  color: var(--surface-text-muted);
+  font-weight: 400;
+}
+
+/* Ricerca per lotto */
+.lookup {
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--surface-card);
+  border: 1.5px solid var(--surface-border);
+}
+
+.lookupForm {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.lookupLabel {
+  max-width: 30ch;
+}
+
+.lookupRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.lookupInput {
+  flex: 1 1 14rem;
+  min-height: 48px;
+  padding: 0 var(--space-4);
+  border: 1.5px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--surface-text);
+  text-transform: uppercase;
+  transition: border-color 0.2s ease;
+}
+
+.lookupInput::placeholder {
+  color: var(--surface-text-muted);
+  text-transform: none;
+}
+
+.lookupInput:hover,
+.lookupInput:focus-visible {
+  border-color: var(--surface-text);
+}
+
+.lookupInput[aria-invalid='true'] {
+  border-color: var(--color-error-tint);
+}
+
+.lookupHelp {
+  color: var(--surface-text-muted);
+  font-weight: 400;
+}
+
+.lookupError {
+  color: var(--color-error-tint);
+}
+
+.lookupResult {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--surface-border);
+}
+
+.lookupResult .body {
+  max-width: 60ch;
+  color: var(--surface-text-muted);
+}
+
+.inlineLink {
+  color: var(--surface-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+.inlineLink:hover {
+  color: var(--surface-accent);
+}
+
+@media (min-width: 1024px) {
+  .inner {
+    grid-template-columns: 0.4fr 0.6fr;
+    column-gap: var(--space-8);
+    align-items: start;
+  }
+
+  .lookup {
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  .lookupResult {
+    padding-top: 0;
+    padding-left: var(--space-6);
+    border-top: none;
+    border-left: 1px solid var(--surface-border);
+  }
+}
+
+@media (min-width: 1280px) {
+  .inner {
+    grid-template-columns: 1fr;
+  }
+
+  .header {
+    display: grid;
+    grid-template-columns: 0.4fr 0.6fr;
+    column-gap: var(--space-8);
+    align-items: end;
+  }
+
+  .header .intro {
+    margin-top: 0;
+  }
+
+  .steps {
+    /* Una colonna per passaggio, quanti che siano: in Fase 2 le fasi arrivano dal back office. */
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+
+  .step {
+    padding-left: 0;
+    padding-top: calc(var(--space-7) + var(--space-2));
+  }
+
+  .step::before {
+    top: 1rem;
+    bottom: auto;
+    left: 0;
+    right: calc(-1 * var(--space-4));
+    border-left: none;
+    border-top: 1.5px solid var(--surface-border);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    animation: none;
+  }
+}

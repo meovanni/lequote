@@ -1,0 +1,106 @@
+.panel {
+  border-top: 1.5px solid var(--surface-border);
+  border-bottom: 1.5px solid var(--surface-border);
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 56px;
+  padding-block: var(--space-3);
+  color: var(--surface-text);
+  cursor: pointer;
+  list-style: none;
+  transition: color 0.2s ease;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary:hover {
+  color: var(--surface-accent);
+}
+
+/* Un "+" disegnato con due tratti che ruota in "×" all'apertura. */
+.toggle {
+  position: relative;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid currentColor;
+  border-radius: var(--radius-pill);
+  transition: transform 0.3s var(--ease-out);
+}
+
+.toggle::before,
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 1.5px;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+
+.toggle::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.panel[open] .toggle {
+  transform: rotate(45deg);
+}
+
+.content {
+  padding-bottom: var(--space-6);
+}
+
+.list {
+  display: grid;
+}
+
+.row {
+  display: grid;
+  gap: var(--space-1);
+  padding-block: var(--space-3);
+  border-top: 1px solid var(--surface-border);
+}
+
+.row:first-child {
+  border-top: none;
+}
+
+.term {
+  color: var(--surface-text-muted);
+}
+
+.value {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  color: var(--surface-text);
+}
+
+.reference {
+  color: var(--surface-text-muted);
+}
+
+.footnote {
+  margin-top: var(--space-4);
+  max-width: 65ch;
+  color: var(--surface-text-muted);
+  font-weight: 400;
+}
+
+@media (min-width: 768px) {
+  .row {
+    grid-template-columns: minmax(12rem, 0.35fr) 1fr;
+    gap: var(--space-5);
+    align-items: baseline;
+  }
+}

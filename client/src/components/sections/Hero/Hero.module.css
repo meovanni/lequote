@@ -1,12 +1,11 @@
 .hero {
-  --accent: var(--color-miele-tint);
   position: relative;
   overflow: hidden;
   background: var(--surface-bg);
   color: var(--surface-text);
   min-height: 100svh;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   scroll-snap-align: start;
   scroll-snap-stop: always;
   padding-block: calc(var(--space-8) + var(--space-4)) var(--space-8);
@@ -41,48 +40,24 @@
   }
 }
 
-.video {
+.video,
+.poster {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.videoFallback {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  background: radial-gradient(circle at 80% 85%, #2a3521 0%, var(--color-bosco) 55%, #10150c 100%);
-}
-
-.videoPlaceholder {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin: var(--space-6);
-  padding: var(--space-3) var(--space-4);
-  border: 1.5px dashed color-mix(in srgb, var(--color-bone) 35%, transparent);
-  border-radius: var(--radius-md);
-  background: rgba(0, 0, 0, 0.18);
-  color: var(--color-bone);
-}
-
-.videoPlaceholderIcon {
-  flex-shrink: 0;
-  opacity: 0.8;
-}
-
-.videoPlaceholderLabel {
-  opacity: 0.9;
-}
-
+/* Unico gradiente ammesso dal sistema (DESIGN.md): uno scrim funzionale che scurisce il basso
+   a sinistra, dove sta il testo, perché il Bone resti leggibile su qualsiasi fotogramma. */
 .overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(16, 21, 12, 0.35) 0%, rgba(16, 21, 12, 0.32) 45%, rgba(16, 21, 12, 0.78) 100%),
-    radial-gradient(circle at 18% 8%, rgba(76, 87, 53, 0.22), transparent 55%),
-    radial-gradient(circle at 88% 92%, rgba(156, 101, 48, 0.22), transparent 60%);
+  background: linear-gradient(
+    to top right,
+    color-mix(in srgb, var(--color-bosco) 88%, transparent) 0%,
+    color-mix(in srgb, var(--color-bosco) 55%, transparent) 45%,
+    color-mix(in srgb, var(--color-bosco) 15%, transparent) 100%
+  );
   pointer-events: none;
 }
 
@@ -99,13 +74,11 @@
 }
 
 .inner > * {
-  max-width: 46rem;
+  max-width: 40rem;
 }
 
-/* Ingresso in scena all'apertura della pagina: il lettore incontra logo, sottotitolo, corpo e
-   azioni in sequenza invece che tutti insieme, come una prima riga letta ad alta voce. Non è
-   legata allo scroll (l'Hero è già in vista al caricamento): un'unica animazione temporizzata,
-   sfasata per elemento. */
+/* Ingresso in scena all'apertura della pagina: logo, sottotitolo, corpo e azioni in sequenza.
+   Non è legata allo scroll (l'Hero è già in vista al caricamento). */
 @keyframes hero-intro-rise {
   from {
     opacity: 0;
@@ -124,23 +97,33 @@
 .actions {
   animation-name: hero-intro-rise;
   animation-duration: 700ms;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-timing-function: var(--ease-out);
   animation-fill-mode: both;
 }
 
 .title {
+  display: block;
+  margin-bottom: var(--space-3);
+  color: var(--surface-text);
   animation-delay: 60ms;
 }
 
 .subtitle {
+  color: var(--surface-text);
   animation-delay: 200ms;
 }
 
 .body {
+  color: var(--surface-text-muted);
+  max-width: 36rem;
   animation-delay: 320ms;
 }
 
 .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
   animation-delay: 440ms;
 }
 
@@ -153,87 +136,14 @@
   }
 }
 
-.title {
-  display: block;
-  color: var(--surface-text);
-}
-
 .logo {
-  width: clamp(15rem, 30vw, 27.5rem);
+  width: clamp(13rem, 24vw, 22rem);
   height: auto;
 }
 
-.subtitle {
-  color: var(--surface-text);
-}
-
-.body {
-  color: var(--surface-text-muted);
-  max-width: 40rem;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  margin-top: var(--space-4);
-}
-
-.ctaPrimary {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  overflow: hidden;
-  padding: var(--space-3) var(--space-5);
-  background: var(--color-miele);
-  color: var(--color-bone);
-  border-radius: var(--radius-button);
-  transition:
-    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.25s ease;
-}
-
-.ctaPrimary::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.32) 50%, transparent 70%);
-  transform: translateX(-120%);
-  transition: transform 0.6s ease;
-}
-
-.ctaPrimary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 30px -14px rgba(156, 101, 48, 0.55);
-}
-
-.ctaPrimary:hover::after {
-  transform: translateX(120%);
-}
-
-.ctaPrimary:active {
-  transform: translateY(0) scale(0.97);
-}
-
-.ctaSecondary {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--space-3) var(--space-5);
-  color: var(--surface-text);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--radius-button);
-  transition:
-    border-color 0.25s ease,
-    background-color 0.25s ease,
-    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.ctaSecondary:hover {
-  border-color: var(--color-miele-tint);
-  background: color-mix(in srgb, var(--color-miele-tint) 14%, transparent);
-  transform: translateY(-2px);
-}
-
-.ctaSecondary:active {
-  transform: translateY(0) scale(0.97);
+/* Scroll nativo sul telefono: nessuna animazione legata allo scroll (lib/nativeScroll.ts). */
+@media (pointer: coarse), (hover: none), (max-width: 1024px) {
+  .videoLayer {
+    animation: none;
+  }
 }

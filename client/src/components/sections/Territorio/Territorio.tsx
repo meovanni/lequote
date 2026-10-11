@@ -2,6 +2,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { territorio } from '@/data/content'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
 import { Reveal } from '@/components/common/Reveal/Reveal'
+import { maskFromPx, maskToPx } from '@/lib/territorioMask'
+import { NATIVE_SCROLL_QUERY } from '@/lib/nativeScroll'
 import styles from './Territorio.module.css'
 
 // Deve combaciare con .section { height } in Territorio.module.css: la sezione è alta PIN_VH
@@ -33,12 +35,8 @@ const ROSETO_EXIT_END = 0.52
 const CERCHIO_ENTER_START = 0.66
 const CERCHIO_ENTER_END = 0.74
 
-// Devono combaciare con i keyframe territorio-mask-grow / territorio-photo-parallax in
+// Devono combaciare con il keyframe territorio-photo-parallax in
 // Territorio.module.css.
-const MASK_FROM_W_VH = 0.6
-const MASK_FROM_H_VH = 0.6
-const MASK_TO_W_VMAX = 0.4
-const MASK_TO_H_VMAX = 0.4
 const PHOTO_PARALLAX_SCALE = 1.18
 const PHOTO_PARALLAX_TRAVEL = 6 // % di translateY, da +6% a -6%
 
@@ -59,9 +57,8 @@ const MASK_ANCHOR_Y_PCT = 0.6
  * tenendo conto del letterboxing di preserveAspectRatio (default "meet") quando mask-size non
  * rispetta esattamente il rapporto larghezza/altezza del viewBox. */
 function markerScreenPosition(vbX: number, vbY: number, containerW: number, containerH: number) {
-  const vmax = Math.max(containerW, containerH)
-  const maskW = MASK_TO_W_VMAX * vmax
-  const maskH = MASK_TO_H_VMAX * vmax
+  const maskW = maskToPx(containerW, containerH)
+  const maskH = maskW
   const scale = Math.min(maskW / VIEWBOX.w, maskH / VIEWBOX.h)
   const renderedW = VIEWBOX.w * scale
   const renderedH = VIEWBOX.h * scale
@@ -75,6 +72,13 @@ function markerScreenPosition(vbX: number, vbY: number, containerW: number, cont
   }
 }
 
+/** Altezza del palco pinnato (100svh): resta ferma quando la barra del browser mobile compare o
+ * sparisce, a differenza di window.innerHeight. È la stessa base su cui la CSS dimensiona la
+ * maschera, quindi sagoma e segnaposto non si staccano. */
+function stageHeight(stage: HTMLElement | null) {
+  return stage?.clientHeight || window.innerHeight
+}
+
 /** Rampa lineare 0→1 tra due frazioni di progress; costante fuori dall'intervallo. */
 function rampIn(progress: number, start: number, end: number) {
   if (end <= start) return progress >= end ? 1 : 0
@@ -83,6 +87,7 @@ function rampIn(progress: number, start: number, end: number) {
 
 export function Territorio() {
   const sectionRef = useRef<HTMLElement | null>(null)
+  const pinStageRef = useRef<HTMLDivElement | null>(null)
   const headingRef = useRef<HTMLDivElement | null>(null)
   const maskedRef = useRef<HTMLDivElement | null>(null)
   const photoRef = useRef<HTMLImageElement | null>(null)
@@ -98,7 +103,9 @@ export function Territorio() {
   useEffect(() => {
     const supportsScrollDriven = typeof CSS !== 'undefined' && CSS.supports('animation-timeline', 'view()')
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (!supportsScrollDriven && !prefersReducedMotion) setJsFallback(true)
+    // Sul telefono la sezione è statica (vedi Territorio.module.css): niente scroll guidato da JS.
+    const nativeScroll = window.matchMedia(NATIVE_SCROLL_QUERY).matches
+    if (!supportsScrollDriven && !prefersReducedMotion && !nativeScroll) setJsFallback(true)
   }, [])
 
   // La posizione dei segnaposto dipende solo dalla dimensione finale della maschera (costante
@@ -106,7 +113,7 @@ export function Territorio() {
   useLayoutEffect(() => {
     const measure = () => {
       const w = window.innerWidth
-      const h = window.innerHeight
+      const h = stageHeight(pinStageRef.current)
       setMarkerPositions({
         roseto: markerScreenPosition(MARKER_COORDS.roseto.x, MARKER_COORDS.roseto.y, w, h),
         cerchio: markerScreenPosition(MARKER_COORDS.cerchio.x, MARKER_COORDS.cerchio.y, w, h),
@@ -139,19 +146,15 @@ export function Territorio() {
       raf = 0
       const rect = section.getBoundingClientRect()
       const vh = window.innerHeight
-      const vmax = Math.max(window.innerWidth, vh)
       const pinRange = rect.height - vh
       const progress = pinRange > 0 ? Math.min(1, Math.max(0, -rect.top / pinRange)) : 0
 
       const maskProgress = rampIn(progress, 0, MASK_PHASE_END)
-      const fromW = MASK_FROM_W_VH * vh
-      const fromH = MASK_FROM_H_VH * vh
-      const toW = MASK_TO_W_VMAX * vmax
-      const toH = MASK_TO_H_VMAX * vmax
-      const w = fromW + maskProgress * (toW - fromW)
-      const h = fromH + maskProgress * (toH - fromH)
-      masked.style.setProperty('mask-size', `${w}px ${h}px`)
-      masked.style.setProperty('-webkit-mask-size', `${w}px ${h}px`)
+      const stageH = stageHeight(pinStageRef.current)
+      const from = maskFromPx(window.innerWidth, stageH)
+      const size = from + maskProgress * (maskToPx(window.innerWidth, stageH) - from)
+      masked.style.setProperty('mask-size', `${size}px ${size}px`)
+      masked.style.setProperty('-webkit-mask-size', `${size}px ${size}px`)
 
       const headingProgress = rampIn(progress, 0, HEADING_FADE_END)
       heading.style.opacity = String(1 - headingProgress)
@@ -206,7 +209,7 @@ export function Territorio() {
         />
       ))}
 
-      <div className={styles.pinStage}>
+      <div className={styles.pinStage} ref={pinStageRef}>
         <Reveal className={styles.heading} ref={headingRef}>
           <SectionHeading title={territorio.title} subtitle={territorio.intro} align="center" />
         </Reveal>

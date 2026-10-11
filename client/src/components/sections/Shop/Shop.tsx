@@ -163,7 +163,7 @@ export function Shop() {
   }
 
   function buildMailtoHref() {
-    const subject = encodeURIComponent('Richiesta ordine — Le Quote')
+    const subject = encodeURIComponent('Richiesta ordine: Le Quote')
     const lines = [
       'Prodotti richiesti:',
       ...selections.map(

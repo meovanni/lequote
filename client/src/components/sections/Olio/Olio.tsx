@@ -6,7 +6,7 @@ import styles from './Olio.module.css'
 
 export function Olio() {
   return (
-    <section id="olio" data-surface="light" className={styles.section}>
+    <section id="olio" data-surface="dark" className={styles.section}>
       <div className={styles.inner}>
         <Reveal variant="sideLeft" className={styles.images}>
           <ImagePlaceholder label={olio.imageLabel} aspectRatio="3 / 5" variant="oliva" src={olio.image} fit="cover" />
@@ -21,6 +21,7 @@ export function Olio() {
 
         <div className={styles.text}>
           <Reveal offset={8}>
+            <span className={`${styles.elevation} specimen-tag specimen`}>{olio.elevation}</span>
             <SectionHeading title={olio.title} visible />
           </Reveal>
           <Reveal offset={14}>

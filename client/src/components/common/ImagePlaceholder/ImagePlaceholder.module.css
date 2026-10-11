@@ -1,3 +1,5 @@
+/* Cornici foto del sistema "sotto vetro": raggio card (16px), nessuna ombra né sollevamento;
+   al passaggio la foto si muove dentro la cornice, la cornice resta ferma. */
 .placeholder,
 .photo {
   position: relative;
@@ -5,9 +7,11 @@
   display: flex;
   align-items: flex-end;
   overflow: hidden;
-  transition:
-    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.35s ease;
+  border-radius: var(--radius-md);
+}
+
+.placeholder {
+  background: color-mix(in srgb, var(--accent-color) 24%, var(--color-bosco));
 }
 
 .placeholder::before {
@@ -24,21 +28,15 @@
   );
 }
 
-.placeholder:hover,
-.photo:hover {
-  transform: translateY(-4px);
-  /*box-shadow: var(--shadow-card);*/
-}
-
 .photoImg {
   width: 100%;
   height: 100%;
   display: block;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.5s var(--ease-out);
 }
 
 .photo:hover .photoImg {
-  transform: scale(1.035);
+  transform: scale(1.03);
 }
 
 .bare {
@@ -53,12 +51,11 @@
   width: 100%;
   height: 100%;
   display: block;
-  filter: drop-shadow(0 24px 26px rgba(28, 36, 23, 0.28));
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .bare:hover .bareImg {
-  transform: translateY(-4px) scale(1.02);
+  transform: scale(1.02);
 }
 
 .neutral {
@@ -81,9 +78,9 @@
   gap: var(--space-2);
   margin: var(--space-4);
   padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-pill);
-  background: rgba(16, 21, 12, 0.55);
-  backdrop-filter: blur(6px);
+  /* Didascalia spesso su più righe: angoli da card, non pillola. */
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-bosco) 82%, transparent);
   color: var(--color-bone);
 }
 

@@ -134,3 +134,10 @@
     flex-wrap: nowrap;
   }
 }
+
+/* Scroll nativo sul telefono: nessuna animazione legata allo scroll (lib/nativeScroll.ts). */
+@media (pointer: coarse), (hover: none), (max-width: 1024px) {
+  .bigWordmark {
+    animation: none;
+  }
+}

@@ -1,4 +1,4 @@
-import { contatti, footer, navItems } from '@/data/content'
+import { contatti, footer, footerNavItems } from '@/data/content'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
 import { Reveal } from '@/components/common/Reveal/Reveal'
 import { Logo } from '@/components/common/Logo/Logo'
@@ -30,7 +30,7 @@ export function Footer() {
 
           <nav aria-label="Menu footer">
             <ul className={styles.navList}>
-              {navItems.map((item) => (
+              {footerNavItems.map((item) => (
                 <li key={item.id}>
                   <a href={`#${item.id}`} className="body-sm">
                     {item.label}

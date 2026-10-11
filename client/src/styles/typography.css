@@ -14,54 +14,70 @@
   text-transform: uppercase;
 }
 
+/* "Whisper rule": tutti i ruoli display restano tra 300 e 380 (vedi DESIGN.md). SOFT a 0 per
+   una voce più netta, da testo di riferimento; il tracking negativo tiene insieme i tratti sottili. */
+
 /* Titolo hero */
 .display-hero {
   font-family: var(--font-display);
   font-optical-sizing: auto;
-  font-variation-settings: 'opsz' 144, 'SOFT' 15;
-  font-weight: 560;
+  font-variation-settings: 'opsz' 144, 'SOFT' 0;
+  font-weight: 340;
   font-size: clamp(2.75rem, 6vw + 1rem, 6rem);
   line-height: 0.98;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 /* Titoli di sezione */
 .display-1 {
   font-family: var(--font-display);
   font-optical-sizing: auto;
-  font-variation-settings: 'opsz' 96, 'SOFT' 10;
-  font-weight: 540;
+  font-variation-settings: 'opsz' 96, 'SOFT' 0;
+  font-weight: 340;
   font-size: clamp(2rem, 3.2vw + 1rem, 3.25rem);
-  line-height: 1.08;
-  letter-spacing: -0.005em;
+  line-height: 1.05;
+  letter-spacing: -0.018em;
+  text-wrap: balance;
 }
 
 /* Sottotitoli prodotto */
 .display-2 {
   font-family: var(--font-display);
   font-optical-sizing: auto;
-  font-variation-settings: 'opsz' 72, 'SOFT' 8;
-  font-weight: 520;
+  font-variation-settings: 'opsz' 72, 'SOFT' 0;
+  font-weight: 360;
   font-size: clamp(1.5rem, 2vw + 1rem, 2.25rem);
-  line-height: 1.15;
-  letter-spacing: 0;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
 }
 
 /* Titoli card */
 .display-3 {
   font-family: var(--font-display);
   font-optical-sizing: auto;
-  font-variation-settings: 'opsz' 40, 'SOFT' 6;
-  font-weight: 540;
+  font-variation-settings: 'opsz' 40, 'SOFT' 0;
+  font-weight: 380;
   font-size: clamp(1.25rem, 1vw + 1rem, 1.5rem);
   line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* Su bosco o sopra il video i tratti sottili perdono contrasto: si sale al tetto della scala (380). */
+[data-surface='dark'] .display-hero,
+[data-surface='dark'] .display-1,
+[data-surface='dark'] .display-2,
+[data-surface='dark'] .display-3 {
+  font-weight: 380;
 }
 
 .body-lead {
   font-family: var(--font-body);
   font-weight: 400;
   font-size: 1.25rem;
-  line-height: 1.75;
+  line-height: 1.6;
+  text-wrap: pretty;
 }
 
 .body {
@@ -69,6 +85,7 @@
   font-weight: 400;
   font-size: clamp(1rem, 0.3vw + 0.95rem, 1.0625rem);
   line-height: 1.65;
+  text-wrap: pretty;
 }
 
 .body-sm {
@@ -94,5 +111,16 @@
   font-size: clamp(0.9375rem, 0.4vw + 0.85rem, 1.125rem);
   line-height: 1.1;
   letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Etichetta "da campione": codici lotto, campagne, date, valori d'analisi. Niente maiuscolo
+   forzato: un codice va letto esattamente com'è stampato sull'etichetta. */
+.specimen {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
   font-variant-numeric: tabular-nums;
 }
