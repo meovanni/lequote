@@ -55,8 +55,23 @@
 
 .tabActive,
 .tabActive:hover {
-  background: var(--surface-text);
   color: var(--surface-bg);
+}
+
+.tab {
+  position: relative;
+}
+
+/* Sfondo del tab attivo, condiviso tra i tab con layoutId: è lui che scivola. */
+.tabPill {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-pill);
+  background: var(--surface-text);
+}
+
+.tabLabel {
+  position: relative;
 }
 
 .panel {

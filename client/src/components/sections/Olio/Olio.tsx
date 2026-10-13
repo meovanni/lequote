@@ -1,7 +1,7 @@
 import { olio } from '@/data/content'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
-import { ImagePlaceholder } from '@/components/common/ImagePlaceholder/ImagePlaceholder'
 import { Reveal } from '@/components/common/Reveal/Reveal'
+import { OilBottle } from '@/components/common/Product/OilBottle'
 import styles from './Olio.module.css'
 
 export function Olio() {
@@ -9,14 +9,7 @@ export function Olio() {
     <section id="olio" data-surface="dark" className={styles.section}>
       <div className={styles.inner}>
         <Reveal variant="sideLeft" className={styles.images}>
-          <ImagePlaceholder label={olio.imageLabel} aspectRatio="3 / 5" variant="oliva" src={olio.image} fit="cover" />
-          <ImagePlaceholder
-            label={olio.imageLabelAlt}
-            aspectRatio="3 / 5"
-            variant="oliva"
-            src={olio.imageAlt}
-            fit="cover"
-          />
+          <OilBottle className={styles.bottle} />
         </Reveal>
 
         <div className={styles.text}>

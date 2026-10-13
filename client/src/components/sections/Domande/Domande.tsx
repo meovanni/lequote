@@ -1,6 +1,8 @@
 import { domande } from '@/data/content'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
 import { Reveal } from '@/components/common/Reveal/Reveal'
+import { motion } from 'motion/react'
+import { REVEAL_VIEWPORT, riseChild, staggerParent } from '@/lib/motion'
 import styles from './Domande.module.css'
 
 // Elenco affiancato invece di una fisarmonica: le risposte sono brevi, e averle tutte a vista
@@ -18,14 +20,20 @@ export function Domande() {
             <Reveal key={topic.id} offset={topicIndex * 6} className={styles.topic}>
               <h3 className={`${styles.topicLabel} mono-label`}>{topic.label}</h3>
               {/* Titoli veri (non <dt>): permettono di saltare da una domanda all'altra. */}
-              <div className={styles.items}>
+              <motion.div
+                className={styles.items}
+                initial="hidden"
+                whileInView="visible"
+                viewport={REVEAL_VIEWPORT}
+                variants={staggerParent(0.1, 0.15)}
+              >
                 {topic.items.map((item) => (
-                  <div key={item.id} className={styles.item}>
+                  <motion.div key={item.id} className={styles.item} variants={riseChild}>
                     <h4 className="display-3">{item.question}</h4>
                     <p className={`${styles.answer} body`}>{item.answer}</p>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </Reveal>
           ))}
         </div>

@@ -9,8 +9,10 @@
 
 :root {
   /* Palette nominata — famiglia oliva/miele del prodotto (vedi DESIGN.md) */
-  --color-pergamena: #f7f3e8; /* bg chiaro primario */
-  --color-avorio: #efe7d4; /* bg chiaro secondario, alternanza sezioni/card */
+  /* Quasi bianchi: le tinte crema (#f7f3e8, #efe7d4) risultavano fastidiose a chi ha provato il
+     sito. Resta solo un filo di calore, quanto basta a non sembrare un foglio da ufficio. */
+  --color-pergamena: #fdfcf9; /* bg chiaro primario */
+  --color-avorio: #f6f4ef; /* bg chiaro secondario, alternanza sezioni/card */
   --color-bosco: #1c2417; /* verde quasi-nero, fasce scure alternate */
   --color-miele: #9c6530; /* miele/ottone antico, accento primario — testo su sfondo chiaro */
   --color-miele-tint: #cc9a5e; /* variante chiara di miele, per testo/badge su sfondo scuro (Bosco) */

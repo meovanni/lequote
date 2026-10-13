@@ -4,6 +4,10 @@ import { shop, shopCatalog } from '@/data/content'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
 import { ImagePlaceholder } from '@/components/common/ImagePlaceholder/ImagePlaceholder'
 import { Reveal } from '@/components/common/Reveal/Reveal'
+import { motion } from 'motion/react'
+import { OilBottle } from '@/components/common/Product/OilBottle'
+import { HoneyJar } from '@/components/common/Product/HoneyJar'
+import { REVEAL_VIEWPORT, riseChild, staggerParent } from '@/lib/motion'
 import { MinusIcon, PlusIcon } from '@/components/common/icons/Icons'
 import styles from './Shop.module.css'
 
@@ -227,16 +231,38 @@ export function Shop() {
 
                 {/* Griglia a riflusso: un formato in più (o un prodotto in più, sopra) si
                     aggiunge senza dover ridisegnare le colonne. */}
-                <div className={styles.variantGrid}>
+                <motion.div
+                  className={styles.variantGrid}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={REVEAL_VIEWPORT}
+                  variants={staggerParent(0.1, 0.2)}
+                >
                   {product.variants.map((variant) => (
-                    <div key={variant.id} className={styles.variantCard}>
-                      <ImagePlaceholder
-                        label={variant.imageLabel}
-                        aspectRatio="1 / 1"
-                        variant={product.id === 'olio' ? 'oliva' : 'miele'}
-                        src={variant.image}
-                        fit="cover"
-                      />
+                    <motion.div
+                      key={variant.id}
+                      className={styles.variantCard}
+                      variants={riseChild}
+                      whileHover={{ y: -6, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
+                    >
+                      {/* Spike: i due formati disegnati usano l'illustrazione animata al posto della foto. */}
+                      {variant.id === 'olio-750ml' ? (
+                        <div className={styles.illustration}>
+                          <OilBottle label={variant.imageLabel} />
+                        </div>
+                      ) : variant.id === 'miele-500g' ? (
+                        <div className={styles.illustration}>
+                          <HoneyJar label={variant.imageLabel} />
+                        </div>
+                      ) : (
+                        <ImagePlaceholder
+                          label={variant.imageLabel}
+                          aspectRatio="1 / 1"
+                          variant={product.id === 'olio' ? 'oliva' : 'miele'}
+                          src={variant.image}
+                          fit="cover"
+                        />
+                      )}
                       <div className={styles.variantCardBody}>
                         <span className="body">{variant.label}</span>
                         <span className={`${styles.variantPrice} mono-figure`}>{formatPrice(variant.price)}</span>
@@ -248,9 +274,9 @@ export function Shop() {
                           incrementLabel={`Aumenta quantità: ${product.name}, ${variant.label}`}
                         />
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               </div>
             ))}
           </Reveal>

@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
+import { motion } from 'motion/react'
+import { REVEAL_VIEWPORT, riseChild, staggerParent } from '@/lib/motion'
 import { filiera } from '@/data/content'
 import type { ProductLine } from '@/types'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
@@ -65,7 +67,15 @@ export function Filiera() {
                   onClick={() => setActiveLine(entry.line)}
                   onKeyDown={(event) => handleTabKeyDown(event, index)}
                 >
-                  {entry.label}
+                  {/* La pillola scivola da un tab all'altro invece di sparire e ricomparire. */}
+                  {selected && (
+                    <motion.span
+                      layoutId="filiera-tab-pill"
+                      className={styles.tabPill}
+                      transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+                    />
+                  )}
+                  <span className={styles.tabLabel}>{entry.label}</span>
                 </button>
               )
             })}
@@ -82,15 +92,29 @@ export function Filiera() {
               hidden={entry.line !== activeLine}
               className={styles.panel}
             >
-              <div className={styles.panelHead}>
+              <motion.div
+                key={`head-${activeLine}`}
+                className={styles.panelHead}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
                 <h3 className="display-2">{entry.label}</h3>
                 <span className="specimen-tag specimen">{entry.elevation}</span>
                 <p className={`${styles.summary} body`}>{entry.summary}</p>
-              </div>
+              </motion.div>
 
-              <ol className={styles.steps}>
+              {/* La chiave legata al tab rimonta l'elenco: a ogni cambio le fasi rientrano in cascata. */}
+              <motion.ol
+                key={`steps-${activeLine}`}
+                className={styles.steps}
+                initial="hidden"
+                whileInView="visible"
+                viewport={REVEAL_VIEWPORT}
+                variants={staggerParent(0.09)}
+              >
                 {entry.steps.map((step, index) => (
-                  <li key={step.id} className={styles.step}>
+                  <motion.li key={step.id} className={styles.step} variants={riseChild}>
                     <span className={`${styles.stepNumber} specimen-tag specimen`}>
                       {String(index + 1).padStart(2, '0')}
                     </span>
@@ -100,9 +124,9 @@ export function Filiera() {
                       <span className={styles.stepPeriod}>{step.period}</span>
                     </p>
                     <p className={`${styles.stepText} body-sm`}>{step.description}</p>
-                  </li>
+                  </motion.li>
                 ))}
-              </ol>
+              </motion.ol>
 
               <LegalPanel label={filiera.legalPanelLabel} items={entry.legalInfo} footnote={filiera.internalNote} />
             </div>

@@ -1,4 +1,6 @@
 import type { CSSProperties } from 'react'
+import { motion, useReducedMotion } from 'motion/react'
+import { EASE_OUT, REVEAL_VIEWPORT } from '@/lib/motion'
 import { stagioni } from '@/data/content'
 import { formatPeriod, isActiveInMonth, monthSegments } from '@/lib/seasons'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
@@ -12,6 +14,18 @@ interface StagioniProps {
 
 export function Stagioni({ now = new Date() }: StagioniProps) {
   const currentMonth = now.getMonth() + 1
+  const reduceMotion = useReducedMotion()
+  // Ogni barra cresce da sinistra con un piccolo ritardo rispetto alla precedente.
+  let barIndex = 0
+  const grow = () => {
+    const delay = 0.15 + barIndex++ * 0.07
+    return {
+      initial: reduceMotion ? false : ({ scaleX: 0 } as const),
+      whileInView: { scaleX: 1 },
+      viewport: REVEAL_VIEWPORT,
+      transition: { duration: 1.1, ease: EASE_OUT, delay },
+    }
+  }
 
   return (
     <section id="stagioni" data-surface="light" className={styles.section}>
@@ -69,13 +83,18 @@ export function Stagioni({ now = new Date() }: StagioniProps) {
                       </span>
                       <span className={styles.bars} aria-hidden="true">
                         {monthSegments(activity).map((segment) => (
-                          <span
+                          <motion.span
                             key={segment.start}
                             className={styles.bar}
-                            style={{ '--start': segment.start, '--span': segment.span } as CSSProperties}
+                            style={{ '--start': segment.start, '--span': segment.span, originX: 0 } as CSSProperties}
+                            {...grow()}
                           />
                         ))}
-                        <span
+                        <motion.span
+                          initial={reduceMotion ? false : { opacity: 0 }}
+                          whileInView={{ opacity: 1 }}
+                          viewport={REVEAL_VIEWPORT}
+                          transition={{ duration: 0.6, delay: 1.4 }}
                           className={styles.nowLine}
                           style={{ '--start': currentMonth } as CSSProperties}
                         />

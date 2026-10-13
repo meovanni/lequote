@@ -147,3 +147,17 @@
     animation: none;
   }
 }
+
+/* Indicatore "scorri": un trattino verticale che scende piano in fondo alla prima schermata. */
+.scrollCue {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: var(--space-6);
+  width: 1.5px;
+  height: 36px;
+  margin-left: -0.75px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-text);
+  pointer-events: none;
+}

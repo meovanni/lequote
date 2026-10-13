@@ -453,3 +453,32 @@
 .cta:active {
   transform: scale(0.98);
 }
+
+/* Riquadro dell'illustrazione animata: stesso formato quadrato delle foto dei formati. */
+.illustration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-text) 6%, transparent);
+}
+
+.illustration svg {
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+}
+
+/* L'SVG è alto e stretto: va contenuto nel quadrato, non deve allungarlo. */
+.illustration {
+  position: relative;
+}
+
+.illustration svg {
+  position: absolute;
+  inset: 8%;
+  width: 84%;
+  height: 84%;
+}

@@ -1,0 +1,18 @@
+.words {
+  display: inline;
+}
+
+/* La maschera taglia la parola mentre sale. Il piccolo padding verticale lascia spazio a
+   discendenti e accenti di Fraunces, che altrimenti verrebbero tagliati anche a riposo. */
+.mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-block: 0.08em;
+  margin-block: -0.08em;
+}
+
+.word {
+  display: inline-block;
+  will-change: transform;
+}

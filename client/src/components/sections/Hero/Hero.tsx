@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
+import { motion, useReducedMotion } from 'motion/react'
+import { EASE_OUT, riseChild, staggerParent } from '@/lib/motion'
 import { hero } from '@/data/content'
 import { Logo } from '@/components/common/Logo/Logo'
 import styles from './Hero.module.css'
 
 export function Hero() {
+  const reduceMotion = useReducedMotion()
   const [showFallback, setShowFallback] = useState(false)
   const videoRef = useRef<HTMLVideoElement | null>(null)
 
@@ -65,22 +68,49 @@ export function Hero() {
         <div className={styles.overlay} />
       </div>
 
-      <div className={styles.inner}>
-        <h1 className={styles.title}>
+      {/* Entrata in sequenza al caricamento: il logo si rivela da sinistra, poi sottotitolo,
+          testo e bottoni. Con "riduci movimento" tutto è già al suo posto. */}
+      <motion.div
+        className={styles.inner}
+        initial={reduceMotion ? false : 'hidden'}
+        animate="visible"
+        variants={staggerParent(0.14, 0.15)}
+      >
+        <motion.h1
+          className={styles.title}
+          variants={{
+            hidden: { clipPath: 'inset(0 100% 0 0)', opacity: 0 },
+            visible: { clipPath: 'inset(0 0% 0 0)', opacity: 1, transition: { duration: 1.4, ease: EASE_OUT } },
+          }}
+        >
           <Logo className={styles.logo} title={hero.title} />
-        </h1>
-        <p className={`${styles.subtitle} display-2`}>{hero.subtitle}</p>
-        <p className={`${styles.body} body`}>{hero.body}</p>
+        </motion.h1>
+        <motion.p className={`${styles.subtitle} display-2`} variants={riseChild}>
+          {hero.subtitle}
+        </motion.p>
+        <motion.p className={`${styles.body} body`} variants={riseChild}>
+          {hero.body}
+        </motion.p>
 
-        <div className={styles.actions}>
+        <motion.div className={styles.actions} variants={riseChild}>
           <a href={hero.ctaPrimary.href} className="btn btn-primary mono-label">
             {hero.ctaPrimary.label}
           </a>
           <a href={hero.ctaSecondary.href} className="btn btn-ghost mono-label">
             {hero.ctaSecondary.label}
           </a>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
+
+      {!reduceMotion && (
+        <motion.span
+          className={styles.scrollCue}
+          aria-hidden="true"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 1, 0], y: [0, 0, 14, 14] }}
+          transition={{ duration: 2.4, times: [0, 0.2, 0.8, 1], repeat: Infinity, delay: 2.2, ease: 'easeInOut' }}
+        />
+      )}
     </section>
   )
 }

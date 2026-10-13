@@ -3,6 +3,7 @@ import { SectionHeading } from '@/components/common/SectionHeading/SectionHeadin
 import { ImagePlaceholder } from '@/components/common/ImagePlaceholder/ImagePlaceholder'
 import { HexPattern } from '@/components/common/HexPattern/HexPattern'
 import { Reveal } from '@/components/common/Reveal/Reveal'
+import { HoneyJar } from '@/components/common/Product/HoneyJar'
 import styles from './Miele.module.css'
 
 export function Miele() {
@@ -39,13 +40,7 @@ export function Miele() {
             variant="miele"
             src={miele.image}
           />
-          <ImagePlaceholder
-            label={miele.imageLabelAlt}
-            aspectRatio="4 / 3"
-            variant="miele"
-            src={miele.imageAlt}
-            fit="contain"
-          />
+          <HoneyJar className={styles.jar} />
         </Reveal>
       </div>
     </section>

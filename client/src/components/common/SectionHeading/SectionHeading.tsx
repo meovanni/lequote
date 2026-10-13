@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { AnimatedWords } from '@/components/common/AnimatedWords/AnimatedWords'
 import styles from './SectionHeading.module.css'
 
 interface SectionHeadingProps {
@@ -13,7 +14,9 @@ interface SectionHeadingProps {
 export function SectionHeading({ title, subtitle, align = 'left', className, visible = false }: SectionHeadingProps) {
   return (
     <div className={[styles.heading, styles[align], className].filter(Boolean).join(' ')}>
-      <h2 className={[styles.title, 'display-1', !visible && 'sr-only'].filter(Boolean).join(' ')}>{title}</h2>
+      <h2 className={[styles.title, 'display-1', !visible && 'sr-only'].filter(Boolean).join(' ')}>
+        {visible ? <AnimatedWords text={title} /> : title}
+      </h2>
       {subtitle && <p className={`${styles.subtitle} body-lead`}>{subtitle}</p>}
     </div>
   )

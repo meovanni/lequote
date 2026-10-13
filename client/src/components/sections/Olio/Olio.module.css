@@ -103,3 +103,28 @@
     grid-template-columns: 0.9fr 1.1fr;
   }
 }
+
+/* Bottiglia illustrata davanti alla foto: alta e stretta, si limita in altezza perché resti
+   tutta nello schermo insieme al titolo. */
+.bottle {
+  justify-self: center;
+  width: 100%;
+  max-height: min(72svh, 620px);
+}
+
+@media (max-width: 767px) {
+  .bottle {
+    width: min(56vw, 220px);
+    max-height: 56svh;
+  }
+}
+
+/* Spike: la bottiglia illustrata sostituisce le due foto di repertorio e sta da sola. */
+.images {
+  display: flex;
+  justify-content: center;
+}
+
+.images > *:first-child {
+  margin-right: 0;
+}

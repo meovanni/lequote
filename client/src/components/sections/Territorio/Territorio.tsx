@@ -1,7 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { territorio } from '@/data/content'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
-import { Reveal } from '@/components/common/Reveal/Reveal'
 import { maskFromPx, maskToPx } from '@/lib/territorioMask'
 import { NATIVE_SCROLL_QUERY } from '@/lib/nativeScroll'
 import styles from './Territorio.module.css'
@@ -210,9 +209,10 @@ export function Territorio() {
       ))}
 
       <div className={styles.pinStage} ref={pinStageRef}>
-        <Reveal className={styles.heading} ref={headingRef}>
+        {/* Div semplice: il titolo ha già la sua dissolvenza legata allo scroll (CSS o JS). */}
+        <div className={styles.heading} ref={headingRef}>
           <SectionHeading title={territorio.title} subtitle={territorio.intro} align="center" />
-        </Reveal>
+        </div>
 
         <div className={styles.maskedPhoto} ref={maskedRef}>
           <img

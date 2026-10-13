@@ -128,3 +128,10 @@
     animation: none;
   }
 }
+
+/* Vasetto illustrato accanto alla foto dell'apiario. */
+.jar {
+  align-self: center;
+  width: 100%;
+  max-width: 340px;
+}

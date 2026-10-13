@@ -1,16 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { Domande } from './Domande'
 import { domande } from '@/data/content'
 
 describe('Domande', () => {
-  it('mostra tutte le domande e le risposte senza doverle aprire', () => {
+  it('mostra tutte le domande e le risposte senza doverle aprire', async () => {
     render(<Domande />)
     for (const topic of domande.topics) {
       expect(screen.getByRole('heading', { name: topic.label })).toBeInTheDocument()
       for (const item of topic.items) {
         expect(screen.getByRole('heading', { name: item.question })).toBeInTheDocument()
-        expect(screen.getByText(item.answer)).toBeVisible()
+        // Le risposte entrano con un'animazione: si aspetta il primo fotogramma di Motion.
+        await waitFor(() => expect(screen.getByText(item.answer)).toBeVisible())
       }
     }
   })
