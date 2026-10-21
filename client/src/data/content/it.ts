@@ -136,13 +136,15 @@ export const shopCatalog: ShopProduct[] = [
         id: 'olio-750ml',
 
         sku: 'OLIO-750ML',
-        label: 'Bottiglia 750 ml',        imageLabel: 'Foto: Bottiglia di olio EVO Le Quote da 750 ml',
+        label: 'Bottiglia 750 ml',
+        imageLabel: 'Foto: Bottiglia di olio EVO Le Quote da 750 ml',
       }, // image: '/images/olio-750ml.jpg'
       {
         id: 'olio-5l',
 
         sku: 'OLIO-5L',
-        label: 'Latta 5 L',        imageLabel: 'Foto: Latta di olio EVO Le Quote da 5 litri',
+        label: 'Latta 5 L',
+        imageLabel: 'Foto: Latta di olio EVO Le Quote da 5 litri',
       }, // image: '/images/olio-5l.jpg'
     ],
   },
@@ -156,13 +158,15 @@ export const shopCatalog: ShopProduct[] = [
         id: 'miele-250g',
 
         sku: 'MIELE-250G',
-        label: 'Vasetto 250 g',        imageLabel: 'Foto: Vasetto di miele Le Quote da 250 g',
+        label: 'Vasetto 250 g',
+        imageLabel: 'Foto: Vasetto di miele Le Quote da 250 g',
       }, // image: '/images/miele-250g.jpg'
       {
         id: 'miele-500g',
 
         sku: 'MIELE-500G',
-        label: 'Vasetto 500 g',        imageLabel: 'Foto: Vasetto di miele Le Quote da 500 g',
+        label: 'Vasetto 500 g',
+        imageLabel: 'Foto: Vasetto di miele Le Quote da 500 g',
       }, // image: '/images/miele-500g.jpg'
     ],
   },
@@ -353,12 +357,6 @@ export const filiera = {
     help: 'Lo trovi in etichetta, preceduto dalla lettera L, vicino al termine minimo di conservazione.',
     emptyError: 'Inserisci il codice lotto stampato in etichetta.',
     formatError: 'Il codice non sembra corretto: copialo come sull’etichetta (lettere, numeri, trattini o punti).',
-    // La consultazione per lotto arriva con il back office (Fase 3): fino ad allora la ricerca
-    // dice onestamente come ottenere le informazioni, senza fingere un risultato.
-    pendingTitle: 'Consultazione per lotto in arrivo',
-    pendingBody:
-      'Stiamo preparando le schede di ogni lotto, con date e analisi. Intanto scrivici indicando il codice e ti rispondiamo noi:',
-    email: 'info@lequote.it',
   },
 }
 
@@ -726,6 +724,30 @@ export const orderUi = {
   backHome: 'Torna alla home',
 }
 
+// /lotto/:codice, aperta dal QR in etichetta. Nomi delle fasi, campi e informazioni di legge
+// arrivano dal back office così come li scrivono i titolari, in italiano.
+export const lotUi = {
+  metaTitle: (code: string) => `Lotto ${code} | Le Quote`,
+  metaDescription: 'Il percorso di un lotto Le Quote: campagna, fasi di lavorazione, analisi e informazioni di legge.',
+  eyebrow: 'Tracciabilità del lotto',
+  lineName: { olio: 'Olio extravergine di oliva', miele: 'Miele' } satisfies Record<ProductLine, string>,
+  campaign: (label: string) => `Campagna ${label}`,
+  stagesTitle: 'Il percorso',
+  noStages: 'Le fasi di questo lotto non sono ancora state descritte.',
+  analysesTitle: 'Analisi',
+  openAnalysis: 'Apri il referto',
+  legalLabel: 'Informazioni di legge',
+  sourceNote: '',
+  loading: 'Carico il lotto…',
+  notFoundTitle: 'Lotto non trovato',
+  notFoundBody: (code: string) =>
+    `Non c’è nessun lotto pubblicato con codice ${code}. Controlla il codice in etichetta, oppure scrivici a info@lequote.it.`,
+  invalidBody: 'Questo indirizzo non contiene un codice lotto valido.',
+  error: 'Non riusciamo a mostrare il lotto in questo momento. Riprova tra poco, oppure scrivici a info@lequote.it.',
+  searchAgain: 'Cerca un altro lotto',
+  backHome: 'Torna alla home',
+}
+
 export const it = {
   meta,
   ui,
@@ -748,6 +770,7 @@ export const it = {
   cartUi,
   checkoutUi,
   orderUi,
+  lotUi,
 }
 
 export type Content = typeof it

@@ -2,6 +2,8 @@
 // di Vite (vite.config.ts), in produzione da Caddy sullo stesso dominio: niente CORS e nessun
 // indirizzo del back end nel codice. VITE_MEDUSA_URL serve solo se il back end sta altrove.
 const BASE_URL: string = import.meta.env.VITE_MEDUSA_URL ?? ''
+/** Prefisso dei link diretti al back end (es. i referti di analisi); vuoto se è sullo stesso dominio. */
+export const STORE_BASE_URL = BASE_URL
 const PUBLISHABLE_KEY: string | undefined = import.meta.env.VITE_MEDUSA_PUBLISHABLE_KEY
 
 export class StoreApiError extends Error {

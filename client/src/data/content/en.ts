@@ -369,10 +369,6 @@ export const en: Content = {
       help: 'You will find it on the label, preceded by the letter L, next to the best-before date.',
       emptyError: 'Enter the batch code printed on the label.',
       formatError: 'The code does not look right: copy it as it appears on the label (letters, numbers, dashes or dots).',
-      pendingTitle: 'Batch lookup coming soon',
-      pendingBody:
-        'We are preparing a page for every batch, with dates and test results. In the meantime, write to us with the code and we will reply:',
-      email: 'info@lequote.it',
     },
   },
 
@@ -683,6 +679,28 @@ export const en: Content = {
     pickupPaymentBody: 'Pay at the farm when you collect the order: [cash and/or card, to be confirmed].',
     deliveryLabel: 'Delivery',
     summaryTitle: 'Summary',
+    backHome: 'Back to home',
+  },
+
+  lotUi: {
+    metaTitle: (code: string) => `Batch ${code} | Le Quote`,
+    metaDescription: 'The journey of a Le Quote batch: harvest season, processing stages, test results and legal information.',
+    eyebrow: 'Batch traceability',
+    lineName: { olio: 'Extra virgin olive oil', miele: 'Honey' },
+    campaign: (label: string) => `Season ${label}`,
+    stagesTitle: 'The journey',
+    noStages: 'The stages of this batch have not been described yet.',
+    analysesTitle: 'Test results',
+    openAnalysis: 'Open the report',
+    legalLabel: 'Legal information',
+    sourceNote: 'Stage details and legal information are recorded by the farm in Italian.',
+    loading: 'Loading the batch…',
+    notFoundTitle: 'Batch not found',
+    notFoundBody: (code: string) =>
+      `There is no published batch with code ${code}. Check the code on the label, or write to us at info@lequote.it.`,
+    invalidBody: 'This address does not contain a valid batch code.',
+    error: 'We can’t show the batch right now. Please try again shortly, or write to us at info@lequote.it.',
+    searchAgain: 'Find another batch',
     backHome: 'Back to home',
   },
 }

@@ -1,6 +1,7 @@
 import { Alert, Button, Container, Heading, StatusBadge, Text, usePrompt } from '@medusajs/ui'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { LotLabelForm } from '../../../components/filiera/lot-label-form'
+import { LotQrPanel } from '../../../components/filiera/lot-qr-panel'
 import { StagesEditor } from '../../../components/filiera/stages-editor'
 import { LINE_LABEL, useFilieraAction, useLot } from '../../../lib/filiera-api'
 
@@ -83,6 +84,7 @@ const LotDetailPage = () => {
       )}
 
       <LotLabelForm key={`label-${lot.id}`} lot={lot} />
+      <LotQrPanel lot={lot} publicUrl={data.public_url} />
       <StagesEditor key={`stages-${lot.id}`} lot={lot} />
     </div>
   )

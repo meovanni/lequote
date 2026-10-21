@@ -1,14 +1,18 @@
 import { useId, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
-import { useContent } from '@/i18n/LocaleContext'
+import { useNavigate } from 'react-router'
+import { useContent, useLocale } from '@/i18n/LocaleContext'
+import { localizePath } from '@/i18n/locales'
 import { parseLotCode } from '@/lib/lotCode'
 import styles from './Filiera.module.css'
 
-type LookupState =
-  { kind: 'idle' } | { kind: 'error'; message: string; attempt: number } | { kind: 'pending'; code: string }
+type LookupState = { kind: 'idle' } | { kind: 'error'; message: string; attempt: number }
 
+/** Ricerca per codice lotto: con un codice valido apre la pagina del lotto, /lotto/:codice. */
 export function LotLookup() {
   const { lookup } = useContent().filiera
+  const locale = useLocale()
+  const navigate = useNavigate()
   const [value, setValue] = useState('')
   const [state, setState] = useState<LookupState>({ kind: 'idle' })
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -30,8 +34,7 @@ export function LotLookup() {
       inputRef.current?.focus()
       return
     }
-    setValue(result.code)
-    setState({ kind: 'pending', code: result.code })
+    void navigate(localizePath(locale, `/lotto/${encodeURIComponent(result.code)}`))
   }
 
   const hasError = state.kind === 'error'
@@ -59,7 +62,7 @@ export function LotLookup() {
             aria-describedby={describedBy}
             onChange={(event) => {
               setValue(event.target.value)
-              // Un risultato o un errore valgono solo per il codice con cui sono nati.
+              // Un errore vale solo per il codice con cui è nato.
               if (state.kind !== 'idle') setState({ kind: 'idle' })
             }}
           />
@@ -76,27 +79,6 @@ export function LotLookup() {
           </p>
         )}
       </form>
-
-      {/* Regione di stato sempre montata: un live region creato già pieno spesso non viene
-          annunciato. La consultazione per lotto arriva in Fase 3: fino ad allora la risposta
-          dice onestamente come ottenere le informazioni, senza simulare un risultato. */}
-      <div role="status" className={state.kind === 'pending' ? styles.lookupResult : undefined}>
-        {state.kind === 'pending' && (
-          <>
-            <span className="specimen-tag specimen">{state.code}</span>
-            <p className="display-3">{lookup.pendingTitle}</p>
-            <p className="body">
-              {lookup.pendingBody}{' '}
-              <a
-                className={styles.inlineLink}
-                href={`mailto:${lookup.email}?subject=${encodeURIComponent(`Informazioni sul lotto ${state.code}`)}`}
-              >
-                {lookup.email}
-              </a>
-            </p>
-          </>
-        )}
-      </div>
     </div>
   )
 }

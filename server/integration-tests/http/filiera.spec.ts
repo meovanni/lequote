@@ -199,6 +199,23 @@ medusaIntegrationTestRunner({
       expect(updated.data.item.cultivars).toEqual(['Leccino', 'Frantoio'])
     })
 
+    it('genera il QR del lotto verso la sua pagina pubblica, solo nel back office', async () => {
+      const { lot } = await draftLot()
+      const detail = await api.get(`/admin/filiera/lots/${lot.id}`, admin)
+      expect(detail.data.public_url).toBe('http://localhost:5173/lotto/L2026-07')
+
+      const svg = await api.get(`/admin/filiera/lots/${lot.id}/qr`, admin)
+      expect(svg.headers['content-type']).toContain('image/svg+xml')
+      expect(svg.data).toMatch(/^<svg/)
+
+      const png = await api.get(`/admin/filiera/lots/${lot.id}/qr?format=png&download=1`, { ...admin, responseType: 'arraybuffer' })
+      expect(png.headers['content-type']).toBe('image/png')
+      expect(png.headers['content-disposition']).toBe('attachment; filename="qr-lotto-L2026-07.png"')
+
+      expect((await api.get(`/admin/filiera/lots/${lot.id}/qr?format=gif`, admin).catch(fail)).status).toBe(400)
+      expect((await api.get(`/admin/filiera/lots/${lot.id}/qr`).catch(fail)).status).toBe(401)
+    })
+
     it('rifiuta un tipo di anagrafica sconosciuto', async () => {
       const response = await api.get('/admin/filiera/registries/clienti', admin).catch(fail)
       expect(response.status).toBe(404)

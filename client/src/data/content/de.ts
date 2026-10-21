@@ -369,10 +369,6 @@ export const de: Content = {
       help: 'Sie steht auf dem Etikett, mit vorangestelltem L, neben dem Mindesthaltbarkeitsdatum.',
       emptyError: 'Geben Sie die auf dem Etikett gedruckte Chargennummer ein.',
       formatError: 'Die Nummer scheint nicht zu stimmen: Übernehmen Sie sie wie auf dem Etikett (Buchstaben, Ziffern, Bindestriche oder Punkte).',
-      pendingTitle: 'Chargensuche in Vorbereitung',
-      pendingBody:
-        'Wir bereiten für jede Charge eine Seite mit Daten und Analysen vor. Schreiben Sie uns bis dahin mit der Nummer, und wir antworten Ihnen:',
-      email: 'info@lequote.it',
     },
   },
 
@@ -684,6 +680,28 @@ export const de: Content = {
     pickupPaymentBody: 'Sie bezahlen auf dem Hof bei der Abholung: [bar und/oder Karte, noch zu bestätigen].',
     deliveryLabel: 'Lieferung',
     summaryTitle: 'Übersicht',
+    backHome: 'Zur Startseite',
+  },
+
+  lotUi: {
+    metaTitle: (code: string) => `Charge ${code} | Le Quote`,
+    metaDescription: 'Der Weg einer Charge von Le Quote: Erntejahr, Verarbeitungsschritte, Analysen und Pflichtangaben.',
+    eyebrow: 'Rückverfolgbarkeit der Charge',
+    lineName: { olio: 'Natives Olivenöl extra', miele: 'Honig' },
+    campaign: (label: string) => `Erntejahr ${label}`,
+    stagesTitle: 'Der Weg',
+    noStages: 'Die Schritte dieser Charge sind noch nicht beschrieben.',
+    analysesTitle: 'Analysen',
+    openAnalysis: 'Bericht öffnen',
+    legalLabel: 'Pflichtangaben',
+    sourceNote: 'Angaben zu den Schritten und Pflichtangaben erfasst der Hof auf Italienisch.',
+    loading: 'Charge wird geladen…',
+    notFoundTitle: 'Charge nicht gefunden',
+    notFoundBody: (code: string) =>
+      `Es gibt keine veröffentlichte Charge mit der Nummer ${code}. Prüfen Sie die Nummer auf dem Etikett oder schreiben Sie an info@lequote.it.`,
+    invalidBody: 'Diese Adresse enthält keine gültige Chargennummer.',
+    error: 'Die Charge kann gerade nicht angezeigt werden. Bitte versuchen Sie es gleich noch einmal oder schreiben Sie an info@lequote.it.',
+    searchAgain: 'Andere Charge suchen',
     backHome: 'Zur Startseite',
   },
 }

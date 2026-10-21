@@ -9,6 +9,7 @@ const pages = (locale: string) =>
     route('prodotti/:handle', 'routes/product.tsx', { id: `product-${locale}` }),
     route('carrello', 'routes/cart.tsx', { id: `cart-${locale}` }),
     route('ordine', 'routes/order.tsx', { id: `order-${locale}` }),
+    route('lotto/:codice', 'routes/lot.tsx', { id: `lot-${locale}` }),
   ])
 
 export default [

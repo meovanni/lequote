@@ -10,7 +10,7 @@ Decisioni: `../PRODUCT.md`, `../DESIGN.md`, `adr/`.
 - Test unitari e di componente (Vitest).
 
 ## Fase 2: back end e gestionale (in corso)
-Medusa v2 + Postgres; moduli Filiera (ADR 0002), Etichette (ADR 0005), contenuti (calendario, FAQ, testi); catalogo, ordini, clienti, magazzino per lotto; pagamenti Stripe + manuale.
+Medusa v2 + Postgres; moduli Filiera (ADR 0002), Etichette (ADR 0005), contenuti (calendario, FAQ, testi); catalogo, ordini, clienti, magazzino per lotto; pagamenti manuali (bonifico, al ritiro), Stripe rinviato.
 
 Fatto (2026-10-11):
 - `server/` con Medusa 2.21.2 e Postgres 17. In sviluppo Postgres gira su Windows senza Docker (`embedded-postgres`); in produzione resta in Docker.
@@ -42,7 +42,11 @@ Fatto (2026-10-14):
 - Pagamenti: due fornitori manuali in Medusa, bonifico (`pp_bonifico_lequote`) e al ritiro (`pp_ritiro_lequote`), così il metodo si legge su ogni ordine nel back office; l'incasso si registra con "Cattura". Su database esistenti li aggiunge alla regione lo script di migrazione `region-manual-payments` (gira con `npm run migrate`). Stripe resta pronto lato server con la chiave; il pagamento con carta nella vetrina si collega quando ci sono le chiavi di prova.
 - Gestionale (2026-10-14): lingua italiana impostata al primo accesso; nella scheda ordine il riquadro "Consegna e pagamento" (consegna, metodo di pagamento, telefono, cosa fare). Link "Area riservata" nel footer del sito verso /app.
 - Email d'ordine: conferma al cliente nella lingua in cui ha ordinato (con coordinate del bonifico o istruzioni per il ritiro) e avviso ai titolari (ORDER_ALERT_EMAIL) con il link all'ordine. Inviate con l'SMTP della casella esistente (SMTP_* in server/.env, ADR 0004); senza SMTP_HOST, in sviluppo, si salvano in server/.mail.
-- Da completare: pagine legali linkate dal checkout (passo 6), controllo lato server che il pagamento al ritiro valga solo con il ritiro (oggi lo impone la vetrina).
+- Pagamento con carta (Stripe) rinviato (2026-10-21): i titolari confermano che per ora bastano bonifico e pagamento al ritiro. Il server resta pronto con la chiave, la vetrina non lo mostra.
+- Controllo lato server (2026-10-21): alla chiusura del carrello il pagamento al ritiro vale solo se ogni consegna è un ritiro in sede (`server/src/workflows/hooks/complete-cart-validate.ts`), anche per chi chiama le API senza passare dalla vetrina.
+- QR del lotto (2026-10-21): nella scheda lotto del back office il riquadro "QR per l'etichetta" genera in locale (libreria `qrcode`, nessun servizio esterno) il QR verso `/lotto/<codice>`, scaricabile in SVG per la tipografia e in PNG. Correzione d'errore M, bordo bianco di 4 moduli; in stampa almeno 15 mm di lato. L'indirizzo viene da `STOREFRONT_URL` (obbligatoria in produzione). Lo stesso modulo servirà alle etichette (ADR 0005).
+- Pagina `/lotto/:codice` (2026-10-21) nelle tre lingue: campagna, fasi, analisi pubbliche, informazioni di legge; la ricerca nella sezione Filiera ora porta lì. Non prerenderizzata: in produzione Caddy deve servire `__spa-fallback.html` per i percorsi senza file (e inoltrare a Medusa anche `/filiera/*`, i referti pubblici). Lotto di prova per sviluppo e test: `npm run dev:lot` da `server/`.
+- Da completare: pagine legali linkate dal checkout (passo 6), funzione di recesso, test end-to-end.
 
 ## Fase 4: messa online
 VPS (ADR 0004), dopo la validazione legale da parte del consulente.
