@@ -89,3 +89,11 @@ describe('escapeHtml', () => {
     expect(escapeHtml(`<a href="x">'&'</a>`)).toBe('&lt;a href=&quot;x&quot;&gt;&#39;&amp;&#39;&lt;/a&gt;')
   })
 })
+
+describe('renderOwnerAlert, ordini del gestionale', () => {
+  it('dice chi ha inserito l’ordine e dove si registrano gli incassi', () => {
+    const email = renderOwnerAlert({ ...order, paymentMethod: null, insertedBy: 'Bruno' }, 'https://lequote.it/app/orders/order_1')
+    expect(email.text).toContain('inserito da Bruno')
+    expect(email.text).toContain('incassi registrati nel gestionale')
+  })
+})

@@ -34,6 +34,8 @@ export interface OrderEmailData {
   /** Indirizzo su una riga, vuoto per i ritiri. */
   address: string
   paymentMethod: PaymentMethod | null
+  /** Chi ha inserito l'ordine dal gestionale (agente o amministratore); assente per gli ordini dal sito. */
+  insertedBy?: string | null
   /** Funzione di recesso del sito per questo ordine (art. 54-bis Cod. Consumo), se nota. */
   withdrawalUrl?: string
 }
@@ -259,9 +261,9 @@ export function renderOwnerAlert(order: OrderEmailData, adminUrl: string): Rende
   const blocks: Block[] = [
     {
       rows: [
-        `Nuovo ordine n. ${order.displayId} dal sito: ${formatEuro('it', order.total)}.`,
+        `Nuovo ordine n. ${order.displayId} ${order.insertedBy ? `inserito da ${order.insertedBy}` : 'dal sito'}: ${formatEuro('it', order.total)}.`,
         `Cliente: ${order.customerName}, ${order.email}${order.phone ? `, ${order.phone}` : ''}`,
-        `Pagamento: ${order.paymentMethod ? PAYMENT_LABEL[order.paymentMethod] : 'non indicato'}`,
+        `Pagamento: ${order.paymentMethod ? PAYMENT_LABEL[order.paymentMethod] : order.insertedBy ? 'incassi registrati nel gestionale' : 'non indicato'}`,
         `Lingua del cliente: ${order.locale}`,
       ],
     },

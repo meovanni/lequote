@@ -1,13 +1,17 @@
 import { completeCartWorkflow } from '@medusajs/medusa/core-flows'
 import { ContainerRegistrationKeys, MedusaError } from '@medusajs/framework/utils'
-import { payAtPickupViolation } from '../../lib/checkout-rules'
+import { backofficeSecret, verifyBackofficeCart } from '../../lib/backoffice-signature'
+import { backofficePaymentViolation, payAtPickupViolation } from '../../lib/checkout-rules'
 
 type CartForValidation = {
+  id: string
+  metadata?: Record<string, unknown> | null
   shipping_methods?: ({ shipping_option_id?: string | null } | null)[] | null
   payment_collection?: { payment_sessions?: ({ provider_id?: string | null } | null)[] | null } | null
 }
 
-// Prima di creare l'ordine: il pagamento al ritiro vale solo con il ritiro in sede.
+// Prima di creare l'ordine: il pagamento al ritiro vale solo con il ritiro in sede, quello del
+// gestionale solo per i carrelli costruiti e firmati dal server.
 completeCartWorkflow.hooks.validate(async ({ cart }, { container }) => {
   const { shipping_methods, payment_collection } = cart as CartForValidation
   const providerIds = (payment_collection?.payment_sessions ?? []).flatMap((session) =>
@@ -28,7 +32,8 @@ completeCartWorkflow.hooks.validate(async ({ cart }, { container }) => {
     method?.shipping_option_id ? (codeById.get(method.shipping_option_id) ?? null) : null,
   )
 
-  const violation = payAtPickupViolation({ providerIds, optionCodes })
+  const signed = verifyBackofficeCart(cart.id, (cart as CartForValidation).metadata?.backoffice_signature, backofficeSecret())
+  const violation = backofficePaymentViolation({ providerIds, signed }) ?? payAtPickupViolation({ providerIds, optionCodes })
   if (violation) {
     throw new MedusaError(MedusaError.Types.NOT_ALLOWED, violation)
   }

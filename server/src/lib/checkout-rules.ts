@@ -4,6 +4,14 @@
 
 export const PAY_AT_PICKUP_PROVIDER_ID = 'pp_ritiro_lequote'
 export const BANK_TRANSFER_PROVIDER_ID = 'pp_bonifico_lequote'
+/** Ordini del gestionale: gli incassi si registrano a mano, anche ad acconti (modulo vendite). */
+export const BACKOFFICE_PROVIDER_ID = 'pp_gestionale_lequote'
+
+/** Il pagamento del gestionale vale solo per i carrelli che il server ha costruito e firmato. */
+export function backofficePaymentViolation({ providerIds, signed }: { providerIds: string[]; signed: boolean }): string | null {
+  if (!providerIds.includes(BACKOFFICE_PROVIDER_ID) || signed) return null
+  return 'Il pagamento del gestionale non è disponibile per gli ordini dal sito.'
+}
 
 /** Le opzioni di ritiro hanno codice "ritiro-…" (seed); tutte le altre sono spedizioni. */
 export function isPickupOptionCode(code: string | null | undefined): boolean {

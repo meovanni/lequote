@@ -72,3 +72,12 @@ export class BankTransferProvider extends ManualPaymentProvider {
 export class PayAtPickupProvider extends ManualPaymentProvider {
   static identifier = 'ritiro'
 }
+
+/**
+ * Ordini del gestionale (prenotazioni degli agenti, nuovi ordini dal back office): id
+ * `pp_gestionale_lequote`. Gli incassi, anche ad acconti, si registrano nel modulo vendite; solo i
+ * carrelli firmati dal server possono usarlo (lib/backoffice-signature.ts).
+ */
+export class BackofficePaymentProvider extends ManualPaymentProvider {
+  static identifier = 'gestionale'
+}

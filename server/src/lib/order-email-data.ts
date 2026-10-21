@@ -22,6 +22,7 @@ const ORDER_FIELDS = [
   'shipping_methods.name',
   'shipping_address.*',
   'payment_collections.payments.provider_id',
+  'metadata',
 ]
 
 interface RawOrder {
@@ -45,6 +46,7 @@ interface RawOrder {
     province: string | null
   } | null
   payment_collections: { payments: { provider_id: string }[] }[]
+  metadata: Record<string, unknown> | null
 }
 
 export function toOrderEmailData(order: RawOrder): OrderEmailData {
@@ -73,7 +75,14 @@ export function toOrderEmailData(order: RawOrder): OrderEmailData {
     deliveryName: order.shipping_methods[0]?.name ?? '',
     address: street ? [street, place].filter(Boolean).join(', ') : '',
     paymentMethod: PAYMENT_METHODS[order.payment_collections[0]?.payments[0]?.provider_id ?? ''] ?? null,
+    insertedBy: insertedByName(order.metadata),
   }
+}
+
+/** Nome di chi ha inserito l'ordine dal gestionale (metadata.inserted_by); null per gli ordini dal sito. */
+function insertedByName(metadata: Record<string, unknown> | null): string | null {
+  const insertedBy = metadata?.inserted_by as { name?: unknown } | undefined
+  return typeof insertedBy?.name === 'string' && insertedBy.name ? insertedBy.name : null
 }
 
 export async function loadOrderEmailData(container: MedusaContainer, id: string): Promise<OrderEmailData | null> {
