@@ -16,6 +16,11 @@ medusaIntegrationTestRunner({
       await ensureRoles(getContainer())
     })
 
+    it('registra all’avvio i permessi delle nostre sezioni (src/policies)', async () => {
+      const policies = await getContainer().resolve(Modules.RBAC).listRbacPolicies({})
+      expect(policies.map((policy) => policy.key)).toEqual(expect.arrayContaining(['filiera:read', 'supplier:update', 'withdrawal:read', 'agent:create', 'sales:read']))
+    })
+
     it('l’amministratore apre filiera, fornitori, recessi e ordini', async () => {
       const admin = await adminWithRoles(getContainer(), 'titolare@test.local')
       for (const path of ['/admin/filiera/lots', '/admin/filiera/registries/suppliers', '/admin/withdrawals', '/admin/orders']) {

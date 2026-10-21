@@ -14,6 +14,10 @@ const PAYMENT: Record<string, { label: string; todo: string }> = {
     label: 'Pagamento al ritiro',
     todo: 'Prepara l’ordine e avvisa il cliente. Quando ritira e paga, premi «Cattura pagamento» nella sezione Pagamenti.',
   },
+  pp_gestionale_lequote: {
+    label: 'Incassi registrati nel gestionale',
+    todo: 'Registra ogni incasso (acconti compresi) nel riquadro «Incassi»: al saldo il pagamento risulta incassato da solo.',
+  },
 }
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {

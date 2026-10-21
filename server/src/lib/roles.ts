@@ -1,5 +1,6 @@
 import type { MedusaContainer } from '@medusajs/framework/types'
 import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
+import { policyName } from '../policies/lequote'
 
 // Ruoli del back office (ruoli di Medusa, src/policies). Amministratore = il super admin che Medusa
 // crea da sé (tutti i permessi); Agente = solo l'area vendita /app/sell (risorsa "sales").
@@ -8,7 +9,7 @@ export const AGENT_ROLE_ID = 'role_agente'
 
 const AGENT_POLICIES = ['read', 'create', 'update', 'delete'].map((operation) => ({
   key: `sales:${operation}`,
-  name: `sales:${operation}`,
+  name: policyName('sales', operation),
   resource: 'sales',
   operation,
   description: `Area vendita degli agenti (/app/sell): ${operation}`,
