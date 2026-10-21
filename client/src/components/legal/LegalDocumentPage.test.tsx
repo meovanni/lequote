@@ -1,12 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
+import { MemoryRouter } from 'react-router'
 import { LocaleContext } from '@/i18n/LocaleContext'
 import { Footer } from '@/components/layout/Footer/Footer'
 import { LegalDocumentPage } from './LegalDocumentPage'
 
 describe('LegalDocumentPage', () => {
   it('mostra titolo, avviso di bozza, indice e fonti di ogni sezione', () => {
-    render(<LegalDocumentPage page="recesso" />)
+    render(
+      <MemoryRouter>
+        <LegalDocumentPage page="recesso" />
+      </MemoryRouter>,
+    )
     expect(screen.getByRole('heading', { level: 1, name: 'Diritto di recesso' })).toBeInTheDocument()
     expect(screen.getByRole('note')).toHaveTextContent(/bozza/i)
     expect(screen.getByText('Ultimo aggiornamento: 21 ottobre 2026')).toBeInTheDocument()
@@ -41,6 +46,6 @@ describe('Footer, link legali', () => {
     const hrefs = within(nav)
       .getAllByRole('link')
       .map((link) => link.getAttribute('href'))
-    expect(hrefs).toEqual(['/de/condizioni-di-vendita', '/de/recesso', '/de/privacy', '/de/cookie'])
+    expect(hrefs).toEqual(['/de/condizioni-di-vendita', '/de/recesso', '/de/privacy', '/de/cookie', '/de/recesso?apri=1'])
   })
 })

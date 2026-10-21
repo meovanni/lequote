@@ -34,6 +34,8 @@ export interface OrderEmailData {
   /** Indirizzo su una riga, vuoto per i ritiri. */
   address: string
   paymentMethod: PaymentMethod | null
+  /** Funzione di recesso del sito per questo ordine (art. 54-bis Cod. Consumo), se nota. */
+  withdrawalUrl?: string
 }
 
 export interface RenderedEmail {
@@ -90,6 +92,7 @@ const COPY = {
     bankNote: "Prepariamo l'ordine quando il bonifico risulta accreditato.",
     pickupPayment: "Paghi in azienda quando ritiri l'ordine: [contanti e/o carta, da confermare].",
     pickupNote: 'Ti scriviamo quando è pronto per il ritiro. Orari: [da confermare].',
+    withdrawal: (url: string) => `Puoi recedere entro 14 giorni dal ricevimento: recedere dal contratto qui, ${url}`,
     closing: 'Per qualsiasi domanda rispondi pure a questa email.',
     signature: 'Le Quote, Azienda Agricola',
   },
@@ -114,6 +117,7 @@ const COPY = {
     bankNote: 'We prepare the order once the transfer has cleared.',
     pickupPayment: 'Pay at the farm when you collect the order: [cash and/or card, to be confirmed].',
     pickupNote: 'We will write to you when it is ready for pickup. Hours: [to be confirmed].',
+    withdrawal: (url: string) => `You may withdraw within 14 days of receipt: withdraw from contract here, ${url}`,
     closing: 'If you have any questions, just reply to this email.',
     signature: 'Le Quote, Azienda Agricola',
   },
@@ -138,6 +142,7 @@ const COPY = {
     bankNote: 'Wir bereiten die Bestellung vor, sobald die Überweisung eingegangen ist.',
     pickupPayment: 'Sie bezahlen auf dem Hof bei der Abholung: [bar und/oder Karte, noch zu bestätigen].',
     pickupNote: 'Wir schreiben Ihnen, sobald die Bestellung zur Abholung bereit ist. Öffnungszeiten: [noch zu bestätigen].',
+    withdrawal: (url: string) => `Sie können binnen 14 Tagen ab Erhalt widerrufen: Vertrag hier widerrufen, ${url}`,
     closing: 'Bei Fragen antworten Sie einfach auf diese E-Mail.',
     signature: 'Le Quote, Azienda Agricola',
   },
@@ -242,6 +247,7 @@ export function renderCustomerConfirmation(order: OrderEmailData): RenderedEmail
     ...summaryBlocks(order, locale),
     ...payment,
     ...pickup,
+    ...(order.withdrawalUrl ? [{ rows: [copy.withdrawal(order.withdrawalUrl)] }] : []),
     { rows: [copy.closing, copy.signature] },
   ]
   return { subject: copy.subject(order.displayId), text: toText(blocks), html: toHtml(blocks) }

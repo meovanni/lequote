@@ -34,6 +34,26 @@ export interface LegalContent {
     /** Nome breve di ogni pagina, per il footer. */
     linkLabels: Record<LegalPage, string>
   }
+  /** Funzione di recesso online (Cod. Consumo art. 54-bis): diciture dei pulsanti prescritte. */
+  withdrawalForm: {
+    openButton: string
+    confirmButton: string
+    intro: string
+    name: string
+    email: string
+    emailHelp: string
+    order: string
+    orderHelp: string
+    details: string
+    detailsHelp: string
+    required: string
+    invalidEmail: string
+    sending: string
+    doneTitle: string
+    doneBody: (email: string, sentAt: string) => string
+    error: string
+    tooMany: string
+  }
   documents: Record<LegalPage, LegalDocument>
 }
 

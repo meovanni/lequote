@@ -36,6 +36,12 @@ describe('toEmailLocale', () => {
 })
 
 describe('renderCustomerConfirmation', () => {
+  it('porta alla funzione di recesso con la dicitura di legge, se il link è noto', () => {
+    const withLink = renderCustomerConfirmation({ ...order, withdrawalUrl: 'https://lequote.it/recesso?ordine=12' })
+    expect(withLink.text).toContain('recedere dal contratto qui, https://lequote.it/recesso?ordine=12')
+    expect(renderCustomerConfirmation(order).text).not.toContain('recedere')
+  })
+
   it('in italiano riporta numero, prodotti, totale e coordinate del bonifico', () => {
     const email = renderCustomerConfirmation(order)
     expect(email.subject).toContain('n. 12')

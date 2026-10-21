@@ -23,6 +23,26 @@ export const legalEn: LegalContent = {
     },
   },
 
+  withdrawalForm: {
+    openButton: 'Withdraw from contract here',
+    confirmButton: 'Confirm withdrawal',
+    intro: 'Fill in the details below and press “Confirm withdrawal”. We immediately email you a receipt with the content of your statement and the date and time it was sent.',
+    name: 'Full name',
+    email: 'Email',
+    emailHelp: 'This is where you receive the withdrawal receipt.',
+    order: 'Order number',
+    orderHelp: 'You find it in the confirmation email, for example “Order no. 12”.',
+    details: 'Products to return or notes (optional)',
+    detailsHelp: 'Leave empty if you are withdrawing from the whole order.',
+    required: 'Required field.',
+    invalidEmail: 'Invalid email address.',
+    sending: 'Sending…',
+    doneTitle: 'Withdrawal sent',
+    doneBody: (email, sentAt) => `We received your withdrawal statement on ${sentAt}. The receipt is on its way to ${email}: if you can’t find it, check your spam folder.`,
+    error: 'Sending failed. Please try again, or email your statement to info@lequote.it: it is still valid as long as it is sent within the 14 days.',
+    tooMany: 'Too many submissions from this connection. Try again in an hour, or write to info@lequote.it.',
+  },
+
   documents: {
     'condizioni-di-vendita': {
       title: 'Terms of sale',
@@ -142,10 +162,10 @@ export const legalEn: LegalContent = {
           id: 'come',
           heading: 'How to tell us',
           body: [
-            `Send us a clear statement before the deadline: by email to ${SELLER.email}, by certified email to ${SELLER.pec} or by letter to ${SELLER.address}. You may use the model form below, but you do not have to. We confirm receipt without delay.`,
+            `The simplest way is the “Withdraw from contract here” button at the top of this page: you get the receipt by email straight away. Alternatively, send us a clear statement before the deadline: by email to ${SELLER.email}, by certified email to ${SELLER.pec} or by letter to ${SELLER.address}. You may use the model form below, but you do not have to. We confirm receipt without delay.`,
             'It is enough for your message to be sent within the 14 days.',
           ],
-          sources: ['Codice del Consumo, art. 54'],
+          sources: ['Codice del Consumo, artt. 54 e 54-bis (D.Lgs. 209/2025)'],
         },
         {
           id: 'restituzione',

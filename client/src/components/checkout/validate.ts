@@ -32,7 +32,7 @@ export const EMPTY_CHECKOUT: CheckoutValues = {
   terms: false,
 }
 
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+export const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const POSTAL_CODE = /^\d{5}$/
 const PROVINCE = /^[A-Za-z]{2}$/
 

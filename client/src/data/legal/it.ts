@@ -24,6 +24,26 @@ export const legalIt: LegalContent = {
     },
   },
 
+  withdrawalForm: {
+    openButton: 'Recedere dal contratto qui',
+    confirmButton: 'Conferma recesso',
+    intro: 'Compila i dati qui sotto e premi “Conferma recesso”. Ti mandiamo subito per email la ricevuta con il contenuto della dichiarazione, la data e l’ora di invio.',
+    name: 'Nome e cognome',
+    email: 'Email',
+    emailHelp: 'Qui ricevi la ricevuta del recesso.',
+    order: 'Numero dell’ordine',
+    orderHelp: 'Lo trovi nell’email di conferma, per esempio “Ordine n. 12”.',
+    details: 'Prodotti da restituire o note (facoltativo)',
+    detailsHelp: 'Lascia vuoto se recedi dall’intero ordine.',
+    required: 'Campo obbligatorio.',
+    invalidEmail: 'Indirizzo email non valido.',
+    sending: 'Invio in corso…',
+    doneTitle: 'Recesso inviato',
+    doneBody: (email, sentAt) => `Abbiamo ricevuto la tua dichiarazione di recesso il ${sentAt}. La ricevuta è in arrivo a ${email}: se non la trovi, controlla la posta indesiderata.`,
+    error: 'L’invio non è riuscito. Riprova, oppure manda la dichiarazione per email a info@lequote.it: vale comunque, purché parta entro i 14 giorni.',
+    tooMany: 'Troppi invii da questa connessione. Riprova tra un’ora, oppure scrivici a info@lequote.it.',
+  },
+
   documents: {
     'condizioni-di-vendita': {
       title: 'Condizioni di vendita',
@@ -143,10 +163,10 @@ export const legalIt: LegalContent = {
           id: 'come',
           heading: 'Come comunicarlo',
           body: [
-            `Inviaci una dichiarazione chiara prima della scadenza: per email a ${SELLER.email}, via PEC a ${SELLER.pec} o per lettera a ${SELLER.address}. Puoi usare il modulo tipo qui sotto, ma non è obbligatorio. Ti confermiamo la ricezione senza ritardo.`,
+            `Il modo più semplice è il pulsante “Recedere dal contratto qui” in cima a questa pagina: ricevi subito la ricevuta per email. In alternativa inviaci una dichiarazione chiara prima della scadenza: per email a ${SELLER.email}, via PEC a ${SELLER.pec} o per lettera a ${SELLER.address}. Puoi usare il modulo tipo qui sotto, ma non è obbligatorio. Ti confermiamo la ricezione senza ritardo.`,
             'Basta che la comunicazione parta entro i 14 giorni.',
           ],
-          sources: ['Codice del Consumo, art. 54'],
+          sources: ['Codice del Consumo, artt. 54 e 54-bis (D.Lgs. 209/2025)'],
         },
         {
           id: 'restituzione',

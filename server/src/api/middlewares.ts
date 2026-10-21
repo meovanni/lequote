@@ -9,6 +9,8 @@ import {
   StageTemplateCreate,
   StageTemplateUpdate,
 } from './admin/filiera/validators'
+import { WithdrawalUpdate } from './admin/withdrawals/validators'
+import { WithdrawalCreate } from './store/withdrawals/validators'
 
 // Le rotte /admin richiedono già l'accesso al back office; qui si aggiunge la validazione dei corpi.
 // Le anagrafiche (/admin/filiera/registries/:kind) si validano nella rotta, perché lo schema
@@ -29,5 +31,7 @@ export default defineMiddlewares({
     },
     { matcher: '/admin/filiera/stage-templates', method: 'POST', middlewares: [validateAndTransformBody(StageTemplateCreate)] },
     { matcher: '/admin/filiera/stage-templates/:id', method: 'POST', middlewares: [validateAndTransformBody(StageTemplateUpdate)] },
+    { matcher: '/store/withdrawals', method: 'POST', middlewares: [validateAndTransformBody(WithdrawalCreate)] },
+    { matcher: '/admin/withdrawals/:id', method: 'POST', middlewares: [validateAndTransformBody(WithdrawalUpdate)] },
   ],
 })

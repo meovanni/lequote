@@ -1,6 +1,7 @@
 import type { MedusaContainer } from '@medusajs/framework/types'
 import { ContainerRegistrationKeys } from '@medusajs/framework/utils'
-import { PAYMENT_METHODS, toEmailLocale, type OrderEmailData } from './order-emails'
+import { storefrontUrl } from '../modules/filiera/lib/lot-qr'
+import { PAYMENT_METHODS, toEmailLocale, type EmailLocale, type OrderEmailData } from './order-emails'
 
 // Dati di un ordine come li usano le email (conferma, avviso ai titolari, annullamento).
 
@@ -79,7 +80,20 @@ export async function loadOrderEmailData(container: MedusaContainer, id: string)
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
   const { data } = await query.graph({ entity: 'order', fields: ORDER_FIELDS, filters: { id } })
   const order = data[0] as unknown as RawOrder | undefined
-  return order ? toOrderEmailData(order) : null
+  if (!order) return null
+  const emailData = toOrderEmailData(order)
+  return { ...emailData, withdrawalUrl: withdrawalUrl(emailData.locale, emailData.displayId) }
+}
+
+const LOCALE_PREFIX: Record<EmailLocale, string> = { it: '', en: '/en', de: '/de' }
+
+/** Pagina del sito con la funzione di recesso già aperta su questo ordine; assente se manca STOREFRONT_URL. */
+function withdrawalUrl(locale: EmailLocale, displayId: number): string | undefined {
+  try {
+    return `${storefrontUrl()}${LOCALE_PREFIX[locale]}/recesso?ordine=${displayId}`
+  } catch {
+    return undefined
+  }
 }
 
 /** Link all'ordine nel gestionale, per gli avvisi ai titolari. */

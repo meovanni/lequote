@@ -5,6 +5,7 @@ import { localizePath } from '@/i18n/locales'
 import { formatPrice } from '@/lib/price'
 import { lineLabel } from '@/cart/lineLabel'
 import { BANK_TRANSFER } from '@/data/business'
+import { legalByLocale } from '@/data/legal'
 import { retrieveOrder, type OrderSummary } from '@/lib/medusa/cart'
 import { CartTotals } from '@/components/cart/CartTotals'
 import styles from '@/components/cart/Cart.module.css'
@@ -139,6 +140,12 @@ export function OrderConfirmation() {
             <a href={localizePath(locale, '/')} className={`${styles.submit} btn btn-ghost mono-label`}>
               {orderUi.backHome}
             </a>
+            {/* Funzione di recesso raggiungibile anche dall'ordine, con il numero già compilato. */}
+            <p className={`${styles.status} body-sm`}>
+              <a href={`${localizePath(locale, '/recesso')}?ordine=${order.displayId}`}>
+                {legalByLocale[locale].withdrawalForm.openButton}
+              </a>
+            </p>
           </div>
           <aside className={styles.aside}>
             <CartTotals

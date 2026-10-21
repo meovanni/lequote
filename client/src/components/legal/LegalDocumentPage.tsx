@@ -1,6 +1,7 @@
 import { useLocale } from '@/i18n/LocaleContext'
 import { formatIsoDate } from '@/lib/date'
 import { LEGAL_UPDATED, legalByLocale, type LegalBlock, type LegalPage } from '@/data/legal'
+import { WithdrawalForm } from './WithdrawalForm'
 import styles from './LegalDocumentPage.module.css'
 
 function Block({ block }: { block: LegalBlock }) {
@@ -34,6 +35,8 @@ export function LegalDocumentPage({ page }: { page: LegalPage }) {
           <p className={`${styles.muted} specimen`}>{ui.updated(formatIsoDate(locale, LEGAL_UPDATED))}</p>
           {document.intro && <p className="body-lead">{document.intro}</p>}
         </header>
+
+        {page === 'recesso' && <WithdrawalForm />}
 
         <nav aria-label={ui.tocLabel} className={styles.toc}>
           <p className={`${styles.muted} mono-label`}>{ui.tocLabel}</p>

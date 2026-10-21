@@ -78,3 +78,27 @@
   color: var(--surface-text-muted);
   overflow-wrap: anywhere;
 }
+
+/* Funzione di recesso (art. 54-bis): in evidenza in cima alla pagina Recesso. */
+.withdrawal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1.5px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-card);
+}
+
+.withdrawal > div {
+  align-self: stretch;
+}
+
+.trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

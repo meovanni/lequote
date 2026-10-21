@@ -11,7 +11,7 @@ import styles from './Footer.module.css'
 export function Footer() {
   const { contatti, footer, footerNavItems, ui } = useContent()
   const locale = useLocale()
-  const legal = legalByLocale[locale].ui
+  const legal = legalByLocale[locale]
   return (
     <footer id="contatti" className={styles.footer} data-surface="dark">
       <div className={styles.contact}>
@@ -60,15 +60,21 @@ export function Footer() {
 
         <div className={styles.bottom}>
           <p className={`${styles.legal} body-sm`}>{footer.legal}</p>
-          <nav aria-label={legal.footerNavLabel}>
+          <nav aria-label={legal.ui.footerNavLabel}>
             <ul className={styles.legalLinks}>
               {LEGAL_PAGES.map((page) => (
                 <li key={page}>
                   <a href={localizePath(locale, `/${page}`)} className="body-sm">
-                    {legal.linkLabels[page]}
+                    {legal.ui.linkLabels[page]}
                   </a>
                 </li>
               ))}
+              {/* Funzione di recesso sempre raggiungibile (art. 54-bis): apre direttamente il modulo. */}
+              <li>
+                <a href={`${localizePath(locale, '/recesso')}?apri=1`} className="body-sm">
+                  {legal.withdrawalForm.openButton}
+                </a>
+              </li>
             </ul>
           </nav>
           {/* Accesso al gestionale per i titolari: discreto, fuori dalla barra dei clienti. */}

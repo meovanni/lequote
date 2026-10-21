@@ -23,6 +23,26 @@ export const legalDe: LegalContent = {
     },
   },
 
+  withdrawalForm: {
+    openButton: 'Vertrag hier widerrufen',
+    confirmButton: 'Widerruf bestätigen',
+    intro: 'Füllen Sie die Angaben unten aus und klicken Sie auf „Widerruf bestätigen“. Wir senden Ihnen sofort per E-Mail eine Eingangsbestätigung mit dem Inhalt Ihrer Erklärung sowie Datum und Uhrzeit der Übermittlung.',
+    name: 'Vor- und Nachname',
+    email: 'E-Mail',
+    emailHelp: 'Hierhin senden wir die Eingangsbestätigung.',
+    order: 'Bestellnummer',
+    orderHelp: 'Sie finden sie in der Bestätigungs-E-Mail, zum Beispiel „Bestellung Nr. 12“.',
+    details: 'Zurückzusendende Produkte oder Hinweise (optional)',
+    detailsHelp: 'Leer lassen, wenn Sie die gesamte Bestellung widerrufen.',
+    required: 'Pflichtfeld.',
+    invalidEmail: 'Ungültige E-Mail-Adresse.',
+    sending: 'Wird gesendet…',
+    doneTitle: 'Widerruf gesendet',
+    doneBody: (email, sentAt) => `Ihre Widerrufserklärung ist am ${sentAt} eingegangen. Die Bestätigung ist unterwegs an ${email}: Falls Sie sie nicht finden, sehen Sie im Spam-Ordner nach.`,
+    error: 'Das Senden ist fehlgeschlagen. Bitte versuchen Sie es erneut oder senden Sie die Erklärung per E-Mail an info@lequote.it: Sie gilt trotzdem, sofern sie innerhalb der 14 Tage abgeschickt wird.',
+    tooMany: 'Zu viele Übermittlungen von dieser Verbindung. Versuchen Sie es in einer Stunde erneut oder schreiben Sie an info@lequote.it.',
+  },
+
   documents: {
     'condizioni-di-vendita': {
       title: 'Verkaufsbedingungen',
@@ -142,10 +162,10 @@ export const legalDe: LegalContent = {
           id: 'come',
           heading: 'Wie Sie uns informieren',
           body: [
-            `Senden Sie uns vor Ablauf der Frist eine eindeutige Erklärung: per E-Mail an ${SELLER.email}, per zertifizierter E-Mail an ${SELLER.pec} oder per Brief an ${SELLER.address}. Sie können das Musterformular unten verwenden, müssen es aber nicht. Wir bestätigen den Eingang unverzüglich.`,
+            `Am einfachsten ist die Schaltfläche „Vertrag hier widerrufen“ oben auf dieser Seite: Sie erhalten die Bestätigung sofort per E-Mail. Alternativ senden Sie uns vor Ablauf der Frist eine eindeutige Erklärung: per E-Mail an ${SELLER.email}, per zertifizierter E-Mail an ${SELLER.pec} oder per Brief an ${SELLER.address}. Sie können das Musterformular unten verwenden, müssen es aber nicht. Wir bestätigen den Eingang unverzüglich.`,
             'Es genügt, dass Ihre Erklärung innerhalb der 14 Tage abgesendet wird.',
           ],
-          sources: ['Codice del Consumo, art. 54'],
+          sources: ['Codice del Consumo, artt. 54 e 54-bis (D.Lgs. 209/2025)'],
         },
         {
           id: 'restituzione',
