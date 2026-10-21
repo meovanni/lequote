@@ -10,43 +10,10 @@ const lines = z
   .min(1)
   .max(50)
 
+// Ordini del back office e prenotazioni degli agenti: basta il nome o il cognome del cliente e
+// almeno un prodotto. Il resto è facoltativo; i dati indicati devono comunque essere validi
+// (P.IVA, email, codice fiscale). Senza consegna si usa il ritiro in sede.
 const customer = z
-  .object({
-    kind: z.enum(['privato', 'azienda']),
-    first_name: text,
-    last_name: text,
-    company: optionalText,
-    vat_number: z.string().trim().regex(/^\d{11}$/, 'Partita IVA di 11 cifre').nullish(),
-    fiscal_code: z.string().trim().toUpperCase().regex(/^[A-Z0-9]{11,16}$/, 'Codice fiscale non valido').nullish(),
-    email: z.string().trim().email().max(320).nullish(),
-    phone: z.string().trim().min(5).max(50),
-    address_1: optionalText,
-    postal_code: z.string().trim().max(10).nullish(),
-    city: optionalText,
-    province: z.string().trim().max(4).nullish(),
-  })
-  .superRefine((value, ctx) => {
-    if (value.kind === 'azienda' && !value.company) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['company'], message: 'Per un’azienda serve la ragione sociale.' })
-    }
-    if (value.kind === 'azienda' && !value.vat_number) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['vat_number'], message: 'Per un’azienda serve la partita IVA.' })
-    }
-  })
-
-export const BookingCreate = z
-  .object({
-    customer,
-    items: lines.refine((items) => items.some((item) => item.quantity > 0), 'Serve almeno un prodotto.'),
-    shipping_option_id: id,
-    notes: z.string().trim().max(1000).nullish(),
-    agent_id: id.nullish(),
-  })
-  .strict()
-
-// Prenotazioni degli agenti: basta il nome o il cognome del cliente e almeno un prodotto. Il resto
-// è facoltativo; i dati indicati devono comunque essere validi (P.IVA, email, codice fiscale).
-const agentCustomer = z
   .object({
     kind: z.enum(['privato', 'azienda']).default('privato'),
     first_name: optionalText,
@@ -68,12 +35,15 @@ const agentCustomer = z
 
 export const SellBookingCreate = z
   .object({
-    customer: agentCustomer,
+    customer,
     items: lines.refine((items) => items.some((item) => item.quantity > 0), 'Serve almeno un prodotto.'),
     shipping_option_id: id.nullish(),
     notes: z.string().trim().max(1000).nullish(),
   })
   .strict()
+
+/** Come la prenotazione dell'agente, più l'agente a cui attribuire la vendita. */
+export const BookingCreate = SellBookingCreate.extend({ agent_id: id.nullish() }).strict()
 
 export const BookingUpdate = z
   .object({

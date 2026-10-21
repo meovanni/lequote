@@ -156,11 +156,28 @@ medusaIntegrationTestRunner({
       expect(empty.status).toBe(400)
     })
 
-    it('il nuovo ordine dal back office chiede ancora i dati completi (P.IVA per le aziende)', async () => {
-      const response = await newBooking(admin, '/admin/backoffice/orders', {
-        customer: { kind: 'azienda', first_name: 'Mario', last_name: 'Rossi', company: 'Bottega Rossi srl', phone: '3331112222' },
-      }).catch(fail)
-      expect(response.status).toBe(400)
+    it('anche per il nuovo ordine dal back office bastano il nome o il cognome e un prodotto', async () => {
+      const { data: catalog } = await api.get('/admin/backoffice/catalog', admin)
+      const olio = catalog.variants.find((variant: { sku: string }) => variant.sku === 'OLIO-750ML')
+      const quick = await api.post('/admin/backoffice/orders', { customer: { first_name: 'Anna' }, items: [{ variant_id: olio.variantId, quantity: 1 }] }, admin)
+      expect(quick.status).toBe(201)
+      const { data: detail } = await api.get(`/admin/backoffice/orders/${quick.data.order_id}`, admin)
+      expect(detail.booking.customer).toBe('Anna')
+      expect(detail.booking.delivery).toMatch(/^Ritiro a /)
+
+      const company = await api.post(
+        '/admin/backoffice/orders',
+        { customer: { kind: 'azienda', company: 'Bottega Rossi srl', last_name: 'Rossi' }, items: [{ variant_id: olio.variantId, quantity: 1 }] },
+        admin,
+      )
+      expect(company.status).toBe(201)
+
+      const nameless = await api.post('/admin/backoffice/orders', { customer: { phone: '333' }, items: [{ variant_id: olio.variantId, quantity: 1 }] }, admin).catch(fail)
+      expect(nameless.status).toBe(400)
+      const badVat = await api
+        .post('/admin/backoffice/orders', { customer: { last_name: 'Rossi', vat_number: '123' }, items: [{ variant_id: olio.variantId, quantity: 1 }] }, admin)
+        .catch(fail)
+      expect(badVat.status).toBe(400)
     })
   },
 })

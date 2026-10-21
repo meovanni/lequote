@@ -28,19 +28,20 @@ type BookingFormProps = {
   catalog: Catalog
   /** Solo nel back office: a quale agente attribuire la vendita. */
   showAgent?: boolean
-  /** Area vendita degli agenti: bastano nome o cognome e un prodotto, il resto è facoltativo. */
-  relaxed?: boolean
   submitting: boolean
   submitLabel: string
   onSubmit: (body: Record<string, unknown>) => void
 }
 
-/** Cliente (privato o azienda), prodotti, consegna e note di un nuovo ordine o prenotazione. */
-export function BookingForm({ catalog, showAgent = false, relaxed = false, submitting, submitLabel, onSubmit }: BookingFormProps) {
+/**
+ * Cliente (privato o azienda), prodotti, consegna e note di un nuovo ordine o prenotazione.
+ * Bastano il nome o il cognome del cliente e un prodotto: il resto è facoltativo.
+ */
+export function BookingForm({ catalog, showAgent = false, submitting, submitLabel, onSubmit }: BookingFormProps) {
   const [kind, setKind] = useState<'privato' | 'azienda'>('privato')
   const [customer, setCustomer] = useState<Customer>(EMPTY)
   const [quantities, setQuantities] = useState<Record<string, string>>({})
-  const [deliveryId, setDeliveryId] = useState(relaxed ? NONE : (catalog.delivery_options[0]?.id ?? ''))
+  const [deliveryId, setDeliveryId] = useState(NONE)
   const [agentId, setAgentId] = useState(NONE)
   const [notes, setNotes] = useState('')
 
@@ -50,20 +51,16 @@ export function BookingForm({ catalog, showAgent = false, relaxed = false, submi
     .filter((line) => line.quantity > 0)
   const estimate = lines.reduce((sum, line) => sum + (line.variant.price ?? 0) * line.quantity, 0)
   const business = kind === 'azienda'
-  const named = relaxed ? customer.first_name.trim() || customer.last_name.trim() : customer.first_name.trim() && customer.last_name.trim()
-  const ready =
-    named &&
-    lines.length > 0 &&
-    (relaxed || (customer.phone.trim() && deliveryId && (!business || (customer.company.trim() && customer.vat_number.trim()))))
+  const ready = Boolean(customer.first_name.trim() || customer.last_name.trim()) && lines.length > 0
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
     onSubmit({
       customer: {
         kind,
-        first_name: relaxed ? orNull(customer.first_name) : customer.first_name.trim(),
-        last_name: relaxed ? orNull(customer.last_name) : customer.last_name.trim(),
-        phone: relaxed ? orNull(customer.phone) : customer.phone.trim(),
+        first_name: orNull(customer.first_name),
+        last_name: orNull(customer.last_name),
+        phone: orNull(customer.phone),
         company: business ? orNull(customer.company) : null,
         vat_number: business ? orNull(customer.vat_number) : null,
         fiscal_code: orNull(customer.fiscal_code),
@@ -88,11 +85,9 @@ export function BookingForm({ catalog, showAgent = false, relaxed = false, submi
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-6">
-      {relaxed && (
-        <Text size="small" className="text-ui-fg-subtle">
-          Bastano il nome o il cognome del cliente e almeno un prodotto: il resto si può aggiungere dopo.
-        </Text>
-      )}
+      <Text size="small" className="text-ui-fg-subtle">
+        Bastano il nome o il cognome del cliente e almeno un prodotto: il resto si può aggiungere dopo.
+      </Text>
       <section className="flex flex-col gap-4">
         <RadioGroup value={kind} onValueChange={(value) => setKind(value as 'privato' | 'azienda')} className="flex gap-6">
           <div className="flex items-center gap-2">
@@ -163,7 +158,7 @@ export function BookingForm({ catalog, showAgent = false, relaxed = false, submi
               <Select.Value placeholder="Scegli" />
             </Select.Trigger>
             <Select.Content>
-              {relaxed && <Select.Item value={NONE}>Da definire (ritiro in sede)</Select.Item>}
+              <Select.Item value={NONE}>Da definire (ritiro in sede)</Select.Item>
               {catalog.delivery_options.map((option) => (
                 <Select.Item key={option.id} value={option.id}>
                   {option.name}
