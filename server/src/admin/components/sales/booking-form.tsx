@@ -28,17 +28,19 @@ type BookingFormProps = {
   catalog: Catalog
   /** Solo nel back office: a quale agente attribuire la vendita. */
   showAgent?: boolean
+  /** Area vendita degli agenti: bastano nome o cognome e un prodotto, il resto è facoltativo. */
+  relaxed?: boolean
   submitting: boolean
   submitLabel: string
   onSubmit: (body: Record<string, unknown>) => void
 }
 
 /** Cliente (privato o azienda), prodotti, consegna e note di un nuovo ordine o prenotazione. */
-export function BookingForm({ catalog, showAgent = false, submitting, submitLabel, onSubmit }: BookingFormProps) {
+export function BookingForm({ catalog, showAgent = false, relaxed = false, submitting, submitLabel, onSubmit }: BookingFormProps) {
   const [kind, setKind] = useState<'privato' | 'azienda'>('privato')
   const [customer, setCustomer] = useState<Customer>(EMPTY)
   const [quantities, setQuantities] = useState<Record<string, string>>({})
-  const [deliveryId, setDeliveryId] = useState(catalog.delivery_options[0]?.id ?? '')
+  const [deliveryId, setDeliveryId] = useState(relaxed ? NONE : (catalog.delivery_options[0]?.id ?? ''))
   const [agentId, setAgentId] = useState(NONE)
   const [notes, setNotes] = useState('')
 
@@ -48,22 +50,20 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
     .filter((line) => line.quantity > 0)
   const estimate = lines.reduce((sum, line) => sum + (line.variant.price ?? 0) * line.quantity, 0)
   const business = kind === 'azienda'
+  const named = relaxed ? customer.first_name.trim() || customer.last_name.trim() : customer.first_name.trim() && customer.last_name.trim()
   const ready =
-    customer.first_name.trim() &&
-    customer.last_name.trim() &&
-    customer.phone.trim() &&
+    named &&
     lines.length > 0 &&
-    deliveryId &&
-    (!business || (customer.company.trim() && customer.vat_number.trim()))
+    (relaxed || (customer.phone.trim() && deliveryId && (!business || (customer.company.trim() && customer.vat_number.trim()))))
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
     onSubmit({
       customer: {
         kind,
-        first_name: customer.first_name.trim(),
-        last_name: customer.last_name.trim(),
-        phone: customer.phone.trim(),
+        first_name: relaxed ? orNull(customer.first_name) : customer.first_name.trim(),
+        last_name: relaxed ? orNull(customer.last_name) : customer.last_name.trim(),
+        phone: relaxed ? orNull(customer.phone) : customer.phone.trim(),
         company: business ? orNull(customer.company) : null,
         vat_number: business ? orNull(customer.vat_number) : null,
         fiscal_code: orNull(customer.fiscal_code),
@@ -74,7 +74,7 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
         province: orNull(customer.province),
       },
       items: lines.map((line) => ({ variant_id: line.variant.variantId, quantity: line.quantity })),
-      shipping_option_id: deliveryId,
+      ...(deliveryId !== NONE ? { shipping_option_id: deliveryId } : {}),
       notes: orNull(notes),
       ...(showAgent && agentId !== NONE ? { agent_id: agentId } : {}),
     })
@@ -88,6 +88,11 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-6">
+      {relaxed && (
+        <Text size="small" className="text-ui-fg-subtle">
+          Bastano il nome o il cognome del cliente e almeno un prodotto: il resto si può aggiungere dopo.
+        </Text>
+      )}
       <section className="flex flex-col gap-4">
         <RadioGroup value={kind} onValueChange={(value) => setKind(value as 'privato' | 'azienda')} className="flex gap-6">
           <div className="flex items-center gap-2">
@@ -158,6 +163,7 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
               <Select.Value placeholder="Scegli" />
             </Select.Trigger>
             <Select.Content>
+              {relaxed && <Select.Item value={NONE}>Da definire (ritiro in sede)</Select.Item>}
               {catalog.delivery_options.map((option) => (
                 <Select.Item key={option.id} value={option.id}>
                   {option.name}

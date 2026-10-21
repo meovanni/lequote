@@ -44,6 +44,37 @@ export const BookingCreate = z
   })
   .strict()
 
+// Prenotazioni degli agenti: basta il nome o il cognome del cliente e almeno un prodotto. Il resto
+// è facoltativo; i dati indicati devono comunque essere validi (P.IVA, email, codice fiscale).
+const agentCustomer = z
+  .object({
+    kind: z.enum(['privato', 'azienda']).default('privato'),
+    first_name: optionalText,
+    last_name: optionalText,
+    company: optionalText,
+    vat_number: z.string().trim().regex(/^\d{11}$/, 'Partita IVA di 11 cifre').nullish(),
+    fiscal_code: z.string().trim().toUpperCase().regex(/^[A-Z0-9]{11,16}$/, 'Codice fiscale non valido').nullish(),
+    email: z.string().trim().email().max(320).nullish(),
+    phone: z.string().trim().max(50).nullish(),
+    address_1: optionalText,
+    postal_code: z.string().trim().max(10).nullish(),
+    city: optionalText,
+    province: z.string().trim().max(4).nullish(),
+  })
+  .refine((value) => Boolean(value.first_name || value.last_name), {
+    path: ['first_name'],
+    message: 'Serve almeno il nome o il cognome del cliente.',
+  })
+
+export const SellBookingCreate = z
+  .object({
+    customer: agentCustomer,
+    items: lines.refine((items) => items.some((item) => item.quantity > 0), 'Serve almeno un prodotto.'),
+    shipping_option_id: id.nullish(),
+    notes: z.string().trim().max(1000).nullish(),
+  })
+  .strict()
+
 export const BookingUpdate = z
   .object({
     items: lines.optional(),

@@ -65,7 +65,7 @@ const SellPage = () => {
 
           <Tabs.Content value="nuova" className="px-6 py-6">
             {catalog.data ? (
-              <BookingForm catalog={catalog.data} submitting={action.isPending} submitLabel="Inserisci prenotazione" onSubmit={create} />
+              <BookingForm catalog={catalog.data} relaxed submitting={action.isPending} submitLabel="Inserisci prenotazione" onSubmit={create} />
             ) : (
               <Text className="text-ui-fg-subtle">Caricamento del catalogo…</Text>
             )}

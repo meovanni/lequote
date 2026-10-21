@@ -11,7 +11,7 @@ import {
   SupplierTypeCreate,
 } from './admin/filiera/validators'
 import { WithdrawalUpdate } from './admin/withdrawals/validators'
-import { AgentCreate, AgentInvite, AgentUpdate, BookingCreate, BookingUpdate, PaymentCreate } from './admin/backoffice/validators'
+import { AgentCreate, AgentInvite, AgentUpdate, BookingCreate, BookingUpdate, PaymentCreate, SellBookingCreate } from './admin/backoffice/validators'
 import { guard } from './permissions'
 import { WithdrawalCreate } from './store/withdrawals/validators'
 
@@ -54,7 +54,7 @@ export default defineMiddlewares({
     { matcher: '/admin/agents', method: 'POST', middlewares: [validateAndTransformBody(AgentCreate)] },
     { matcher: '/admin/agents/:id', method: 'POST', middlewares: [validateAndTransformBody(AgentUpdate)] },
     { matcher: '/admin/agents/:id/invite', method: 'POST', middlewares: [validateAndTransformBody(AgentInvite)] },
-    { matcher: '/admin/sell/bookings', method: 'POST', middlewares: [validateAndTransformBody(BookingCreate)] },
+    { matcher: '/admin/sell/bookings', method: 'POST', middlewares: [validateAndTransformBody(SellBookingCreate)] },
     { matcher: '/admin/sell/bookings/:id', method: 'POST', middlewares: [validateAndTransformBody(BookingUpdate)] },
     { matcher: '/admin/sell/bookings/:id/payments', method: 'POST', middlewares: [validateAndTransformBody(PaymentCreate)] },
     { matcher: '/store/withdrawals', method: 'POST', middlewares: [validateAndTransformBody(WithdrawalCreate)] },

@@ -135,8 +135,29 @@ medusaIntegrationTestRunner({
       expect(invite.data.invite_url).toMatch(/\/invite\?token=/)
     })
 
-    it('rifiuta un’azienda senza partita IVA', async () => {
-      const response = await newBooking(bruno, '/admin/sell/bookings', {
+    it('per l’agente bastano il nome o il cognome e un prodotto; consegna predefinita il ritiro', async () => {
+      const { data: catalog } = await api.get('/admin/sell/catalog', bruno)
+      const olio = catalog.variants.find((variant: { sku: string }) => variant.sku === 'OLIO-750ML')
+      const quick = await api.post('/admin/sell/bookings', { customer: { last_name: 'Ferri' }, items: [{ variant_id: olio.variantId, quantity: 1 }] }, bruno)
+      expect(quick.status).toBe(201)
+      expect(quick.data.booking.customer).toBe('Ferri')
+      expect(quick.data.booking.delivery).toMatch(/^Ritiro a /)
+
+      const company = await api.post(
+        '/admin/sell/bookings',
+        { customer: { kind: 'azienda', company: 'Bottega Rossi srl', first_name: 'Mario' }, items: [{ variant_id: olio.variantId, quantity: 1 }] },
+        bruno,
+      )
+      expect(company.data.booking.customer).toBe('Bottega Rossi srl')
+
+      const nameless = await api.post('/admin/sell/bookings', { customer: { phone: '333' }, items: [{ variant_id: olio.variantId, quantity: 1 }] }, bruno).catch(fail)
+      expect(nameless.status).toBe(400)
+      const empty = await api.post('/admin/sell/bookings', { customer: { first_name: 'Anna' }, items: [{ variant_id: olio.variantId, quantity: 0 }] }, bruno).catch(fail)
+      expect(empty.status).toBe(400)
+    })
+
+    it('il nuovo ordine dal back office chiede ancora i dati completi (P.IVA per le aziende)', async () => {
+      const response = await newBooking(admin, '/admin/backoffice/orders', {
         customer: { kind: 'azienda', first_name: 'Mario', last_name: 'Rossi', company: 'Bottega Rossi srl', phone: '3331112222' },
       }).catch(fail)
       expect(response.status).toBe(400)

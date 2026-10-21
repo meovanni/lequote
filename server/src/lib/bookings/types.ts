@@ -5,14 +5,15 @@ export type Actor = { type: 'admin' | 'agente'; id: string; name: string }
 
 export type BookingCustomer = {
   kind: 'privato' | 'azienda'
-  first_name: string
-  last_name: string
+  /** Almeno uno tra nome e cognome (prenotazioni degli agenti: il resto è facoltativo). */
+  first_name?: string | null
+  last_name?: string | null
   /** Ragione sociale, per le aziende. */
   company?: string | null
   vat_number?: string | null
   fiscal_code?: string | null
   email?: string | null
-  phone: string
+  phone?: string | null
   address_1?: string | null
   postal_code?: string | null
   city?: string | null
@@ -22,8 +23,8 @@ export type BookingCustomer = {
 export type BookingInput = {
   customer: BookingCustomer
   items: { variant_id: string; quantity: number }[]
-  /** Opzione di consegna (ritiro in sede o spedizione, se attiva). */
-  shipping_option_id: string
+  /** Opzione di consegna (ritiro in sede o spedizione, se attiva); se manca, la prima disponibile. */
+  shipping_option_id?: string | null
   notes?: string | null
   /** Agente a cui attribuire la vendita: sempre il proprio per l'agente, a scelta per l'amministratore. */
   agent_id?: string | null
