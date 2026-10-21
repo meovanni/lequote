@@ -1,44 +1,16 @@
-import { Badge, Button, Checkbox, IconButton, Input, Label, Table, Text, usePrompt } from '@medusajs/ui'
+import { Badge, Button, IconButton, Input, Table, Text, usePrompt } from '@medusajs/ui'
 import { Trash } from '@medusajs/icons'
 import { useState, type FormEvent } from 'react'
-import { FormField, orNull } from '../form-field'
+import { FormField } from '../form-field'
 import { useFilieraAction, useSupplierTypes, useSuppliers } from '../../lib/filiera-api'
 
-const FIELDS: { key: string; label: string; hint?: string; internal?: boolean }[] = [
-  { key: 'name', label: 'Nome' },
-  { key: 'municipality', label: 'Comune' },
-  { key: 'province', label: 'Provincia', hint: 'Sigla, per esempio TE.' },
-  { key: 'address', label: 'Indirizzo' },
-  { key: 'email', label: 'Email' },
-  { key: 'phone', label: 'Telefono' },
-  { key: 'vat_number', label: 'Partita IVA', internal: true },
-  { key: 'internal_code', label: 'Codice di registrazione', hint: 'Per esempio il codice SIAN dello stabilimento.', internal: true },
-]
-
-/** Fornitori: frantoi, stabilimenti di confezionamento, laboratori, packaging e tipologie nuove. */
+/** Elenco dei fornitori, filtrabile per tipologia. Il nuovo fornitore si crea dal pannello laterale. */
 export function SupplierPanel() {
   const suppliers = useSuppliers()
   const types = useSupplierTypes()
   const action = useFilieraAction()
   const prompt = usePrompt()
-  const [values, setValues] = useState<Record<string, string>>({})
-  const [typeIds, setTypeIds] = useState<string[]>([])
-
-  const submit = (event: FormEvent) => {
-    event.preventDefault()
-    const body = Object.fromEntries(
-      FIELDS.map((field) => [field.key, field.key === 'name' || field.key === 'municipality' ? (values[field.key] ?? '').trim() : orNull(values[field.key] ?? '')]),
-    )
-    action.mutate(
-      { path: '/admin/filiera/registries/suppliers', body: { ...body, type_ids: typeIds }, success: 'Fornitore aggiunto.' },
-      {
-        onSuccess: () => {
-          setValues({})
-          setTypeIds([])
-        },
-      },
-    )
-  }
+  const [typeFilter, setTypeFilter] = useState<string | null>(null)
 
   const remove = async (id: string, name: string) => {
     const confirmed = await prompt({
@@ -50,82 +22,74 @@ export function SupplierPanel() {
     if (confirmed) action.mutate({ path: `/admin/filiera/registries/suppliers/${id}`, method: 'DELETE', success: 'Fornitore eliminato.' })
   }
 
-  const toggle = (id: string, checked: boolean) =>
-    setTypeIds((current) => (checked ? [...current, id] : current.filter((value) => value !== id)))
+  const all = suppliers.data?.items ?? []
+  const items = typeFilter ? all.filter((item) => (item.types ?? []).some((type) => type.id === typeFilter)) : all
+  const usedTypes = (types.data?.types ?? []).filter((type) => all.some((item) => (item.types ?? []).some((t) => t.id === type.id)))
 
-  const items = suppliers.data?.items ?? []
+  if (suppliers.isLoading) return <div className="m-6 h-32 animate-pulse rounded-lg bg-ui-bg-component" aria-label="Caricamento" />
+  if (all.length === 0) {
+    return (
+      <Text size="small" className="px-6 py-10 text-center text-ui-fg-subtle">
+        Nessun fornitore. Aggiungi il primo con “Nuovo fornitore”.
+      </Text>
+    )
+  }
 
   return (
-    <div className="flex flex-col divide-y">
-      {items.length === 0 && <Text className="px-6 py-6 text-ui-fg-subtle">Nessun fornitore. Aggiungi il primo qui sotto.</Text>}
-      {items.length > 0 && (
-        <Table>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Nome</Table.HeaderCell>
-              <Table.HeaderCell>Tipologie</Table.HeaderCell>
-              <Table.HeaderCell>Comune</Table.HeaderCell>
-              <Table.HeaderCell>Contatti</Table.HeaderCell>
-              <Table.HeaderCell />
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {items.map((item) => (
-              <Table.Row key={item.id}>
-                <Table.Cell>{item.name}</Table.Cell>
-                <Table.Cell>
-                  <div className="flex flex-wrap gap-1">
-                    {(item.types ?? []).map((type) => (
-                      <Badge key={type.id} size="2xsmall">
-                        {type.name}
-                      </Badge>
-                    ))}
-                  </div>
-                </Table.Cell>
-                <Table.Cell>
-                  {item.municipality}
-                  {item.province ? ` (${item.province})` : ''}
-                </Table.Cell>
-                <Table.Cell>{[item.email, item.phone].filter(Boolean).join(', ')}</Table.Cell>
-                <Table.Cell className="text-right">
-                  <IconButton size="small" variant="transparent" aria-label={`Elimina ${item.name}`} onClick={() => remove(item.id, item.name)}>
-                    <Trash />
-                  </IconButton>
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
+    <div className="flex flex-col">
+      {usedTypes.length > 1 && (
+        <div role="group" aria-label="Filtra per tipologia" className="flex flex-wrap gap-2 px-6 py-3">
+          {[{ id: null, name: 'Tutte' }, ...usedTypes].map((type) => (
+            <Button
+              key={type.id ?? 'all'}
+              type="button"
+              size="small"
+              variant={typeFilter === type.id ? 'secondary' : 'transparent'}
+              aria-pressed={typeFilter === type.id}
+              onClick={() => setTypeFilter(type.id)}
+            >
+              {type.name}
+            </Button>
+          ))}
+        </div>
       )}
-
-      <form onSubmit={submit} className="flex flex-col gap-4 px-6 py-4">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {FIELDS.map((field) => {
-            const id = `supplier-${field.key}`
-            return (
-              <FormField key={field.key} id={id} label={field.label} hint={field.internal ? 'Dato interno, mai pubblicato.' : field.hint}>
-                <Input id={id} value={values[field.key] ?? ''} onChange={(e) => setValues((v) => ({ ...v, [field.key]: e.target.value }))} />
-              </FormField>
-            )
-          })}
-        </div>
-        <fieldset className="flex flex-col gap-2">
-          <legend className="txt-compact-small-plus mb-2">Tipologie</legend>
-          <div className="flex flex-wrap gap-4">
-            {(types.data?.types ?? []).map((type) => (
-              <div key={type.id} className="flex items-center gap-2">
-                <Checkbox id={`type-${type.id}`} checked={typeIds.includes(type.id)} onCheckedChange={(checked) => toggle(type.id, checked === true)} />
-                <Label htmlFor={`type-${type.id}`}>{type.name}</Label>
-              </div>
-            ))}
-          </div>
-        </fieldset>
-        <div className="flex justify-end">
-          <Button size="small" type="submit" isLoading={action.isPending} disabled={!values.name?.trim() || !values.municipality?.trim()}>
-            Aggiungi fornitore
-          </Button>
-        </div>
-      </form>
+      <Table>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>Nome</Table.HeaderCell>
+            <Table.HeaderCell>Tipologie</Table.HeaderCell>
+            <Table.HeaderCell>Comune</Table.HeaderCell>
+            <Table.HeaderCell>Contatti</Table.HeaderCell>
+            <Table.HeaderCell />
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {items.map((item) => (
+            <Table.Row key={item.id}>
+              <Table.Cell className="txt-compact-small-plus">{item.name}</Table.Cell>
+              <Table.Cell>
+                <div className="flex flex-wrap gap-1">
+                  {(item.types ?? []).map((type) => (
+                    <Badge key={type.id} size="2xsmall">
+                      {type.name}
+                    </Badge>
+                  ))}
+                </div>
+              </Table.Cell>
+              <Table.Cell>
+                {item.municipality}
+                {item.province ? ` (${item.province})` : ''}
+              </Table.Cell>
+              <Table.Cell className="text-ui-fg-subtle">{[item.email, item.phone].filter(Boolean).join(', ') || '-'}</Table.Cell>
+              <Table.Cell className="text-right">
+                <IconButton size="small" variant="transparent" aria-label={`Elimina ${item.name}`} onClick={() => remove(item.id, item.name)}>
+                  <Trash />
+                </IconButton>
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
     </div>
   )
 }

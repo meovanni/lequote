@@ -1,6 +1,8 @@
-import { Button, Input, RadioGroup, Label, Select, Text, Textarea } from '@medusajs/ui'
+import { ChevronDownMini } from '@medusajs/icons'
+import { Button, clx, Heading, Input, Label, RadioGroup, Select, Text, Textarea } from '@medusajs/ui'
 import { useState, type FormEvent } from 'react'
 import { FormField, orNull } from '../form-field'
+import { ProductPicker } from './product-picker'
 import { formatEuro, type Catalog } from '../../lib/sales-api'
 
 const NONE = 'nessuno'
@@ -35,11 +37,13 @@ type BookingFormProps = {
 
 /**
  * Cliente (privato o azienda), prodotti, consegna e note di un nuovo ordine o prenotazione.
- * Bastano il nome o il cognome del cliente e un prodotto: il resto è facoltativo.
+ * Bastano il nome o il cognome del cliente e un prodotto: il resto è facoltativo e sta in
+ * "Altri dati". A destra il riepilogo con il totale resta in vista mentre si scelgono i prodotti.
  */
 export function BookingForm({ catalog, showAgent = false, submitting, submitLabel, onSubmit }: BookingFormProps) {
   const [kind, setKind] = useState<'privato' | 'azienda'>('privato')
   const [customer, setCustomer] = useState<Customer>(EMPTY)
+  const [moreData, setMoreData] = useState(false)
   const [quantities, setQuantities] = useState<Record<string, string>>({})
   const [deliveryId, setDeliveryId] = useState(NONE)
   const [agentId, setAgentId] = useState(NONE)
@@ -51,7 +55,9 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
     .filter((line) => line.quantity > 0)
   const estimate = lines.reduce((sum, line) => sum + (line.variant.price ?? 0) * line.quantity, 0)
   const business = kind === 'azienda'
-  const ready = Boolean(customer.first_name.trim() || customer.last_name.trim()) && lines.length > 0
+  const named = Boolean(customer.first_name.trim() || customer.last_name.trim())
+  const missing = [!named && 'il nome o il cognome del cliente', lines.length === 0 && 'almeno un prodotto'].filter(Boolean)
+  const ready = missing.length === 0
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
@@ -84,74 +90,100 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
   )
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-6">
-      <Text size="small" className="text-ui-fg-subtle">
-        Bastano il nome o il cognome del cliente e almeno un prodotto: il resto si può aggiungere dopo.
-      </Text>
-      <section className="flex flex-col gap-4">
-        <RadioGroup value={kind} onValueChange={(value) => setKind(value as 'privato' | 'azienda')} className="flex gap-6">
-          <div className="flex items-center gap-2">
-            <RadioGroup.Item value="privato" id="booking-kind-privato" />
-            <Label htmlFor="booking-kind-privato">Privato</Label>
+    <form onSubmit={submit} className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
+      <div className="flex flex-col gap-8">
+        <section className="flex flex-col gap-4" aria-labelledby="booking-customer">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <Heading level="h2" id="booking-customer">
+              Cliente
+            </Heading>
+            <RadioGroup value={kind} onValueChange={(value) => setKind(value as 'privato' | 'azienda')} className="flex gap-5">
+              <div className="flex items-center gap-2">
+                <RadioGroup.Item value="privato" id="booking-kind-privato" />
+                <Label htmlFor="booking-kind-privato" size="small">
+                  Privato
+                </Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <RadioGroup.Item value="azienda" id="booking-kind-azienda" />
+                <Label htmlFor="booking-kind-azienda" size="small">
+                  Azienda
+                </Label>
+              </div>
+            </RadioGroup>
           </div>
-          <div className="flex items-center gap-2">
-            <RadioGroup.Item value="azienda" id="booking-kind-azienda" />
-            <Label htmlFor="booking-kind-azienda">Azienda (negozio, ristorante…)</Label>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {business && input('company', 'Ragione sociale', 'Negozio, ristorante, bottega.')}
+            {business && input('vat_number', 'Partita IVA', '11 cifre.')}
+            {input('first_name', business ? 'Nome del referente' : 'Nome')}
+            {input('last_name', business ? 'Cognome del referente' : 'Cognome')}
+            {input('phone', 'Telefono')}
           </div>
-        </RadioGroup>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {business && input('company', 'Ragione sociale')}
-          {business && input('vat_number', 'Partita IVA', '11 cifre.')}
-          {input('first_name', business ? 'Nome del referente' : 'Nome')}
-          {input('last_name', business ? 'Cognome del referente' : 'Cognome')}
-          {input('phone', 'Telefono')}
-          {input('email', 'Email', 'Facoltativa: se c’è, il cliente riceve la conferma.')}
-          {input('fiscal_code', 'Codice fiscale', 'Facoltativo.')}
-          {input('address_1', 'Indirizzo')}
-          {input('postal_code', 'CAP')}
-          {input('city', 'Comune')}
-          {input('province', 'Provincia', 'Sigla, per esempio TE.')}
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-2">
-        <Text size="small" weight="plus">
-          Prodotti
-        </Text>
-        {catalog.variants.map((variant) => (
-          <div key={variant.variantId} className="grid grid-cols-[1fr_auto_auto] items-center gap-4">
-            <div>
-              <Text size="small">
-                {variant.product}, {variant.variant}
-              </Text>
-              <Text size="xsmall" className="text-ui-fg-subtle">
-                {variant.price === null ? 'Prezzo non impostato' : formatEuro(variant.price)}
-                {variant.stock === null ? '' : ` · disponibili ${variant.stock}`}
-              </Text>
+          <button
+            type="button"
+            className="flex w-fit items-center gap-1 text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+            aria-expanded={moreData}
+            aria-controls="booking-more"
+            onClick={() => setMoreData((open) => !open)}
+          >
+            <span className="txt-compact-small-plus">Altri dati del cliente</span>
+            <ChevronDownMini className={clx('transition-transform', moreData && 'rotate-180')} />
+          </button>
+          {moreData && (
+            <div id="booking-more" className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {input('email', 'Email', 'Se c’è, il cliente riceve la conferma.')}
+              {input('fiscal_code', 'Codice fiscale')}
+              <div className="md:col-span-2">{input('address_1', 'Indirizzo')}</div>
+              {input('city', 'Comune')}
+              <div className="grid grid-cols-2 gap-4">
+                {input('postal_code', 'CAP')}
+                {input('province', 'Provincia', 'Sigla, es. TE.')}
+              </div>
             </div>
-            <Input
-              aria-label={`Quantità di ${variant.product}, ${variant.variant}`}
-              type="number"
-              min={0}
-              max={variant.stock ?? undefined}
-              className="w-24"
-              value={quantities[variant.variantId] ?? ''}
-              onChange={(event) => setQuantities((current) => ({ ...current, [variant.variantId]: event.target.value }))}
-              disabled={variant.price === null}
-            />
-            <Text size="small" className="w-24 text-right">
-              {Number(quantities[variant.variantId] || 0) > 0 && variant.price !== null
-                ? formatEuro(variant.price * Number(quantities[variant.variantId]))
-                : ''}
-            </Text>
-          </div>
-        ))}
-        <Text size="small" weight="plus" className="text-right">
-          Totale indicativo, IVA inclusa: {formatEuro(estimate)}
-        </Text>
-      </section>
+          )}
+        </section>
 
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <section className="flex flex-col gap-4" aria-labelledby="booking-products">
+          <Heading level="h2" id="booking-products">
+            Prodotti
+          </Heading>
+          <ProductPicker
+            variants={catalog.variants}
+            quantities={quantities}
+            onChange={(variantId, quantity) => setQuantities((current) => ({ ...current, [variantId]: quantity }))}
+          />
+        </section>
+      </div>
+
+      <aside className="flex flex-col gap-5 self-start rounded-lg border border-ui-border-base bg-ui-bg-subtle p-5 lg:sticky lg:top-0" aria-labelledby="booking-summary">
+        <Heading level="h3" id="booking-summary">
+          Riepilogo
+        </Heading>
+        {lines.length === 0 ? (
+          <Text size="small" className="text-ui-fg-muted">
+            Nessun prodotto scelto.
+          </Text>
+        ) : (
+          <ul className="flex flex-col gap-2">
+            {lines.map(({ variant, quantity }) => (
+              <li key={variant.variantId} className="flex justify-between gap-3">
+                <Text size="small" className="text-ui-fg-subtle">
+                  <span className="lq-figure">{quantity}</span> × {variant.product}, {variant.variant}
+                </Text>
+                <Text size="small" className="lq-figure shrink-0">
+                  {formatEuro((variant.price ?? 0) * quantity)}
+                </Text>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div className="flex items-baseline justify-between border-t border-ui-border-base pt-4">
+          <Text size="small" className="text-ui-fg-subtle">
+            Totale, IVA inclusa
+          </Text>
+          <span className="lq-figure text-xl font-medium text-ui-fg-base">{formatEuro(estimate)}</span>
+        </div>
+
         <FormField id="booking-delivery" label="Consegna">
           <Select value={deliveryId} onValueChange={setDeliveryId}>
             <Select.Trigger id="booking-delivery">
@@ -168,7 +200,7 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
           </Select>
         </FormField>
         {showAgent && (
-          <FormField id="booking-agent" label="Agente" hint="Facoltativo: la vendita entra nei suoi riepiloghi.">
+          <FormField id="booking-agent" label="Agente" hint="La vendita entra nei suoi riepiloghi.">
             <Select value={agentId} onValueChange={setAgentId}>
               <Select.Trigger id="booking-agent">
                 <Select.Value />
@@ -184,18 +216,19 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
             </Select>
           </FormField>
         )}
-        <div className="md:col-span-2">
-          <FormField id="booking-notes" label="Note">
-            <Textarea id="booking-notes" value={notes} onChange={(event) => setNotes(event.target.value)} />
-          </FormField>
-        </div>
-      </section>
+        <FormField id="booking-notes" label="Note">
+          <Textarea id="booking-notes" rows={3} value={notes} onChange={(event) => setNotes(event.target.value)} />
+        </FormField>
 
-      <div className="flex justify-end">
-        <Button type="submit" isLoading={submitting} disabled={!ready}>
-          {submitLabel}
-        </Button>
-      </div>
+        <div className="flex flex-col gap-2">
+          <Button type="submit" className="w-full" isLoading={submitting} disabled={!ready}>
+            {submitLabel}
+          </Button>
+          <Text size="xsmall" className="text-ui-fg-muted" aria-live="polite">
+            {ready ? 'Il resto dei dati si può aggiungere dopo.' : `Manca ${missing.join(' e ')}.`}
+          </Text>
+        </div>
+      </aside>
     </form>
   )
 }

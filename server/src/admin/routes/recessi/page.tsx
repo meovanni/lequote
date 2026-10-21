@@ -4,6 +4,7 @@ import { Button, Container, Heading, StatusBadge, Switch, Table, Text, toast } f
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { refundDeadline } from '../../lib/refund-deadline'
 import { sdk } from '../../lib/sdk'
 
 type Withdrawal = {
@@ -22,6 +23,20 @@ const KEY = ['recessi']
 
 function formatTimestamp(value: string): string {
   return new Date(value).toLocaleString('it-IT', { dateStyle: 'short', timeStyle: 'short', timeZone: 'Europe/Rome' })
+}
+
+/** Scadenza del rimborso: per i recessi aperti, i giorni che restano (in ottone gli ultimi tre, in rosso se scaduta). */
+function RefundDue({ withdrawal }: { withdrawal: Withdrawal }) {
+  const { due, daysLeft, level } = refundDeadline(withdrawal.submitted_at)
+  const day = due.toLocaleDateString('it-IT', { day: 'numeric', month: 'short', timeZone: 'Europe/Rome' })
+  if (withdrawal.handled_at) return <span className="text-ui-fg-muted">{day}</span>
+  const left = daysLeft < 0 ? `scaduto da ${-daysLeft} ${daysLeft === -1 ? 'giorno' : 'giorni'}` : daysLeft === 0 ? 'scade oggi' : `${daysLeft} ${daysLeft === 1 ? 'giorno' : 'giorni'}`
+  return (
+    <span className="flex flex-col">
+      <span>{day}</span>
+      <span className={level === 'late' ? 'text-ui-fg-error' : level === 'soon' ? 'text-ui-tag-orange-text' : 'text-ui-fg-subtle'}>{left}</span>
+    </span>
+  )
 }
 
 /** Recessi inviati dal sito (art. 54-bis Cod. Consumo): rimborso entro 14 giorni dalla ricezione. */
@@ -62,9 +77,11 @@ const WithdrawalsPage = () => {
       </div>
 
       {isError && <Text className="px-6 py-4 text-ui-fg-error">Non è stato possibile caricare i recessi.</Text>}
-      {isLoading && <Text className="px-6 py-4 text-ui-fg-subtle">Caricamento…</Text>}
+      {isLoading && <div className="m-6 h-24 animate-pulse rounded-lg bg-ui-bg-component" aria-label="Caricamento" />}
       {data && data.withdrawals.length === 0 && (
-        <Text className="px-6 py-8 text-ui-fg-subtle">{onlyOpen ? 'Nessun recesso da gestire.' : 'Nessun recesso ricevuto.'}</Text>
+        <Text size="small" className="px-6 py-10 text-center text-ui-fg-subtle">
+          {onlyOpen ? 'Nessun recesso da gestire.' : 'Nessun recesso ricevuto.'}
+        </Text>
       )}
       {data && data.withdrawals.length > 0 && (
         <Table>
@@ -74,6 +91,7 @@ const WithdrawalsPage = () => {
               <Table.HeaderCell>Cliente</Table.HeaderCell>
               <Table.HeaderCell>Ordine</Table.HeaderCell>
               <Table.HeaderCell>Prodotti o note</Table.HeaderCell>
+              <Table.HeaderCell>Rimborso entro</Table.HeaderCell>
               <Table.HeaderCell>Stato</Table.HeaderCell>
               <Table.HeaderCell />
             </Table.Row>
@@ -83,13 +101,14 @@ const WithdrawalsPage = () => {
               <Table.Row key={withdrawal.id}>
                 <Table.Cell>{formatTimestamp(withdrawal.submitted_at)}</Table.Cell>
                 <Table.Cell>
-                  {withdrawal.name}
-                  <br />
-                  <span className="text-ui-fg-subtle">{withdrawal.email}</span>
+                  <span className="flex flex-col">
+                    <span>{withdrawal.name}</span>
+                    <span className="text-ui-fg-subtle">{withdrawal.email}</span>
+                  </span>
                 </Table.Cell>
                 <Table.Cell>
                   {withdrawal.order_id ? (
-                    <Link to={`/orders/${withdrawal.order_id}`} className="text-ui-fg-interactive">
+                    <Link to={`/orders/${withdrawal.order_id}`} className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover">
                       {withdrawal.order_reference}
                     </Link>
                   ) : (
@@ -99,6 +118,9 @@ const WithdrawalsPage = () => {
                   )}
                 </Table.Cell>
                 <Table.Cell className="max-w-xs whitespace-normal">{withdrawal.details ?? ''}</Table.Cell>
+                <Table.Cell>
+                  <RefundDue withdrawal={withdrawal} />
+                </Table.Cell>
                 <Table.Cell>
                   <StatusBadge color={withdrawal.handled_at ? 'green' : 'orange'}>
                     {withdrawal.handled_at ? 'Gestito' : 'Da gestire'}

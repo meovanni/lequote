@@ -35,7 +35,7 @@ const OrderCheckoutSummary = ({ data: order }: DetailWidgetProps<HttpTypes.Admin
   const providerId = order.payment_collections?.[0]?.payments?.[0]?.provider_id ?? ''
   const payment = PAYMENT[providerId]
   const captured = order.payment_status === 'captured'
-  const delivery = order.shipping_methods?.[0]?.name ?? '—'
+  const delivery = order.shipping_methods?.[0]?.name ?? '-'
   const phone = order.shipping_address?.phone
 
   return (
@@ -48,7 +48,7 @@ const OrderCheckoutSummary = ({ data: order }: DetailWidgetProps<HttpTypes.Admin
         <Text size="small">{delivery}</Text>
       </Row>
       <Row label="Pagamento">
-        <Text size="small">{payment?.label ?? (providerId || '—')}</Text>
+        <Text size="small">{payment?.label ?? (providerId || '-')}</Text>
       </Row>
       {phone && (
         <Row label="Telefono">

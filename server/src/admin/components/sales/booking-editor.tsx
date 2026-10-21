@@ -1,10 +1,10 @@
-import { Button, Heading, Input, Select, Text, Textarea } from '@medusajs/ui'
+import { Button, Heading, Input, Select, StatusBadge, Text, Textarea } from '@medusajs/ui'
 import { useState } from 'react'
 import { FormField } from '../form-field'
 import { PaymentForm, PaymentsSummary } from './payments'
 import { formatDay, formatEuro, useSalesAction, useSellBooking, type Catalog } from '../../lib/sales-api'
 
-/** Una prenotazione dell'agente: quantità e note modificabili, incassi registrabili. */
+/** Una prenotazione dell'agente (nel pannello dello storico): quantità e note modificabili, incassi registrabili. */
 export function BookingEditor({ bookingId, catalog }: { bookingId: string; catalog: Catalog }) {
   const detail = useSellBooking(bookingId)
   const action = useSalesAction()
@@ -48,15 +48,19 @@ export function BookingEditor({ bookingId, catalog }: { bookingId: string; catal
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <Heading level="h2">
-          Prenotazione n. {booking.displayId} · {booking.customer}
-        </Heading>
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-2">
+          <Heading level="h2">{booking.customer}</Heading>
+          {booking.status === 'canceled' && <StatusBadge color="grey">Annullata</StatusBadge>}
+        </div>
         <Text size="small" className="text-ui-fg-subtle">
-          {formatDay(booking.createdAt)} · {booking.delivery}
-          {booking.phone ? ` · ${booking.phone}` : ''}
-          {booking.status === 'canceled' ? ' · Annullata' : ''}
+          {formatDay(booking.createdAt)}, {booking.delivery}
         </Text>
+        {booking.phone && (
+          <Text size="small" className="text-ui-fg-subtle">
+            Telefono <a href={`tel:${booking.phone}`} className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover">{booking.phone}</a>
+          </Text>
+        )}
       </div>
 
       <section className="flex flex-col gap-2">

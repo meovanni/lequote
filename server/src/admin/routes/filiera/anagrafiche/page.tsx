@@ -64,11 +64,11 @@ const RegistriesPage = () => (
         <Tabs.Trigger value="templates">Modelli di fase</Tabs.Trigger>
       </Tabs.List>
       {TABS.map((tab) => (
-        <Tabs.Content key={tab.kind} value={tab.kind} className="mt-2 border-t">
+        <Tabs.Content key={tab.kind} value={tab.kind} className="data-[state=inactive]:hidden mt-2 border-t">
           <RegistryPanel kind={tab.kind} />
         </Tabs.Content>
       ))}
-      <Tabs.Content value="templates" className="mt-2 border-t">
+      <Tabs.Content value="templates" className="data-[state=inactive]:hidden mt-2 border-t">
         <StageTemplatesTab />
       </Tabs.Content>
     </Tabs>

@@ -1,4 +1,4 @@
-import { Button, Input, Select, Table, Text } from '@medusajs/ui'
+import { Button, clx, Input, Select, Table, Text } from '@medusajs/ui'
 import { useState, type FormEvent } from 'react'
 import { FormField, orNull } from '../form-field'
 import { formatDay, formatEuro, PAYMENT_METHOD_LABEL, type PaymentMethod, type PaymentState } from '../../lib/sales-api'
@@ -40,15 +40,14 @@ export function PaymentsSummary({ state }: { state: PaymentState }) {
   )
 }
 
+/** Un importo del riepilogo; il residuo da incassare prende il colore dell'ottone. */
 function Figure({ label, value, strong = false }: { label: string; value: string; strong?: boolean }) {
   return (
-    <div>
+    <div className="flex flex-col gap-0.5 rounded-lg bg-ui-bg-component px-3 py-2">
       <Text size="xsmall" className="text-ui-fg-subtle">
         {label}
       </Text>
-      <Text size="small" weight={strong ? 'plus' : 'regular'}>
-        {value}
-      </Text>
+      <span className={clx('lq-figure text-base font-medium', strong ? 'text-ui-tag-orange-text' : 'text-ui-fg-base')}>{value}</span>
     </div>
   )
 }

@@ -26,7 +26,7 @@ const OrderSalesWidget = ({ data: order }: DetailWidgetProps<HttpTypes.AdminOrde
         <Text size="small" weight="plus" className="text-ui-fg-subtle">
           Agente
         </Text>
-        <Text size="small">{agent?.name ?? '—'}</Text>
+        <Text size="small">{agent?.name ?? '-'}</Text>
         {booking.notes && (
           <>
             <Text size="small" weight="plus" className="text-ui-fg-subtle">
