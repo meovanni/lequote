@@ -1,5 +1,6 @@
 import { useContent, useLocale } from '@/i18n/LocaleContext'
-import { sectionHref } from '@/i18n/locales'
+import { localizePath, sectionHref } from '@/i18n/locales'
+import { LEGAL_PAGES, legalByLocale } from '@/data/legal'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
 import { Reveal } from '@/components/common/Reveal/Reveal'
 import { Logo } from '@/components/common/Logo/Logo'
@@ -10,6 +11,7 @@ import styles from './Footer.module.css'
 export function Footer() {
   const { contatti, footer, footerNavItems, ui } = useContent()
   const locale = useLocale()
+  const legal = legalByLocale[locale].ui
   return (
     <footer id="contatti" className={styles.footer} data-surface="dark">
       <div className={styles.contact}>
@@ -58,6 +60,17 @@ export function Footer() {
 
         <div className={styles.bottom}>
           <p className={`${styles.legal} body-sm`}>{footer.legal}</p>
+          <nav aria-label={legal.footerNavLabel}>
+            <ul className={styles.legalLinks}>
+              {LEGAL_PAGES.map((page) => (
+                <li key={page}>
+                  <a href={localizePath(locale, `/${page}`)} className="body-sm">
+                    {legal.linkLabels[page]}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
           {/* Accesso al gestionale per i titolari: discreto, fuori dalla barra dei clienti. */}
           <a href={ADMIN_URL} className={`${styles.admin} body-sm`} rel="nofollow">
             <LockIcon className={styles.adminIcon} />

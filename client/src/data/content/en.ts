@@ -642,7 +642,8 @@ export const en: Content = {
     privacyLink: 'privacy notice',
     termsAfter: '.',
     withdrawalNote:
-      'You may withdraw from the contract within 14 days of delivery without giving a reason: details are in the terms of sale.',
+      'You may withdraw within 14 days of receiving or collecting the products, without giving a reason, except for sealed packs opened after delivery. ',
+    withdrawalLink: 'How to withdraw',
     submit: 'Order with obligation to pay',
     submitting: 'Sending your order…',
     errorSummary: 'Please check the highlighted fields.',

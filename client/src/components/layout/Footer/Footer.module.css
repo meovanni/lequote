@@ -102,6 +102,27 @@
   color: var(--surface-text-muted);
 }
 
+.legalLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legalLinks a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--surface-text-muted);
+  transition: color 0.2s ease;
+}
+
+.legalLinks a:hover {
+  color: var(--surface-text);
+}
+
 .admin {
   display: inline-flex;
   align-items: center;

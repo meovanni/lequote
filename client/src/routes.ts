@@ -1,4 +1,5 @@
 import { type RouteConfig, index, layout, prefix, route } from '@react-router/dev/routes'
+import { LEGAL_PAGES } from './data/legal/types'
 
 // Le stesse pagine in ogni lingua (ADR 0003): italiano alla radice, inglese e tedesco sotto un
 // prefisso, con gli stessi percorsi dopo il prefisso. Ogni copia ha id propri; la lingua si
@@ -10,6 +11,7 @@ const pages = (locale: string) =>
     route('carrello', 'routes/cart.tsx', { id: `cart-${locale}` }),
     route('ordine', 'routes/order.tsx', { id: `order-${locale}` }),
     route('lotto/:codice', 'routes/lot.tsx', { id: `lot-${locale}` }),
+    ...LEGAL_PAGES.map((page) => route(page, 'routes/legal.tsx', { id: `legal-${page}-${locale}` })),
   ])
 
 export default [

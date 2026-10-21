@@ -643,7 +643,8 @@ export const de: Content = {
     privacyLink: 'Datenschutzerklärung',
     termsAfter: ' gelesen.',
     withdrawalNote:
-      'Sie können innerhalb von 14 Tagen nach der Lieferung ohne Angabe von Gründen vom Vertrag zurücktreten: Einzelheiten in den Verkaufsbedingungen.',
+      'Sie können binnen 14 Tagen ab Erhalt oder Abholung der Produkte ohne Angabe von Gründen widerrufen, außer bei versiegelten Packungen, die nach der Lieferung geöffnet wurden. ',
+    withdrawalLink: 'So widerrufen Sie',
     submit: 'Zahlungspflichtig bestellen',
     submitting: 'Bestellung wird gesendet…',
     errorSummary: 'Bitte prüfen Sie die markierten Felder.',

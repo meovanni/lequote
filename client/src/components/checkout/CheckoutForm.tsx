@@ -330,7 +330,12 @@ export function CheckoutForm({ cart }: { cart: Cart }) {
             {errorText('terms')}
           </span>
         )}
-        <p className={`${styles.help} body-sm`}>{checkoutUi.withdrawalNote}</p>
+        <p className={`${styles.help} body-sm`}>
+          {checkoutUi.withdrawalNote}
+          <a href={localizePath(locale, '/recesso')} target="_blank" rel="noopener">
+            {checkoutUi.withdrawalLink}
+          </a>
+        </p>
 
         {submitError && (
           <p className={`${styles.errorBox} body-sm`} role="alert">

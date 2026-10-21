@@ -684,7 +684,8 @@ export const checkoutUi = {
   privacyLink: 'informativa sulla privacy',
   termsAfter: '.',
   withdrawalNote:
-    'Puoi recedere dal contratto entro 14 giorni dalla consegna, senza indicarne il motivo: le modalità sono nelle condizioni di vendita.',
+    'Puoi recedere entro 14 giorni da quando ricevi o ritiri i prodotti, senza indicarne il motivo, salvo per le confezioni sigillate aperte dopo la consegna. ',
+  withdrawalLink: 'Come recedere',
   submit: 'Ordina con obbligo di pagamento',
   submitting: 'Invio l’ordine…',
   errorSummary: 'Controlla i campi segnalati.',
