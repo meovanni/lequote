@@ -11,10 +11,8 @@ import {
 import { VENDITE_MODULE } from '../../modules/vendite'
 import { backofficeSecret, signBackofficeCart } from '../backoffice-signature'
 import { BACKOFFICE_PROVIDER_ID } from '../checkout-rules'
+import { SALES_CHANNEL } from './catalog'
 import type { Actor, BookingInput } from './types'
-
-/** Canale di vendita del seed: prenotazioni e ordini del sito condividono catalogo e giacenze. */
-const SALES_CHANNEL = 'Sito web'
 
 /**
  * Nuovo ordine dal gestionale: un carrello costruito dal server e chiuso con lo stesso flusso del

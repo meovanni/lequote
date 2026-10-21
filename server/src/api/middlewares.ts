@@ -11,6 +11,7 @@ import {
   SupplierTypeCreate,
 } from './admin/filiera/validators'
 import { WithdrawalUpdate } from './admin/withdrawals/validators'
+import { AgentCreate, AgentInvite, AgentUpdate, BookingCreate, BookingUpdate, PaymentCreate } from './admin/backoffice/validators'
 import { guard } from './permissions'
 import { WithdrawalCreate } from './store/withdrawals/validators'
 
@@ -27,6 +28,11 @@ export default defineMiddlewares({
     ...guard('supplier', '/admin/filiera/registries/suppliers'),
     ...guard('supplier', '/admin/filiera/supplier-types'),
     ...guard('withdrawal', '/admin/withdrawals'),
+    // Ordini dal gestionale e incassi: stessi permessi degli ordini di Medusa.
+    ...guard('order', '/admin/backoffice/orders'),
+    ...guard('order', '/admin/backoffice/catalog'),
+    ...guard('agent', '/admin/agents'),
+    ...guard('sales', '/admin/sell'),
     { matcher: '/admin/filiera/lots', method: 'POST', middlewares: [validateAndTransformBody(LotCreate)] },
     { matcher: '/admin/filiera/lots/:id', method: 'POST', middlewares: [validateAndTransformBody(LotUpdate)] },
     { matcher: '/admin/filiera/lots/:id/stages', method: 'POST', middlewares: [validateAndTransformBody(LotStagesReplace)] },
@@ -42,6 +48,15 @@ export default defineMiddlewares({
     { matcher: '/admin/filiera/stage-templates', method: 'POST', middlewares: [validateAndTransformBody(StageTemplateCreate)] },
     { matcher: '/admin/filiera/stage-templates/:id', method: 'POST', middlewares: [validateAndTransformBody(StageTemplateUpdate)] },
     { matcher: '/admin/filiera/supplier-types', method: 'POST', middlewares: [validateAndTransformBody(SupplierTypeCreate)] },
+    { matcher: '/admin/backoffice/orders', method: 'POST', middlewares: [validateAndTransformBody(BookingCreate)] },
+    { matcher: '/admin/backoffice/orders/:id', method: 'POST', middlewares: [validateAndTransformBody(BookingUpdate)] },
+    { matcher: '/admin/backoffice/orders/:id/payments', method: 'POST', middlewares: [validateAndTransformBody(PaymentCreate)] },
+    { matcher: '/admin/agents', method: 'POST', middlewares: [validateAndTransformBody(AgentCreate)] },
+    { matcher: '/admin/agents/:id', method: 'POST', middlewares: [validateAndTransformBody(AgentUpdate)] },
+    { matcher: '/admin/agents/:id/invite', method: 'POST', middlewares: [validateAndTransformBody(AgentInvite)] },
+    { matcher: '/admin/sell/bookings', method: 'POST', middlewares: [validateAndTransformBody(BookingCreate)] },
+    { matcher: '/admin/sell/bookings/:id', method: 'POST', middlewares: [validateAndTransformBody(BookingUpdate)] },
+    { matcher: '/admin/sell/bookings/:id/payments', method: 'POST', middlewares: [validateAndTransformBody(PaymentCreate)] },
     { matcher: '/store/withdrawals', method: 'POST', middlewares: [validateAndTransformBody(WithdrawalCreate)] },
     { matcher: '/admin/withdrawals/:id', method: 'POST', middlewares: [validateAndTransformBody(WithdrawalUpdate)] },
   ],
