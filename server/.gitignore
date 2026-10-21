@@ -11,3 +11,4 @@ static
 private
 !.env.template
 .mail
+.mail-e2e

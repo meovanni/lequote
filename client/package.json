@@ -10,6 +10,7 @@
     "preview": "vite preview --outDir build/client",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "typecheck": "react-router typegen && tsc -b"
   },
   "dependencies": {

@@ -59,3 +59,8 @@ src/plugins/impeccable-live.client.ts
 # React Router
 build
 .react-router
+
+# Playwright (test end-to-end)
+e2e/.state
+test-results
+playwright-report
