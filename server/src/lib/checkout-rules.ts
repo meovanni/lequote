@@ -3,6 +3,7 @@
 // API direttamente non deve poterle aggirare.
 
 export const PAY_AT_PICKUP_PROVIDER_ID = 'pp_ritiro_lequote'
+export const BANK_TRANSFER_PROVIDER_ID = 'pp_bonifico_lequote'
 
 /** Le opzioni di ritiro hanno codice "ritiro-…" (seed); tutte le altre sono spedizioni. */
 export function isPickupOptionCode(code: string | null | undefined): boolean {

@@ -175,13 +175,13 @@ function lineName(locale: EmailLocale, line: OrderEmailLine): string {
 }
 
 // Blocchi del messaggio come coppie titolo / righe: lo stesso contenuto produce testo e HTML.
-type Block = { title?: string; rows: string[] }
+export type Block = { title?: string; rows: string[] }
 
-function toText(blocks: Block[]): string {
+export function toText(blocks: Block[]): string {
   return blocks.map((block) => [block.title?.toUpperCase(), ...block.rows].filter(Boolean).join('\n')).join('\n\n')
 }
 
-function toHtml(blocks: Block[]): string {
+export function toHtml(blocks: Block[]): string {
   const body = blocks
     .map((block) => {
       const title = block.title ? `<h2 style="font-size:15px;margin:0 0 8px">${escapeHtml(block.title)}</h2>` : ''
@@ -192,7 +192,7 @@ function toHtml(blocks: Block[]): string {
   return `<!doctype html><html><body style="font-family:Arial,sans-serif;font-size:14px;line-height:1.5;color:#233142">${body}</body></html>`
 }
 
-function summaryBlocks(order: OrderEmailData, locale: EmailLocale): Block[] {
+export function summaryBlocks(order: OrderEmailData, locale: EmailLocale): Block[] {
   const copy = COPY[locale]
   const euro = (amount: number) => formatEuro(locale, amount)
   return [

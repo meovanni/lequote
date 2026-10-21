@@ -246,7 +246,7 @@ export const legalEn: LegalContent = {
             {
               list: [
                 'Order data and accounting records: 10 years, as required by law.',
-                'Carts that did not become orders: [90 days, to be configured], then deleted.',
+                'Carts that did not become orders: 5 days after the last change, then deleted.',
                 'Messages: as long as needed to handle the request, then at most [12 months, to be confirmed].',
                 'Server technical logs: [14 days, to be confirmed].',
               ],

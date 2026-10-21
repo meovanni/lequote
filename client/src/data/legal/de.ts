@@ -246,7 +246,7 @@ export const legalDe: LegalContent = {
             {
               list: [
                 'Bestelldaten und Buchungsbelege: 10 Jahre, wie gesetzlich vorgeschrieben.',
-                'Warenkörbe ohne Bestellung: [90 Tage, noch einzurichten], danach gelöscht.',
+                'Warenkörbe ohne Bestellung: 5 Tage nach der letzten Änderung, danach gelöscht.',
                 'Nachrichten: so lange wie zur Bearbeitung nötig, danach höchstens [12 Monate, noch zu bestätigen].',
                 'Technische Serverprotokolle: [14 Tage, noch zu bestätigen].',
               ],

@@ -247,7 +247,7 @@ export const legalIt: LegalContent = {
             {
               list: [
                 'Dati degli ordini e documenti contabili: 10 anni, come prevede la legge.',
-                'Carrelli non trasformati in ordine: [90 giorni, da configurare], poi vengono cancellati.',
+                'Carrelli non trasformati in ordine: 5 giorni dall’ultima modifica, poi vengono cancellati.',
                 'Messaggi: il tempo necessario a gestire la richiesta, poi al massimo [12 mesi, da confermare].',
                 'Registri tecnici del server: [14 giorni, da confermare].',
               ],
