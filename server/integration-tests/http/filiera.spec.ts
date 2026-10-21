@@ -1,6 +1,6 @@
 import { medusaIntegrationTestRunner } from '@medusajs/test-utils'
 import { Modules } from '@medusajs/framework/utils'
-import jwt from 'jsonwebtoken'
+import { adminWithRoles } from '../helpers/admin'
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -20,27 +20,17 @@ medusaIntegrationTestRunner({
   inApp: true,
   env: {},
   testSuite: ({ api, getContainer }) => {
-    let admin: { headers: Record<string, string> }
+    let admin: { userId: string; headers: Record<string, string> }
     let store: { headers: Record<string, string> }
     const fail = (error: { response: unknown }) => error.response as { status: number; data: { message: string } }
 
     beforeEach(async () => {
       const container = getContainer()
-      const user = await container.resolve(Modules.USER).createUsers({ email: 'amministrazione@test.local' })
-      const identity = await container.resolve(Modules.AUTH).createAuthIdentities({
-        provider_identities: [{ provider: 'emailpass', entity_id: 'amministrazione@test.local' }],
-        app_metadata: { user_id: user.id },
-      })
-      const token = jwt.sign(
-        { actor_id: user.id, actor_type: 'user', auth_identity_id: identity.id },
-        process.env.JWT_SECRET as string,
-        { expiresIn: '1h' },
-      )
-      admin = { headers: { authorization: `Bearer ${token}` } }
+      admin = await adminWithRoles(container, 'amministrazione@test.local')
 
       const [key] = await container
         .resolve(Modules.API_KEY)
-        .createApiKeys([{ title: 'Test', type: 'publishable', created_by: user.id }])
+        .createApiKeys([{ title: 'Test', type: 'publishable', created_by: admin.userId }])
       store = { headers: { 'x-publishable-api-key': key.token } }
     })
 

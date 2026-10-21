@@ -1,6 +1,11 @@
-import { defineConfig, loadEnv } from '@medusajs/framework/utils'
+import { defineConfig, FeatureFlag, loadEnv } from '@medusajs/framework/utils'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
+
+// Ruoli e permessi di Medusa (ancora sperimentali in 2.21): defineConfig decide se caricare il
+// modulo leggendo l'interruttore globale, che va acceso prima. Permessi nostri in src/policies.
+process.env.MEDUSA_FF_RBAC ??= 'true'
+FeatureFlag.setFlag('rbac', true)
 
 function required(name: string): string {
   const value = process.env[name]
@@ -58,6 +63,7 @@ const notificationModule = {
 }
 
 module.exports = defineConfig({
+  featureFlags: { rbac: true },
   projectConfig: {
     databaseUrl: required('DATABASE_URL'),
     // Senza REDIS_URL Medusa usa event bus, cache e lock in memoria: va bene in sviluppo.

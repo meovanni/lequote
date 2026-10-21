@@ -11,13 +11,22 @@ import {
   SupplierTypeCreate,
 } from './admin/filiera/validators'
 import { WithdrawalUpdate } from './admin/withdrawals/validators'
+import { guard } from './permissions'
 import { WithdrawalCreate } from './store/withdrawals/validators'
 
-// Le rotte /admin richiedono già l'accesso al back office; qui si aggiunge la validazione dei corpi.
-// Le anagrafiche (/admin/filiera/registries/:kind) si validano nella rotta, perché lo schema
-// dipende dal tipo.
+// Le rotte /admin richiedono già l'accesso al back office; qui si aggiungono i permessi per ruolo
+// e la validazione dei corpi. Le anagrafiche (/admin/filiera/registries/:kind) si validano nella
+// rotta, perché lo schema dipende dal tipo.
 export default defineMiddlewares({
   routes: [
+    ...guard('filiera', '/admin/filiera/lots'),
+    ...guard('filiera', '/admin/filiera/campaigns'),
+    ...guard('filiera', '/admin/filiera/stage-templates'),
+    ...guard('filiera', '/admin/filiera/registries/groves'),
+    ...guard('filiera', '/admin/filiera/registries/apiaries'),
+    ...guard('supplier', '/admin/filiera/registries/suppliers'),
+    ...guard('supplier', '/admin/filiera/supplier-types'),
+    ...guard('withdrawal', '/admin/withdrawals'),
     { matcher: '/admin/filiera/lots', method: 'POST', middlewares: [validateAndTransformBody(LotCreate)] },
     { matcher: '/admin/filiera/lots/:id', method: 'POST', middlewares: [validateAndTransformBody(LotUpdate)] },
     { matcher: '/admin/filiera/lots/:id/stages', method: 'POST', middlewares: [validateAndTransformBody(LotStagesReplace)] },
