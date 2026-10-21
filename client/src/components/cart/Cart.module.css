@@ -1,0 +1,374 @@
+/* Carrello, checkout e conferma: superficie chiara, stessa griglia delle schede prodotto. */
+.page {
+  background: var(--surface-bg);
+  color: var(--surface-text);
+  padding-block: var(--space-7) var(--space-8);
+  min-height: 70svh;
+}
+
+.inner {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.back {
+  color: var(--surface-text-muted);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.back:hover {
+  color: var(--surface-text);
+}
+
+.status {
+  color: var(--surface-text-muted);
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.layout {
+  display: grid;
+  gap: var(--space-7);
+  align-items: start;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+  min-width: 0;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.blockTitle {
+  color: var(--surface-text-muted);
+}
+
+/* Righe del carrello */
+.lines {
+  display: flex;
+  flex-direction: column;
+}
+
+.line {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-3) var(--space-4);
+  align-items: center;
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.line:first-child {
+  border-top: 1px solid var(--surface-border);
+}
+
+.lineInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.lineName {
+  font-weight: 500;
+}
+
+.lineName:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.lineMeta {
+  color: var(--surface-text-muted);
+}
+
+.lineTotal {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.lineControls {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.remove {
+  min-height: 44px;
+  color: var(--surface-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.remove:hover {
+  color: var(--surface-text);
+}
+
+.remove:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+
+/* Riepilogo dei totali */
+.totals {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
+  background: var(--surface-card);
+}
+
+.totalsRow {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.totalsGrand {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--surface-border);
+  font-weight: 600;
+}
+
+.totalsNote {
+  color: var(--surface-text-muted);
+  text-align: right;
+}
+
+/* Modulo */
+.fields {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.label {
+  color: var(--surface-text-muted);
+}
+
+.input {
+  width: 100%;
+  min-height: 48px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--surface-border);
+  background: var(--surface-card);
+  color: var(--surface-text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.input:hover {
+  border-color: color-mix(in srgb, var(--surface-text) 40%, var(--surface-border));
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--surface-accent);
+  outline-offset: 1px;
+}
+
+.input[aria-invalid='true'] {
+  border-color: var(--color-error);
+}
+
+.help {
+  color: var(--surface-text-muted);
+}
+
+.error {
+  color: var(--color-error);
+}
+
+.errorBox {
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-error);
+  color: var(--color-error);
+}
+
+/* Scelte (consegna, pagamento): schede radio */
+.choices {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.choice {
+  position: relative;
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--surface-border);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.choice:hover {
+  border-color: color-mix(in srgb, var(--surface-text) 40%, var(--surface-border));
+}
+
+.choice:has(input:checked) {
+  border-color: var(--surface-text);
+  background: color-mix(in srgb, var(--surface-text) 5%, transparent);
+}
+
+.choice:has(input:focus-visible) {
+  outline: 2px solid var(--surface-accent);
+  outline-offset: 2px;
+}
+
+.choice:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.choice input {
+  margin-top: 0.3em;
+  accent-color: var(--surface-text);
+  flex-shrink: 0;
+}
+
+.choiceText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+}
+
+.choiceHead {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.choiceNote {
+  color: var(--surface-text-muted);
+}
+
+.notice {
+  color: var(--surface-text-muted);
+}
+
+.terms {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.terms input {
+  margin-top: 0.3em;
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--surface-text);
+  flex-shrink: 0;
+}
+
+.terms a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.submit {
+  align-self: flex-start;
+}
+
+/* Conferma */
+.details {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.detail {
+  display: grid;
+  grid-template-columns: minmax(7rem, 1fr) 2fr;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.detail dt {
+  color: var(--surface-text-muted);
+}
+
+.detail dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 560px) {
+  .fieldsTwo {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .fieldsAddress {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+
+  .fieldsAddress > :first-child {
+    grid-column: 1 / -1;
+  }
+
+  .line {
+    grid-template-columns: 1fr auto auto;
+  }
+
+  .lineControls {
+    grid-column: auto;
+    grid-row: 1;
+    grid-column-start: 2;
+  }
+}
+
+@media (min-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(0, 1.6fr) minmax(18rem, 1fr);
+  }
+
+  /* Su schermi larghi il riepilogo accompagna lo scorrimento del modulo; sul telefono resta
+     in flusso (niente elementi fissati durante lo scroll). */
+  .aside {
+    position: sticky;
+    top: 6rem; /* sotto la barra */
+  }
+}

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 
+// Nessuna voce attiva finché una sezione non entra nella fascia centrale dello schermo: in cima
+// alla home (hero) e sulle altre pagine la barra non evidenzia nulla.
 export function useActiveSection(sectionIds: string[]) {
-  const [activeId, setActiveId] = useState<string>(sectionIds[0] ?? '')
+  const [activeId, setActiveId] = useState<string>('')
 
   useEffect(() => {
     const sections = sectionIds

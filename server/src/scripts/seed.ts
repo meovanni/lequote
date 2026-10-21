@@ -15,6 +15,7 @@ import {
   updateStoresWorkflow,
 } from '@medusajs/medusa/core-flows'
 import { FILIERA_MODULE } from '../modules/filiera'
+import { MANUAL_PAYMENT_PROVIDER_IDS } from '../modules/manual-payments'
 import type FilieraModuleService from '../modules/filiera/service'
 
 // Dati iniziali di Le Quote. Contiene solo fatti già noti: catalogo e prezzi della vetrina
@@ -72,7 +73,7 @@ async function seedRegionAndTaxes({ container, log }: Ctx) {
           currency_code: 'eur',
           countries: [COUNTRY],
           is_tax_inclusive: true,
-          payment_providers: ['pp_system_default', ...(stripeEnabled ? ['pp_stripe_stripe'] : [])],
+          payment_providers: [...MANUAL_PAYMENT_PROVIDER_IDS, ...(stripeEnabled ? ['pp_stripe_stripe'] : [])],
         },
       ],
     },

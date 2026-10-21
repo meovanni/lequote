@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import { motion } from 'motion/react'
 import { REVEAL_VIEWPORT, riseChild, staggerParent } from '@/lib/motion'
-import { filiera } from '@/data/content'
+import { useContent } from '@/i18n/LocaleContext'
 import type { ProductLine } from '@/types'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
 import { LegalPanel } from '@/components/common/LegalPanel/LegalPanel'
@@ -14,6 +14,7 @@ const tabId = (line: ProductLine) => `filiera-tab-${line}`
 const panelId = (line: ProductLine) => `filiera-panel-${line}`
 
 export function Filiera() {
+  const { filiera, ui } = useContent()
   const [activeLine, setActiveLine] = useState<ProductLine>(filiera.lines[0].line)
   const tabRefs = useRef<Partial<Record<ProductLine, HTMLButtonElement | null>>>({})
 
@@ -48,7 +49,7 @@ export function Filiera() {
         </header>
 
         <div className={styles.chain}>
-          <div role="tablist" aria-label="Linea di prodotto" className={styles.tabs}>
+          <div role="tablist" aria-label={ui.filieraTablistLabel} className={styles.tabs}>
             {filiera.lines.map((entry, index) => {
               const selected = entry.line === activeLine
               return (
@@ -72,7 +73,11 @@ export function Filiera() {
                     <motion.span
                       layoutId="filiera-tab-pill"
                       className={styles.tabPill}
-                      transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 420,
+                        damping: 34,
+                      }}
                     />
                   )}
                   <span className={styles.tabLabel}>{entry.label}</span>

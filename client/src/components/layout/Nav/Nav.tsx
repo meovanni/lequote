@@ -1,13 +1,19 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { navItems } from '@/data/content'
+import { it } from '@/data/content/it'
+import { useContent, useLocale } from '@/i18n/LocaleContext'
+import { localizePath, sectionHref } from '@/i18n/locales'
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher/LanguageSwitcher'
 import { useActiveSection } from '@/hooks/useActiveSection'
-import { CloseIcon, MenuIcon } from '@/components/common/icons/Icons'
+import { Link } from 'react-router'
+import { BagIcon, CloseIcon, MenuIcon } from '@/components/common/icons/Icons'
+import { useCart } from '@/cart/CartContext'
 import { Logo } from '@/components/common/Logo/Logo'
 import styles from './Nav.module.css'
 
 // Fuori dal componente: un array nuovo a ogni render ricreava l'IntersectionObserver di
-// useActiveSection (dipendenza dell'effetto) a ogni aggiornamento della barra.
-const SECTION_IDS = navItems.map((item) => item.id)
+// useActiveSection (dipendenza dell'effetto) a ogni aggiornamento della barra. Gli id delle
+// sezioni sono gli stessi in ogni lingua.
+const SECTION_IDS = it.navItems.map((item) => item.id)
 
 interface IndicatorRect {
   left: number
@@ -15,11 +21,15 @@ interface IndicatorRect {
 }
 
 export function Nav() {
+  const { navItems, ui, cartUi } = useContent()
+  const { cart } = useCart()
+  const cartCount = cart?.itemCount ?? 0
+  const locale = useLocale()
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [indicator, setIndicator] = useState<IndicatorRect | null>(null)
   const activeId = useActiveSection(SECTION_IDS)
-  const linksWrapRef = useRef<HTMLDivElement | null>(null)
+  const linksWrapRef = useRef<HTMLElement | null>(null)
   const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({})
 
   useEffect(() => {
@@ -55,7 +65,10 @@ export function Nav() {
       }
       const containerRect = container.getBoundingClientRect()
       const activeRect = active.getBoundingClientRect()
-      setIndicator({ left: activeRect.left - containerRect.left, width: activeRect.width })
+      setIndicator({
+        left: activeRect.left - containerRect.left,
+        width: activeRect.width,
+      })
     }
 
     measure()
@@ -67,16 +80,19 @@ export function Nav() {
     <>
       <header className={[styles.nav, isScrolled ? styles.navScrolled : ''].filter(Boolean).join(' ')}>
         <div className={styles.inner}>
-          <a href="#hero" className={styles.wordmark}>
+          <a href={sectionHref(locale, 'hero')} className={styles.wordmark}>
             <Logo className={styles.wordmarkLogo} />
           </a>
 
-          <div className={styles.linksWrap} ref={linksWrapRef}>
+          <nav aria-label={ui.mainNavLabel} className={styles.linksWrap} ref={linksWrapRef}>
             {indicator && (
               <span
                 aria-hidden="true"
                 className={styles.indicator}
-                style={{ transform: `translateX(${indicator.left}px)`, width: indicator.width }}
+                style={{
+                  transform: `translateX(${indicator.left}px)`,
+                  width: indicator.width,
+                }}
               />
             )}
             <ul className={styles.links}>
@@ -86,7 +102,7 @@ export function Nav() {
                     ref={(el) => {
                       linkRefs.current[item.id] = el
                     }}
-                    href={`#${item.id}`}
+                    href={sectionHref(locale, item.id)}
                     className={[styles.link, 'mono-label', activeId === item.id ? styles.linkActive : '']
                       .filter(Boolean)
                       .join(' ')}
@@ -96,12 +112,23 @@ export function Nav() {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
+
+          <LanguageSwitcher className={styles.languages} />
+
+          <Link to={localizePath(locale, '/carrello')} className={styles.cart} aria-label={cartUi.navLabel(cartCount)}>
+            <BagIcon />
+            {cartCount > 0 && (
+              <span className={`${styles.cartCount} mono-figure`} aria-hidden="true">
+                {cartCount}
+              </span>
+            )}
+          </Link>
 
           <button
             type="button"
             className={styles.menuButton}
-            aria-label={isOpen ? 'Chiudi il menu' : 'Apri il menu'}
+            aria-label={isOpen ? ui.menuClose : ui.menuOpen}
             aria-expanded={isOpen}
             onClick={() => setIsOpen((open) => !open)}
           >
@@ -116,12 +143,13 @@ export function Nav() {
         <ul className={styles.overlayLinks}>
           {navItems.map((item) => (
             <li key={item.id}>
-              <a href={`#${item.id}`} className="display-3" onClick={() => setIsOpen(false)}>
+              <a href={sectionHref(locale, item.id)} className="display-3" onClick={() => setIsOpen(false)}>
                 {item.label}
               </a>
             </li>
           ))}
         </ul>
+        <LanguageSwitcher className={styles.overlayLanguages} onNavigate={() => setIsOpen(false)} />
       </div>
     </>
   )

@@ -1,9 +1,9 @@
 import type {
+  ProductLine,
   FaqTopic,
   FilieraLine,
   NavItem,
   SeasonTrack,
-  ShopFulfillmentOption,
   ShopProduct,
 } from '@/types'
 
@@ -115,33 +115,11 @@ export const contatti = {
 
 export const shop = {
   eyebrow: 'Shop',
-  title: 'Richiedi il tuo ordine',
-  intro:
-    'Scegli i prodotti e le quantità: ti rispondiamo noi per confermare disponibilità, tempi e costo di spedizione o ritiro.',
-  fulfillmentLabel: 'Come vuoi ricevere il tuo ordine?',
-  fulfillmentOptions: [
-    { id: 'spedizione', label: 'Spedizione', note: 'A casa tua, in tutta Italia.' },
-    { id: 'ritiro', label: 'Ritiro in azienda', note: 'Vieni a trovarci a Roseto degli Abruzzi o a Cerchio.' },
-  ] satisfies ShopFulfillmentOption[],
-  addressLabel: 'Indirizzo di spedizione',
-  addressPlaceholder: 'Via, città, CAP',
-  formPhaseLabel: 'I tuoi dati',
-  confirmationSummaryLabel: 'Hai richiesto',
-  nameLabel: 'Nome e cognome',
-  emailLabel: 'Email',
-  phoneLabel: 'Telefono (facoltativo)',
-  noteLabel: 'Note (facoltativo)',
-  ctaLabel: 'Invia la richiesta',
-  ctaHelp: 'Si apre il tuo programma di posta con tutti i dettagli già pronti da inviare.',
-  confirmationTitle: 'Richiesta pronta',
-  confirmationBody:
-    "Si è aperto il tuo programma di posta con la richiesta già compilata: invia l'email e ti rispondiamo il prima possibile. Se non si è aperto nulla, scrivici direttamente a",
-  selectionErrorLabel: 'Scegli almeno un prodotto prima di inviare la richiesta.',
-  fulfillmentErrorLabel: "Scegli come vuoi ricevere l'ordine.",
-  nameErrorLabel: 'Il nome è obbligatorio.',
-  emailErrorLabel: 'Inserisci un indirizzo email valido.',
-  addressErrorLabel: "L'indirizzo di spedizione è obbligatorio.",
-  fallbackEmail: 'info@lequote.it',
+  title: 'Ordina online',
+  intro: 'Scegli prodotti e quantità, poi completa l’ordine dal carrello. Prezzi IVA inclusa.',
+  summaryTitle: 'Nel carrello',
+  summaryCount: (count: number) => (count === 1 ? '1 articolo' : `${count} articoli`),
+  totalLabel: 'Totale',
 }
 
 // Ogni formato avrà una propria foto (image), non ancora disponibile: lasciata assente
@@ -150,39 +128,41 @@ export const shop = {
 export const shopCatalog: ShopProduct[] = [
   {
     id: 'olio',
+    handle: 'olio-extravergine',
     name: 'Olio Extravergine',
     note: 'Il blend della riserva: Moraiolo, Leccino e Pendolino.',
     variants: [
       {
         id: 'olio-750ml',
-        label: 'Bottiglia 750 ml',
-        price: 15,
-        imageLabel: 'Foto: Bottiglia di olio EVO Le Quote da 750 ml',
+
+        sku: 'OLIO-750ML',
+        label: 'Bottiglia 750 ml',        imageLabel: 'Foto: Bottiglia di olio EVO Le Quote da 750 ml',
       }, // image: '/images/olio-750ml.jpg'
       {
         id: 'olio-5l',
-        label: 'Latta 5 L',
-        price: 75,
-        imageLabel: 'Foto: Latta di olio EVO Le Quote da 5 litri',
+
+        sku: 'OLIO-5L',
+        label: 'Latta 5 L',        imageLabel: 'Foto: Latta di olio EVO Le Quote da 5 litri',
       }, // image: '/images/olio-5l.jpg'
     ],
   },
   {
     id: 'miele',
+    handle: 'miele',
     name: 'Miele',
     note: 'Smielato a freddo, per preservarne enzimi e aromi.',
     variants: [
       {
         id: 'miele-250g',
-        label: 'Vasetto 250 g',
-        price: 5,
-        imageLabel: 'Foto: Vasetto di miele Le Quote da 250 g',
+
+        sku: 'MIELE-250G',
+        label: 'Vasetto 250 g',        imageLabel: 'Foto: Vasetto di miele Le Quote da 250 g',
       }, // image: '/images/miele-250g.jpg'
       {
         id: 'miele-500g',
-        label: 'Vasetto 500 g',
-        price: 8,
-        imageLabel: 'Foto: Vasetto di miele Le Quote da 500 g',
+
+        sku: 'MIELE-500G',
+        label: 'Vasetto 500 g',        imageLabel: 'Foto: Vasetto di miele Le Quote da 500 g',
       }, // image: '/images/miele-500g.jpg'
     ],
   },
@@ -510,3 +490,264 @@ export const footer = {
     { label: 'Facebook', href: '#' },
   ],
 }
+
+export const meta = {
+  title: "Le Quote | Olio e Miele dal Borsacchio all'Appennino",
+  description:
+    "Le Quote, azienda agricola familiare tra la Riserva del Borsacchio e Cerchio (AQ): olio extravergine d'oliva e miele, dal mare alla montagna abruzzese.",
+}
+
+// Testi dell'interfaccia che non appartengono a una sezione.
+export const ui = {
+  skipLink: 'Salta al contenuto',
+  menuOpen: 'Apri il menu',
+  menuClose: 'Chiudi il menu',
+  mainNavLabel: 'Menu principale',
+  footerNavLabel: 'Menu footer',
+  languageLabel: 'Lingua',
+  languageNames: { it: 'Italiano', en: 'English', de: 'Deutsch' },
+  filieraTablistLabel: 'Linea di prodotto',
+  seasonActive: 'In corso',
+  periodRange: (from: string, to: string) => `da ${from} a ${to}`,
+  oilBottleLabel: 'Bottiglia da 750 ml di olio extravergine Le Quote',
+  honeyJarLabel: 'Vasetto di miele Le Quote',
+  notFoundTitle: 'Pagina non trovata',
+  notFoundBody: 'L’indirizzo non corrisponde a nessuna pagina del sito.',
+  errorTitle: 'Qualcosa non ha funzionato',
+  errorBody: 'Ricarica la pagina; se il problema resta, scrivici a info@lequote.it.',
+  backHome: 'Torna alla home',
+  adminLink: 'Area riservata',
+}
+
+// Schede prodotto (/prodotti/:handle). I testi stanno qui, tradotti; varianti, prezzi e
+// disponibilità arrivano da Medusa. Gli handle sono quelli del catalogo nel back office.
+// Niente dichiarazioni non documentabili: niente "estratto a freddo" senza il registro delle
+// temperature (Reg. del. UE 2022/2104, art. 6), niente acidità senza le analisi dell'annata.
+export const productUi = {
+  formatLabel: 'Formato',
+  taxIncluded: 'IVA inclusa',
+  loading: 'Carico prezzi e disponibilità…',
+  loadError:
+    'Prezzi e disponibilità non sono raggiungibili in questo momento. Riprova più tardi o scrivici a info@lequote.it.',
+  available: 'Disponibile',
+  lowStock: (count: number) => (count === 1 ? 'Ultimo pezzo' : `Ultimi ${count} pezzi`),
+  soldOut: 'Esaurito al momento',
+  notOnSale: 'Non ancora in vendita',
+  detailsTitle: 'In breve',
+  nutritionTitle: 'Dichiarazione nutrizionale',
+  nutritionNutrient: 'Valori medi',
+  traceTitle: 'Da dove viene',
+  traceBody:
+    'In etichetta trovi il codice lotto: inseriscilo nella sezione Filiera per vedere raccolta, lavorazione e analisi della tua bottiglia o del tuo vasetto.',
+  traceLink: 'Vai alla filiera',
+  backToShop: 'Torna allo shop',
+}
+
+export const products = {
+  'olio-extravergine': {
+    line: 'olio',
+    illustration: 'oil',
+    eyebrow: 'Olio extravergine',
+    name: 'Olio extravergine di oliva',
+    summary: 'Il blend della Riserva del Borsacchio: Moraiolo, Leccino e Pendolino, solo dai nostri oliveti.',
+    metaDescription:
+      'Olio extravergine di oliva Le Quote: olive dei nostri oliveti nella Riserva del Borsacchio, Roseto degli Abruzzi. Bottiglia da 750 ml e latta da 5 litri.',
+    paragraphs: [
+      'Le olive vengono solo dai nostri oliveti nella Riserva del Borsacchio, a pochi passi dal mare, alcuni con piante secolari. Non compriamo olive da altri produttori.',
+      'Raccogliamo a mano o con leggere agevolatrici, al giusto grado di maturazione, e portiamo le olive al frantoio entro poche ore. Il frantoio cambia di anno in anno: per ogni lotto indichiamo quale.',
+      'Ogni campagna l’olio viene analizzato in laboratorio. I referti dell’annata si consultano per lotto, dalla sezione Filiera.',
+    ],
+    facts: [
+      { label: 'Cultivar', value: 'Moraiolo, Leccino, Pendolino' },
+      { label: 'Oliveti', value: 'Riserva del Borsacchio, Roseto degli Abruzzi (TE)' },
+      { label: 'Raccolta', value: 'Ottobre e novembre, a mano o con agevolatrici' },
+      { label: 'Estrazione', value: 'Solo meccanica, entro poche ore dalla raccolta' },
+    ],
+    // Valori per 100 ml dalle analisi dell'annata (Reg. UE 1169/2011, art. 30 e all. XV): non
+    // ancora forniti, restano segnaposto visibili.
+    nutrition: {
+      per: 'per 100 ml',
+      rows: [
+        { label: 'Energia', value: '[kJ / kcal da analisi]' },
+        { label: 'Grassi', value: '[g da analisi]' },
+        { label: 'di cui acidi grassi saturi', value: '[g da analisi]' },
+        { label: 'Carboidrati', value: '[g da analisi]' },
+        { label: 'di cui zuccheri', value: '[g da analisi]' },
+        { label: 'Proteine', value: '[g da analisi]' },
+        { label: 'Sale', value: '[g da analisi]' },
+      ],
+    } as { per: string; rows: { label: string; value: string }[] } | null,
+    variantLabels: { 'OLIO-750ML': 'Bottiglia 750 ml', 'OLIO-5L': 'Latta 5 L' } as Record<string, string>,
+  },
+  miele: {
+    line: 'miele',
+    illustration: 'honey',
+    eyebrow: 'Miele',
+    name: 'Miele di quota',
+    summary: 'Dagli alveari sulle alture di Cerchio, smielato a freddo. Acacia, millefiori o melata secondo l’annata.',
+    metaDescription:
+      'Miele Le Quote dagli alveari sulle alture di Cerchio (AQ), smielato a freddo. Vasetti da 250 g e 500 g.',
+    paragraphs: [
+      'Tutti i nostri alveari stanno sulle alture di Cerchio, nell’entroterra aquilano, e seguono le fioriture spontanee dei prati e dei boschi d’altura.',
+      'Estraiamo il miele a freddo, senza riscaldarlo. La denominazione floreale, per esempio acacia, la indichiamo solo quando le analisi dell’annata la confermano; altrimenti è millefiori.',
+      'Col tempo il miele può cristallizzare: è un processo naturale. Se lo preferisci fluido, scalda il vasetto a bagnomaria senza superare i 40 °C.',
+    ],
+    facts: [
+      { label: 'Apiari', value: 'Cerchio (AQ), in quota' },
+      { label: 'Fioriture', value: 'Spontanee, da maggio a settembre' },
+      { label: 'Smielatura', value: 'A freddo, dopo ogni raccolto' },
+      { label: 'Conservazione', value: 'In luogo fresco e asciutto, lontano dalla luce' },
+    ],
+    // Prodotto non trasformato con un solo ingrediente: dichiarazione non obbligatoria (all. V).
+    nutrition: null as { per: string; rows: { label: string; value: string }[] } | null,
+    variantLabels: { 'MIELE-250G': 'Vasetto 250 g', 'MIELE-500G': 'Vasetto 500 g' } as Record<string, string>,
+  },
+} satisfies Record<string, ProductPage>
+
+export interface ProductPage {
+  line: ProductLine
+  illustration: 'oil' | 'honey'
+  eyebrow: string
+  name: string
+  summary: string
+  metaDescription: string
+  paragraphs: string[]
+  facts: { label: string; value: string }[]
+  nutrition: { per: string; rows: { label: string; value: string }[] } | null
+  variantLabels: Record<string, string>
+}
+
+// Carrello, checkout e conferma (/carrello, /ordine). Testi legali da validare con il consulente:
+// il pulsante finale segue l'art. 51, c. 2 del Codice del Consumo ("obbligo di pagamento").
+export const cartUi = {
+  navText: 'Carrello',
+  navLabel: (count: number) =>
+    count === 0 ? 'Carrello, vuoto' : `Carrello, ${count} ${count === 1 ? 'articolo' : 'articoli'}`,
+  addToCart: 'Aggiungi al carrello',
+  addShort: 'Aggiungi',
+  adding: 'Aggiungo…',
+  added: 'Aggiunto al carrello.',
+  goToCart: 'Vai al carrello',
+  addError: 'Non siamo riusciti ad aggiungere il prodotto. Riprova tra poco.',
+  updateError: 'Non siamo riusciti ad aggiornare il carrello. Riprova tra poco.',
+  quantityLabel: 'Quantità',
+  decrease: (item: string) => `Diminuisci quantità: ${item}`,
+  increase: (item: string) => `Aumenta quantità: ${item}`,
+  title: 'Il tuo carrello',
+  metaDescription: 'Carrello e ordine sul sito di Le Quote: olio extravergine e miele, con ritiro in azienda.',
+  loading: 'Carico il carrello…',
+  empty: 'Il carrello è vuoto.',
+  emptyLink: 'Scegli i prodotti',
+  remove: 'Rimuovi',
+  itemsTitle: 'Prodotti',
+  subtotal: 'Prodotti',
+  shipping: 'Consegna',
+  shippingFree: 'Gratuita',
+  shippingTbd: 'Da scegliere',
+  total: 'Totale',
+  taxIncluded: (amount: string) => `IVA inclusa (${amount})`,
+  continueShopping: 'Continua gli acquisti',
+}
+
+export const checkoutUi = {
+  contactTitle: 'I tuoi dati',
+  firstName: 'Nome',
+  lastName: 'Cognome',
+  email: 'Email',
+  emailHelp: 'Ti scriviamo qui per confermare l’ordine.',
+  phone: 'Telefono',
+  phoneHelp: 'Per accordarci sul ritiro o sulla consegna.',
+  deliveryTitle: 'Come lo ricevi',
+  deliveryLoading: 'Carico le opzioni di consegna…',
+  pickupLabel: (city: string) => `Ritiro a ${city}`,
+  pickupNote: 'Gratuito. Ti scriviamo quando è pronto. Orari: [da confermare].',
+  deliveryNote: 'Spedizione in tutta Italia.',
+  noDelivery: 'La spedizione a domicilio non è ancora attiva: per ora l’ordine si ritira in azienda.',
+  addressTitle: 'Indirizzo di consegna',
+  address: 'Via e numero civico',
+  postalCode: 'CAP',
+  city: 'Comune',
+  province: 'Provincia (sigla)',
+  paymentTitle: 'Come paghi',
+  paymentOptions: {
+    bonifico: {
+      label: 'Bonifico bancario',
+      note: 'Trovi le coordinate nella pagina di conferma. Prepariamo l’ordine quando il pagamento è accreditato.',
+    },
+    ritiro: {
+      label: 'Al ritiro',
+      note: 'Paghi in azienda quando ritiri l’ordine: [contanti e/o carta, da confermare].',
+    },
+  },
+  pickupOnly: 'Solo con il ritiro in azienda.',
+  termsBefore: 'Ho letto e accetto le ',
+  termsLink: 'condizioni di vendita',
+  termsMiddle: '. Ho letto l’',
+  privacyLink: 'informativa sulla privacy',
+  termsAfter: '.',
+  withdrawalNote:
+    'Puoi recedere dal contratto entro 14 giorni dalla consegna, senza indicarne il motivo: le modalità sono nelle condizioni di vendita.',
+  submit: 'Ordina con obbligo di pagamento',
+  submitting: 'Invio l’ordine…',
+  errorSummary: 'Controlla i campi segnalati.',
+  errors: {
+    required: 'Campo obbligatorio.',
+    email: 'Inserisci un indirizzo email valido.',
+    postalCode: 'Il CAP ha 5 cifre.',
+    province: 'Indica la sigla della provincia, per esempio TE.',
+    delivery: 'Scegli come ricevere l’ordine.',
+    payment: 'Scegli come pagare.',
+    terms: 'Per ordinare accetta le condizioni di vendita.',
+    submit:
+      'L’ordine non è andato a buon fine e non ti è stato addebitato nulla. Riprova, oppure scrivici a info@lequote.it.',
+  },
+}
+
+export const orderUi = {
+  title: 'Ordine ricevuto',
+  metaDescription: 'Conferma dell’ordine su Le Quote.',
+  number: (id: number) => `Ordine n. ${id}`,
+  body: (email: string) => `Grazie. Ti scriviamo a ${email} quando l’ordine è pronto.`,
+  loading: 'Carico l’ordine…',
+  missing: 'Non c’è nessun ordine da mostrare.',
+  error:
+    'Non riusciamo a mostrare l’ordine in questo momento. Se hai appena ordinato, l’ordine è registrato: ti scriviamo noi. Per dubbi: info@lequote.it.',
+  bankTitle: 'Coordinate per il bonifico',
+  bankHolder: 'Intestatario',
+  bankIban: 'IBAN',
+  bankReason: 'Causale',
+  bankReasonValue: (id: number) => `Ordine ${id} Le Quote`,
+  bankAmount: 'Importo',
+  bankNote: 'Prepariamo l’ordine quando il bonifico risulta accreditato.',
+  pickupPaymentTitle: 'Pagamento al ritiro',
+  pickupPaymentBody: 'Paghi in azienda quando ritiri l’ordine: [contanti e/o carta, da confermare].',
+  deliveryLabel: 'Consegna',
+  summaryTitle: 'Riepilogo',
+  backHome: 'Torna alla home',
+}
+
+export const it = {
+  meta,
+  ui,
+  navItems,
+  footerNavItems,
+  hero,
+  chiSiamo,
+  territorio,
+  olio,
+  miele,
+  contatti,
+  shop,
+  shopCatalog,
+  filiera,
+  stagioni,
+  domande,
+  footer,
+  productUi,
+  products,
+  cartUi,
+  checkoutUi,
+  orderUi,
+}
+
+export type Content = typeof it

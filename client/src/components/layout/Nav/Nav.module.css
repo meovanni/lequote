@@ -37,6 +37,7 @@
 .linksWrap {
   position: relative;
   display: none;
+  margin-left: auto;
 }
 
 .links {
@@ -121,12 +122,61 @@
   color: var(--color-bone);
 }
 
+/* Lingue: sul telefono stanno nel pannello del menu, da tablet in su accanto ai link. */
+/* Carrello: sempre visibile, anche sul telefono accanto al menu. */
+.cart {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  margin-left: auto;
+  color: var(--color-inchiostro);
+}
+
+.cartCount {
+  position: absolute;
+  top: 4px;
+  right: 0;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding-inline: 0.25rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-miele);
+  color: var(--color-bone);
+  font-size: 0.7rem;
+  line-height: 1.15rem;
+  text-align: center;
+}
+
+.languages {
+  display: none;
+  color: var(--color-inchiostro);
+}
+
+.overlayLanguages {
+  position: absolute;
+  bottom: calc(var(--space-6) + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--color-bone);
+}
+
 @media (min-width: 860px) {
+  .languages {
+    display: block;
+  }
+
   .linksWrap {
     display: block;
   }
 
   .menuButton {
     display: none;
+  }
+
+  .cart {
+    margin-left: 0;
   }
 }

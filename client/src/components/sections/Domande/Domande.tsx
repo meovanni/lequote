@@ -1,4 +1,4 @@
-import { domande } from '@/data/content'
+import { useContent } from '@/i18n/LocaleContext'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
 import { Reveal } from '@/components/common/Reveal/Reveal'
 import { motion } from 'motion/react'
@@ -8,6 +8,7 @@ import styles from './Domande.module.css'
 // Elenco affiancato invece di una fisarmonica: le risposte sono brevi, e averle tutte a vista
 // evita al visitatore di aprire sette pannelli per trovare quella giusta.
 export function Domande() {
+  const { domande } = useContent()
   return (
     <section id="domande" data-surface="light-alt" className={styles.section}>
       <div className={styles.inner}>

@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { EASE_OUT, riseChild, staggerParent } from '@/lib/motion'
-import { hero } from '@/data/content'
+import { useContent } from '@/i18n/LocaleContext'
 import { Logo } from '@/components/common/Logo/Logo'
 import styles from './Hero.module.css'
 
 export function Hero() {
+  const { hero } = useContent()
   const reduceMotion = useReducedMotion()
   const [showFallback, setShowFallback] = useState(false)
   const videoRef = useRef<HTMLVideoElement | null>(null)
@@ -80,7 +81,11 @@ export function Hero() {
           className={styles.title}
           variants={{
             hidden: { clipPath: 'inset(0 100% 0 0)', opacity: 0 },
-            visible: { clipPath: 'inset(0 0% 0 0)', opacity: 1, transition: { duration: 1.4, ease: EASE_OUT } },
+            visible: {
+              clipPath: 'inset(0 0% 0 0)',
+              opacity: 1,
+              transition: { duration: 1.4, ease: EASE_OUT },
+            },
           }}
         >
           <Logo className={styles.logo} title={hero.title} />
@@ -108,7 +113,13 @@ export function Hero() {
           aria-hidden="true"
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 1, 1, 0], y: [0, 0, 14, 14] }}
-          transition={{ duration: 2.4, times: [0, 0.2, 0.8, 1], repeat: Infinity, delay: 2.2, ease: 'easeInOut' }}
+          transition={{
+            duration: 2.4,
+            times: [0, 0.2, 0.8, 1],
+            repeat: Infinity,
+            delay: 2.2,
+            ease: 'easeInOut',
+          }}
         />
       )}
     </section>

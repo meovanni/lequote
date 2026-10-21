@@ -12,6 +12,8 @@
     "start": "medusa start",
     "migrate": "medusa db:migrate",
     "seed": "medusa exec ./src/scripts/seed.ts",
+    "storefront-env": "medusa exec ./src/scripts/storefront-env.ts",
+    "dev:stock": "medusa exec ./src/scripts/dev-stock.ts",
     "typecheck": "tsc --noEmit && tsc -p src/admin/tsconfig.json --noEmit",
     "test:unit": "cross-env TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
     "test:integration:modules": "cross-env TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
@@ -28,7 +30,8 @@
     "@medusajs/js-sdk": "2.21.2",
     "@medusajs/medusa": "2.21.2",
     "@medusajs/ui": "4.2.6",
-    "@tanstack/react-query": "5.64.2"
+    "@tanstack/react-query": "5.64.2",
+    "nodemailer": "^7.0.13"
   },
   "devDependencies": {
     "@medusajs/test-utils": "2.21.2",
@@ -37,6 +40,7 @@
     "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "9.0.10",
     "@types/node": "^22.20.5",
+    "@types/nodemailer": "^8.0.2",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "cross-env": "^10.1.0",

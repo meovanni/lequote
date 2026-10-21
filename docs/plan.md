@@ -30,11 +30,22 @@ Da `server/`, la prima volta: `npm install`, `npm run setup` (crea `.env` con se
 Utente del back office: `npx medusa user -e <email> --invite` genera un invito; la password si sceglie aprendo il link.
 Test: `npm run test:unit`, `npm run test:integration:modules`, `npm run test:integration:http` (questi due richiedono `npm run db` acceso).
 
-## Fase 3: collegamento
+## Fase 3: collegamento (in corso)
 React Router + prerender, IT/EN/DE (ADR 0003); schede prodotto, carrello, checkout, conferma, `/lotto/:codice` con QR, pagine legali e funzione di recesso; test end-to-end Playwright (lotto, checkout ospite, bonifico, recesso).
+
+Fatto (2026-10-14):
+- React Router in modalità framework (ADR 0003, rivista: Next.js scartato): `ssr: false`, prerender delle pagine pubbliche in `build/client`, pagina 404. `npm run dev` / `npm run build` / `npm run typecheck` da `client/`.
+- Lingue: `/`, `/en/`, `/de/` con `hreflang`, canonical e `lang` per pagina; testi in `client/src/data/content/{it,en,de}.ts`; selettore di lingua nella barra e nel menu del telefono. Le traduzioni vanno riviste da un madrelingua prima della messa online.
+- Dominio dei meta tag da `VITE_SITE_URL` al build (segnaposto finché non è scelto).
+- Schede prodotto `/prodotti/:handle` (olio-extravergine, miele) nelle tre lingue, prerenderizzate: testi, fatti, dichiarazione nutrizionale (segnaposto in attesa delle analisi), informazioni di legge della linea; formati, prezzi IVA inclusa e disponibilità letti da Medusa nel browser. Le chiamate `/store` passano dal proxy di Vite in sviluppo e da Caddy in produzione (stesso dominio, niente CORS). Chiave pubblica: `npm run storefront-env` da `server/`.
+- Carrello e checkout ospite (2026-10-14): carrello in Medusa (nel browser resta solo il suo id), icona con contatore nella barra, "Aggiungi al carrello" nelle schede prodotto e nello shop della home (prezzi e disponibilità da Medusa: niente più prezzi scritti nei contenuti, niente più richiesta via email). `/carrello`: righe, dati, consegna (le opzioni attive in Medusa: oggi solo ritiro a Roseto o Cerchio), pagamento, accettazione delle condizioni, pulsante "Ordina con obbligo di pagamento" (art. 51 Cod. Consumo). `/ordine?id=…`: conferma con coordinate del bonifico o istruzioni per il pagamento al ritiro. Pagine private non indicizzate.
+- Pagamenti: due fornitori manuali in Medusa, bonifico (`pp_bonifico_lequote`) e al ritiro (`pp_ritiro_lequote`), così il metodo si legge su ogni ordine nel back office; l'incasso si registra con "Cattura". Su database esistenti li aggiunge alla regione lo script di migrazione `region-manual-payments` (gira con `npm run migrate`). Stripe resta pronto lato server con la chiave; il pagamento con carta nella vetrina si collega quando ci sono le chiavi di prova.
+- Gestionale (2026-10-14): lingua italiana impostata al primo accesso; nella scheda ordine il riquadro "Consegna e pagamento" (consegna, metodo di pagamento, telefono, cosa fare). Link "Area riservata" nel footer del sito verso /app.
+- Email d'ordine: conferma al cliente nella lingua in cui ha ordinato (con coordinate del bonifico o istruzioni per il ritiro) e avviso ai titolari (ORDER_ALERT_EMAIL) con il link all'ordine. Inviate con l'SMTP della casella esistente (SMTP_* in server/.env, ADR 0004); senza SMTP_HOST, in sviluppo, si salvano in server/.mail.
+- Da completare: pagine legali linkate dal checkout (passo 6), controllo lato server che il pagamento al ritiro valga solo con il ritiro (oggi lo impone la vetrina).
 
 ## Fase 4: messa online
 VPS (ADR 0004), dopo la validazione legale da parte del consulente.
 
 ## Dati mancanti dai titolari
-Telefono, P.IVA, social, sede dell'operatore, tariffe e soglia di spedizione, frantoio della campagna, prezzo e foto dei formati (il catalogo attuale ha miele 250 g / 500 g, le etichette prevedono 500 g / 1 kg), misure e grafica delle etichette, hosting e gestore del dominio, video hero in formato sorgente.
+Telefono, P.IVA, social, sede dell'operatore, tariffe e soglia di spedizione, IBAN e intestatario per il bonifico, dati SMTP della casella (server, porta, utente) e indirizzo per gli avvisi d'ordine, orari di ritiro e mezzi accettati al ritiro (contanti / carta), frantoio della campagna, prezzo e foto dei formati (il catalogo attuale ha miele 250 g / 500 g, le etichette prevedono 500 g / 1 kg), misure e grafica delle etichette, hosting e gestore del dominio, video hero in formato sorgente.

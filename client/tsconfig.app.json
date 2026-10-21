@@ -5,6 +5,7 @@
     "lib": ["ES2023", "DOM"],
     "module": "esnext",
     "types": ["vite/client"],
+    "rootDirs": [".", "./.react-router/types"],
     "allowArbitraryExtensions": true,
     "skipLibCheck": true,
 
@@ -27,5 +28,5 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src", ".react-router/types/**/*"]
 }

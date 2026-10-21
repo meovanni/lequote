@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { Domande } from './Domande'
-import { domande } from '@/data/content'
+import { domande } from '@/data/content/it'
 
 describe('Domande', () => {
   it('mostra tutte le domande e le risposte senza doverle aprire', async () => {

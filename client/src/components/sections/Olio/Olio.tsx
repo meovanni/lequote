@@ -1,15 +1,16 @@
-import { olio } from '@/data/content'
+import { useContent } from '@/i18n/LocaleContext'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
 import { Reveal } from '@/components/common/Reveal/Reveal'
 import { OilBottle } from '@/components/common/Product/OilBottle'
 import styles from './Olio.module.css'
 
 export function Olio() {
+  const { olio, ui } = useContent()
   return (
     <section id="olio" data-surface="dark" className={styles.section}>
       <div className={styles.inner}>
         <Reveal variant="sideLeft" className={styles.images}>
-          <OilBottle className={styles.bottle} />
+          <OilBottle className={styles.bottle} label={ui.oilBottleLabel} />
         </Reveal>
 
         <div className={styles.text}>

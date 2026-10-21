@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { EASE_OUT, REVEAL_VIEWPORT } from '@/lib/motion'
-import { stagioni } from '@/data/content'
+import { useContent } from '@/i18n/LocaleContext'
 import { formatPeriod, isActiveInMonth, monthSegments } from '@/lib/seasons'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
 import { Reveal } from '@/components/common/Reveal/Reveal'
@@ -13,6 +13,7 @@ interface StagioniProps {
 }
 
 export function Stagioni({ now = new Date() }: StagioniProps) {
+  const { stagioni, ui } = useContent()
   const currentMonth = now.getMonth() + 1
   const reduceMotion = useReducedMotion()
   // Ogni barra cresce da sinistra con un piccolo ritardo rispetto alla precedente.
@@ -77,16 +78,22 @@ export function Stagioni({ now = new Date() }: StagioniProps) {
                       <span className={styles.activityText}>
                         <span className="body-sm">{activity.label}</span>
                         <span className={`${styles.activityPeriod} specimen`}>
-                          {formatPeriod(activity, stagioni.monthsLong)}
+                          {formatPeriod(activity, stagioni.monthsLong, ui.periodRange)}
                         </span>
-                        {active && <span className="badge">In corso</span>}
+                        {active && <span className="badge">{ui.seasonActive}</span>}
                       </span>
                       <span className={styles.bars} aria-hidden="true">
                         {monthSegments(activity).map((segment) => (
                           <motion.span
                             key={segment.start}
                             className={styles.bar}
-                            style={{ '--start': segment.start, '--span': segment.span, originX: 0 } as CSSProperties}
+                            style={
+                              {
+                                '--start': segment.start,
+                                '--span': segment.span,
+                                originX: 0,
+                              } as CSSProperties
+                            }
                             {...grow()}
                           />
                         ))}

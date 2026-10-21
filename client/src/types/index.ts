@@ -11,9 +11,9 @@ export interface ProductTag {
 
 export interface ShopVariantOption {
   id: string
+  /** Codice del formato nel back office: prezzo e disponibilità arrivano da Medusa. */
+  sku: string
   label: string
-  /** Prezzo in euro. */
-  price: number
   /** Assente finché la foto del formato non è disponibile: ImagePlaceholder mostra un
    * riquadro segnaposto coerente col resto del sito finché non viene valorizzato. */
   image?: string
@@ -22,15 +22,11 @@ export interface ShopVariantOption {
 
 export interface ShopProduct {
   id: string
+  /** Handle della scheda prodotto (/prodotti/:handle). */
+  handle: string
   name: string
   note: string
   variants: ShopVariantOption[]
-}
-
-export interface ShopFulfillmentOption {
-  id: 'spedizione' | 'ritiro'
-  label: string
-  note: string
 }
 
 /* Tipi dei contenuti che in Fase 2 arriveranno dal back office (vedi docs/adr/0002): la forma

@@ -28,10 +28,10 @@ One family farming across roughly 800m of elevation: the sea-level site at Roset
 
 ## Capabilities and Constraints
 
-- Phase 1 (current): single-page narrative site with static content in `client/src/data/content.ts`, typed in the shape the future API will return. Shop is an order-request form that opens the visitor's email client.
+- Phase 1: single-page narrative site with static content in `client/src/data/content/` (one file per language, Italian is the reference), typed in the shape the future API will return. Shop is an order-request form that opens the visitor's email client.
 - Planned (phases 2 to 4, see `docs/plan.md`): Medusa v2 + Postgres back end with a custom Filiera module and a Labels module (print PDFs); React Router with prerendered pages (product, cart, checkout, order, `/lotto/:code`, legal pages, withdrawal function); Italian, English, German; Stripe, bank transfer and pay-on-pickup; shipping to Italy only; self-hosted on a small VPS, no subscription services.
 - Not yet confirmed, placeholders in copy: phone number, P.IVA, social links, operator address, shipping rates, the current year's frantoio. Do not fill these with invented values.
-- Front-end architecture: React 19 + TypeScript + Vite, plain CSS Modules, no Tailwind, no animation library. Motion is native CSS scroll-driven animation with JS fallback. React Router is the one accepted addition (phase 3).
+- Front-end architecture: React 19 + TypeScript + Vite, plain CSS Modules, no Tailwind. React Router in framework mode with static prerender and no storefront server (ADR 0003; Next.js considered and rejected). Motion (`motion`) for entrance and interaction animations; scroll-linked effects only on desktop, phones scroll natively.
 
 ## Legal Commitments
 

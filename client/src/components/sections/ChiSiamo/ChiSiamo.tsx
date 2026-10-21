@@ -1,10 +1,11 @@
-import { chiSiamo } from '@/data/content'
+import { useContent } from '@/i18n/LocaleContext'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
 import { ImagePlaceholder } from '@/components/common/ImagePlaceholder/ImagePlaceholder'
 import { Reveal } from '@/components/common/Reveal/Reveal'
 import styles from './ChiSiamo.module.css'
 
 export function ChiSiamo() {
+  const { chiSiamo } = useContent()
   return (
     <section id="chi-siamo" data-surface="light-alt" className={styles.section}>
       <div className={styles.inner}>

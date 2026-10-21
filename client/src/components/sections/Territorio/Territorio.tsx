@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { territorio } from '@/data/content'
+import { useContent } from '@/i18n/LocaleContext'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
 import { maskFromPx, maskToPx } from '@/lib/territorioMask'
 import { NATIVE_SCROLL_QUERY } from '@/lib/nativeScroll'
@@ -85,6 +85,7 @@ function rampIn(progress: number, start: number, end: number) {
 }
 
 export function Territorio() {
+  const { territorio } = useContent()
   const sectionRef = useRef<HTMLElement | null>(null)
   const pinStageRef = useRef<HTMLDivElement | null>(null)
   const headingRef = useRef<HTMLDivElement | null>(null)
@@ -235,7 +236,10 @@ export function Territorio() {
           <>
             <div
               className={`${styles.marker} ${styles.markerRoseto}`}
-              style={{ left: markerPositions.roseto.x, top: markerPositions.roseto.y }}
+              style={{
+                left: markerPositions.roseto.x,
+                top: markerPositions.roseto.y,
+              }}
               ref={rosetoRef}
             >
               <span className={styles.markerDot} aria-hidden="true" />
@@ -247,7 +251,10 @@ export function Territorio() {
 
             <div
               className={`${styles.marker} ${styles.markerCerchio}`}
-              style={{ left: markerPositions.cerchio.x, top: markerPositions.cerchio.y }}
+              style={{
+                left: markerPositions.cerchio.x,
+                top: markerPositions.cerchio.y,
+              }}
               ref={cerchioRef}
             >
               <span className={styles.markerDot} aria-hidden="true" />

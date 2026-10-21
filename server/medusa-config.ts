@@ -10,28 +10,52 @@ function required(name: string): string {
   return value
 }
 
-// Stripe è facoltativo: senza chiave restano i soli pagamenti manuali (bonifico, al ritiro).
+// Bonifico e pagamento al ritiro sempre attivi (src/modules/manual-payments); Stripe (carta) si
+// aggiunge impostando la chiave.
 const stripeApiKey = process.env.STRIPE_API_KEY
 
-const paymentModule = stripeApiKey
+const stripeProvider = stripeApiKey
   ? [
       {
-        resolve: '@medusajs/medusa/payment',
+        resolve: '@medusajs/medusa/payment-stripe',
+        id: 'stripe',
         options: {
-          providers: [
-            {
-              resolve: '@medusajs/medusa/payment-stripe',
-              id: 'stripe',
-              options: {
-                apiKey: stripeApiKey,
-                webhookSecret: required('STRIPE_WEBHOOK_SECRET'),
-              },
-            },
-          ],
+          apiKey: stripeApiKey,
+          webhookSecret: required('STRIPE_WEBHOOK_SECRET'),
         },
       },
     ]
   : []
+
+const paymentModule = {
+  resolve: '@medusajs/medusa/payment',
+  options: {
+    providers: [{ resolve: './src/modules/manual-payments', id: 'lequote' }, ...stripeProvider],
+  },
+}
+
+// Email d'ordine tramite l'SMTP della casella esistente (ADR 0004). Senza SMTP_HOST, in
+// sviluppo, le email si salvano in server/.mail invece di partire.
+const notificationModule = {
+  resolve: '@medusajs/medusa/notification',
+  options: {
+    providers: [
+      {
+        resolve: './src/modules/smtp-notification',
+        id: 'smtp',
+        options: {
+          channels: ['email'],
+          host: process.env.SMTP_HOST || undefined,
+          port: process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : undefined,
+          secure: process.env.SMTP_SECURE === 'true',
+          user: process.env.SMTP_USER || undefined,
+          pass: process.env.SMTP_PASS || undefined,
+          from: process.env.SMTP_FROM || 'Le Quote <info@lequote.it>',
+        },
+      },
+    ],
+  },
+}
 
 module.exports = defineConfig({
   projectConfig: {
@@ -46,5 +70,5 @@ module.exports = defineConfig({
       cookieSecret: required('COOKIE_SECRET'),
     },
   },
-  modules: [{ resolve: './src/modules/filiera' }, ...paymentModule],
+  modules: [{ resolve: './src/modules/filiera' }, paymentModule, notificationModule],
 })

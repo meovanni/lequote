@@ -1,0 +1,53 @@
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--surface-border);
+  color: var(--surface-text);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.button:hover {
+  border-color: var(--color-miele-tint);
+  background: color-mix(in srgb, var(--color-miele-tint) 14%, transparent);
+}
+
+.button:active {
+  transform: scale(0.92);
+}
+
+.button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.button:disabled:hover {
+  border-color: var(--surface-border);
+  background: none;
+}
+
+.icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* Il valore conta da un numero all'altro (useTweenedNumber): nessuna animazione CSS qui. */
+.value {
+  display: inline-block;
+  min-width: 1.5rem;
+  text-align: center;
+  color: var(--surface-text);
+  font-variant-numeric: tabular-nums;
+}

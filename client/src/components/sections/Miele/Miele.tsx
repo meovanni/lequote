@@ -1,4 +1,4 @@
-import { miele } from '@/data/content'
+import { useContent } from '@/i18n/LocaleContext'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
 import { ImagePlaceholder } from '@/components/common/ImagePlaceholder/ImagePlaceholder'
 import { HexPattern } from '@/components/common/HexPattern/HexPattern'
@@ -7,6 +7,7 @@ import { HoneyJar } from '@/components/common/Product/HoneyJar'
 import styles from './Miele.module.css'
 
 export function Miele() {
+  const { miele, ui } = useContent()
   return (
     <section id="miele" data-surface="light-alt" className={styles.section}>
       <HexPattern className={styles.hexPattern} />
@@ -34,13 +35,8 @@ export function Miele() {
         </div>
 
         <Reveal offset={8} variant="sideRight" className={styles.images}>
-          <ImagePlaceholder
-            label={miele.imageLabel}
-            aspectRatio="4 / 3"
-            variant="miele"
-            src={miele.image}
-          />
-          <HoneyJar className={styles.jar} />
+          <ImagePlaceholder label={miele.imageLabel} aspectRatio="4 / 3" variant="miele" src={miele.image} />
+          <HoneyJar className={styles.jar} label={ui.honeyJarLabel} />
         </Reveal>
       </div>
     </section>

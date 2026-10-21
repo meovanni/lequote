@@ -1,0 +1,28 @@
+.list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  color: inherit;
+  opacity: 0.55;
+  transition: opacity 0.25s ease;
+}
+
+.link:hover {
+  opacity: 1;
+}
+
+.link[aria-current='true'] {
+  opacity: 1;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 6px;
+  text-decoration-color: var(--color-miele);
+}

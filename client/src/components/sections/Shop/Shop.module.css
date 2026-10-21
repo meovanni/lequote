@@ -33,15 +33,6 @@
   margin-bottom: var(--space-2);
 }
 
-/* Ognuna delle quattro fasi (cosa desideri / come lo ricevi / i tuoi dati / invio) è un
-   gruppo stretto al suo interno; lo spazio generoso tra le fasi (.inner gap, sopra) è quello
-   che le distingue come passi distinti invece di un unico elenco indifferenziato. */
-.phase {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
 /* Catalogo: un prodotto per riga, impilati. Un prodotto in più (una futura terza linea, non
    solo olio e miele) si aggiunge semplicemente in fondo, senza dover ripensare le colonne. */
 .catalog {
@@ -113,65 +104,6 @@
   letter-spacing: 0.02em;
 }
 
-.variantCardBody .stepper {
-  margin-top: var(--space-1);
-}
-
-.stepper {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.stepperButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--surface-border);
-  color: var(--surface-text);
-  transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease,
-    transform 0.15s ease;
-}
-
-.stepperButton:hover {
-  border-color: var(--color-miele-tint);
-  background: color-mix(in srgb, var(--color-miele-tint) 14%, transparent);
-}
-
-.stepperButton:active {
-  transform: scale(0.92);
-}
-
-.stepperButton:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-.stepperButton:disabled:hover {
-  border-color: var(--surface-border);
-  background: none;
-}
-
-.stepperIcon {
-  width: 14px;
-  height: 14px;
-}
-
-/* Il valore conta davvero da un numero all'altro (useTweenedNumber in Shop.tsx) invece di
-   scattare: nessuna animazione CSS qui, l'interpolazione è nel valore stesso. */
-.stepperValue {
-  display: inline-block;
-  min-width: 1.5rem;
-  text-align: center;
-  color: var(--surface-text);
-  font-variant-numeric: tabular-nums;
-}
-
 /* Elementi che compaiono in seguito a una scelta (indirizzo, messaggi d'errore) invece che
    allo scroll: una piccola dissolvenza dall'alto li segnala come nuovi senza un salto secco. */
 @keyframes shop-field-reveal {
@@ -197,10 +129,12 @@
   }
 }
 
-/* Riepilogo: non un carrello vistoso, una riga di ledger che si allunga. Non è realmente
-   "flottante" (è in-flow), quindi niente ombra: un pannello leggermente incassato, stesso
-   trattamento già usato per il placeholder video dell'Hero sulla stessa superficie scura. */
+/* Riepilogo del carrello sotto il catalogo: un pannello incassato, niente ombra. */
 .summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
   padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-md);
   border: 1px solid var(--surface-border);
@@ -211,44 +145,20 @@
   color: var(--color-miele-tint);
 }
 
-.summaryList {
+.summaryRow {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  margin-top: var(--space-3);
-}
-
-.summaryItem {
-  display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: var(--space-3);
-}
-
-.summaryItemMeta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-shrink: 0;
-}
-
-.summaryRemove {
-  color: var(--surface-text-muted);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color 0.2s ease;
-}
-
-.summaryRemove:hover {
-  color: var(--color-bone);
+  width: 100%;
 }
 
 .summaryTotal {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  margin-top: var(--space-3);
   padding-top: var(--space-3);
   border-top: 1px solid var(--surface-border);
   color: var(--surface-text);
@@ -259,179 +169,8 @@
   animation: shop-field-reveal 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.fulfillment {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.fieldLabel {
-  color: var(--surface-text-muted);
-}
-
-.fulfillmentOptions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-3);
-}
-
-@media (max-width: 560px) {
-  .fulfillmentOptions {
-    grid-template-columns: 1fr;
-  }
-}
-
-.fulfillmentOption {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-1);
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--surface-border);
-  background: transparent;
-  text-align: left;
-  transition:
-    border-color 0.25s ease,
-    background-color 0.25s ease,
-    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.fulfillmentOption:hover {
-  border-color: var(--color-miele-tint);
-  transform: translateY(-2px);
-}
-
-.fulfillmentOptionActive {
-  border-color: var(--color-miele-tint);
-  background: color-mix(in srgb, var(--color-miele-tint) 14%, transparent);
-}
-
-.fulfillmentNote {
-  color: var(--surface-text-muted);
-}
-
-.formGrid {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  width: 100%;
-}
-
-.input,
-.textarea {
-  width: 100%;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--surface-border);
-  background: rgba(0, 0, 0, 0.18);
-  color: var(--surface-text);
-  font-family: var(--font-body);
-  font-size: 1rem;
-  transition: border-color 0.2s ease;
-}
-
-.input:hover,
-.textarea:hover {
-  border-color: color-mix(in srgb, var(--color-miele-tint) 50%, var(--surface-border));
-}
-
-.textarea {
-  resize: vertical;
-  min-height: 4.5rem;
-}
-
-.input::placeholder,
-.textarea::placeholder {
-  color: var(--surface-text-muted);
-}
-
-/* Stesso nome su .submitBlock e .confirmation (mai renderizzati insieme, sempre uno o l'altro):
-   nei browser che supportano le View Transitions, il pulsante d'invio si trasforma
-   letteralmente nel pannello di conferma invece di sparire mentre l'altro compare altrove. */
-.submitBlock {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-2);
-  view-transition-name: shop-submit-area;
-}
-
-.ctaHelp {
-  color: var(--surface-text-muted);
-}
-
-/* Il momento dell'invio è l'unico "traguardo" del flusso Shop: merita un ingresso più
-   deliberato (durata più lunga, movimento più ampio) delle dissolvenze di campo qui sopra —
-   non uno scatto di stato ma un momento riconosciuto. */
-@keyframes shop-confirmation-rise {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-.confirmation {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-5);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--surface-border);
-  background: rgba(0, 0, 0, 0.18);
-  animation: shop-confirmation-rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-  view-transition-name: shop-submit-area;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .confirmation {
-    animation: none;
-  }
-}
-
-/* Timing del morph coerente con l'easing "arrivo sicuro" già usato in tutto il sito, invece
-   del crossfade lineare di default del browser. Ignorato dove le View Transitions non sono
-   supportate: nessun fallback necessario, la CSS entrance qui sopra copre già quel caso. */
-::view-transition-old(shop-submit-area),
-::view-transition-new(shop-submit-area) {
-  animation-duration: 0.4s;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.confirmation p {
-  color: var(--surface-text-muted);
-}
-
-.confirmationLink {
-  color: var(--color-miele-tint);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-/* La richiesta effettivamente inviata, riecheggiata qui: non un dettaglio decorativo, ma la
-   conferma concreta di cosa sta per arrivare al destinatario — riusa esattamente lo stesso
-   linguaggio visivo del riepilogo in fase 1 (.summaryTitle/.summaryList/.summaryItem). */
-.confirmationSummary {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--surface-border);
-}
-
 /* Stessa forma dei bottoni condivisi (.btn in global.css): pillola piena, nessuna ombra. Qui
-   resta il miele pieno anche su bosco, perché è l'unica azione che chiude la richiesta. */
+   resta il miele pieno anche su bosco: porta al carrello, dove si chiude l'ordine. */
 .cta {
   display: inline-flex;
   align-items: center;
@@ -481,4 +220,51 @@
   inset: 8%;
   width: 84%;
   height: 84%;
+}
+
+/* Il nome del prodotto porta alla sua scheda. */
+.productLink {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  transition: text-decoration-color 0.2s ease;
+}
+
+.productLink:hover {
+  text-decoration-color: currentColor;
+}
+
+.variantStatus {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--surface-text-muted);
+}
+
+/* Aggiungi al carrello: pillola a contorno, alta quanto lo stepper che la sostituisce. */
+.addButton {
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-button);
+  border: 1px solid var(--surface-border);
+  color: var(--surface-text);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.addButton:hover {
+  border-color: var(--color-miele-tint);
+  background: color-mix(in srgb, var(--color-miele-tint) 14%, transparent);
+}
+
+.addButton:active {
+  transform: scale(0.97);
+}
+
+.addButton:disabled {
+  opacity: 0.5;
+  cursor: progress;
 }

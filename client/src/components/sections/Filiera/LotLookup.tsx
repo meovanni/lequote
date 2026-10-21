@@ -1,17 +1,14 @@
 import { useId, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
-import { filiera } from '@/data/content'
+import { useContent } from '@/i18n/LocaleContext'
 import { parseLotCode } from '@/lib/lotCode'
 import styles from './Filiera.module.css'
 
 type LookupState =
-  | { kind: 'idle' }
-  | { kind: 'error'; message: string; attempt: number }
-  | { kind: 'pending'; code: string }
-
-const { lookup } = filiera
+  { kind: 'idle' } | { kind: 'error'; message: string; attempt: number } | { kind: 'pending'; code: string }
 
 export function LotLookup() {
+  const { lookup } = useContent().filiera
   const [value, setValue] = useState('')
   const [state, setState] = useState<LookupState>({ kind: 'idle' })
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -25,7 +22,11 @@ export function LotLookup() {
     if (!result.ok) {
       const message = result.reason === 'empty' ? lookup.emptyError : lookup.formatError
       // attempt cambia a ogni invio: rimonta l'avviso, così viene riletto anche se identico.
-      setState((prev) => ({ kind: 'error', message, attempt: prev.kind === 'error' ? prev.attempt + 1 : 0 }))
+      setState((prev) => ({
+        kind: 'error',
+        message,
+        attempt: prev.kind === 'error' ? prev.attempt + 1 : 0,
+      }))
       inputRef.current?.focus()
       return
     }

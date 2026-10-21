@@ -31,10 +31,14 @@ export function isActiveInMonth({ from, to }: MonthRange, month: number): boolea
   return from <= to ? month >= from && month <= to : month >= from || month <= to
 }
 
-/** "maggio" per un mese singolo, "da novembre a febbraio" per un intervallo. */
-export function formatPeriod({ from, to }: MonthRange, monthNames: readonly string[]): string {
+/** "maggio" per un mese singolo, "da novembre a febbraio" per un intervallo; `range` dà la forma nelle altre lingue. */
+export function formatPeriod(
+  { from, to }: MonthRange,
+  monthNames: readonly string[],
+  range: (from: string, to: string) => string = (start, end) => `da ${start} a ${end}`,
+): string {
   assertMonth(from)
   assertMonth(to)
   const start = monthNames[from - 1]
-  return from === to ? start : `da ${start} a ${monthNames[to - 1]}`
+  return from === to ? start : range(start, monthNames[to - 1])
 }

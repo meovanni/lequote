@@ -10,6 +10,11 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Lo snap tra sezioni vale solo per la home (l'unica pagina con l'hero): sulle altre pagine,
+   con il footer come unico punto di aggancio, il browser apriva la pagina già in fondo. */
+html:has(#hero) {
   scroll-snap-type: y mandatory;
 }
 
@@ -20,14 +25,20 @@ html {
    pointer: coarse: alcuni browser mobili (modalità desktop, certe impostazioni) dichiarano un
    puntatore fine, quindi vale anche per gli schermi stretti e per chi non ha hover. */
 @media (pointer: coarse), (hover: none), (max-width: 1024px) {
-  html {
+  html:has(#hero) {
     scroll-snap-type: none;
   }
 }
 
-html,
-body {
+/* Body alto almeno lo schermo, non esattamente: la barra (sticky) è figlia diretta di body da
+   quando la pagina la rende React Router, e resta attaccata solo dentro il suo contenitore. Con
+   height: 100% spariva dopo la prima schermata. */
+html {
   height: 100%;
+}
+
+body {
+  min-height: 100%;
 }
 
 body {
@@ -194,4 +205,16 @@ section[id] {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Pagina d'errore (404 e imprevisti), resa dall'ErrorBoundary di root. */
+.error-page {
+  /* main/div: vale sia dentro la cornice del sito sia da sola. */
+  min-height: 100dvh;
+  display: grid;
+  place-content: center;
+  gap: var(--space-4, 1rem);
+  padding: 2rem 1rem;
+  text-align: center;
+  background: var(--surface-bg, var(--color-pergamena));
 }
