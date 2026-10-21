@@ -10,6 +10,8 @@ jest.setTimeout(180 * 1000)
 const PDF_BASE64 = Buffer.from('%PDF-1.7\nreferto di prova\n').toString('base64')
 const filesDir = mkdtempSync(join(tmpdir(), 'lequote-http-files-'))
 process.env.FILIERA_FILES_DIR = filesDir
+// Indirizzo fisso per il QR, indipendente dal .env di chi lancia i test.
+process.env.STOREFRONT_URL = 'https://lequote.test'
 afterAll(() => rmSync(filesDir, { recursive: true, force: true }))
 
 // Percorso completo del back office: anagrafiche, campagna, lotto, fasi, analisi, pubblicazione
@@ -43,9 +45,11 @@ medusaIntegrationTestRunner({
     })
 
     async function draftLot() {
+      const { data: typeList } = await api.get('/admin/filiera/supplier-types', admin)
+      const bottling = typeList.types.find((type: { code: string | null }) => type.code === 'imbottigliamento')
       const establishment = await api.post(
-        '/admin/filiera/registries/establishments',
-        { name: 'Frantoio Beta', role: 'imbottigliamento', municipality: 'Atri', province: 'TE', internal_code: 'SIAN-42' },
+        '/admin/filiera/registries/suppliers',
+        { name: 'Frantoio Beta', municipality: 'Atri', province: 'TE', internal_code: 'SIAN-42', type_ids: [bottling.id] },
         admin,
       )
       const template = await api.post(
@@ -186,7 +190,7 @@ medusaIntegrationTestRunner({
       expect((await api.post(`/admin/filiera/lots/${lot.id}`, { nominal_quantity: null }, admin).catch(fail)).status).toBe(400)
       expect((await api.post(`/admin/filiera/lots/${lot.id}`, { code: 'L2026-99' }, admin).catch(fail)).status).toBe(400)
       expect((await api.delete(`/admin/filiera/lots/${lot.id}`, admin).catch(fail)).status).toBe(400)
-      expect((await api.delete(`/admin/filiera/registries/establishments/${establishmentId}`, admin).catch(fail)).status).toBe(400)
+      expect((await api.delete(`/admin/filiera/registries/suppliers/${establishmentId}`, admin).catch(fail)).status).toBe(400)
     })
 
     it('una modifica parziale di un oliveto non cancella le varietà', async () => {
@@ -202,7 +206,7 @@ medusaIntegrationTestRunner({
     it('genera il QR del lotto verso la sua pagina pubblica, solo nel back office', async () => {
       const { lot } = await draftLot()
       const detail = await api.get(`/admin/filiera/lots/${lot.id}`, admin)
-      expect(detail.data.public_url).toBe('http://localhost:5173/lotto/L2026-07')
+      expect(detail.data.public_url).toBe('https://lequote.test/lotto/L2026-07')
 
       const svg = await api.get(`/admin/filiera/lots/${lot.id}/qr`, admin)
       expect(svg.headers['content-type']).toContain('image/svg+xml')
@@ -214,6 +218,27 @@ medusaIntegrationTestRunner({
 
       expect((await api.get(`/admin/filiera/lots/${lot.id}/qr?format=gif`, admin).catch(fail)).status).toBe(400)
       expect((await api.get(`/admin/filiera/lots/${lot.id}/qr`).catch(fail)).status).toBe(401)
+    })
+
+    it('gestisce i fornitori con tipologie create dal back office', async () => {
+      const { data: initial } = await api.get('/admin/filiera/supplier-types', admin)
+      expect(initial.types.map((type: { name: string }) => type.name)).toEqual(
+        expect.arrayContaining(['Frantoio', 'Imbottigliamento', 'Laboratorio', 'Packaging']),
+      )
+      const created = await api.post('/admin/filiera/supplier-types', { name: 'Vetreria' }, admin)
+      const supplier = await api.post(
+        '/admin/filiera/registries/suppliers',
+        { name: 'Vetri Sud', municipality: 'Pescara', email: 'ordini@vetrisud.example', type_ids: [created.data.type.id] },
+        admin,
+      )
+      expect(supplier.data.item.types.map((type: { name: string }) => type.name)).toEqual(['Vetreria'])
+
+      const inUse = await api.delete(`/admin/filiera/supplier-types/${created.data.type.id}`, admin).catch(fail)
+      expect(inUse.status).toBe(400)
+      const system = initial.types.find((type: { code: string | null }) => type.code === 'frantoio')
+      expect((await api.delete(`/admin/filiera/supplier-types/${system.id}`, admin).catch(fail)).status).toBe(400)
+      const duplicate = await api.post('/admin/filiera/supplier-types', { name: 'Vetreria' }, admin).catch(fail)
+      expect(duplicate.status).toBeGreaterThanOrEqual(400)
     })
 
     it('rifiuta un tipo di anagrafica sconosciuto', async () => {

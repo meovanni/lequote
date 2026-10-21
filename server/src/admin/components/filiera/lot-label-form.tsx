@@ -1,13 +1,14 @@
 import { Button, Container, Heading, Input, Select, Text, Textarea } from '@medusajs/ui'
 import { useState, type FormEvent } from 'react'
 import { FormField, orNull } from '../form-field'
-import { toDateInput, useFilieraAction, useRegistry, type Lot } from '../../lib/filiera-api'
+import { suppliersFor, toDateInput, useFilieraAction, useSuppliers, type Lot } from '../../lib/filiera-api'
 
 const NONE = 'nessuno'
 
 /** Dati obbligatori di etichetta (Reg. UE 1169/2011 art. 9) e dati di produzione del lotto. */
 export function LotLabelForm({ lot }: { lot: Lot }) {
-  const establishments = useRegistry('establishments')
+  const suppliers = useSuppliers()
+  const establishments = suppliersFor(suppliers.data?.items ?? [], ['imbottigliamento', 'invasettamento', 'laboratorio'])
   const action = useFilieraAction()
   const [form, setForm] = useState({
     product_name: lot.product_name,
@@ -70,7 +71,7 @@ export function LotLabelForm({ lot }: { lot: Lot }) {
             </Select.Trigger>
             <Select.Content>
               <Select.Item value={NONE}>Non indicato</Select.Item>
-              {(establishments.data?.items ?? []).map((item) => (
+              {establishments.map((item) => (
                 <Select.Item key={item.id} value={item.id}>
                   {item.name}, {item.municipality}
                 </Select.Item>

@@ -30,26 +30,30 @@ export const Apiary = model.define('filiera_apiary', {
   campaigns: model.manyToMany(() => Campaign, { mappedBy: 'apiaries' }),
 })
 
-// Frantoio: sempre di terzi, scelto campagna per campagna.
-export const Mill = model.define('filiera_mill', {
-  id: model.id({ prefix: 'mill' }).primaryKey(),
+// Tipologia di fornitore (frantoio, imbottigliamento, packaging, …): i titolari ne creano di
+// nuove dal back office. Quelle con codice sono di sistema: i menu del back office le usano per
+// proporre il frantoio della campagna e lo stabilimento di confezionamento del lotto.
+export const SupplierType = model.define('filiera_supplier_type', {
+  id: model.id({ prefix: 'sty' }).primaryKey(),
+  name: model.text().unique().searchable(),
+  code: model.text().nullable(),
+  suppliers: model.manyToMany(() => Supplier, { mappedBy: 'types' }),
+})
+
+// Fornitore: frantoio (sempre di terzi, scelto campagna per campagna), stabilimento di
+// confezionamento, laboratorio, packaging. Può avere più tipologie: oggi il frantoio imbottiglia.
+export const Supplier = model.define('filiera_supplier', {
+  id: model.id({ prefix: 'sup' }).primaryKey(),
   name: model.text().searchable(),
   municipality: model.text(),
   province: model.text().nullable(),
   address: model.text().nullable(),
   vat_number: model.text().nullable(),
-  notes: model.text().nullable(),
-  campaigns: model.hasMany(() => Campaign, { mappedBy: 'mill' }),
-})
-
-// Stabilimento di confezionamento: oggi il frantoio imbottiglia, domani il laboratorio aziendale.
-export const Establishment = model.define('filiera_establishment', {
-  id: model.id({ prefix: 'est' }).primaryKey(),
-  name: model.text().searchable(),
-  role: model.enum(['imbottigliamento', 'invasettamento', 'laboratorio']),
-  municipality: model.text(),
-  province: model.text().nullable(),
-  address: model.text().nullable(),
   internal_code: model.text().nullable(),
-  lots: model.hasMany(() => Lot, { mappedBy: 'packaging_establishment' }),
+  email: model.text().nullable(),
+  phone: model.text().nullable(),
+  notes: model.text().nullable(),
+  types: model.manyToMany(() => SupplierType, { mappedBy: 'suppliers' }),
+  milled_campaigns: model.hasMany(() => Campaign, { mappedBy: 'mill' }),
+  packaged_lots: model.hasMany(() => Lot, { mappedBy: 'packaging_establishment' }),
 })

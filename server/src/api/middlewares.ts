@@ -8,6 +8,7 @@ import {
   LotUpdate,
   StageTemplateCreate,
   StageTemplateUpdate,
+  SupplierTypeCreate,
 } from './admin/filiera/validators'
 import { WithdrawalUpdate } from './admin/withdrawals/validators'
 import { WithdrawalCreate } from './store/withdrawals/validators'
@@ -31,6 +32,7 @@ export default defineMiddlewares({
     },
     { matcher: '/admin/filiera/stage-templates', method: 'POST', middlewares: [validateAndTransformBody(StageTemplateCreate)] },
     { matcher: '/admin/filiera/stage-templates/:id', method: 'POST', middlewares: [validateAndTransformBody(StageTemplateUpdate)] },
+    { matcher: '/admin/filiera/supplier-types', method: 'POST', middlewares: [validateAndTransformBody(SupplierTypeCreate)] },
     { matcher: '/store/withdrawals', method: 'POST', middlewares: [validateAndTransformBody(WithdrawalCreate)] },
     { matcher: '/admin/withdrawals/:id', method: 'POST', middlewares: [validateAndTransformBody(WithdrawalUpdate)] },
   ],

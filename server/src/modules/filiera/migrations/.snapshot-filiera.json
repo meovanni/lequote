@@ -244,200 +244,6 @@
           "enumItems": [],
           "mappedType": "text"
         },
-        "role": {
-          "name": "role",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [
-            "imbottigliamento",
-            "invasettamento",
-            "laboratorio"
-          ],
-          "mappedType": "enum"
-        },
-        "municipality": {
-          "name": "municipality",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
-        "province": {
-          "name": "province",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
-        "address": {
-          "name": "address",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
-        "internal_code": {
-          "name": "internal_code",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": 6,
-          "precision": null,
-          "scale": null,
-          "default": "now()",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": 6,
-          "precision": null,
-          "scale": null,
-          "default": "now()",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "datetime"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": 6,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "datetime"
-        }
-      },
-      "name": "filiera_establishment",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "IDX_filiera_establishment_deleted_at",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_filiera_establishment_deleted_at\" ON \"filiera_establishment\" (\"deleted_at\") WHERE deleted_at IS NULL"
-        },
-        {
-          "keyName": "filiera_establishment_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {},
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": true,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
         "municipality": {
           "name": "municipality",
           "type": "text",
@@ -644,6 +450,199 @@
           "enumItems": [],
           "mappedType": "text"
         },
+        "product_line": {
+          "name": "product_line",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [
+            "olio",
+            "miele"
+          ],
+          "mappedType": "enum"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "integer"
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "fields": {
+          "name": "fields",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "json"
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": "true",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "boolean"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": "now()",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": "now()",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        }
+      },
+      "name": "filiera_stage_template",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "IDX_filiera_stage_template_deleted_at",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_filiera_stage_template_deleted_at\" ON \"filiera_stage_template\" (\"deleted_at\") WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "filiera_stage_template_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": true,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
         "name": {
           "name": "name",
           "type": "text",
@@ -724,6 +723,54 @@
           "enumItems": [],
           "mappedType": "text"
         },
+        "internal_code": {
+          "name": "internal_code",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "phone": {
+          "name": "phone",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
         "notes": {
           "name": "notes",
           "type": "text",
@@ -789,20 +836,20 @@
           "mappedType": "datetime"
         }
       },
-      "name": "filiera_mill",
+      "name": "filiera_supplier",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "IDX_filiera_mill_deleted_at",
+          "keyName": "IDX_filiera_supplier_deleted_at",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_filiera_mill_deleted_at\" ON \"filiera_mill\" (\"deleted_at\") WHERE deleted_at IS NULL"
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_filiera_supplier_deleted_at\" ON \"filiera_supplier\" (\"deleted_at\") WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "filiera_mill_pkey",
+          "keyName": "filiera_supplier_pkey",
           "columnNames": [
             "id"
           ],
@@ -1025,7 +1072,7 @@
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.filiera_mill",
+          "referencedTableName": "public.filiera_supplier",
           "deleteRule": "set null",
           "updateRule": "cascade"
         }
@@ -1370,7 +1417,7 @@
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.filiera_establishment",
+          "referencedTableName": "public.filiera_supplier",
           "deleteRule": "set null",
           "updateRule": "cascade"
         }
@@ -2033,25 +2080,6 @@
           "enumItems": [],
           "mappedType": "text"
         },
-        "product_line": {
-          "name": "product_line",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [
-            "olio",
-            "miele"
-          ],
-          "mappedType": "enum"
-        },
         "name": {
           "name": "name",
           "type": "text",
@@ -2068,24 +2096,8 @@
           "enumItems": [],
           "mappedType": "text"
         },
-        "position": {
-          "name": "position",
-          "type": "integer",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "integer"
-        },
-        "description": {
-          "name": "description",
+        "code": {
+          "name": "code",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -2099,38 +2111,6 @@
           "comment": null,
           "enumItems": [],
           "mappedType": "text"
-        },
-        "fields": {
-          "name": "fields",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "json"
-        },
-        "active": {
-          "name": "active",
-          "type": "boolean",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": "true",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "boolean"
         },
         "created_at": {
           "name": "created_at",
@@ -2181,20 +2161,29 @@
           "mappedType": "datetime"
         }
       },
-      "name": "filiera_stage_template",
+      "name": "filiera_supplier_type",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "IDX_filiera_stage_template_deleted_at",
+          "keyName": "IDX_filiera_supplier_type_name_unique",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_filiera_stage_template_deleted_at\" ON \"filiera_stage_template\" (\"deleted_at\") WHERE deleted_at IS NULL"
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_filiera_supplier_type_name_unique\" ON \"filiera_supplier_type\" (\"name\") WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "filiera_stage_template_pkey",
+          "keyName": "IDX_filiera_supplier_type_deleted_at",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_filiera_supplier_type_deleted_at\" ON \"filiera_supplier_type\" (\"deleted_at\") WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "filiera_supplier_type_pkey",
           "columnNames": [
             "id"
           ],
@@ -2206,6 +2195,87 @@
       ],
       "checks": [],
       "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "filiera_supplier_id": {
+          "name": "filiera_supplier_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": true,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "filiera_supplier_type_id": {
+          "name": "filiera_supplier_type_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": true,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        }
+      },
+      "name": "filiera_supplier_filiera_supplier_types",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "filiera_supplier_filiera_supplier_types_pkey",
+          "columnNames": [
+            "filiera_supplier_id",
+            "filiera_supplier_type_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "filiera_supplier_filiera_supplier_types_filiera__717d8_foreign": {
+          "constraintName": "filiera_supplier_filiera_supplier_types_filiera__717d8_foreign",
+          "columnNames": [
+            "filiera_supplier_id"
+          ],
+          "localTableName": "public.filiera_supplier_filiera_supplier_types",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.filiera_supplier",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "filiera_supplier_filiera_supplier_types_filiera__de062_foreign": {
+          "constraintName": "filiera_supplier_filiera_supplier_types_filiera__de062_foreign",
+          "columnNames": [
+            "filiera_supplier_type_id"
+          ],
+          "localTableName": "public.filiera_supplier_filiera_supplier_types",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.filiera_supplier_type",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      },
       "nativeEnums": {}
     }
   ],

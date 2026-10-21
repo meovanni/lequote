@@ -1,13 +1,12 @@
 import { defineRouteConfig } from '@medusajs/admin-sdk'
 import { Badge, Container, Heading, Table, Tabs, Text } from '@medusajs/ui'
 import { RegistryPanel } from '../../../components/filiera/registry-panel'
-import { LINE_LABEL, useStageTemplates, type RegistryKind } from '../../../lib/filiera-api'
+import { LINE_LABEL, useStageTemplates } from '../../../lib/filiera-api'
 
-const TABS: { kind: RegistryKind; label: string }[] = [
+// Frantoi e stabilimenti sono fornitori: hanno la loro voce di menu (routes/fornitori).
+const TABS: { kind: 'groves' | 'apiaries'; label: string }[] = [
   { kind: 'groves', label: 'Oliveti' },
   { kind: 'apiaries', label: 'Apiari' },
-  { kind: 'mills', label: 'Frantoi' },
-  { kind: 'establishments', label: 'Stabilimenti' },
 ]
 
 // Sola lettura per ora: i modelli si modificano via API; l'editor arriva quando i titolari
@@ -52,7 +51,7 @@ const RegistriesPage = () => (
     <div className="px-6 py-4">
       <Heading level="h1">Anagrafiche</Heading>
       <Text size="small" className="text-ui-fg-subtle">
-        Oliveti, apiari, frantoi e stabilimenti si inseriscono una volta e si riusano in ogni campagna.
+        Oliveti e apiari si inseriscono una volta e si riusano in ogni campagna. Frantoi e stabilimenti sono nella voce Fornitori.
       </Text>
     </div>
     <Tabs defaultValue="groves">

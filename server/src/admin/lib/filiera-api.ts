@@ -55,8 +55,27 @@ export type StageTemplate = {
   fields: { key: string; label: string; type: 'text' | 'number' | 'date'; visibility: Visibility; required: boolean }[]
 }
 
-export type RegistryKind = 'groves' | 'apiaries' | 'mills' | 'establishments'
+export type RegistryKind = 'groves' | 'apiaries' | 'suppliers'
 export type RegistryItem = { id: string; name: string; municipality: string; province: string | null } & Record<string, unknown>
+
+export type SupplierType = { id: string; name: string; code: string | null }
+export type Supplier = RegistryItem & {
+  address: string | null
+  vat_number: string | null
+  internal_code: string | null
+  email: string | null
+  phone: string | null
+  types?: SupplierType[]
+}
+
+/**
+ * Fornitori adatti a un ruolo (tipologie di sistema, per codice). Se nessuno ha quelle tipologie
+ * li propone tutti, per non bloccare chi non le ha ancora assegnate.
+ */
+export function suppliersFor(items: Supplier[], codes: string[]): Supplier[] {
+  const matching = items.filter((item) => (item.types ?? []).some((type) => type.code && codes.includes(type.code)))
+  return matching.length > 0 ? matching : items
+}
 
 const ROOT = ['filiera'] as const
 
@@ -97,6 +116,20 @@ export function useRegistry(kind: RegistryKind) {
   return useQuery({
     queryKey: [...ROOT, 'registry', kind],
     queryFn: () => sdk.client.fetch<{ items: RegistryItem[] }>(`/admin/filiera/registries/${kind}`, { query: { limit: 200 } }),
+  })
+}
+
+export function useSuppliers() {
+  return useQuery({
+    queryKey: [...ROOT, 'registry', 'suppliers'],
+    queryFn: () => sdk.client.fetch<{ items: Supplier[] }>('/admin/filiera/registries/suppliers', { query: { limit: 200 } }),
+  })
+}
+
+export function useSupplierTypes() {
+  return useQuery({
+    queryKey: [...ROOT, 'supplier-types'],
+    queryFn: () => sdk.client.fetch<{ types: SupplierType[] }>('/admin/filiera/supplier-types'),
   })
 }
 

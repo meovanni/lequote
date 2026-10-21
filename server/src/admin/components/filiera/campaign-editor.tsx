@@ -1,7 +1,7 @@
 import { Button, Checkbox, Container, Heading, Input, Select, Text, Textarea } from '@medusajs/ui'
 import { useState, type FormEvent } from 'react'
 import { FormField, orNull } from '../form-field'
-import { toDateInput, useFilieraAction, useRegistry, type Campaign } from '../../lib/filiera-api'
+import { suppliersFor, toDateInput, useFilieraAction, useRegistry, useSuppliers, type Campaign } from '../../lib/filiera-api'
 import { AnalysesPanel } from './analyses-panel'
 
 const NONE = 'nessuno'
@@ -27,7 +27,8 @@ function SourcePicker({ campaign, selected, onToggle }: { campaign: Campaign; se
 
 /** Campagna: periodo, frantoio (olio), oliveti o apiari di provenienza, analisi dell'anno. */
 export function CampaignEditor({ campaign }: { campaign: Campaign }) {
-  const mills = useRegistry('mills')
+  const suppliers = useSuppliers()
+  const mills = suppliersFor(suppliers.data?.items ?? [], ['frantoio'])
   const action = useFilieraAction()
   const isOil = campaign.product_line === 'olio'
   const [form, setForm] = useState({
@@ -80,7 +81,7 @@ export function CampaignEditor({ campaign }: { campaign: Campaign }) {
                 </Select.Trigger>
                 <Select.Content>
                   <Select.Item value={NONE}>Non ancora scelto</Select.Item>
-                  {(mills.data?.items ?? []).map((mill) => (
+                  {mills.map((mill) => (
                     <Select.Item key={mill.id} value={mill.id}>
                       {mill.name}, {mill.municipality}
                     </Select.Item>

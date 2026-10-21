@@ -5,7 +5,7 @@ import { publishBlockers } from './lib/publish-check'
 import { buildLotStages, type StageValuesInput, type TemplateForBuild } from './lib/stage-builder'
 import { Analysis, Campaign } from './models/campaign'
 import { Lot, LotStage } from './models/lot'
-import { Apiary, Establishment, Grove, Mill } from './models/registries'
+import { Apiary, Grove, Supplier, SupplierType } from './models/registries'
 import { StageTemplate } from './models/stage-template'
 
 const PUBLIC_LOT_RELATIONS = ['campaign', 'campaign.analyses', 'packaging_establishment', 'stages']
@@ -26,7 +26,7 @@ export type LotChanges = {
 
 export type LotInput = LotChanges & Required<Pick<LotChanges, 'code' | 'product_line' | 'product_name' | 'campaign_id'>>
 
-export type RegistryKind = 'groves' | 'apiaries' | 'mills' | 'establishments'
+export type RegistryKind = 'groves' | 'apiaries' | 'suppliers'
 
 // Dati che identificano il lotto stampato: su un lotto pubblico cambiarli renderebbe orfane
 // etichette e QR già in circolazione, o scambierebbe le analisi mostrate.
@@ -44,8 +44,8 @@ function invalid(message: string): never {
 class FilieraModuleService extends MedusaService({
   Grove,
   Apiary,
-  Mill,
-  Establishment,
+  Supplier,
+  SupplierType,
   StageTemplate,
   Campaign,
   Analysis,
@@ -211,15 +211,11 @@ class FilieraModuleService extends MedusaService({
   async deleteRegistryItem(kind: RegistryKind, id: string, @MedusaContext() context: Context = {}) {
     const usage = await this.registryUsage(kind, id, context)
     if (usage > 0) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_ALLOWED,
-        `In uso da ${usage} ${kind === 'establishments' ? 'lotti' : 'campagne'}: non si può eliminare.`,
-      )
+      throw new MedusaError(MedusaError.Types.NOT_ALLOWED, `In uso da ${usage} tra campagne e lotti: non si può eliminare.`)
     }
     if (kind === 'groves') await this.deleteGroves(id, context)
     if (kind === 'apiaries') await this.deleteApiaries(id, context)
-    if (kind === 'mills') await this.deleteMills(id, context)
-    if (kind === 'establishments') await this.deleteEstablishments(id, context)
+    if (kind === 'suppliers') await this.deleteSuppliers(id, context)
   }
 
   private async registryUsage(kind: RegistryKind, id: string, context: Context): Promise<number> {
@@ -228,11 +224,24 @@ class FilieraModuleService extends MedusaService({
         return ((await this.retrieveGrove(id, { relations: ['campaigns'] }, context)).campaigns ?? []).length
       case 'apiaries':
         return ((await this.retrieveApiary(id, { relations: ['campaigns'] }, context)).campaigns ?? []).length
-      case 'mills':
-        return ((await this.retrieveMill(id, { relations: ['campaigns'] }, context)).campaigns ?? []).length
-      case 'establishments':
-        return ((await this.retrieveEstablishment(id, { relations: ['lots'] }, context)).lots ?? []).length
+      case 'suppliers': {
+        const supplier = await this.retrieveSupplier(id, { relations: ['milled_campaigns', 'packaged_lots'] }, context)
+        return (supplier.milled_campaigns ?? []).length + (supplier.packaged_lots ?? []).length
+      }
     }
+  }
+
+  /** Una tipologia si elimina solo se nessun fornitore la usa; quelle di sistema mai. */
+  @InjectTransactionManager()
+  async deleteSupplierTypeChecked(id: string, @MedusaContext() context: Context = {}) {
+    const type = await this.retrieveSupplierType(id, { relations: ['suppliers'] }, context)
+    if (type.code) {
+      throw new MedusaError(MedusaError.Types.NOT_ALLOWED, `«${type.name}» è una tipologia di sistema: non si può eliminare.`)
+    }
+    if ((type.suppliers ?? []).length > 0) {
+      throw new MedusaError(MedusaError.Types.NOT_ALLOWED, `«${type.name}» è usata da ${type.suppliers.length} fornitori: non si può eliminare.`)
+    }
+    await this.deleteSupplierTypes(id, context)
   }
 
   /** Elimina una campagna senza lotti, con le sue analisi. Restituisce le chiavi dei file da rimuovere. */

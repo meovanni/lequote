@@ -2,7 +2,7 @@ import { moduleIntegrationTestRunner } from '@medusajs/test-utils'
 import { FILIERA_MODULE } from '..'
 import { Analysis, Campaign } from '../models/campaign'
 import { Lot, LotStage } from '../models/lot'
-import { Apiary, Establishment, Grove, Mill } from '../models/registries'
+import { Apiary, Grove, Supplier, SupplierType } from '../models/registries'
 import { StageTemplate } from '../models/stage-template'
 import type FilieraModuleService from '../service'
 
@@ -10,12 +10,12 @@ jest.setTimeout(120 * 1000)
 
 moduleIntegrationTestRunner<FilieraModuleService>({
   moduleName: FILIERA_MODULE,
-  moduleModels: [Grove, Apiary, Mill, Establishment, StageTemplate, Campaign, Analysis, Lot, LotStage],
+  moduleModels: [Grove, Apiary, Supplier, SupplierType, StageTemplate, Campaign, Analysis, Lot, LotStage],
   resolve: './src/modules/filiera',
   testSuite: ({ service }) => {
     async function setup() {
-      const [establishment] = await service.createEstablishments([
-        { name: 'Frantoio Beta', role: 'imbottigliamento', municipality: 'Atri', province: 'TE', internal_code: 'SIAN-999' },
+      const [establishment] = await service.createSuppliers([
+        { name: 'Frantoio Beta', municipality: 'Atri', province: 'TE', internal_code: 'SIAN-999' },
       ])
       const [campaign] = await service.createCampaigns([{ product_line: 'olio', label: '2025/26' }])
       const [template] = await service.createStageTemplates([
@@ -104,9 +104,25 @@ moduleIntegrationTestRunner<FilieraModuleService>({
         ).rejects.toThrow('è di miele')
       })
 
-      it('non elimina uno stabilimento usato da un lotto', async () => {
+      it('non elimina un fornitore usato come stabilimento da un lotto', async () => {
         const { establishment } = await publishedLot()
-        await expect(service.deleteRegistryItem('establishments', establishment.id)).rejects.toThrow('In uso da 1 lotti')
+        await expect(service.deleteRegistryItem('suppliers', establishment.id)).rejects.toThrow('In uso da 1')
+      })
+
+      it('crea un fornitore con più tipologie e non elimina quelle di sistema né quelle in uso', async () => {
+        const [system, custom] = await service.createSupplierTypes([
+          { name: 'Frantoio', code: 'frantoio' },
+          { name: 'Tipografia', code: null },
+        ])
+        const supplier = await service.createSuppliers({ name: 'Frantoio Alfa', municipality: 'Atri', types: [system.id, custom.id] })
+        const loaded = await service.retrieveSupplier(supplier.id, { relations: ['types'] })
+        expect(loaded.types.map((type) => type.name).sort()).toEqual(['Frantoio', 'Tipografia'])
+
+        await expect(service.deleteSupplierTypeChecked(system.id)).rejects.toThrow('di sistema')
+        await expect(service.deleteSupplierTypeChecked(custom.id)).rejects.toThrow('usata da 1')
+        await service.updateSuppliers({ id: supplier.id, types: [system.id] })
+        await service.deleteSupplierTypeChecked(custom.id)
+        expect(await service.listSupplierTypes({ id: custom.id })).toHaveLength(0)
       })
 
       it('elimina una campagna vuota con le sue analisi e restituisce i file da rimuovere', async () => {

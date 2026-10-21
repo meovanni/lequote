@@ -1,7 +1,7 @@
 import { model } from '@medusajs/framework/utils'
 import type { StageFieldValue } from '../lib/public-lot'
 import { Campaign } from './campaign'
-import { Establishment } from './registries'
+import { Supplier } from './registries'
 
 // Lotto (D.Lgs. 231/2017 art. 17): il codice è quello stampato in etichetta, già normalizzato
 // da parseLotCode prima del salvataggio. Nasce in bozza: diventa visibile al pubblico solo
@@ -20,7 +20,8 @@ export const Lot = model
     units: model.number().nullable(),
     notes: model.text().nullable(),
     campaign: model.belongsTo(() => Campaign, { mappedBy: 'lots' }),
-    packaging_establishment: model.belongsTo(() => Establishment, { mappedBy: 'lots' }).nullable(),
+    // Stabilimento di confezionamento (dicitura di legge): un fornitore, o in futuro il laboratorio aziendale.
+    packaging_establishment: model.belongsTo(() => Supplier, { mappedBy: 'packaged_lots' }).nullable(),
     stages: model.hasMany(() => LotStage, { mappedBy: 'lot' }),
   })
   .cascades({ delete: ['stages'] })

@@ -1,4 +1,4 @@
-import { Button, IconButton, Input, Select, Table, Text, usePrompt } from '@medusajs/ui'
+import { Button, IconButton, Input, Table, Text, usePrompt } from '@medusajs/ui'
 import { Trash } from '@medusajs/icons'
 import { useState, type FormEvent } from 'react'
 import { FormField, orNull } from '../form-field'
@@ -7,7 +7,7 @@ import { useFilieraAction, useRegistry, type RegistryKind } from '../../lib/fili
 type Field = {
   key: string
   label: string
-  type?: 'text' | 'number' | 'list' | 'role'
+  type?: 'text' | 'number' | 'list'
   hint?: string
   internal?: boolean
 }
@@ -18,8 +18,11 @@ const COMMON: Field[] = [
   { key: 'province', label: 'Provincia', hint: 'Sigla, per esempio TE.' },
 ]
 
+type PlaceKind = Exclude<RegistryKind, 'suppliers'>
+
 // Campi per anagrafica: quelli "internal" non arrivano mai al pubblico (lib/public-lot.ts).
-export const REGISTRY_FIELDS: Record<RegistryKind, Field[]> = {
+// I fornitori hanno una pagina loro (routes/fornitori).
+export const REGISTRY_FIELDS: Record<PlaceKind, Field[]> = {
   groves: [
     ...COMMON,
     { key: 'elevation_m', label: 'Altitudine (m)', type: 'number' },
@@ -33,21 +36,6 @@ export const REGISTRY_FIELDS: Record<RegistryKind, Field[]> = {
     { key: 'hive_count', label: 'Numero di alveari', type: 'number' },
     { key: 'bda_code', label: 'Codice BDA', internal: true },
   ],
-  mills: [...COMMON, { key: 'address', label: 'Indirizzo' }, { key: 'vat_number', label: 'Partita IVA', internal: true }],
-  establishments: [
-    { key: 'name', label: 'Nome' },
-    { key: 'role', label: 'Ruolo', type: 'role' },
-    { key: 'municipality', label: 'Comune' },
-    { key: 'province', label: 'Provincia', hint: 'Sigla, per esempio AQ.' },
-    { key: 'address', label: 'Indirizzo' },
-    { key: 'internal_code', label: 'Codice di registrazione', internal: true },
-  ],
-}
-
-const ROLE_LABEL: Record<string, string> = {
-  imbottigliamento: 'Imbottigliamento',
-  invasettamento: 'Invasettamento',
-  laboratorio: 'Laboratorio aziendale',
 }
 
 function toPayload(fields: Field[], values: Record<string, string>) {
@@ -56,24 +44,24 @@ function toPayload(fields: Field[], values: Record<string, string>) {
       const raw = values[field.key] ?? ''
       if (field.type === 'number') return [field.key, raw.trim() === '' ? null : Number(raw)]
       if (field.type === 'list') return [field.key, raw.split(',').map((item) => item.trim()).filter(Boolean)]
-      if (field.key === 'name' || field.key === 'municipality' || field.type === 'role') return [field.key, raw.trim()]
+      if (field.key === 'name' || field.key === 'municipality') return [field.key, raw.trim()]
       return [field.key, orNull(raw)]
     }),
   )
 }
 
-export function RegistryPanel({ kind }: { kind: RegistryKind }) {
+export function RegistryPanel({ kind }: { kind: PlaceKind }) {
   const registry = useRegistry(kind)
   const action = useFilieraAction()
   const prompt = usePrompt()
   const fields = REGISTRY_FIELDS[kind]
-  const [values, setValues] = useState<Record<string, string>>({ role: 'imbottigliamento' })
+  const [values, setValues] = useState<Record<string, string>>({})
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
     action.mutate(
       { path: `/admin/filiera/registries/${kind}`, body: toPayload(fields, values), success: 'Aggiunto in anagrafica.' },
-      { onSuccess: () => setValues({ role: 'imbottigliamento' }) },
+      { onSuccess: () => setValues({}) },
     )
   }
 
@@ -126,27 +114,12 @@ export function RegistryPanel({ kind }: { kind: RegistryKind }) {
           const hint = field.internal ? 'Dato interno, mai pubblicato.' : field.hint
           return (
             <FormField key={field.key} id={id} label={field.label} hint={hint}>
-              {field.type === 'role' ? (
-                <Select value={values.role} onValueChange={(value) => setValues((v) => ({ ...v, role: value }))}>
-                  <Select.Trigger id={id}>
-                    <Select.Value />
-                  </Select.Trigger>
-                  <Select.Content>
-                    {Object.entries(ROLE_LABEL).map(([value, label]) => (
-                      <Select.Item key={value} value={value}>
-                        {label}
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
-                </Select>
-              ) : (
-                <Input
-                  id={id}
-                  type={field.type === 'number' ? 'number' : 'text'}
-                  value={values[field.key] ?? ''}
-                  onChange={(e) => setValues((v) => ({ ...v, [field.key]: e.target.value }))}
-                />
-              )}
+              <Input
+                id={id}
+                type={field.type === 'number' ? 'number' : 'text'}
+                value={values[field.key] ?? ''}
+                onChange={(e) => setValues((v) => ({ ...v, [field.key]: e.target.value }))}
+              />
             </FormField>
           )
         })}

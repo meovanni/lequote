@@ -2,7 +2,7 @@ import type { AuthenticatedMedusaRequest, MedusaResponse } from '@medusajs/frame
 import { filiera, paging, parseRegistry, registryKind } from '../../helpers'
 import { registryRepository } from '../repository'
 
-// Anagrafiche: oliveti (groves), apiari (apiaries), frantoi (mills), stabilimenti (establishments).
+// Anagrafiche: oliveti (groves), apiari (apiaries), fornitori (suppliers, con le loro tipologie).
 export async function GET(req: AuthenticatedMedusaRequest, res: MedusaResponse) {
   const kind = registryKind(req.params.kind)
   const { take, skip } = paging(req)

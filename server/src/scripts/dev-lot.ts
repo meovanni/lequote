@@ -23,13 +23,15 @@ export default async function devLot({ container }: ExecArgs) {
   const templates = await filiera.listStageTemplates({ product_line: 'olio' }, { order: { position: 'ASC' } })
   if (templates.length === 0) throw new Error('Mancano i modelli di fase dell’olio: lancia prima "npm run seed".')
 
-  const establishment = await filiera.createEstablishments({
+  // Il frantoio di prova macina e imbottiglia, come quello vero (tipologie create dalla migrazione).
+  const types = await filiera.listSupplierTypes({ code: ['frantoio', 'imbottigliamento'] })
+  const establishment = await filiera.createSuppliers({
     name: 'Frantoio di prova',
-    role: 'imbottigliamento',
     municipality: 'Atri',
     province: 'TE',
+    types: types.map((type) => type.id),
   })
-  const campaign = await filiera.createCampaigns({ product_line: 'olio', label: '2025/26' })
+  const campaign = await filiera.createCampaigns({ product_line: 'olio', label: '2025/26', mill_id: establishment.id })
   const lot = await filiera.createLotChecked({
     code: DEV_LOT_CODE,
     product_line: 'olio',

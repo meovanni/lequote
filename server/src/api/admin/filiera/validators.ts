@@ -125,18 +125,23 @@ export const RegistrySchemas = {
   apiaries: z
     .object({ ...place, elevation_m: elevation, hive_count: smallInt.nullish(), bda_code: optionalText })
     .strict(),
-  mills: z.object({ ...place, address: optionalText, vat_number: optionalText }).strict(),
-  establishments: z
+  suppliers: z
     .object({
       name: text,
-      role: z.enum(['imbottigliamento', 'invasettamento', 'laboratorio']),
       municipality: text,
       province,
       address: optionalText,
+      vat_number: optionalText,
       internal_code: optionalText,
+      email: z.string().trim().email().max(320).nullish(),
+      phone: z.string().trim().max(50).nullish(),
+      notes: optionalText,
+      type_ids: z.array(id).max(20).optional(),
     })
     .strict(),
 }
+
+export const SupplierTypeCreate = z.object({ name: z.string().trim().min(1).max(100) }).strict()
 
 export type RegistryKind = keyof typeof RegistrySchemas
 

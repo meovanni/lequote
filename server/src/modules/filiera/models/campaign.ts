@@ -1,5 +1,5 @@
 import { model } from '@medusajs/framework/utils'
-import { Apiary, Grove, Mill } from './registries'
+import { Apiary, Grove, Supplier } from './registries'
 import { Lot } from './lot'
 
 // Campagna di raccolta (olio) o di produzione (miele). Le analisi si fanno una volta l'anno e
@@ -11,7 +11,8 @@ export const Campaign = model.define('filiera_campaign', {
   harvest_start: model.dateTime().nullable(),
   harvest_end: model.dateTime().nullable(),
   notes: model.text().nullable(),
-  mill: model.belongsTo(() => Mill, { mappedBy: 'campaigns' }).nullable(),
+  // Frantoio della campagna: un fornitore (di norma con tipologia Frantoio).
+  mill: model.belongsTo(() => Supplier, { mappedBy: 'milled_campaigns' }).nullable(),
   groves: model.manyToMany(() => Grove, { mappedBy: 'campaigns' }),
   apiaries: model.manyToMany(() => Apiary, { mappedBy: 'campaigns' }),
   analyses: model.hasMany(() => Analysis, { mappedBy: 'campaign' }),
