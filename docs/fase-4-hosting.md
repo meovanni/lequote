@@ -44,6 +44,40 @@ e se la sede di Milano è disponibile per questo piano.
 Hetzner, la scelta di riferimento quando abbiamo scritto l'ADR, nel 2026 ha alzato due volte i prezzi
 e ha i piani economici spesso esauriti in Europa: lo terrei solo come riserva.
 
+## Aggiornamento: volumi minimi, scelta tra Aruba e OVHcloud (2026-10-22)
+
+I titolari hanno delegato la scelta. Accessi contemporanei quasi nulli, anche in avvio: si può
+scendere al taglio da **2 vCPU e 4 GB** a queste condizioni:
+- il back office si compila fuori dal server (sul PC o in una pipeline gratuita) e sul VPS arriva
+  l'immagine Docker già pronta;
+- 2 GB di swap come riserva;
+- il secondo sito è leggero (statico o simile); se fosse pesante si passa al taglio da 8 GB, su
+  entrambi i fornitori si sale di taglio senza reinstallare.
+
+Ogni sito ha il suo dominio con almeno una casella email.
+
+| | OVHcloud | Aruba |
+|---|---|---|
+| VPS 2 vCPU / 4 GB / 40 GB | VPS-1: 3,81 €/mese con 12 mesi anticipati (45,72 €/anno), circa 4,49 € mensile senza vincolo | O2A4: 6,29 €/mese (75,48 €/anno), nessun vincolo indicato |
+| Backup del VPS | giornaliero, 7 giorni, incluso (repliche nello stesso datacenter) | giornaliero, 7 giorni, da confermare per il VPS |
+| Dominio .it | 2,99 € il primo anno, 8,99 € il rinnovo | "Dominio con email": 0,99 € il primo anno, 16,49 € il rinnovo |
+| Email inclusa | 1 casella da 15 GB per dominio (webmail, IMAP, SMTPS); caselle in più 0,30 €/mese | 5 caselle da 1 GB per dominio |
+| Totale con 2 domini, dal secondo anno | circa 64 € + IVA (circa 78 €) | circa 108 € + IVA (circa 132 €) |
+| Dove | Europa (Italia da verificare per il VPS-1) | Italia |
+| Fattura elettronica italiana | da verificare | sì |
+
+Prezzi IVA esclusa salvo dove indicato, dai listini del 2026-10-22. OVHcloud nel 2026 ha alzato i
+prezzi dei VPS: il prezzo di rinnovo va letto nella pagina d'ordine prima di pagare.
+
+**Proposta: OVHcloud**, VPS-1 con 12 mesi anticipati e i due domini .it su OVHcloud, ciascuno con la
+sua casella inclusa. Costa circa 50 € l'anno meno di Aruba, ha il backup giornaliero incluso e
+caselle più capienti. Per l'affidabilità restano fermi i due punti:
+- backup notturno fuori dal VPS (sotto), perché le copie di OVHcloud restano nello stesso
+  datacenter;
+- prima dell'ordine: prezzo di rinnovo, sede del VPS e fattura elettronica italiana. Se la fattura
+  arriva da una società estera, il commercialista deve integrarla (autofattura): in quel caso la
+  differenza di prezzo si riduce e Aruba torna in pari.
+
 ## Backup: oltre a quello del fornitore
 
 Il backup del fornitore protegge dal guasto della macchina, non dalla perdita dell'account o da un
@@ -91,4 +125,9 @@ Lavoro nostro:
 - [Aruba, listino cloud](https://www.aruba.it/listino-cloud.aspx)
 - [OVHcloud, VPS](https://www.ovhcloud.com/it/vps/)
 - [OVHcloud, datacenter di Milano](https://www.ovhcloud.com/fr/datacenter/europe/italy/milan/)
+- [OVHcloud, domini](https://www.ovhcloud.com/it/domains/)
+- [OVHcloud, email](https://www.ovhcloud.com/it/emails/)
+- [OVHcloud VPS-1, prezzi mensile e annuale](https://www.vpsbenchmarks.com/hosters/ovhcloud/plans/vps-1)
+- [Aruba, offerte dominio con email](https://hosting.aruba.it/en/domain-hosting-offers-aruba)
+- [Aruba, rinnovo dominio .it 2026](https://www.danielechiuri.it/aruba-dominio-it-prezzo-rinnovo-2026/)
 - [netcup, recensione 2026](https://valebyte.com/en/blog/netcup-review-2026-the-price-performance-king-and-its-fine-print/)
