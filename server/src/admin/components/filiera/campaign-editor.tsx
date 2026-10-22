@@ -6,6 +6,8 @@ import { AnalysesPanel } from './analyses-panel'
 
 const NONE = 'nessuno'
 
+const lotsLabel = (count: number) => (count === 0 ? 'Nessun lotto collegato.' : count === 1 ? 'Un lotto collegato.' : `${count} lotti collegati.`)
+
 function SourcePicker({ campaign, selected, onToggle }: { campaign: Campaign; selected: string[]; onToggle: (id: string) => void }) {
   const kind = campaign.product_line === 'olio' ? 'groves' : 'apiaries'
   const registry = useRegistry(kind)
@@ -66,7 +68,7 @@ export function CampaignEditor({ campaign }: { campaign: Campaign }) {
         <div className="px-6 py-4">
           <Heading level="h2">Campagna {campaign.label}</Heading>
           <Text size="small" className="text-ui-fg-subtle">
-            {(campaign.lots ?? []).length} lotti collegati.
+            {lotsLabel((campaign.lots ?? []).length)}
           </Text>
         </div>
         <form onSubmit={submit} className="grid grid-cols-1 gap-4 px-6 py-4 md:grid-cols-2">

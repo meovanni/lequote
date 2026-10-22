@@ -15,7 +15,7 @@ export function LotQrPanel({ lot, publicUrl }: { lot: Lot; publicUrl: string | n
   const published = lot.status === 'published'
 
   return (
-    <Container className="flex flex-col gap-4 px-6 py-4">
+    <Container className="flex flex-col gap-4 px-6 py-5">
       <div>
         <Heading level="h2">QR per l’etichetta</Heading>
         <Text size="small" className="text-ui-fg-subtle">
@@ -28,35 +28,37 @@ export function LotQrPanel({ lot, publicUrl }: { lot: Lot; publicUrl: string | n
           Manca l’indirizzo del sito (STOREFRONT_URL nella configurazione del server): il QR non si può generare.
         </Alert>
       ) : (
-        <div className="flex flex-wrap items-start gap-6">
-          <img
-            src={qrPath(lot, 'svg', false)}
-            alt={`QR del lotto ${lot.code}`}
-            width={128}
-            height={128}
-            className="rounded border border-ui-border-base bg-white"
-          />
-          <div className="flex min-w-0 flex-1 flex-col gap-3">
-            <Text size="small" className="font-mono break-all">
-              {publicUrl}
-            </Text>
-            <div className="flex flex-wrap gap-2">
-              <Button asChild size="small">
-                <a href={qrPath(lot, 'svg', true)} download>
-                  Scarica SVG (per la tipografia)
-                </a>
-              </Button>
-              <Button asChild size="small" variant="secondary">
-                <a href={qrPath(lot, 'png', true)} download>
-                  Scarica PNG
-                </a>
-              </Button>
-            </div>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-start gap-4">
+            <img
+              src={qrPath(lot, 'svg', false)}
+              alt={`QR del lotto ${lot.code}`}
+              width={120}
+              height={120}
+              className="shrink-0 rounded border border-ui-border-base bg-white p-1"
+            />
             <Text size="small" className="text-ui-fg-subtle">
-              In stampa almeno 15 mm di lato (meglio 20 mm), compreso il bordo bianco: non tagliarlo. Nero su
-              fondo chiaro.
+              In stampa almeno 15 mm di lato (meglio 20 mm), compreso il bordo bianco: non tagliarlo. Nero su fondo chiaro.
             </Text>
           </div>
+          <Text size="xsmall" className="font-mono break-all text-ui-fg-subtle">
+            {publicUrl}
+          </Text>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild size="small">
+              <a href={qrPath(lot, 'svg', true)} download>
+                Scarica SVG
+              </a>
+            </Button>
+            <Button asChild size="small" variant="secondary">
+              <a href={qrPath(lot, 'png', true)} download>
+                Scarica PNG
+              </a>
+            </Button>
+          </div>
+          <Text size="xsmall" className="text-ui-fg-muted">
+            L’SVG è per la tipografia: resta nitido a ogni misura.
+          </Text>
         </div>
       )}
 

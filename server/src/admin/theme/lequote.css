@@ -264,3 +264,9 @@ html.dark {
 .min-h-dvh > div:has(.lq-login-brand) > :is(:nth-child(1), :nth-child(2)) {
   display: none;
 }
+
+/* Alcune icone di Medusa hanno il blu scritto dentro (pallino delle notifiche non lette, layout
+   modificato): lo stesso segnale, in ottone. */
+:root svg [fill='#2563EB'] {
+  fill: var(--fg-interactive);
+}

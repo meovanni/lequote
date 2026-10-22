@@ -1,6 +1,7 @@
 import { defineRouteConfig } from '@medusajs/admin-sdk'
 import { Badge, Container, Heading, Table, Tabs, Text } from '@medusajs/ui'
-import { RegistryPanel } from '../../../components/filiera/registry-panel'
+import { useState } from 'react'
+import { RegistryDrawer, RegistryPanel } from '../../../components/filiera/registry-panel'
 import { LINE_LABEL, useStageTemplates } from '../../../lib/filiera-api'
 
 // Frantoi e stabilimenti sono fornitori: hanno la loro voce di menu (routes/fornitori).
@@ -46,34 +47,43 @@ function StageTemplatesTab() {
   )
 }
 
-const RegistriesPage = () => (
-  <Container className="p-0">
-    <div className="px-6 py-4">
-      <Heading level="h1">Anagrafiche</Heading>
-      <Text size="small" className="text-ui-fg-subtle">
-        Oliveti e apiari si inseriscono una volta e si riusano in ogni campagna. Frantoi e stabilimenti sono nella voce Fornitori.
-      </Text>
-    </div>
-    <Tabs defaultValue="groves">
-      <Tabs.List className="px-6">
-        {TABS.map((tab) => (
-          <Tabs.Trigger key={tab.kind} value={tab.kind}>
-            {tab.label}
-          </Tabs.Trigger>
+/** Oliveti, apiari e modelli di fase; il pulsante in alto crea una voce della scheda aperta. */
+const RegistriesPage = () => {
+  const [tab, setTab] = useState('groves')
+  const place = TABS.find((item) => item.kind === tab)
+
+  return (
+    <Container className="p-0">
+      <div className="flex flex-wrap items-start justify-between gap-4 px-6 py-5">
+        <div className="max-w-[65ch]">
+          <Heading level="h1">Anagrafiche</Heading>
+          <Text size="small" className="text-ui-fg-subtle">
+            Oliveti e apiari si inseriscono una volta e si riusano in ogni campagna. Frantoi e stabilimenti sono nella voce Fornitori.
+          </Text>
+        </div>
+        {place && <RegistryDrawer key={place.kind} kind={place.kind} />}
+      </div>
+      <Tabs value={tab} onValueChange={setTab}>
+        <Tabs.List className="px-6">
+          {TABS.map((item) => (
+            <Tabs.Trigger key={item.kind} value={item.kind}>
+              {item.label}
+            </Tabs.Trigger>
+          ))}
+          <Tabs.Trigger value="templates">Modelli di fase</Tabs.Trigger>
+        </Tabs.List>
+        {TABS.map((item) => (
+          <Tabs.Content key={item.kind} value={item.kind} className="data-[state=inactive]:hidden mt-3 border-t border-ui-border-base">
+            <RegistryPanel kind={item.kind} />
+          </Tabs.Content>
         ))}
-        <Tabs.Trigger value="templates">Modelli di fase</Tabs.Trigger>
-      </Tabs.List>
-      {TABS.map((tab) => (
-        <Tabs.Content key={tab.kind} value={tab.kind} className="data-[state=inactive]:hidden mt-2 border-t">
-          <RegistryPanel kind={tab.kind} />
+        <Tabs.Content value="templates" className="data-[state=inactive]:hidden mt-3 border-t border-ui-border-base">
+          <StageTemplatesTab />
         </Tabs.Content>
-      ))}
-      <Tabs.Content value="templates" className="data-[state=inactive]:hidden mt-2 border-t">
-        <StageTemplatesTab />
-      </Tabs.Content>
-    </Tabs>
-  </Container>
-)
+      </Tabs>
+    </Container>
+  )
+}
 
 export const config = defineRouteConfig({ label: 'Anagrafiche' })
 

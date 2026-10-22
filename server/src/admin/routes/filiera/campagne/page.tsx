@@ -37,41 +37,59 @@ function NewCampaign({ onCreated }: { onCreated: (id: string) => void }) {
   )
 }
 
+const LINES: ProductLine[] = ['olio', 'miele']
+
+/** Campagne raggruppate per linea a sinistra, la campagna scelta (all'inizio la prima dell'elenco) a destra. */
 const CampaignsPage = () => {
   const campaigns = useCampaigns()
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [chosenId, setChosenId] = useState<string | null>(null)
+  const list = campaigns.data?.campaigns ?? []
+  const selectedId = chosenId ?? list[0]?.id ?? null
   const selected = useCampaign(selectedId)
 
   return (
     <div className="grid grid-cols-1 gap-3 lg:grid-cols-[18rem_1fr]">
-      <Container className="divide-y p-0">
+      <Container className="divide-y p-0 lg:self-start">
         <div className="px-4 py-4">
           <Heading level="h1">Campagne</Heading>
         </div>
-        <ul className="flex flex-col py-2">
-          {(campaigns.data?.campaigns ?? []).map((campaign) => (
-            <li key={campaign.id}>
-              <button
-                type="button"
-                onClick={() => setSelectedId(campaign.id)}
-                className={clx(
-                  'w-full px-4 py-2 text-left txt-compact-small hover:bg-ui-bg-base-hover',
-                  selectedId === campaign.id && 'bg-ui-bg-base-pressed',
-                )}
-              >
-                {LINE_LABEL[campaign.product_line]} {campaign.label}
-              </button>
-            </li>
-          ))}
-        </ul>
-        <NewCampaign onCreated={setSelectedId} />
+        {campaigns.isLoading && <div className="m-4 h-20 animate-pulse rounded-lg bg-ui-bg-component" aria-label="Caricamento" />}
+        {LINES.filter((line) => list.some((campaign) => campaign.product_line === line)).map((line) => (
+          <div key={line} className="flex flex-col py-2">
+            <Text size="xsmall" weight="plus" className="px-4 pb-1 pt-2 text-ui-fg-muted">
+              {LINE_LABEL[line]}
+            </Text>
+            <ul className="flex flex-col">
+              {list
+                .filter((campaign) => campaign.product_line === line)
+                .map((campaign) => (
+                  <li key={campaign.id}>
+                    <button
+                      type="button"
+                      aria-current={selectedId === campaign.id ? 'true' : undefined}
+                      onClick={() => setChosenId(campaign.id)}
+                      className={clx(
+                        'txt-compact-small w-full border-l-2 px-4 py-2 text-left hover:bg-ui-bg-base-hover',
+                        selectedId === campaign.id ? 'border-ui-border-interactive bg-ui-bg-highlight text-ui-fg-base' : 'border-transparent text-ui-fg-subtle',
+                      )}
+                    >
+                      Campagna {campaign.label}
+                    </button>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        ))}
+        <NewCampaign onCreated={setChosenId} />
       </Container>
 
       {selected.data ? (
         <CampaignEditor key={selected.data.campaign.id + selected.dataUpdatedAt} campaign={selected.data.campaign} />
       ) : (
-        <Container>
-          <Text className="text-ui-fg-subtle">Scegli una campagna per modificarla o aggiungere le analisi.</Text>
+        <Container className="flex min-h-48 items-center justify-center px-6 py-10">
+          <Text size="small" className="text-center text-ui-fg-subtle">
+            {campaigns.isLoading || selected.isLoading ? 'Caricamento…' : 'Nessuna campagna. Creane una a sinistra: poi si aggiungono frantoio e analisi.'}
+          </Text>
         </Container>
       )}
     </div>
