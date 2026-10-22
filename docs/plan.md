@@ -57,7 +57,7 @@ Fatto (2026-10-14):
 - Test end-to-end (2026-10-21): `npm run test:e2e` da `client/`, con `npm run db` acceso in `server/`. Playwright ricrea il database `<DB_NAME>_e2e` (catalogo, giacenze, lotto di prova), avvia Medusa sulla 9200 e la vetrina sulla 5190: i dati di sviluppo non vengono toccati. Le email finiscono in `server/.mail-e2e`. Coperti su desktop e telefono: pagina del lotto e ricerca, checkout con bonifico e con pagamento al ritiro (email al cliente e ai titolari), controlli del modulo, recesso dalla conferma d'ordine e dal footer con ricevuta.
 
 ## Fase 4: messa online
-VPS (ADR 0004), dopo la validazione legale da parte del consulente. Ricerca su fornitori, backup e checklist: `fase-4-hosting.md` (2026-10-22; con volumi minimi la proposta è OVHcloud VPS-1 più due domini .it con casella inclusa, alternativa Aruba).
+VPS (ADR 0004), dopo la validazione legale da parte del consulente. Ricerca su fornitori, backup e checklist: `fase-4-hosting.md` (2026-10-22; OVHcloud in Italia oggi esaurito: scelta Aruba Cloud VPS O2A4 con il dominio di Le Quote su Aruba).
 
 ## Dati mancanti dai titolari
 Per le pagine legali: ragione sociale, sede legale, PEC, termine per il bonifico, tempi di risposta ai reclami, fornitore della casella di posta. Telefono, P.IVA, social, sede dell'operatore, tariffe e soglia di spedizione, IBAN e intestatario per il bonifico, dati SMTP della casella (server, porta, utente) e indirizzo per gli avvisi d'ordine, orari di ritiro e mezzi accettati al ritiro (contanti / carta), frantoio della campagna, prezzo e foto dei formati (il catalogo attuale ha miele 250 g / 500 g, le etichette prevedono 500 g / 1 kg), misure e grafica delle etichette, hosting e gestore del dominio, video hero in formato sorgente.

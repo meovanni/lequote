@@ -78,6 +78,20 @@ caselle più capienti. Per l'affidabilità restano fermi i due punti:
   arriva da una società estera, il commercialista deve integrarla (autofattura): in quel caso la
   differenza di prezzo si riduce e Aruba torna in pari.
 
+## Verifica OVHcloud in Italia (2026-10-22)
+
+Dal catalogo pubblico degli ordini (`/1.0/order/catalog/public/vps?ovhSubsidiary=IT`) e dalla
+disponibilità per sede (`/1.0/vps/order/rule/datacenter`), le stesse API del configuratore:
+- Milano (`EU-SOUTH-MIL`) è tra le sedi ordinabili di tutti i VPS 2027, senza sovrapprezzo;
+- **oggi però è esaurita per tutti i piani**; in Europa per Linux è disponibile solo Varsavia, e
+  solo per VPS-2 e VPS-3 (il VPS-1 solo in Canada e Singapore);
+- prezzi VPS-1 2027: 4,49 €/mese senza vincolo, 4,26 con 6 mesi, 3,81 con 12 mesi anticipati;
+  backup automatico Standard (1 giorno) 0,35 €/mese, Premium (7 giorni) 1,10 €/mese.
+
+Conclusione: con OVHcloud oggi un VPS in Italia non si può ordinare, e non c'è una data di
+riassortimento. La scelta passa ad **Aruba Cloud VPS O2A4** (Arezzo), con il dominio di Le Quote su
+Aruba ("Dominio con email", 5 caselle) accanto a quello di colognasprelax.
+
 ## Backup: oltre a quello del fornitore
 
 Il backup del fornitore protegge dal guasto della macchina, non dalla perdita dell'account o da un
