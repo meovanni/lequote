@@ -86,7 +86,7 @@ const AgentsPage = () => {
           <div>
             <Heading level="h2">Classifica</Heading>
             <Text size="small" className="text-ui-fg-subtle">
-              Per venduto nel periodo, a parità per pezzi. Gli agenti la vedono nella loro area, senza i clienti degli altri.
+              Per venduto nel periodo, a parità per pezzi. Gli agenti nella loro area vedono solo posizione e pezzi degli altri: niente fatturato né clienti.
             </Text>
           </div>
           <RankingTable ranking={summary.data.ranking} />

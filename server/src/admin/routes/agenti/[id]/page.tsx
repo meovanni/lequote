@@ -137,13 +137,14 @@ function Bookings({ bookings }: { bookings: Booking[] }) {
 function AccountPanel({ agent }: { agent: Agent }) {
   const action = useSalesAction()
   const [email, setEmail] = useState(agent.email ?? '')
-  const [inviteUrl, setInviteUrl] = useState<string | null>(null)
+  const [invite, setInvite] = useState<{ url: string; to: string; sent: boolean } | null>(null)
 
-  const invite = (event: FormEvent) => {
+  const send = (event: FormEvent) => {
     event.preventDefault()
+    const to = email.trim()
     action.mutate(
-      { path: `/admin/agents/${agent.id}/invite`, body: { email: email.trim() }, success: 'Invito creato.' },
-      { onSuccess: (data) => setInviteUrl(data.invite_url as string) },
+      { path: `/admin/agents/${agent.id}/invite`, body: { email: to }, success: 'Invito creato.' },
+      { onSuccess: (data) => setInvite({ url: data.invite_url as string, to, sent: data.email_sent === true }) },
     )
   }
 
@@ -152,25 +153,32 @@ function AccountPanel({ agent }: { agent: Agent }) {
       <div>
         <Heading level="h2">Account per l’area vendita</Heading>
         <Text size="small" className="text-ui-fg-subtle">
-          Crea un invito con il ruolo Agente e manda il link: l’agente sceglie la password ed entra nella sua area, dove vede solo le sue vendite.
+          L’invito con il ruolo Agente parte per email: l’agente sceglie la password ed entra nella sua area, dove vede solo le sue vendite.
         </Text>
       </div>
-      <form onSubmit={invite} className="flex flex-wrap items-end gap-3">
+      <form onSubmit={send} className="flex flex-wrap items-end gap-3">
         <div className="w-full max-w-sm">
           <FormField id="agent-email" label="Email dell’agente">
             <Input id="agent-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} />
           </FormField>
         </div>
         <Button size="small" type="submit" isLoading={action.isPending} disabled={!email.trim()}>
-          Crea invito
+          Manda l’invito
         </Button>
       </form>
-      {inviteUrl && (
-        <div className="flex items-center gap-3 rounded-lg border border-ui-border-base bg-ui-bg-component px-4 py-3">
-          <Text size="small" className="min-w-0 flex-1 break-all font-mono">
-            {inviteUrl}
+      {invite && (
+        <div className="flex flex-col gap-2 rounded-lg border border-ui-border-base bg-ui-bg-component px-4 py-3">
+          <Text size="small" className={invite.sent ? 'text-ui-fg-base' : 'text-ui-fg-error'}>
+            {invite.sent
+              ? `Invito mandato a ${invite.to}. Se non lo trova (anche nella posta indesiderata), mandagli questo link:`
+              : `L’email a ${invite.to} non è partita: mandagli tu questo link.`}
           </Text>
-          <Copy content={inviteUrl} />
+          <div className="flex items-center gap-3">
+            <Text size="xsmall" className="min-w-0 flex-1 break-all font-mono text-ui-fg-subtle">
+              {invite.url}
+            </Text>
+            <Copy content={invite.url} />
+          </div>
         </div>
       )}
     </Container>

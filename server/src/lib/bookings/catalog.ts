@@ -1,5 +1,6 @@
 import type { MedusaContainer } from '@medusajs/framework/types'
 import { ContainerRegistrationKeys, getVariantAvailability, Modules, QueryContext } from '@medusajs/framework/utils'
+import { isAgentDeliveryCode } from '../agent-delivery'
 import { isPickupOptionCode } from '../checkout-rules'
 
 /** Canale di vendita del seed: prenotazioni e ordini del sito condividono catalogo e giacenze. */
@@ -16,7 +17,7 @@ export type BookableVariant = {
   stock: number | null
 }
 
-export type DeliveryOption = { id: string; name: string; pickup: boolean }
+export type DeliveryOption = { id: string; name: string; pickup: boolean; agent: boolean }
 
 async function salesContext(container: MedusaContainer) {
   const [region] = await container.resolve(Modules.REGION).listRegions({}, { take: 1 })
@@ -55,13 +56,16 @@ export async function bookableVariants(container: MedusaContainer): Promise<Book
     .sort((a, b) => a.product.localeCompare(b.product) || a.variant.localeCompare(b.variant))
 }
 
-/** Consegne utilizzabili: quelle attive anche sul sito (ritiro in sede, spedizione se accesa). */
+/**
+ * Consegne utilizzabili nel gestionale: quelle attive sul sito (ritiro in sede, spedizione se
+ * accesa) e la consegna a cura dell'agente. Prima i ritiri: il primo è la consegna predefinita.
+ */
 export async function deliveryOptions(container: MedusaContainer): Promise<DeliveryOption[]> {
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
   const { data } = await query.graph({ entity: 'shipping_option', fields: ['id', 'name', 'type.code', 'rules.attribute', 'rules.value'] })
   return (data as unknown as { id: string; name: string; type: { code: string } | null; rules: { attribute: string; value: string }[] }[])
     .filter((option) => !option.rules.some((rule) => rule.attribute === 'is_return' && rule.value === 'true'))
     .filter((option) => !option.rules.some((rule) => rule.attribute === 'enabled_in_store' && rule.value === 'false'))
-    .map((option) => ({ id: option.id, name: option.name, pickup: isPickupOptionCode(option.type?.code) }))
-    .sort((a, b) => Number(b.pickup) - Number(a.pickup) || a.name.localeCompare(b.name))
+    .map((option) => ({ id: option.id, name: option.name, pickup: isPickupOptionCode(option.type?.code), agent: isAgentDeliveryCode(option.type?.code) }))
+    .sort((a, b) => Number(b.pickup) - Number(a.pickup) || Number(b.agent) - Number(a.agent) || a.name.localeCompare(b.name))
 }

@@ -98,24 +98,33 @@ export function ByCustomerTable({ summary }: { summary: Summary }) {
   )
 }
 
-/** Classifica per venduto: la barra dice a colpo d'occhio la distanza dal primo. */
+/**
+ * Classifica per venduto, a parità per pezzi. La barra dice a colpo d'occhio la distanza dal primo.
+ * Agli agenti il server non manda il fatturato: la colonna sparisce e la barra segue i pezzi.
+ */
 export function RankingTable({ ranking }: { ranking: RankingRow[] }) {
   if (ranking.length === 0) return <Empty>Nessun agente attivo.</Empty>
-  const top = Math.max(...ranking.map((row) => row.revenue), 0)
+  const withRevenue = ranking.some((row) => typeof row.revenue === 'number')
+  const measure = (row: RankingRow) => (withRevenue ? (row.revenue ?? 0) : row.quantity)
+  const top = Math.max(...ranking.map(measure), 0)
+  const bar = (row: RankingRow) =>
+    top > 0 && measure(row) > 0 ? (
+      <span aria-hidden className="hidden h-1.5 rounded-full bg-ui-fg-interactive sm:block" style={{ width: `${Math.max(4, (measure(row) / top) * 120)}px` }} />
+    ) : null
   return (
     <Table>
       <Table.Header>
         <Table.Row>
           <Table.HeaderCell className="w-12">#</Table.HeaderCell>
           <Table.HeaderCell>Agente</Table.HeaderCell>
-          <Table.HeaderCell>Venduto</Table.HeaderCell>
-          <Table.HeaderCell className="text-right">Pezzi</Table.HeaderCell>
+          {withRevenue && <Table.HeaderCell>Venduto</Table.HeaderCell>}
+          <Table.HeaderCell className={withRevenue ? 'text-right' : undefined}>Pezzi</Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>
         {ranking.map((row) => (
           <Table.Row key={`${row.position}-${row.name}`} className={row.me ? 'bg-ui-bg-highlight hover:bg-ui-bg-highlight-hover' : undefined}>
-            <Table.Cell className={clx('lq-figure', row.position === 1 && row.revenue > 0 ? 'font-medium text-ui-fg-interactive' : 'text-ui-fg-subtle')}>
+            <Table.Cell className={clx('lq-figure', row.position === 1 && measure(row) > 0 ? 'font-medium text-ui-fg-interactive' : 'text-ui-fg-subtle')}>
               {row.position}
             </Table.Cell>
             <Table.Cell>
@@ -128,15 +137,24 @@ export function RankingTable({ ranking }: { ranking: RankingRow[] }) {
                 )}
               </span>
             </Table.Cell>
-            <Table.Cell>
-              <span className="flex items-center gap-3">
-                <span className="lq-figure w-24">{formatEuro(row.revenue)}</span>
-                {top > 0 && row.revenue > 0 && (
-                  <span aria-hidden className="hidden h-1.5 rounded-full bg-ui-fg-interactive sm:block" style={{ width: `${Math.max(4, (row.revenue / top) * 120)}px` }} />
-                )}
-              </span>
-            </Table.Cell>
-            <Table.Cell className="text-right">{row.quantity}</Table.Cell>
+            {withRevenue ? (
+              <>
+                <Table.Cell>
+                  <span className="flex items-center gap-3">
+                    <span className="lq-figure w-24">{formatEuro(row.revenue ?? 0)}</span>
+                    {bar(row)}
+                  </span>
+                </Table.Cell>
+                <Table.Cell className="text-right">{row.quantity}</Table.Cell>
+              </>
+            ) : (
+              <Table.Cell>
+                <span className="flex items-center gap-3">
+                  <span className="lq-figure w-12">{row.quantity}</span>
+                  {bar(row)}
+                </span>
+              </Table.Cell>
+            )}
           </Table.Row>
         ))}
       </Table.Body>

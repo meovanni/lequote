@@ -58,6 +58,13 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
   const named = Boolean(customer.first_name.trim() || customer.last_name.trim())
   const missing = [!named && 'il nome o il cognome del cliente', lines.length === 0 && 'almeno un prodotto'].filter(Boolean)
   const ready = missing.length === 0
+  const byAgent = catalog.delivery_options.some((option) => option.id === deliveryId && option.agent)
+
+  // Con la consegna a cura dell'agente serve l'indirizzo del cliente: si aprono gli altri dati.
+  const chooseDelivery = (id: string) => {
+    setDeliveryId(id)
+    if (catalog.delivery_options.some((option) => option.id === id && option.agent)) setMoreData(true)
+  }
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
@@ -184,8 +191,12 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
           <span className="lq-figure text-xl font-medium text-ui-fg-base">{formatEuro(estimate)}</span>
         </div>
 
-        <FormField id="booking-delivery" label="Consegna">
-          <Select value={deliveryId} onValueChange={setDeliveryId}>
+        <FormField
+          id="booking-delivery"
+          label="Consegna"
+          hint={byAgent ? 'L’indirizzo del cliente va in «Altri dati del cliente».' : undefined}
+        >
+          <Select value={deliveryId} onValueChange={chooseDelivery}>
             <Select.Trigger id="booking-delivery">
               <Select.Value placeholder="Scegli" />
             </Select.Trigger>

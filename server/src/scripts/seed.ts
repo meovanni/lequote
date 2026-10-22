@@ -14,6 +14,7 @@ import {
   linkSalesChannelsToStockLocationWorkflow,
   updateStoresWorkflow,
 } from '@medusajs/medusa/core-flows'
+import { ensureAgentDelivery } from '../lib/agent-delivery'
 import { FILIERA_MODULE } from '../modules/filiera'
 import { MANUAL_PAYMENT_PROVIDER_IDS } from '../modules/manual-payments'
 import type FilieraModuleService from '../modules/filiera/service'
@@ -257,6 +258,7 @@ export default async function seed({ container }: ExecArgs) {
   const { typeId } = await seedRegionAndTaxes(ctx)
   const locations = await seedLocations(ctx, channel.id)
   const profile = await seedFulfillment(ctx, locations)
+  await ensureAgentDelivery(container)
   await seedProducts(ctx, { channelId: channel.id, profileId: profile.id, typeId })
   await seedApiKey(ctx, channel.id)
   await seedFiliera(ctx)

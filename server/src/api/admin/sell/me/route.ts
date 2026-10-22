@@ -6,7 +6,7 @@ import { summarizeSales } from '../../../../modules/vendite/lib/sales'
 
 /**
  * Area vendita: l'agente collegato all'account, il suo riepilogo e la classifica nel periodo.
- * Degli altri agenti si vedono solo posizione, nome, fatturato e pezzi: non clienti né ordini.
+ * Degli altri agenti si vedono solo posizione, nome e pezzi: non fatturato, clienti né ordini.
  */
 export async function GET(req: AuthenticatedMedusaRequest, res: MedusaResponse) {
   const { agent } = await agentForUser(req.scope, req.auth_context.actor_id)
@@ -16,6 +16,7 @@ export async function GET(req: AuthenticatedMedusaRequest, res: MedusaResponse) 
   res.json({
     agent: { id: agent.id, name: agent.name },
     summary: summarizeSales(bookings),
-    ranking: ranking.map(({ position, agentId, name, revenue, quantity }) => ({ position, name, revenue, quantity, me: agentId === agent.id })),
+    // Degli altri agenti niente fatturato: solo posizione, nome e pezzi (scelta dei titolari).
+    ranking: ranking.map(({ position, agentId, name, quantity }) => ({ position, name, quantity, me: agentId === agent.id })),
   })
 }

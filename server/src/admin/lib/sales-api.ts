@@ -6,7 +6,7 @@ import { sdk } from './sdk'
 // Le forme ricalcano le risposte di src/api/admin/{backoffice,agents,sell}.
 
 export type Variant = { variantId: string; sku: string; product: string; variant: string; price: number | null; stock: number | null }
-export type DeliveryOption = { id: string; name: string; pickup: boolean }
+export type DeliveryOption = { id: string; name: string; pickup: boolean; agent: boolean }
 export type Catalog = { variants: Variant[]; delivery_options: DeliveryOption[]; agents?: { id: string; name: string }[] }
 
 export type BookingLine = { id: string; variantId: string | null; sku: string; title: string; subtitle: string; quantity: number; unitPrice: number; total: number }
@@ -40,7 +40,8 @@ export type Summary = {
   byProduct: { sku: string; label: string; quantity: number; total: number }[]
   byCustomer: { customer: string; orders: number; quantity: number; total: number }[]
 }
-export type RankingRow = { position: number; name: string; revenue: number; quantity: number; me?: boolean }
+/** Nell'area vendita degli agenti il fatturato manca: la classifica mostra solo i pezzi. */
+export type RankingRow = { position: number; name: string; revenue?: number; quantity: number; me?: boolean }
 export type Agent = { id: string; name: string; email: string | null; phone: string | null; active: boolean; notes: string | null }
 
 export type Period = { from?: string; to?: string }
