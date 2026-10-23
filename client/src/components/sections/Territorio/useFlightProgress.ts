@@ -2,11 +2,11 @@ import { useEffect, useRef, useState, type RefObject } from 'react'
 import { NATIVE_SCROLL_QUERY } from '@/lib/nativeScroll'
 
 /**
- * Come avanza il volo:
- * - scroll: desktop, la sezione è pinnata e lo scroll guida la camera;
- * - autoplay: telefono, scroll nativo (memoria del progetto): il volo parte da solo quando la
- *   sezione è a metà schermo, una volta;
- * - static: movimento ridotto o niente WebGL, la vista d'insieme con tutti i testi.
+ * Come avanza la sequenza:
+ * - scroll: desktop, la sezione è pinnata e lo scroll fa ruotare il plastico;
+ * - autoplay: telefono, scroll nativo: la sequenza parte da sola quando la sezione è a metà
+ *   schermo, una volta;
+ * - static: movimento ridotto o niente WebGL, il plastico fermo con tutti i testi.
  */
 export type FlightMode = 'pending' | 'scroll' | 'autoplay' | 'static'
 
