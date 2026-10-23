@@ -1,4 +1,4 @@
-// Geometria del rilievo dell'Abruzzo (public/terrain, generato da scripts/terrain/build_abruzzo.py).
+// Geometria del diorama dell'Abruzzo (public/terrain, generato da scripts/terrain/build_abruzzo.py).
 // Spazio del mondo: 1 unità = 1 km; x verso est, z verso sud, y in alto con la quota esagerata.
 
 export type TerrainMeta = {
@@ -8,13 +8,14 @@ export type TerrainMeta = {
   grid: [number, number]
   outline: [number, number][]
   places: Record<'roseto' | 'cerchio', [number, number]>
+  /** Direzione verso il sole (x est, y su, z sud), la stessa della luce cotta nella texture. */
+  sun: [number, number, number]
+  /** Alberelli: u, v, tipo (0 bosco, 1 ulivo), scala. */
+  trees: [number, number, 0 | 1, number][]
 }
 
 /** Esagerazione verticale: a scala vera gli Appennini, visti da lontano, sembrerebbero piatti. */
 export const VERTICAL_EXAGGERATION = 3
-
-/** Fascia ai bordi (in frazione del lato) dove il rilievo scende e sfuma nello sfondo, come un plastico. */
-export const EDGE_FADE = 0.09
 
 /** Quota in metri dai canali R e G della mappa (R * 256 + G). */
 export function decodeHeight(r: number, g: number): number {
@@ -29,13 +30,6 @@ export function uvToWorld(u: number, v: number, meta: Pick<TerrainMeta, 'widthKm
 /** Quota del mondo (unità) da metri. */
 export function heightToWorld(meters: number): number {
   return (meters / 1000) * VERTICAL_EXAGGERATION
-}
-
-/** 0 sul bordo della mappa, 1 all'interno oltre EDGE_FADE, con raccordo morbido. */
-export function edgeFalloff(u: number, v: number): number {
-  const distance = Math.min(u, 1 - u, v, 1 - v)
-  const t = Math.min(1, Math.max(0, distance / EDGE_FADE))
-  return t * t * (3 - 2 * t)
 }
 
 /** Quota in metri nel punto u, v (bilineare) da una griglia di quote w x h. */

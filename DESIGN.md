@@ -91,7 +91,7 @@ The farm's own record book, set out like a specimen under laboratory glass. The 
 
 What stays Le Quote, not Seed: the logo's ink blue as the one colour, the one serif family (Fraunces), and the Territorio signature reveal. Seed's lime accent and its sans-serif display voice are deliberately not adopted.
 
-Confirmed rejections: no Tailwind, no animation library (Motion/Framer/GSAP; three.js with React Three Fiber is allowed for the Territorio relief only), no box-shadows or drop-shadows, no decorative gradients (a functional legibility scrim over video/photo is the single exception), no AI-purple or glass-panel decoration, no generic three-card feature grids, no em dashes in shipped copy or headings.
+Confirmed rejections: no Tailwind, no animation library (Motion/Framer/GSAP; three.js with React Three Fiber and @react-three/postprocessing are allowed for the Territorio diorama only), no box-shadows or drop-shadows, no decorative gradients (a functional legibility scrim over video/photo is the single exception), no AI-purple or glass-panel decoration, no generic three-card feature grids, no em dashes in shipped copy or headings.
 
 **Key Characteristics:**
 - White canvas alternating with Mist bands as page rhythm; Night only under the hero photo.
@@ -119,7 +119,7 @@ Confirmed rejections: no Tailwind, no animation library (Motion/Framer/GSAP; thr
 The legacy token names (`--color-pergamena`, `--color-miele`, `--color-oliva`, `--color-bosco`…) remain as aliases of the neutrals above so older stylesheets keep working; new code uses the new names or the `--surface-*` tokens.
 
 ### Named Rules
-**The Single-Ink Rule.** Ink is the only accent. Product colours (olive green, honey amber) appear only in the product illustrations and photos, never in the interface.
+**The Single-Ink Rule.** Ink is the only accent. Product colours (olive green, honey amber) appear only in the product illustrations, photos and the Territorio diorama, never in the interface chrome.
 
 **The Rhythm Rule.** Sections alternate White and Mist at full bleed; the hero is the only dark band.
 
@@ -144,7 +144,7 @@ The legacy token names (`--color-pergamena`, `--color-miele`, `--color-oliva`, `
 
 Full-viewport (`100svh`) sections with `scroll-snap-align: start` against site-wide `scroll-snap-type: y mandatory` on mouse devices only. Touch, hover-less and narrow (≤1024px) devices get fully native scrolling: no snap, no scroll-driven animation, no pinned sequence (Territorio becomes a static map plus the two place cards). On WebKit, fast inertial scrolling with a direction change made the page jump elsewhere. The query lives in `client/src/lib/nativeScroll.ts` and is repeated in the stylesheets. Content max-width 1240px, inline padding `clamp(1.25rem, 4vw, 3rem)`. Spacing on a 4/8px scale up to 128px; section vertical padding at least 80px. Content sections use asymmetric two-column splits (roughly 40/60), not equal columns. Breakpoints are literal values per stylesheet: 480 / 768 / 1024 / 1280px. Territorio remains the one pinned multi-stage exception (340vh, desktop only).
 
-Section order and surfaces: Hero (dark, video/photo) · Territorio (white, 3D map) · Olio (mist) · Miele (white) · Filiera (mist) · Stagioni (white) · Shop (mist) · Domande (white) · Footer (mist).
+Section order and surfaces: Hero (dark, video/photo) · Territorio (white, 3D diorama) · Olio (mist) · Miele (white) · Filiera (mist) · Stagioni (white) · Shop (mist) · Domande (white) · Footer (mist).
 
 ## Elevation & Depth
 
@@ -179,8 +179,8 @@ Sticky, White at 94% with a hairline bottom border (no blur glass, no shadow). M
 ### Photography
 `ImagePlaceholder` frames: `card` radius, no shadow, hover scales the image 1.03 inside the frame. While a photo is missing: a neutral dashed frame with a camera icon and "Foto in arrivo", never the shot description in the layout. Product cutouts float without a frame and without drop-shadow.
 
-### Territorio 3D map (signature)
-One full-screen "slide" (replaces the old Chi siamo and Territorio sections): a white plaster relief of Abruzzo (real elevation, 3x vertical exaggeration, region outline in Ink, terrain fading into White at the edges and in the distance) rendered with React Three Fiber, seen from far away. The camera keeps one orientation (from the sea, looking west and down) and moves in a single straight line from Roseto to Cerchio: no turns, no climbs, no reversals. Desktop: pinned (340vh), scroll drives the move; phones keep native scroll and the same move plays once by itself (8 s) while the section is on screen. Text appears in short beats (title, Roseto, Cerchio, closing line); pin labels hide when their pin leaves the screen. Reduced motion or no WebGL: the final view with every text below it. Data: `client/public/terrain`, rebuilt by `client/scripts/terrain/build_abruzzo.py`; three.js loads lazily near the section.
+### Territorio diorama (signature)
+One full-screen "slide" (replaces the old Chi siamo and Territorio sections), in the style of BUCK's Airbnb miniatures: Abruzzo as a photographed tabletop model that rises out of a seamless white floor (the page White) and fades into it at the region border, with no walls or frame. Real elevation (3x exaggerated) with natural, softened colours: patchwork fields, olive groves, beech woods, pastures, rock and pale summits, the Adriatic as pale water with small moving glints. Light is baked offline (low sun from SSE, soft shadows, valley occlusion, contact shadows) into one texture; miniature trees (round beeches, low olives), a farmhouse at Roseto and coloured hives at Cerchio sit on top; thin mist breathes over the peaks. Post: tilt-shift blur, light vignette, faint grain. Camera: seen from far and above (about 42 degrees), one straight dolly from a wide shot over Roseto to a closer shot over Cerchio, eased in and out, never turning back. Desktop: pinned (340vh), scroll drives it with heavy damping; phones keep native scroll and play it once (8 s). Text beats sit on light cards. Reduced motion or no WebGL: the midpoint view, both places visible, every text below. Data and bake: `client/scripts/terrain/build_abruzzo.py` writes `client/public/terrain`; three.js and the effects load lazily near the section. Interface colours stay neutral; the diorama is the one place with landscape colour.
 
 ## Do's and Don'ts
 

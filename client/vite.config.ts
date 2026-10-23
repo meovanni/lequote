@@ -21,7 +21,7 @@ export default defineConfig({
   // La scena 3D di Territorio si importa in modo pigro: senza questo Vite scopre three e la
   // fiber solo a pagina aperta, rifà il bundle delle dipendenze e la pagina resta con due React.
   optimizeDeps: {
-    include: ['three', '@react-three/fiber'],
+    include: ['three', '@react-three/fiber', '@react-three/postprocessing', 'postprocessing'],
   },
   resolve: {
     alias: {

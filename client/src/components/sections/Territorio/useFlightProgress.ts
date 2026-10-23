@@ -6,11 +6,12 @@ import { NATIVE_SCROLL_QUERY } from '@/lib/nativeScroll'
  * - scroll: desktop, la sezione è pinnata e lo scroll sposta la camera da Roseto a Cerchio;
  * - autoplay: telefono, scroll nativo (memoria del progetto): lo spostamento parte da solo
  *   quando la sezione è a metà schermo, una volta;
- * - static: movimento ridotto o niente WebGL, la vista finale con tutti i testi.
+ * - static: movimento ridotto o niente WebGL, la vista a metà percorso con tutti i testi.
  */
 export type FlightMode = 'pending' | 'scroll' | 'autoplay' | 'static'
 
 const AUTOPLAY_MS = 8000
+const STATIC_PROGRESS = 0.5
 
 /** Progress 0-1 in un ref (letto dalla scena a ogni frame) e in --p sullo stage (letto dalla CSS). */
 export function useFlightProgress(section: RefObject<HTMLElement | null>, stage: RefObject<HTMLElement | null>) {
@@ -45,7 +46,8 @@ export function useFlightProgress(section: RefObject<HTMLElement | null>, stage:
   }, [section])
 
   useEffect(() => {
-    if (mode === 'static') publish(1)
+    // Fermo: a metà del percorso si vedono insieme Roseto e Cerchio.
+    if (mode === 'static') publish(STATIC_PROGRESS)
     if (mode !== 'scroll') return
     let frame = 0
     const update = () => {

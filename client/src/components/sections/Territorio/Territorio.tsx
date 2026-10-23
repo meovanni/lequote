@@ -59,7 +59,7 @@ export function Territorio() {
                   progress={progress}
                   labels={labels}
                   active={onScreen}
-                  segments={isPhone ? 220 : 420}
+                  lite={isPhone}
                   onReady={markReady}
                   onError={fail}
                 />

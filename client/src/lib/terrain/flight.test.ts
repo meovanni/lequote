@@ -1,22 +1,26 @@
 import { describe, expect, it } from 'vitest'
-import { END, OFFSET, START, damp, dollyForAspect, fovForAspect, poseAt } from './flight'
+import { END, START, damp, dollyForAspect, fovForAspect, poseAt } from './flight'
 
 
-describe('movimento sul rilievo', () => {
-  it('parte da Roseto e arriva a Cerchio', () => {
-    expect(poseAt(0).target).toEqual(START)
-    poseAt(1).target.forEach((value, i) => expect(value).toBeCloseTo(END[i]))
+describe('movimento sul diorama', () => {
+  it('parte dal campo su Roseto e arriva su Cerchio', () => {
+    expect(poseAt(0)).toEqual(START)
+    const end = poseAt(1)
+    end.position.forEach((value, i) => expect(value).toBeCloseTo(END.position[i]))
+    end.target.forEach((value, i) => expect(value).toBeCloseTo(END.target[i]))
   })
 
-  it('va sempre nello stesso verso, con lo stesso orientamento', () => {
-    const direction = END.map((value, i) => value - START[i])
-    let previous = poseAt(0)
+  it('la camera va in linea retta, sempre nello stesso verso', () => {
+    const direction = END.position.map((value, i) => value - START.position[i])
+    const length = Math.hypot(...direction)
+    let previous = poseAt(0).position
     for (let i = 1; i <= 200; i++) {
-      const pose = poseAt(i / 200)
-      const step = pose.position.map((value, axis) => value - previous.position[axis])
-      expect(step.reduce((sum, value, axis) => sum + value * direction[axis], 0)).toBeGreaterThanOrEqual(0)
-      pose.position.forEach((value, axis) => expect(value - pose.target[axis]).toBeCloseTo(OFFSET[axis]))
-      previous = pose
+      const position = poseAt(i / 200).position
+      const step = position.map((value, axis) => value - previous[axis])
+      const along = step.reduce((sum, value, axis) => sum + value * direction[axis], 0) / length
+      expect(along).toBeGreaterThanOrEqual(0)
+      expect(Math.hypot(...step)).toBeCloseTo(along, 6)
+      previous = position
     }
   })
 
@@ -42,9 +46,11 @@ describe('movimento sul rilievo', () => {
   it('sugli schermi stretti allontana la camera, sul desktop no', () => {
     expect(dollyForAspect(1.6)).toBeCloseTo(1)
     expect(dollyForAspect(0.46)).toBeGreaterThan(1.5)
+    const near = poseAt(0.5)
     const far = poseAt(0.5, 2)
-    expect(far.target).toEqual(poseAt(0.5).target)
-    far.position.forEach((value, axis) => expect(value - far.target[axis]).toBeCloseTo(OFFSET[axis] * 2))
+    expect(far.target).toEqual(near.target)
+    far.position.forEach((value, axis) => expect(value - far.target[axis]).toBeCloseTo((near.position[axis] - near.target[axis]) * 2))
   })
+
 
 })

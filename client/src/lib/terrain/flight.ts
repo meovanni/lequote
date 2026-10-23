@@ -1,27 +1,29 @@
-// Il movimento della camera sul rilievo (sezione Territorio): un solo spostamento in linea
-// retta da Roseto a Cerchio, con l'orientamento sempre uguale (dal mare, guardando a ovest e
-// un po' dall'alto). Niente rotazioni né cambi di quota: un solo verso di movimento.
+// Il movimento della camera sul diorama (sezione Territorio), come una ripresa su carrello: un
+// solo tratto in linea retta, dal campo largo su Roseto e la costa al campo più stretto su
+// Cerchio, che parte e si ferma morbido. Niente curve né ritorni: un solo verso di movimento.
 // progress 0-1 viene dallo scroll (desktop) o dal tempo (telefono). Coordinate del mondo in km,
 // come lib/terrain/geo.ts: Roseto ≈ (5, -41), Cerchio ≈ (-29, 26).
 
 export type Vec3 = [number, number, number]
 export type Pose = { position: Vec3; target: Vec3 }
 
-/** Punto guardato all'inizio (Roseto, sulla costa) e alla fine (Cerchio, nella Marsica). */
-export const START: Vec3 = [5, 0.5, -41]
-export const END: Vec3 = [-29, 2.5, 26]
-/** Dove sta la camera rispetto al punto guardato: a est, sul mare, alta e lontana. */
-export const OFFSET: Vec3 = [82, 62, 20]
+/** Inquadratura iniziale (campo largo, dal mare) e finale (più vicina, sopra la Marsica). */
+// Da lontano e dall'alto (circa 42°), come i plastici fotografati: il diorama resta circondato dal bianco.
+export const START: Pose = { position: [140, 132, 12], target: [5, 0.5, -41] }
+export const END: Pose = { position: [72, 104, 72], target: [-29, 2.5, 26] }
 
 const clamp01 = (value: number) => Math.min(1, Math.max(0, value))
-/** Parte e si ferma piano, ma va sempre avanti: la derivata non cambia mai segno. */
-const smooth = (t: number) => t * t * (3 - 2 * t)
+/** Accelera e frena come un carrello vero, ma va sempre avanti: la derivata non cambia segno. */
+const smoother = (t: number) => t * t * t * (t * (t * 6 - 15) + 10)
+
+const lerp = (from: Vec3, to: Vec3, t: number) => from.map((value, axis) => value + (to[axis] - value) * t) as Vec3
 
 /** Posizione e punto guardato a un dato progress. dolly > 1 allontana la camera (schermi stretti). */
 export function poseAt(progress: number, dolly = 1): Pose {
-  const t = smooth(clamp01(progress))
-  const target = START.map((from, axis) => from + (END[axis] - from) * t) as Vec3
-  const position = target.map((value, axis) => value + OFFSET[axis] * dolly) as Vec3
+  const t = smoother(clamp01(progress))
+  const target = lerp(START.target, END.target, t)
+  const base = lerp(START.position, END.position, t)
+  const position = base.map((value, axis) => target[axis] + (value - target[axis]) * dolly) as Vec3
   return { position, target }
 }
 

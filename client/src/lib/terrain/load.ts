@@ -2,10 +2,8 @@ import { decodeHeight, type TerrainMeta } from './geo'
 
 export type TerrainData = {
   meta: TerrainMeta
-  /** Quote in metri, riga per riga da nord a sud. */
+  /** Quote in metri, riga per riga da nord a sud, già sfumate a zero fuori dalla regione. */
   heights: Float32Array
-  /** 0-1: quanto il punto sta dentro la regione (bordo sfumato). */
-  mask: Float32Array
 }
 
 function loadImage(src: string): Promise<HTMLImageElement> {
@@ -33,10 +31,6 @@ export async function loadTerrain(base = '/terrain'): Promise<TerrainData> {
 
   const count = canvas.width * canvas.height
   const heights = new Float32Array(count)
-  const mask = new Float32Array(count)
-  for (let i = 0; i < count; i++) {
-    heights[i] = decodeHeight(pixels[i * 4], pixels[i * 4 + 1])
-    mask[i] = pixels[i * 4 + 2] / 255
-  }
-  return { meta: { ...meta, grid: [canvas.width, canvas.height] }, heights, mask }
+  for (let i = 0; i < count; i++) heights[i] = decodeHeight(pixels[i * 4], pixels[i * 4 + 1])
+  return { meta: { ...meta, grid: [canvas.width, canvas.height] }, heights }
 }

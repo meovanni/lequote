@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { decodeHeight, edgeFalloff, heightToWorld, sampleHeight, uvToWorld } from './geo'
+import { decodeHeight, heightToWorld, sampleHeight, uvToWorld } from './geo'
 
 describe('rilievo', () => {
   it('legge la quota dai canali R e G', () => {
@@ -15,13 +15,6 @@ describe('rilievo', () => {
 
   it('esagera la quota', () => {
     expect(heightToWorld(1000)).toBe(3)
-  })
-
-  it('sfuma ai bordi e resta piena al centro', () => {
-    expect(edgeFalloff(0, 0.5)).toBe(0)
-    expect(edgeFalloff(0.5, 0.5)).toBe(1)
-    expect(edgeFalloff(0.03, 0.5)).toBeGreaterThan(0)
-    expect(edgeFalloff(0.03, 0.5)).toBeLessThan(1)
   })
 
   it('interpola tra i punti della griglia', () => {

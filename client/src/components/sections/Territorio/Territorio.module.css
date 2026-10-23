@@ -77,14 +77,20 @@
   bottom: var(--space-8);
 }
 
+/* Ogni testo sta su una scheda chiara: sotto c'è il diorama, colorato e in movimento. */
+.intro,
+.place,
+.closing {
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-bg) 94%, transparent);
+}
+
 .place {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-2);
-  padding: var(--space-5);
-  border-radius: var(--radius-md);
-  background: var(--surface-bg);
 }
 
 .place[data-place='roseto'] {
@@ -133,6 +139,9 @@
   position: absolute;
   right: var(--container-pad);
   bottom: var(--space-3);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-button);
+  background: color-mix(in srgb, var(--surface-bg) 88%, transparent);
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   color: var(--surface-text-muted);
@@ -203,7 +212,9 @@
   max-width: 40rem;
 }
 
-.section[data-mode='static'] .place {
+.section[data-mode='static'] .intro,
+.section[data-mode='static'] .place,
+.section[data-mode='static'] .closing {
   padding: 0;
 }
 
