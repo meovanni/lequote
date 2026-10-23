@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type RefObject } from 'react'
+import { FLIGHT_END } from '@/lib/terrain/flight'
 import { NATIVE_SCROLL_QUERY } from '@/lib/nativeScroll'
 
 /**
@@ -11,7 +12,7 @@ import { NATIVE_SCROLL_QUERY } from '@/lib/nativeScroll'
 export type FlightMode = 'pending' | 'scroll' | 'autoplay' | 'static'
 
 const AUTOPLAY_MS = 8000
-const STATIC_PROGRESS = 0.5
+const STATIC_PROGRESS = FLIGHT_END / 2
 
 /** Progress 0-1 in un ref (letto dalla scena a ogni frame) e in --p sullo stage (letto dalla CSS). */
 export function useFlightProgress(section: RefObject<HTMLElement | null>, stage: RefObject<HTMLElement | null>) {
@@ -87,7 +88,8 @@ export function useFlightProgress(section: RefObject<HTMLElement | null>, stage:
       elapsed += last ? now - last : 0
       last = now
       const value = Math.min(1, elapsed / AUTOPLAY_MS)
-      publish(value)
+      // Sul telefono la pagina scorre già da sé: niente uscita verso l'alto, ci si ferma su Cerchio.
+      publish(value * FLIGHT_END)
       if (value < 1) frame = window.requestAnimationFrame(tick)
     }
     const observer = new IntersectionObserver(

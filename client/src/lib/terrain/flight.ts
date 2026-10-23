@@ -1,30 +1,68 @@
-// Il movimento della camera sul diorama (sezione Territorio), come una ripresa su carrello: un
-// solo tratto in linea retta, dal campo largo su Roseto e la costa al campo più stretto su
-// Cerchio, che parte e si ferma morbido. Niente curve né ritorni: un solo verso di movimento.
+// Il movimento della camera sul diorama (sezione Territorio), come una ripresa su gru: un arco
+// che gira piano attorno alla regione mentre l'inquadratura scivola da Roseto a Cerchio, sempre
+// nello stesso verso. Nell'ultimo tratto la scena sale sullo schermo alla velocità della pagina,
+// così quando la sezione si sblocca il movimento continua nello scroll senza stacchi.
 // progress 0-1 viene dallo scroll (desktop) o dal tempo (telefono). Coordinate del mondo in km,
 // come lib/terrain/geo.ts: Roseto ≈ (5, -41), Cerchio ≈ (-29, 26).
 
 export type Vec3 = [number, number, number]
 export type Pose = { position: Vec3; target: Vec3 }
+/** Camera attorno al punto guardato: angolo sul piano (0 = est, 90 = sud), distanza e quota. */
+type Orbit = { azimuthDeg: number; distance: number; height: number }
 
-/** Inquadratura iniziale (campo largo, dal mare) e finale (più vicina, sopra la Marsica). */
-// Da lontano e dall'alto (circa 42°), come i plastici fotografati: il diorama resta circondato dal bianco.
-export const START: Pose = { position: [140, 132, 12], target: [5, 0.5, -41] }
-export const END: Pose = { position: [72, 104, 72], target: [-29, 2.5, 26] }
+/** Fin qui l'arco; da qui alla fine la scena accompagna lo scroll verso l'alto. */
+export const FLIGHT_END = 0.88
+/** Di quanti schermi sale la scena nell'ultimo tratto: con 240vh di sezione bloccata, il 12% finale
+ * dura circa 29vh di scroll, quindi 0,3 schermi vanno alla stessa velocità della pagina. Quando la
+ * sezione si sblocca il diorama è ancora in vista e prosegue in alto con la pagina. */
+const EXIT_SCREENS = 0.3
 
+const TARGET_START: Vec3 = [5, 0.5, -41]
+const TARGET_BEND: Vec3 = [-2, 1.5, -12]
+const TARGET_END: Vec3 = [-29, 2.5, 26]
+export const ORBIT_START: Orbit = { azimuthDeg: 21, distance: 145, height: 132 }
+export const ORBIT_END: Orbit = { azimuthDeg: 58, distance: 112, height: 104 }
+
+const toRad = Math.PI / 180
 const clamp01 = (value: number) => Math.min(1, Math.max(0, value))
-/** Accelera e frena come un carrello vero, ma va sempre avanti: la derivata non cambia segno. */
+/** Accelera e frena come una gru vera, ma va sempre avanti: la derivata non cambia segno. */
 const smoother = (t: number) => t * t * t * (t * (t * 6 - 15) + 10)
+const mix = (from: number, to: number, t: number) => from + (to - from) * t
 
-const lerp = (from: Vec3, to: Vec3, t: number) => from.map((value, axis) => value + (to[axis] - value) * t) as Vec3
+/** Curva di Bézier quadratica: il punto guardato fa un piccolo arco invece di una retta. */
+function bezier(a: Vec3, b: Vec3, c: Vec3, t: number): Vec3 {
+  const u = 1 - t
+  return a.map((value, axis) => u * u * value + 2 * u * t * b[axis] + t * t * c[axis]) as Vec3
+}
 
-/** Posizione e punto guardato a un dato progress. dolly > 1 allontana la camera (schermi stretti). */
+/** Posizione e punto guardato lungo l'arco. dolly > 1 allontana la camera (schermi stretti). */
 export function poseAt(progress: number, dolly = 1): Pose {
-  const t = smoother(clamp01(progress))
-  const target = lerp(START.target, END.target, t)
-  const base = lerp(START.position, END.position, t)
-  const position = base.map((value, axis) => target[axis] + (value - target[axis]) * dolly) as Vec3
-  return { position, target }
+  const t = smoother(clamp01(progress / FLIGHT_END))
+  const target = bezier(TARGET_START, TARGET_BEND, TARGET_END, t)
+  const azimuth = mix(ORBIT_START.azimuthDeg, ORBIT_END.azimuthDeg, t) * toRad
+  const distance = mix(ORBIT_START.distance, ORBIT_END.distance, t) * dolly
+  const height = mix(ORBIT_START.height, ORBIT_END.height, t) * dolly
+  return { position: [target[0] + distance * Math.cos(azimuth), target[1] + height, target[2] + distance * Math.sin(azimuth)], target }
+}
+
+/**
+ * Spostamento dell'ultimo tratto: la camera scende lungo il proprio "giù", così tutta la scena
+ * sale sullo schermo come se scorresse con la pagina. Lineare nel progress, cioè nello scroll.
+ */
+export function exitShift(pose: Pose, verticalFovDeg: number, progress: number): Vec3 {
+  const e = clamp01((progress - FLIGHT_END) / (1 - FLIGHT_END))
+  if (e === 0) return [0, 0, 0]
+  const forward = pose.target.map((value, axis) => value - pose.position[axis])
+  const distance = Math.hypot(...forward)
+  const [fx, fy, fz] = forward.map((value) => value / distance)
+  // destra = avanti x su; su della camera = destra x avanti.
+  const right = [-fz, 0, fx]
+  const rightLength = Math.hypot(...right)
+  const [rx, , rz] = right.map((value) => value / rightLength)
+  const up = [-rz * fy, rz * fx - rx * fz, rx * fy]
+  const screenHeight = 2 * distance * Math.tan((verticalFovDeg / 2) * toRad)
+  const amount = e * EXIT_SCREENS * screenHeight
+  return up.map((value) => -value * amount) as Vec3
 }
 
 // Campo visivo orizzontale di riferimento (desktop 16:10 con 34° verticali). In verticale, sul

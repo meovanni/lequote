@@ -94,13 +94,13 @@
 }
 
 .place[data-place='roseto'] {
-  --in: 0.1;
-  --out: 0.42;
+  --in: 0.08;
+  --out: 0.4;
 }
 
 .place[data-place='cerchio'] {
-  --in: 0.58;
-  --out: 0.88;
+  --in: 0.5;
+  --out: 0.84;
 }
 
 .placeName {
@@ -108,7 +108,7 @@
 }
 
 .closing {
-  --in: 0.88;
+  --in: 0.82;
   text-wrap: balance;
 }
 
@@ -128,7 +128,7 @@
 }
 
 .pin[data-place='cerchio'] {
-  --in: 0.4;
+  --in: 0.38;
 }
 
 .section:not([data-ready='true']) .pin {

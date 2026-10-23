@@ -2,7 +2,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { EffectComposer, Noise, TiltShift2, Vignette } from '@react-three/postprocessing'
 import { useEffect, useMemo, useRef, useState, type MutableRefObject } from 'react'
 import { Color, PerspectiveCamera, SRGBColorSpace, TextureLoader, Vector3, type Object3D, type Texture } from 'three'
-import { damp, dollyForAspect, fovForAspect, poseAt } from '@/lib/terrain/flight'
+import { damp, dollyForAspect, exitShift, fovForAspect, poseAt } from '@/lib/terrain/flight'
 import { loadTerrain, type TerrainData } from '@/lib/terrain/load'
 import { Landmarks, type PlaceId } from './Landmarks'
 import { Mist } from './Mist'
@@ -131,7 +131,7 @@ type CameraRigProps = {
   labels: MutableRefObject<Record<PlaceId, HTMLElement | null>>
 }
 
-/** Porta la camera lungo il carrello e tiene le etichette sopra i modellini. */
+/** Porta la camera lungo l'arco, poi la fa scorrere con la pagina; tiene le etichette sopra i modellini. */
 function CameraRig({ progress, anchors, labels }: CameraRigProps) {
   const { camera, size } = useThree()
   const current = useRef(progress.current)
@@ -151,8 +151,10 @@ function CameraRig({ progress, anchors, labels }: CameraRigProps) {
     current.current = damp(current.current, progress.current, 2.6, Math.min(delta, 0.1))
     const dolly = Math.min(MAX_PHONE_DOLLY, dollyForAspect(size.width / Math.max(1, size.height)))
     const pose = poseAt(current.current, dolly)
-    camera.position.set(...pose.position)
-    camera.lookAt(...pose.target)
+    // L'uscita segue lo scroll senza smorzamento: deve andare alla stessa velocità della pagina.
+    const shift = exitShift(pose, camera instanceof PerspectiveCamera ? camera.fov : 32, progress.current)
+    camera.position.set(pose.position[0] + shift[0], pose.position[1] + shift[1], pose.position[2] + shift[2])
+    camera.lookAt(pose.target[0] + shift[0], pose.target[1] + shift[1], pose.target[2] + shift[2])
     camera.updateMatrixWorld()
 
     PLACE_IDS.forEach((id) => {

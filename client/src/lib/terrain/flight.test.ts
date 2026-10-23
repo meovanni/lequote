@@ -1,30 +1,34 @@
 import { describe, expect, it } from 'vitest'
-import { END, START, damp, dollyForAspect, fovForAspect, poseAt } from './flight'
+import { FLIGHT_END, ORBIT_END, ORBIT_START, damp, dollyForAspect, exitShift, fovForAspect, poseAt } from './flight'
 
+
+const azimuth = (progress: number) => {
+  const { position, target } = poseAt(progress)
+  return Math.atan2(position[2] - target[2], position[0] - target[0])
+}
 
 describe('movimento sul diorama', () => {
-  it('parte dal campo su Roseto e arriva su Cerchio', () => {
-    expect(poseAt(0)).toEqual(START)
-    const end = poseAt(1)
-    end.position.forEach((value, i) => expect(value).toBeCloseTo(END.position[i]))
-    end.target.forEach((value, i) => expect(value).toBeCloseTo(END.target[i]))
+  it('parte guardando Roseto e arriva su Cerchio', () => {
+    expect(poseAt(0).target).toEqual([5, 0.5, -41])
+    poseAt(FLIGHT_END).target.forEach((value, i) => expect(value).toBeCloseTo([-29, 2.5, 26][i]))
   })
 
-  it('la camera va in linea retta, sempre nello stesso verso', () => {
-    const direction = END.position.map((value, i) => value - START.position[i])
-    const length = Math.hypot(...direction)
-    let previous = poseAt(0).position
-    for (let i = 1; i <= 200; i++) {
-      const position = poseAt(i / 200).position
-      const step = position.map((value, axis) => value - previous[axis])
-      const along = step.reduce((sum, value, axis) => sum + value * direction[axis], 0) / length
-      expect(along).toBeGreaterThanOrEqual(0)
-      expect(Math.hypot(...step)).toBeCloseTo(along, 6)
-      previous = position
-    }
+  it("gira in un solo verso lungo l'arco", () => {
+    for (let i = 1; i <= 200; i++) expect(azimuth((i / 200) * FLIGHT_END)).toBeGreaterThanOrEqual(azimuth(((i - 1) / 200) * FLIGHT_END))
+    expect(azimuth(FLIGHT_END) - azimuth(0)).toBeCloseTo(((ORBIT_END.azimuthDeg - ORBIT_START.azimuthDeg) * Math.PI) / 180)
   })
 
-  it('resta fermo fuori da 0-1', () => {
+  it("dopo l'arco resta ferma e la scena sale come con lo scroll", () => {
+    expect(poseAt(1)).toEqual(poseAt(FLIGHT_END))
+    expect(exitShift(poseAt(1), 34, FLIGHT_END)).toEqual([0, 0, 0])
+    const half = exitShift(poseAt(1), 34, (FLIGHT_END + 1) / 2)
+    const full = exitShift(poseAt(1), 34, 1)
+    full.forEach((value, i) => expect(value).toBeCloseTo(half[i] * 2))
+    // La camera scende: il mondo sale sullo schermo.
+    expect(full[1]).toBeLessThan(0)
+  })
+
+  it('resta ferma fuori da 0-1', () => {
     expect(poseAt(-1)).toEqual(poseAt(0))
     expect(poseAt(2)).toEqual(poseAt(1))
   })
