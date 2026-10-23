@@ -435,15 +435,15 @@ export const de: Content = {
           },
           {
             id: 'dove-spedite',
-            question: 'Wohin liefern Sie?',
+            question: 'Liefern Sie nach Hause?',
             answer:
-              'In ganz Italien. Wenn Sie möchten, können Sie im Betrieb in Roseto degli Abruzzi oder in Cerchio abholen, nach Absprache von Tag und Uhrzeit.',
+              'Noch nicht: Bestellungen werden vorerst im Betrieb abgeholt, in Roseto degli Abruzzi oder in Cerchio. Sobald Ihre Bestellung bereit ist, schreiben wir Ihnen, um Tag und Uhrzeit abzustimmen.',
           },
           {
             id: 'recesso',
             question: 'Kann ich nach dem Kauf zurücktreten?',
             answer:
-              'Ja. Bei Fernabsatzkäufen haben Sie 14 Tage ab Lieferung, um zu widerrufen (italienisches Verbrauchergesetzbuch, Art. 52): Schreiben Sie uns einfach. Die vollständigen Verkaufsbedingungen erscheinen mit dem Onlineshop.',
+              'Ja. Bei Onlinekäufen haben Sie 14 Tage ab Abholung oder Erhalt der Produkte, um ohne Angabe von Gründen zu widerrufen (italienisches Verbrauchergesetzbuch, Art. 52): Nutzen Sie das Widerrufsformular unten auf der Seite oder schreiben Sie uns. Die Einzelheiten stehen in den Verkaufsbedingungen, ebenfalls unten auf der Seite.',
           },
           {
             id: 'visite',

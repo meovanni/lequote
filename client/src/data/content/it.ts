@@ -424,15 +424,15 @@ export const domande = {
         },
         {
           id: 'dove-spedite',
-          question: 'Dove spedite?',
+          question: 'Spedite a domicilio?',
           answer:
-            'In tutta Italia. Se preferisci, puoi ritirare in azienda a Roseto degli Abruzzi o a Cerchio, concordando con noi giorno e orario.',
+            'Non ancora: per ora gli ordini si ritirano in azienda, a Roseto degli Abruzzi o a Cerchio. Quando l’ordine è pronto ti scriviamo per concordare giorno e orario.',
         },
         {
           id: 'recesso',
           question: 'Posso cambiare idea dopo l’acquisto?',
           answer:
-            'Sì. Per gli acquisti a distanza hai 14 giorni dalla consegna per recedere (Codice del Consumo, art. 52): basta scriverci. Le condizioni di vendita complete saranno pubblicate con il negozio online.',
+            'Sì. Per gli acquisti online hai 14 giorni da quando ritiri o ricevi i prodotti per recedere (Codice del Consumo, art. 52), senza indicarne il motivo: usa il modulo di recesso in fondo alla pagina o scrivici. I dettagli sono nelle condizioni di vendita, sempre in fondo alla pagina.',
         },
         {
           id: 'visite',

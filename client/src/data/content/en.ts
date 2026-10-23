@@ -435,15 +435,15 @@ export const en: Content = {
           },
           {
             id: 'dove-spedite',
-            question: 'Where do you ship?',
+            question: 'Do you deliver to your door?',
             answer:
-              'Anywhere in Italy. If you prefer, you can collect at the farm in Roseto degli Abruzzi or in Cerchio, agreeing a day and time with us.',
+              'Not yet: for now orders are collected at the farm, in Roseto degli Abruzzi or in Cerchio. When your order is ready we write to you to agree a day and time.',
           },
           {
             id: 'recesso',
             question: 'Can I change my mind after buying?',
             answer:
-              'Yes. For distance purchases you have 14 days from delivery to withdraw (Italian Consumer Code, art. 52): just write to us. The full terms of sale will be published with the online shop.',
+              'Yes. For online purchases you have 14 days from when you collect or receive the products to withdraw (Italian Consumer Code, art. 52), without giving a reason: use the withdrawal form at the bottom of the page or write to us. The details are in the terms of sale, also at the bottom of the page.',
           },
           {
             id: 'visite',
