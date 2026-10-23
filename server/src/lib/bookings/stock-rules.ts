@@ -1,7 +1,6 @@
-// Giacenze degli ordini. Medusa riserva ogni prodotto di un ordine in una sola sede: la prima che ne
-// ha abbastanza per tutta la quantità della riga (core-flows, prepareConfirmInventoryInput), senza
-// dividerla tra le sedi e senza guardare la consegna. Il massimo ordinabile è quindi la
-// disponibilità della sede più fornita, non la somma delle sedi.
+// Giacenze degli ordini: il limite è la disponibilità totale di tutte le sedi (scelta dei titolari:
+// spostare la merce è un problema loro). Medusa riserva ogni riga in una sola sede, quindi la merce
+// libera si tiene in un solo magazzino (lib/stock-pool.ts) e il totale è sempre riservabile.
 
 export type StockLevel = { location_id: string; available_quantity: number }
 export type StockVariant = {
@@ -11,7 +10,7 @@ export type StockVariant = {
   manage_inventory: boolean
   inventory_items: { required_quantity: number; levels: StockLevel[] }[]
 }
-export type Shortfall = { variant_id: string; label: string; requested: number; available: number; total: number }
+export type Shortfall = { variant_id: string; label: string; requested: number; available: number }
 
 const locationsOf = (variant: StockVariant) => [...new Set(variant.inventory_items.flatMap((item) => item.levels.map((level) => level.location_id)))]
 
@@ -26,21 +25,15 @@ export function availableAt(variant: StockVariant, locationId: string): number |
   )
 }
 
-/** Massimo ordinabile in un ordine: la sede più fornita. null se la giacenza non è gestita. */
-export function orderableQuantity(variant: StockVariant): number | null {
-  if (!variant.manage_inventory || variant.inventory_items.length === 0) return null
-  return Math.max(0, ...locationsOf(variant).map((locationId) => availableAt(variant, locationId) ?? 0))
-}
-
-/** Pezzi disponibili in tutte le sedi insieme. */
+/** Massimo ordinabile: i pezzi disponibili in tutte le sedi insieme. null se la giacenza non è gestita. */
 export function totalQuantity(variant: StockVariant): number | null {
   if (!variant.manage_inventory || variant.inventory_items.length === 0) return null
   return locationsOf(variant).reduce((sum, locationId) => sum + (availableAt(variant, locationId) ?? 0), 0)
 }
 
 /**
- * Righe che superano il massimo ordinabile. In una modifica, held sono i pezzi che l'ordine tiene
- * già riservati: restano suoi e si sommano a quelli liberi.
+ * Righe che superano la disponibilità. In una modifica, held sono i pezzi che l'ordine tiene già
+ * riservati: restano suoi e si sommano a quelli liberi.
  */
 export function stockShortfalls(
   lines: { variant_id: string; quantity: number }[],
@@ -51,12 +44,10 @@ export function stockShortfalls(
   for (const line of lines) requested.set(line.variant_id, (requested.get(line.variant_id) ?? 0) + line.quantity)
   return [...requested.entries()].flatMap(([variantId, quantity]) => {
     const variant = variants.get(variantId)
-    const free = variant ? orderableQuantity(variant) : null
+    const free = variant ? totalQuantity(variant) : null
     if (!variant || free === null) return []
-    const own = held.get(variantId) ?? 0
-    const available = free + own
-    const total = (totalQuantity(variant) ?? 0) + own
-    return quantity > available ? [{ variant_id: variantId, label: variant.label, requested: quantity, available, total }] : []
+    const available = free + (held.get(variantId) ?? 0)
+    return quantity > available ? [{ variant_id: variantId, label: variant.label, requested: quantity, available }] : []
   })
 }
 
@@ -64,7 +55,5 @@ export function shortfallMessage(shortfalls: Shortfall[]): string {
   const parts = shortfalls.map(
     ({ label, requested, available }) => `${label} (richiesti ${requested}, ${available > 0 ? `disponibili ${available}` : 'esaurito'})`,
   )
-  // Se le sedi insieme basterebbero, si spiega perché non va.
-  const split = shortfalls.some(({ requested, total }) => requested <= total)
-  return `Disponibilità insufficiente: ${parts.join('; ')}.${split ? ' Ogni prodotto di un ordine parte da una sola sede: per ordinarne di più, spostate la merce tra le sedi in Inventario.' : ''}`
+  return `Disponibilità insufficiente: ${parts.join('; ')}.`
 }

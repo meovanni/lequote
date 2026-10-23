@@ -1,8 +1,10 @@
 import type { ExecArgs } from '@medusajs/framework/types'
 import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
+import { consolidateStock } from '../lib/stock-pool'
 
-// Solo sviluppo e test end-to-end: mette una giacenza di prova su ogni formato in ogni sede, così
-// carrello e checkout si possono provare. Le giacenze vere si caricano dal back office.
+// Solo sviluppo e test end-to-end: mette una giacenza di prova su ogni formato in ogni sede, poi la
+// riunisce nel magazzino principale come fa il gestionale (lib/stock-pool.ts), così carrello e
+// checkout si possono provare. Le giacenze vere si caricano dal back office.
 const DEV_QUANTITY = 50
 
 export default async function devStock({ container }: ExecArgs) {
@@ -27,5 +29,6 @@ export default async function devStock({ container }: ExecArgs) {
   if (toUpdate.length > 0) {
     await inventory.updateInventoryLevels(toUpdate.map((pair) => ({ ...pair, stocked_quantity: DEV_QUANTITY })))
   }
-  logger.info(`Giacenza di prova: ${DEV_QUANTITY} pezzi per ${items.length} formati in ${locations.length} sedi.`)
+  await consolidateStock(container)
+  logger.info(`Giacenza di prova: ${DEV_QUANTITY * locations.length} pezzi per ${items.length} formati, nel magazzino principale.`)
 }

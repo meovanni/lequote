@@ -10,6 +10,7 @@ import {
   updateOrderWorkflow,
 } from '@medusajs/medusa/core-flows'
 import { planBookingEdit, type BookingLine } from '../../modules/vendite/lib/sales'
+import { consolidateStock } from '../stock-pool'
 import { assertStock, explainInventoryError } from './stock'
 import type { Actor } from './types'
 
@@ -45,6 +46,7 @@ export async function editBooking(container: MedusaContainer, orderId: string, c
       // I pezzi che l'ordine tiene già restano suoi: conta solo quanto chiede in più.
       const held = new Map<string, number>()
       for (const item of order.items) if (item.variant_id) held.set(item.variant_id, (held.get(item.variant_id) ?? 0) + item.quantity)
+      await consolidateStock(container)
       await assertStock(container, changes.items, held)
       await beginOrderEditOrderWorkflow(container).run({ input: { order_id: orderId, created_by: actor.id } })
       try {

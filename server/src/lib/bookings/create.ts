@@ -12,6 +12,7 @@ import { VENDITE_MODULE } from '../../modules/vendite'
 import { backofficeSecret, signBackofficeCart } from '../backoffice-signature'
 import { BACKOFFICE_PROVIDER_ID } from '../checkout-rules'
 import { deliveryOptions, SALES_CHANNEL } from './catalog'
+import { consolidateStock } from '../stock-pool'
 import { assertStock, explainInventoryError } from './stock'
 import type { Actor, BookingInput } from './types'
 
@@ -27,7 +28,9 @@ export async function placeBooking(container: MedusaContainer, input: BookingInp
   // Consegna non indicata (prenotazione veloce di un agente): la prima disponibile, cioè un ritiro in sede.
   const shippingOptionId = input.shipping_option_id ?? (await deliveryOptions(container))[0]?.id
   if (!shippingOptionId) throw new MedusaError(MedusaError.Types.NOT_ALLOWED, 'Nessuna consegna disponibile: attiva almeno un ritiro.')
-  // Prima di creare il carrello: si ordina solo quello che si può riservare.
+  // Prima di creare il carrello: merce libera tutta nel magazzino (di solito lo è già, ci pensa il
+  // subscriber stock-pool), poi si ordina solo quello che c'è.
+  await consolidateStock(container)
   await assertStock(container, input.items)
   const address = {
     first_name: customer.first_name ?? undefined,

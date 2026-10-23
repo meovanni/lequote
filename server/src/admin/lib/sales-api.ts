@@ -6,8 +6,8 @@ import { sdk } from './sdk'
 // Le forme ricalcano le risposte di src/api/admin/{backoffice,agents,sell}.
 
 /**
- * stock: pezzi in tutte le sedi. available: massimo per ordine (la sede più fornita: un ordine prende
- * ogni prodotto da una sola sede). null = giacenza non gestita, nessun limite.
+ * stock e available: pezzi disponibili in tutte le sedi, il limite di un ordine (la merce libera sta
+ * in un solo magazzino, lib/stock-pool.ts). null = giacenza non gestita, nessun limite.
  */
 export type Variant = {
   variantId: string

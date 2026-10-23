@@ -2,7 +2,7 @@ import type { MedusaContainer } from '@medusajs/framework/types'
 import { ContainerRegistrationKeys, getVariantAvailability, Modules, QueryContext } from '@medusajs/framework/utils'
 import { isAgentDeliveryCode } from '../agent-delivery'
 import { isPickupOptionCode } from '../checkout-rules'
-import { availableAt, orderableQuantity } from './stock-rules'
+import { availableAt, totalQuantity } from './stock-rules'
 import { stockVariants } from './stock'
 
 /** Canale di vendita del seed: prenotazioni e ordini del sito condividono catalogo e giacenze. */
@@ -17,10 +17,7 @@ export type BookableVariant = {
   price: number | null
   /** Pezzi disponibili nel canale del sito, tutte le sedi insieme; null se la giacenza non è gestita. */
   stock: number | null
-  /**
-   * Massimo per ordine: un ordine prende ogni prodotto da una sola sede (lib/bookings/stock-rules),
-   * quindi è la disponibilità della sede più fornita. null se la giacenza non è gestita.
-   */
+  /** Massimo per ordine: la disponibilità totale (lib/bookings/stock-rules). null se non gestita. */
   available: number | null
   /** Pezzi disponibili per sede, per id della sede; null se la giacenza non è gestita. */
   stockByLocation: Record<string, number> | null
@@ -65,7 +62,7 @@ export async function bookableVariants(container: MedusaContainer): Promise<Book
   }
   const orderable = (variantId: string) => {
     const variant = stock.get(variantId)
-    return variant ? orderableQuantity(variant) : null
+    return variant ? totalQuantity(variant) : null
   }
   return variants
     .map((variant) => ({

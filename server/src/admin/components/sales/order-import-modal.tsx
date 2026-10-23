@@ -13,22 +13,20 @@ const NONE = 'nessuno'
 type Step = { kind: 'file' } | { kind: 'preview'; sheet: unknown[][]; fileName: string } | { kind: 'sending'; done: number; total: number } | { kind: 'done'; outcomes: ImportOutcome[]; names: Map<number, string> }
 
 /**
- * Simula le riservazioni come Medusa (ogni ordine nella prima sede che ne ha abbastanza) e avvisa
- * sulle righe che probabilmente non troveranno disponibilità. Il controllo vero è sul server.
+ * Scala la disponibilità riga per riga, nell'ordine del foglio, e avvisa sulle righe che non la
+ * troveranno più. Il controllo vero è sul server, riga per riga.
  */
-function withStockWarnings(rows: ImportRow[], stockByLocation: Record<string, number> | null): ImportRow[] {
-  if (!stockByLocation) return rows
-  const sites = Object.values(stockByLocation)
-  return rows.map((row) => {
-    if (row.error) return row
-    const site = sites.findIndex((available) => available >= row.tanks)
-    if (site >= 0) {
-      sites[site] -= row.tanks
-      return row
-    }
-    const best = Math.max(0, ...sites)
-    return { ...row, warnings: [...row.warnings, `Probabilmente non disponibile: restano al massimo ${best} taniche per ordine.`] }
-  })
+function withStockWarnings(rows: ImportRow[], available: number | null): ImportRow[] {
+  if (available === null) return rows
+  return rows.reduce<{ left: number; rows: ImportRow[] }>(
+    (acc, row) => {
+      if (row.error) return { ...acc, rows: [...acc.rows, row] }
+      if (row.tanks <= acc.left) return { left: acc.left - row.tanks, rows: [...acc.rows, row] }
+      const warning = `Probabilmente non disponibile: ${acc.left > 0 ? `restano ${acc.left} taniche` : 'taniche esaurite'} dopo le righe sopra.`
+      return { ...acc, rows: [...acc.rows, { ...row, warnings: [...row.warnings, warning] }] }
+    },
+    { left: available, rows: [] },
+  ).rows
 }
 
 /** Formato della tanica, se il catalogo ce l'ha: la latta d'olio da 5 L. */
@@ -94,7 +92,7 @@ function ImportFlow({ catalog, onClose, onStatus }: ImportFlowProps) {
   const plan = useMemo(() => {
     if (step.kind !== 'preview') return null
     const planned = planImport(step.sheet, { litersPerTank: Number(litersPerTank) || 5, unitPrice: variant?.price ?? null })
-    return { ...planned, rows: withStockWarnings(planned.rows, variant?.stockByLocation ?? null) }
+    return { ...planned, rows: withStockWarnings(planned.rows, variant?.available ?? null) }
   }, [step, litersPerTank, variant])
   const valid = plan?.rows.filter((row) => !row.error) ?? []
 

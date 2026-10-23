@@ -1,4 +1,4 @@
-import { availableAt, orderableQuantity, shortfallMessage, stockShortfalls, totalQuantity, type StockVariant } from '../stock-rules'
+import { availableAt, shortfallMessage, stockShortfalls, totalQuantity, type StockVariant } from '../stock-rules'
 
 const tank: StockVariant = {
   id: 'v_tank',
@@ -8,11 +8,10 @@ const tank: StockVariant = {
 }
 
 describe('disponibilità', () => {
-  it('per sede, massimo ordinabile (sede più fornita) e totale', () => {
+  it('per sede e totale', () => {
     expect(availableAt(tank, 'roseto')).toBe(50)
     expect(availableAt(tank, 'cerchio')).toBe(12)
     expect(availableAt(tank, 'altrove')).toBe(0)
-    expect(orderableQuantity(tank)).toBe(50)
     expect(totalQuantity(tank)).toBe(62)
   })
 
@@ -32,30 +31,30 @@ describe('disponibilità', () => {
   it('senza gestione della giacenza non c’è limite', () => {
     const free = { ...tank, manage_inventory: false }
     expect(availableAt(free, 'cerchio')).toBeNull()
-    expect(orderableQuantity(free)).toBeNull()
+    expect(totalQuantity(free)).toBeNull()
   })
 })
 
 describe('stockShortfalls', () => {
   const variants = new Map([[tank.id, tank]])
 
-  it('segnala le righe oltre la sede più fornita', () => {
-    expect(stockShortfalls([{ variant_id: 'v_tank', quantity: 51 }], variants)).toEqual([
-      { variant_id: 'v_tank', label: 'Olio Extravergine, Latta 5 l', requested: 51, available: 50, total: 62 },
+  it('il limite è la disponibilità totale', () => {
+    expect(stockShortfalls([{ variant_id: 'v_tank', quantity: 62 }], variants)).toEqual([])
+    expect(stockShortfalls([{ variant_id: 'v_tank', quantity: 63 }], variants)).toEqual([
+      { variant_id: 'v_tank', label: 'Olio Extravergine, Latta 5 l', requested: 63, available: 62 },
     ])
-    expect(stockShortfalls([{ variant_id: 'v_tank', quantity: 50 }], variants)).toEqual([])
   })
 
   it('in una modifica conta quello che l’ordine tiene già', () => {
     const held = new Map([['v_tank', 10]])
-    expect(stockShortfalls([{ variant_id: 'v_tank', quantity: 60 }], variants, held)).toEqual([])
-    expect(stockShortfalls([{ variant_id: 'v_tank', quantity: 61 }], variants, held)).toHaveLength(1)
+    expect(stockShortfalls([{ variant_id: 'v_tank', quantity: 72 }], variants, held)).toEqual([])
+    expect(stockShortfalls([{ variant_id: 'v_tank', quantity: 73 }], variants, held)).toHaveLength(1)
   })
 
   it('somma le righe dello stesso formato', () => {
     const lines = [
-      { variant_id: 'v_tank', quantity: 30 },
-      { variant_id: 'v_tank', quantity: 30 },
+      { variant_id: 'v_tank', quantity: 40 },
+      { variant_id: 'v_tank', quantity: 40 },
     ]
     expect(stockShortfalls(lines, variants)).toHaveLength(1)
   })
@@ -65,15 +64,9 @@ describe('shortfallMessage', () => {
   it('dice formato, quantità richiesta e disponibile', () => {
     expect(
       shortfallMessage([
-        { variant_id: 'v_tank', label: 'Olio Extravergine, Latta 5 l', requested: 70, available: 50, total: 62 },
-        { variant_id: 'v_miele', label: 'Miele, Vasetto 500 g', requested: 3, available: 0, total: 0 },
+        { variant_id: 'v_tank', label: 'Olio Extravergine, Latta 5 l', requested: 70, available: 62 },
+        { variant_id: 'v_miele', label: 'Miele, Vasetto 500 g', requested: 3, available: 0 },
       ]),
-    ).toBe('Disponibilità insufficiente: Olio Extravergine, Latta 5 l (richiesti 70, disponibili 50); Miele, Vasetto 500 g (richiesti 3, esaurito).')
-  })
-
-  it('se le sedi insieme basterebbero, spiega che un ordine usa una sola sede', () => {
-    expect(shortfallMessage([{ variant_id: 'v_tank', label: 'Olio Extravergine, Latta 5 l', requested: 60, available: 50, total: 62 }])).toBe(
-      'Disponibilità insufficiente: Olio Extravergine, Latta 5 l (richiesti 60, disponibili 50). Ogni prodotto di un ordine parte da una sola sede: per ordinarne di più, spostate la merce tra le sedi in Inventario.',
-    )
+    ).toBe('Disponibilità insufficiente: Olio Extravergine, Latta 5 l (richiesti 70, disponibili 62); Miele, Vasetto 500 g (richiesti 3, esaurito).')
   })
 })

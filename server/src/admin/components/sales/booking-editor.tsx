@@ -98,7 +98,7 @@ export function BookingEditor({ bookingId, catalog, onDirtyChange }: BookingEdit
                 <Text size="small">{label(variantId)}</Text>
                 {open && variant && stockLabel(variant, held(variantId)) && (
                   <Text size="xsmall" className={overLimit(variantId) ? 'text-ui-fg-error' : 'text-ui-fg-subtle'}>
-                    {overLimit(variantId) ? `Disponibili solo ${max}.` : `Fino a ${stockLabel(variant, held(variantId)).replace('disponibili ', '')}`}
+                    {overLimit(variantId) ? `Disponibili solo ${max}.` : max !== null && max > 0 ? `Fino a ${max}` : 'Esaurito'}
                   </Text>
                 )}
               </div>
