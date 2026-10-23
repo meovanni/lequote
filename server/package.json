@@ -34,7 +34,8 @@
     "@medusajs/ui": "4.2.6",
     "@tanstack/react-query": "5.64.2",
     "nodemailer": "^7.0.13",
-    "qrcode": "^1.5.4"
+    "qrcode": "^1.5.4",
+    "read-excel-file": "9.3.10"
   },
   "devDependencies": {
     "@medusajs/test-utils": "2.21.2",

@@ -22,7 +22,8 @@ export type BookingCustomer = {
 
 export type BookingInput = {
   customer: BookingCustomer
-  items: { variant_id: string; quantity: number }[]
+  /** unit_price: prezzo forzato IVA inclusa (ordini importati con l'importo); se manca, il listino. */
+  items: { variant_id: string; quantity: number; unit_price?: number }[]
   /** Opzione di consegna (ritiro in sede o spedizione, se attiva); se manca, la prima disponibile. */
   shipping_option_id?: string | null
   notes?: string | null

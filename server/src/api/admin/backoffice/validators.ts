@@ -45,6 +45,30 @@ export const SellBookingCreate = z
 /** Come la prenotazione dell'agente, più l'agente a cui attribuire la vendita. */
 export const BookingCreate = SellBookingCreate.extend({ agent_id: id.nullish() }).strict()
 
+// Ordini importati da Excel: l'anteprima nel browser legge il foglio (lib/order-import.ts), qui
+// arrivano le righe già pulite. Il server ricalcola il prezzo unitario dall'importo.
+export const OrderImport = z
+  .object({
+    variant_id: id,
+    shipping_option_id: id.nullish(),
+    agent_id: id.nullish(),
+    file_name: z.string().trim().max(200).nullish(),
+    rows: z
+      .array(
+        z
+          .object({
+            line: z.number().int().min(1).max(100_000),
+            name: text,
+            tanks: z.number().int().min(1).max(10_000),
+            amount: z.number().positive().max(1_000_000).nullish(),
+          })
+          .strict(),
+      )
+      .min(1)
+      .max(500),
+  })
+  .strict()
+
 export const BookingUpdate = z
   .object({
     items: lines.optional(),

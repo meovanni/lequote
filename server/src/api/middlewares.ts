@@ -11,7 +11,7 @@ import {
   SupplierTypeCreate,
 } from './admin/filiera/validators'
 import { WithdrawalUpdate } from './admin/withdrawals/validators'
-import { AgentCreate, AgentInvite, AgentUpdate, BookingCreate, BookingUpdate, PaymentCreate, SellBookingCreate } from './admin/backoffice/validators'
+import { AgentCreate, AgentInvite, AgentUpdate, BookingCreate, BookingUpdate, OrderImport, PaymentCreate, SellBookingCreate } from './admin/backoffice/validators'
 import { guard } from './permissions'
 import { WithdrawalCreate } from './store/withdrawals/validators'
 
@@ -31,6 +31,7 @@ export default defineMiddlewares({
     // Ordini dal gestionale e incassi: stessi permessi degli ordini di Medusa.
     ...guard('order', '/admin/backoffice/orders'),
     ...guard('order', '/admin/backoffice/catalog'),
+    ...guard('order', '/admin/backoffice/order-imports'),
     ...guard('agent', '/admin/agents'),
     ...guard('sales', '/admin/sell'),
     { matcher: '/admin/filiera/lots', method: 'POST', middlewares: [validateAndTransformBody(LotCreate)] },
@@ -49,6 +50,7 @@ export default defineMiddlewares({
     { matcher: '/admin/filiera/stage-templates/:id', method: 'POST', middlewares: [validateAndTransformBody(StageTemplateUpdate)] },
     { matcher: '/admin/filiera/supplier-types', method: 'POST', middlewares: [validateAndTransformBody(SupplierTypeCreate)] },
     { matcher: '/admin/backoffice/orders', method: 'POST', middlewares: [validateAndTransformBody(BookingCreate)] },
+    { matcher: '/admin/backoffice/order-imports', method: 'POST', middlewares: [validateAndTransformBody(OrderImport)] },
     { matcher: '/admin/backoffice/orders/:id', method: 'POST', middlewares: [validateAndTransformBody(BookingUpdate)] },
     { matcher: '/admin/backoffice/orders/:id/payments', method: 'POST', middlewares: [validateAndTransformBody(PaymentCreate)] },
     { matcher: '/admin/agents', method: 'POST', middlewares: [validateAndTransformBody(AgentCreate)] },

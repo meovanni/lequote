@@ -1,6 +1,7 @@
 /*
- * Tema Le Quote per il back office di Medusa (DESIGN.md: ottone, oliva, inchiostro, pergamena,
- * Night Grove). Ridefinisce i token di Medusa UI, così pagine di Medusa e pagine nostre cambiano
+ * Tema Le Quote per il back office di Medusa (DESIGN.md: ottone, oliva, inchiostro, pergamena;
+ * niente verde bosco, che nel gestionale non piaceva). Si parte in chiaro (widget brand-theme).
+ * Ridefinisce i token di Medusa UI, così pagine di Medusa e pagine nostre cambiano
  * insieme e i componenti restano quelli di Medusa: un aggiornamento di Medusa non rompe nulla,
  * al massimo un token nuovo resta col colore di Medusa.
  * Selettori un gradino più specifici di quelli di Medusa (:root e .dark): vincono senza
@@ -27,7 +28,7 @@ html:root {
   --bg-highlight: #f6eadb;
   --bg-highlight-hover: #f0dfc8;
   --bg-interactive: #9c6530;
-  --bg-overlay: rgba(28, 36, 23, 0.4);
+  --bg-overlay: rgba(35, 49, 66, 0.4);
   --bg-switch-off: #ddd6c6;
   --bg-switch-off-hover: #d2cab8;
 
@@ -63,14 +64,14 @@ html:root {
   --button-danger-hover: #93361f;
   --button-danger-pressed: #7e2d19;
 
-  --contrast-bg-base: #1c2417;
-  --contrast-bg-base-hover: #263021;
-  --contrast-bg-base-pressed: #2f3a29;
-  --contrast-bg-subtle: #263021;
+  --contrast-bg-base: #233142;
+  --contrast-bg-base-hover: #2b3a4d;
+  --contrast-bg-base-pressed: #334459;
+  --contrast-bg-subtle: #2b3a4d;
   --contrast-fg-primary: #f3eedf;
   --contrast-fg-secondary: rgba(243, 238, 223, 0.65);
   --contrast-border-base: rgba(243, 238, 223, 0.15);
-  --contrast-border-top: #1c2417;
+  --contrast-border-top: #233142;
   --contrast-border-bot: rgba(243, 238, 223, 0.1);
 
   --alpha-250: rgba(35, 49, 66, 0.1);
@@ -122,41 +123,42 @@ html:root {
   --elevation-card-hover: 0px 0px 0px 1px rgba(35, 49, 66, 0.08), 0px 1px 2px -1px rgba(35, 49, 66, 0.08), 0px 2px 8px 0px rgba(35, 49, 66, 0.1);
   --elevation-card-rest: 0px 0px 0px 1px rgba(35, 49, 66, 0.08), 0px 1px 2px -1px rgba(35, 49, 66, 0.08), 0px 2px 4px 0px rgba(35, 49, 66, 0.04);
   --elevation-code-block: 0px 0px 0px 1px rgba(122, 76, 32, 1) inset, 0px 0px 0px 1.5px rgba(255, 255, 255, 0.2) inset;
-  --elevation-commandbar: 0px 0px 0px 0.75px rgba(28, 36, 23, 1) inset, 0px 0px 0px 1.25px rgba(255, 255, 255, 0.3) inset, 0px 8px 16px 0px rgba(35, 49, 66, 0.08), 0px 16px 32px 0px rgba(35, 49, 66, 0.08);
+  --elevation-commandbar: 0px 0px 0px 0.75px rgba(35, 49, 66, 1) inset, 0px 0px 0px 1.25px rgba(255, 255, 255, 0.3) inset, 0px 8px 16px 0px rgba(35, 49, 66, 0.08), 0px 16px 32px 0px rgba(35, 49, 66, 0.08);
   --elevation-flyout: 0px 0px 0px 1px rgba(35, 49, 66, 0.08), 0px 4px 8px 0px rgba(35, 49, 66, 0.08), 0px 8px 16px 0px rgba(35, 49, 66, 0.08);
   --elevation-modal: 0px 0px 0px 1px rgba(255, 253, 249, 1) inset, 0px 0px 0px 1.5px rgba(230, 223, 207, 0.6) inset, 0px 0px 0px 1px rgba(35, 49, 66, 0.08), 0px 8px 16px 0px rgba(35, 49, 66, 0.08), 0px 16px 32px 0px rgba(35, 49, 66, 0.08);
   --elevation-tooltip: 0px 0px 0px 1px rgba(35, 49, 66, 0.08), 0px 2px 4px 0px rgba(35, 49, 66, 0.08), 0px 4px 8px 0px rgba(35, 49, 66, 0.08);
 }
 
-/* Scuro: Night Grove e bone, con l'ottone chiaro per le azioni. */
+/* Scuro: grigio inchiostro neutro e bone, con l'ottone chiaro per le azioni (il verde bosco del
+   sito, qui, non piaceva). */
 html.dark {
-  --bg-subtle: #151b11;
-  --bg-subtle-hover: #1b2216;
-  --bg-subtle-pressed: #212a1b;
-  --bg-base: #1c2417;
-  --bg-base-hover: #232c1d;
-  --bg-base-pressed: #2a3523;
-  --bg-component: #212a1b;
-  --bg-component-hover: #283222;
-  --bg-component-pressed: #2f3a28;
-  --bg-field: #212a1b;
-  --bg-field-hover: #283222;
-  --bg-field-component: #1c2417;
-  --bg-field-component-hover: #232c1d;
-  --bg-disabled: #232c1d;
+  --bg-subtle: #14171c;
+  --bg-subtle-hover: #1a1e24;
+  --bg-subtle-pressed: #20242b;
+  --bg-base: #1b1f25;
+  --bg-base-hover: #22262d;
+  --bg-base-pressed: #292e36;
+  --bg-component: #20242b;
+  --bg-component-hover: #272b33;
+  --bg-component-pressed: #2e333c;
+  --bg-field: #20242b;
+  --bg-field-hover: #272b33;
+  --bg-field-component: #1b1f25;
+  --bg-field-component-hover: #22262d;
+  --bg-disabled: #22262d;
   --bg-highlight: rgba(204, 154, 94, 0.12);
   --bg-highlight-hover: rgba(204, 154, 94, 0.18);
   --bg-interactive: #cc9a5e;
-  --bg-overlay: rgba(10, 13, 8, 0.6);
-  --bg-switch-off: #343f2c;
-  --bg-switch-off-hover: #3d4934;
+  --bg-overlay: rgba(8, 10, 13, 0.6);
+  --bg-switch-off: #363b44;
+  --bg-switch-off-hover: #40454f;
 
   --border-base: rgba(243, 238, 223, 0.1);
   --border-strong: rgba(243, 238, 223, 0.18);
   --border-interactive: #cc9a5e;
   --border-error: #e2836a;
   --border-danger: #c25a42;
-  --border-menu-top: #151b11;
+  --border-menu-top: #14171c;
   --border-menu-bot: rgba(243, 238, 223, 0.06);
 
   --fg-base: #f3eedf;
@@ -166,30 +168,30 @@ html.dark {
   --fg-interactive: #cc9a5e;
   --fg-interactive-hover: #dcb07a;
   --fg-error: #e2836a;
-  --fg-on-color: #1c2417;
-  --fg-on-inverted: #1c2417;
+  --fg-on-color: #1b1f25;
+  --fg-on-inverted: #1b1f25;
 
   /* Stesso ottone del chiaro: il testo dei pulsanti principali resta bone anche qui. */
   --button-inverted: #8f5a28;
   --button-inverted-hover: #9c6530;
   --button-inverted-pressed: #7f4f22;
-  --button-neutral: #263021;
-  --button-neutral-hover: #2d3827;
-  --button-neutral-pressed: #343f2d;
-  --button-transparent-hover: #263021;
-  --button-transparent-pressed: #2d3827;
+  --button-neutral: #252a31;
+  --button-neutral-hover: #2c313a;
+  --button-neutral-pressed: #343a44;
+  --button-transparent-hover: #252a31;
+  --button-transparent-pressed: #2c313a;
   --button-danger: #a8402c;
   --button-danger-hover: #b84a34;
   --button-danger-pressed: #93361f;
 
-  --contrast-bg-base: #2a3523;
-  --contrast-bg-base-hover: #323e2a;
-  --contrast-bg-base-pressed: #3a4731;
-  --contrast-bg-subtle: #323e2a;
+  --contrast-bg-base: #292e36;
+  --contrast-bg-base-hover: #313740;
+  --contrast-bg-base-pressed: #3a404a;
+  --contrast-bg-subtle: #313740;
   --contrast-fg-primary: #f3eedf;
   --contrast-fg-secondary: rgba(243, 238, 223, 0.65);
   --contrast-border-base: rgba(243, 238, 223, 0.15);
-  --contrast-border-top: #2a3523;
+  --contrast-border-top: #292e36;
   --contrast-border-bot: rgba(243, 238, 223, 0.1);
 
   --alpha-250: rgba(243, 238, 223, 0.1);
@@ -221,28 +223,28 @@ html.dark {
   --tag-neutral-icon: #9a9787;
   --tag-neutral-text: #c9c4b4;
 
-  --borders-base: 0px -1px 0px 0px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(42, 53, 35, 1), 0px 0px 1px 1.5px rgba(0, 0, 0, 0.24), 0px 2px 2px 0px rgba(0, 0, 0, 0.24);
+  --borders-base: 0px -1px 0px 0px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(41, 46, 54, 1), 0px 0px 1px 1.5px rgba(0, 0, 0, 0.24), 0px 2px 2px 0px rgba(0, 0, 0, 0.24);
   --borders-error: 0px 0px 0px 1px rgba(226, 131, 106, 1), 0px 0px 0px 3px rgba(226, 131, 106, 0.25);
-  --borders-focus: 0px 0px 0px 1px rgba(28, 36, 23, 1), 0px 0px 0px 3px rgba(204, 154, 94, 0.7);
+  --borders-focus: 0px 0px 0px 1px rgba(27, 31, 37, 1), 0px 0px 0px 3px rgba(204, 154, 94, 0.7);
   --borders-interactive-with-active: 0px 0px 0px 1px rgba(204, 154, 94, 0.7), 0px 0px 0px 4px rgba(204, 154, 94, 0.25);
-  --borders-interactive-with-focus: 0px -1px 2px 0px rgba(243, 222, 190, 0.3), 0px 0px 0px 1px rgba(204, 154, 94, 0.7), 0px 0px 0px 2px rgba(28, 36, 23, 1), 0px 0px 0px 4px rgba(204, 154, 94, 0.7);
+  --borders-interactive-with-focus: 0px -1px 2px 0px rgba(243, 222, 190, 0.3), 0px 0px 0px 1px rgba(204, 154, 94, 0.7), 0px 0px 0px 2px rgba(27, 31, 37, 1), 0px 0px 0px 4px rgba(204, 154, 94, 0.7);
   --borders-interactive-with-shadow: 0px -1px 2px 0px rgba(243, 222, 190, 0.3), 0px 0px 0px 1px rgba(204, 154, 94, 0.7);
   --buttons-danger: 0px -1px 0px 0px rgba(255, 255, 255, 0.16), 0px 0px 0px 1px rgba(255, 255, 255, 0.12), 0px 0px 0px 1px rgba(147, 54, 31, 1), 0px 0px 1px 1.5px rgba(0, 0, 0, 0.24), 0px 2px 2px 0px rgba(0, 0, 0, 0.24);
-  --buttons-danger-focus: 0px -1px 0px 0px rgba(255, 255, 255, 0.16), 0px 0px 0px 1px rgba(255, 255, 255, 0.12), 0px 0px 0px 1px rgba(147, 54, 31, 1), 0px 0px 0px 2px rgba(28, 36, 23, 1), 0px 0px 0px 4px rgba(204, 154, 94, 0.7);
+  --buttons-danger-focus: 0px -1px 0px 0px rgba(255, 255, 255, 0.16), 0px 0px 0px 1px rgba(255, 255, 255, 0.12), 0px 0px 0px 1px rgba(147, 54, 31, 1), 0px 0px 0px 2px rgba(27, 31, 37, 1), 0px 0px 0px 4px rgba(204, 154, 94, 0.7);
   --buttons-inverted: 0px -1px 0px 0px rgba(255, 255, 255, 0.12), 0px 0px 0px 1px rgba(255, 255, 255, 0.1), 0px 0px 0px 1px rgba(185, 136, 79, 1), 0px 0px 1px 1.5px rgba(0, 0, 0, 0.24), 0px 2px 2px 0px rgba(0, 0, 0, 0.24);
-  --buttons-inverted-focus: 0px -1px 0px 0px rgba(255, 255, 255, 0.12), 0px 0px 0px 1px rgba(255, 255, 255, 0.12), 0px 0px 0px 1px rgba(185, 136, 79, 1), 0px 0px 0px 2px rgba(28, 36, 23, 1), 0px 0px 0px 4px rgba(204, 154, 94, 0.7);
-  --buttons-neutral: 0px -1px 0px 0px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(42, 53, 35, 1), 0px 0px 1px 1.5px rgba(0, 0, 0, 0.24), 0px 2px 2px 0px rgba(0, 0, 0, 0.24);
-  --buttons-neutral-focus: 0px -1px 0px 0px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(42, 53, 35, 1), 0px 0px 0px 2px rgba(28, 36, 23, 1), 0px 0px 0px 4px rgba(204, 154, 94, 0.7);
+  --buttons-inverted-focus: 0px -1px 0px 0px rgba(255, 255, 255, 0.12), 0px 0px 0px 1px rgba(255, 255, 255, 0.12), 0px 0px 0px 1px rgba(185, 136, 79, 1), 0px 0px 0px 2px rgba(27, 31, 37, 1), 0px 0px 0px 4px rgba(204, 154, 94, 0.7);
+  --buttons-neutral: 0px -1px 0px 0px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(41, 46, 54, 1), 0px 0px 1px 1.5px rgba(0, 0, 0, 0.24), 0px 2px 2px 0px rgba(0, 0, 0, 0.24);
+  --buttons-neutral-focus: 0px -1px 0px 0px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(41, 46, 54, 1), 0px 0px 0px 2px rgba(27, 31, 37, 1), 0px 0px 0px 4px rgba(204, 154, 94, 0.7);
   --details-contrast-on-bg-interactive: 0px 1px 2px 0px rgba(0, 0, 0, 0.4);
   --details-switch-background: 0px 1px 1px 0px rgba(0, 0, 0, 0.1) inset, 0px 2px 4px 0px rgba(0, 0, 0, 0.1) inset, 0px 0px 0px 0.75px rgba(255, 255, 255, 0.12) inset, 0px 0px 8px 0px rgba(0, 0, 0, 0.1) inset;
-  --details-switch-background-focus: 0px 0px 0px 1px rgba(28, 36, 23, 1), 0px 0px 0px 3px rgba(204, 154, 94, 0.7), 0px 1px 1px 0px rgba(0, 0, 0, 0.1) inset, 0px 2px 4px 0px rgba(0, 0, 0, 0.1) inset, 0px 0px 0px 0.75px rgba(255, 255, 255, 0.12) inset, 0px 0px 8px 0px rgba(0, 0, 0, 0.1) inset;
+  --details-switch-background-focus: 0px 0px 0px 1px rgba(27, 31, 37, 1), 0px 0px 0px 3px rgba(204, 154, 94, 0.7), 0px 1px 1px 0px rgba(0, 0, 0, 0.1) inset, 0px 2px 4px 0px rgba(0, 0, 0, 0.1) inset, 0px 0px 0px 0.75px rgba(255, 255, 255, 0.12) inset, 0px 0px 8px 0px rgba(0, 0, 0, 0.1) inset;
   --details-switch-handle: 0px 0px 2px 1px rgba(255, 255, 255, 1) inset, 0px 1px 0px 0px rgba(255, 255, 255, 1) inset, 0px 0px 0px 0.5px rgba(0, 0, 0, 0.16), 0px 5px 4px 0px rgba(0, 0, 0, 0.1), 0px 3px 3px 0px rgba(0, 0, 0, 0.1), 0px 1px 2px 0px rgba(0, 0, 0, 0.1), 0px 0px 1px 0px rgba(0, 0, 0, 0.1);
-  --elevation-card-hover: 0px -1px 0px 0px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(42, 53, 35, 1), 0px 1px 4px 0px rgba(0, 0, 0, 0.48), 0px 2px 8px 0px rgba(0, 0, 0, 0.48);
-  --elevation-card-rest: 0px -1px 0px 0px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(42, 53, 35, 1), 0px 1px 2px 0px rgba(0, 0, 0, 0.32), 0px 2px 4px 0px rgba(0, 0, 0, 0.32);
-  --elevation-code-block: 0px -1px 0px 0px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(42, 53, 35, 1), 0px 1px 2px 0px rgba(0, 0, 0, 0.32), 0px 2px 4px 0px rgba(0, 0, 0, 0.32);
-  --elevation-commandbar: 0px 0px 0px 0.75px rgba(28, 36, 23, 1) inset, 0px 0px 0px 1.25px rgba(255, 255, 255, 0.1) inset, 0px 4px 8px 0px rgba(0, 0, 0, 0.32), 0px 8px 16px 0px rgba(0, 0, 0, 0.32);
+  --elevation-card-hover: 0px -1px 0px 0px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(41, 46, 54, 1), 0px 1px 4px 0px rgba(0, 0, 0, 0.48), 0px 2px 8px 0px rgba(0, 0, 0, 0.48);
+  --elevation-card-rest: 0px -1px 0px 0px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(41, 46, 54, 1), 0px 1px 2px 0px rgba(0, 0, 0, 0.32), 0px 2px 4px 0px rgba(0, 0, 0, 0.32);
+  --elevation-code-block: 0px -1px 0px 0px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 0px 0px 1px rgba(41, 46, 54, 1), 0px 1px 2px 0px rgba(0, 0, 0, 0.32), 0px 2px 4px 0px rgba(0, 0, 0, 0.32);
+  --elevation-commandbar: 0px 0px 0px 0.75px rgba(27, 31, 37, 1) inset, 0px 0px 0px 1.25px rgba(255, 255, 255, 0.1) inset, 0px 4px 8px 0px rgba(0, 0, 0, 0.32), 0px 8px 16px 0px rgba(0, 0, 0, 0.32);
   --elevation-flyout: 0px -1px 0px 0px rgba(255, 255, 255, 0.04), 0px 0px 0px 1px rgba(255, 255, 255, 0.1), 0px 4px 8px 0px rgba(0, 0, 0, 0.32), 0px 8px 16px 0px rgba(0, 0, 0, 0.32);
-  --elevation-modal: 0px 0px 0px 1px rgba(28, 36, 23, 1) inset, 0px 0px 0px 1.5px rgba(255, 255, 255, 0.06) inset, 0px -1px 0px 0px rgba(255, 255, 255, 0.04), 0px 0px 0px 1px rgba(255, 255, 255, 0.1), 0px 4px 8px 0px rgba(0, 0, 0, 0.32), 0px 8px 16px 0px rgba(0, 0, 0, 0.32);
+  --elevation-modal: 0px 0px 0px 1px rgba(27, 31, 37, 1) inset, 0px 0px 0px 1.5px rgba(255, 255, 255, 0.06) inset, 0px -1px 0px 0px rgba(255, 255, 255, 0.04), 0px 0px 0px 1px rgba(255, 255, 255, 0.1), 0px 4px 8px 0px rgba(0, 0, 0, 0.32), 0px 8px 16px 0px rgba(0, 0, 0, 0.32);
   --elevation-tooltip: 0px -1px 0px 0px rgba(255, 255, 255, 0.04), 0px 2px 4px 0px rgba(0, 0, 0, 0.32), 0px 0px 0px 1px rgba(255, 255, 255, 0.1), 0px 4px 8px 0px rgba(0, 0, 0, 0.32);
 }
 

@@ -46,7 +46,8 @@ export async function placeBooking(container: MedusaContainer, input: BookingInp
       sales_channel_id: channel.id,
       ...(customer.email ? { email: customer.email } : {}),
       locale: 'it',
-      items: input.items,
+      // Un prezzo forzato è IVA inclusa, come quelli del listino.
+      items: input.items.map((item) => (item.unit_price === undefined ? item : { ...item, is_tax_inclusive: true })),
       shipping_address: address,
       billing_address: address,
       metadata,
