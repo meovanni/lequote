@@ -5,7 +5,20 @@ import { sdk } from './sdk'
 // Tipi e accesso ai dati delle vendite: ordini dal gestionale, incassi, agenti, area vendita.
 // Le forme ricalcano le risposte di src/api/admin/{backoffice,agents,sell}.
 
-export type Variant = { variantId: string; sku: string; product: string; variant: string; price: number | null; stock: number | null }
+/**
+ * stock: pezzi in tutte le sedi. available: massimo per ordine (la sede più fornita: un ordine prende
+ * ogni prodotto da una sola sede). null = giacenza non gestita, nessun limite.
+ */
+export type Variant = {
+  variantId: string
+  sku: string
+  product: string
+  variant: string
+  price: number | null
+  stock: number | null
+  available: number | null
+  stockByLocation: Record<string, number> | null
+}
 export type DeliveryOption = { id: string; name: string; pickup: boolean; agent: boolean }
 export type Catalog = { variants: Variant[]; delivery_options: DeliveryOption[]; agents?: { id: string; name: string }[] }
 
@@ -61,11 +74,16 @@ export const formatDay = (value: string) => new Date(value).toLocaleDateString('
 const ROOT = ['vendite'] as const
 const periodQuery = (period: Period) => Object.fromEntries(Object.entries(period).filter(([, value]) => value))
 
+// Le giacenze cambiano anche per ordini fatti da altri (sito, agenti): il catalogo si ricarica ogni
+// 30 secondi mentre è in uso e quando si torna sulla scheda. Il controllo vero resta sul server.
+const LIVE_STOCK = { refetchInterval: 30_000, refetchOnWindowFocus: true, staleTime: 0 } as const
+
 export function useBackofficeCatalog(enabled = true) {
   return useQuery({
     queryKey: [...ROOT, 'catalog', 'backoffice'],
     enabled,
     queryFn: () => sdk.client.fetch<Catalog>('/admin/backoffice/catalog'),
+    ...LIVE_STOCK,
   })
 }
 
@@ -100,7 +118,7 @@ export function useAgentDetail(id: string, period: Period) {
 }
 
 export function useSellCatalog() {
-  return useQuery({ queryKey: [...ROOT, 'catalog', 'sell'], queryFn: () => sdk.client.fetch<Catalog>('/admin/sell/catalog') })
+  return useQuery({ queryKey: [...ROOT, 'catalog', 'sell'], queryFn: () => sdk.client.fetch<Catalog>('/admin/sell/catalog'), ...LIVE_STOCK })
 }
 
 export function useSellMe(period: Period) {

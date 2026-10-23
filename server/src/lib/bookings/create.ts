@@ -12,6 +12,7 @@ import { VENDITE_MODULE } from '../../modules/vendite'
 import { backofficeSecret, signBackofficeCart } from '../backoffice-signature'
 import { BACKOFFICE_PROVIDER_ID } from '../checkout-rules'
 import { deliveryOptions, SALES_CHANNEL } from './catalog'
+import { assertStock, explainInventoryError } from './stock'
 import type { Actor, BookingInput } from './types'
 
 /**
@@ -23,6 +24,11 @@ export async function placeBooking(container: MedusaContainer, input: BookingInp
   const [region] = await container.resolve(Modules.REGION).listRegions({}, { take: 1 })
   const [channel] = await container.resolve(Modules.SALES_CHANNEL).listSalesChannels({ name: SALES_CHANNEL })
   const { customer } = input
+  // Consegna non indicata (prenotazione veloce di un agente): la prima disponibile, cioè un ritiro in sede.
+  const shippingOptionId = input.shipping_option_id ?? (await deliveryOptions(container))[0]?.id
+  if (!shippingOptionId) throw new MedusaError(MedusaError.Types.NOT_ALLOWED, 'Nessuna consegna disponibile: attiva almeno un ritiro.')
+  // Prima di creare il carrello: si ordina solo quello che si può riservare.
+  await assertStock(container, input.items)
   const address = {
     first_name: customer.first_name ?? undefined,
     last_name: customer.last_name ?? undefined,
@@ -56,13 +62,14 @@ export async function placeBooking(container: MedusaContainer, input: BookingInp
   await updateCartWorkflow(container).run({
     input: { id: cart.id, metadata: { ...metadata, backoffice_signature: signBackofficeCart(cart.id, backofficeSecret()) } },
   })
-  // Consegna non indicata (prenotazione veloce di un agente): la prima disponibile, cioè un ritiro in sede.
-  const shippingOptionId = input.shipping_option_id ?? (await deliveryOptions(container))[0]?.id
-  if (!shippingOptionId) throw new MedusaError(MedusaError.Types.NOT_ALLOWED, 'Nessuna consegna disponibile: attiva almeno un ritiro.')
   await addShippingMethodToCartWorkflow(container).run({ input: { cart_id: cart.id, options: [{ id: shippingOptionId }] } })
   const { result: collection } = await createPaymentCollectionForCartWorkflow(container).run({ input: { cart_id: cart.id } })
   await createPaymentSessionsWorkflow(container).run({ input: { payment_collection_id: collection.id, provider_id: BACKOFFICE_PROVIDER_ID } })
-  const { result } = await completeCartWorkflow(container).run({ input: { id: cart.id } })
+  const { result } = await completeCartWorkflow(container)
+    .run({ input: { id: cart.id } })
+    .catch((error: unknown) => {
+      throw explainInventoryError(error)
+    })
   const orderId = result.id
 
   // La firma serve solo a chiudere il carrello: sull'ordine non resta (una chiave vuota si cancella).

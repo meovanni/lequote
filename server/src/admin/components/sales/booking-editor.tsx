@@ -2,6 +2,7 @@ import { Button, Heading, Input, Select, StatusBadge, Text, Textarea } from '@me
 import { useEffect, useState } from 'react'
 import { FormField } from '../form-field'
 import { PaymentForm, PaymentsSummary } from './payments'
+import { maxFor, stockLabel } from './stock-label'
 import { formatDay, formatEuro, useSalesAction, useSellBooking, type Catalog } from '../../lib/sales-api'
 
 /** Una prenotazione dell'agente (nel pannello dello storico): quantità e note modificabili, incassi registrabili. */
@@ -36,7 +37,21 @@ export function BookingEditor({ bookingId, catalog, onDirtyChange }: BookingEdit
     const variant = catalog.variants.find((item) => item.variantId === variantId)
     return variant ? `${variant.product}, ${variant.variant}` : variantId
   }
-  const addable = catalog.variants.filter((variant) => variant.price !== null && !(variant.variantId in current))
+  // Pezzi che la prenotazione tiene già: restano suoi, il massimo è disponibile + già tenuto.
+  const held = (variantId: string) => booking.lines.filter((line) => line.variantId === variantId).reduce((sum, line) => sum + line.quantity, 0)
+  const variantOf = (variantId: string) => catalog.variants.find((item) => item.variantId === variantId)
+  const maxOf = (variantId: string) => {
+    const variant = variantOf(variantId)
+    return variant ? maxFor(variant, held(variantId)) : null
+  }
+  const overLimit = (variantId: string) => {
+    const max = maxOf(variantId)
+    return max !== null && Number(current[variantId] || 0) > max
+  }
+  const anyOver = Object.keys(current).some(overLimit)
+  const addable = catalog.variants.filter(
+    (variant) => variant.price !== null && !(variant.variantId in current) && (variant.available === null || variant.available > 0),
+  )
 
   const save = () =>
     action.mutate(
@@ -74,20 +89,33 @@ export function BookingEditor({ bookingId, catalog, onDirtyChange }: BookingEdit
       </div>
 
       <section className="flex flex-col gap-2">
-        {Object.keys(current).map((variantId) => (
-          <div key={variantId} className="grid grid-cols-[1fr_auto] items-center gap-4">
-            <Text size="small">{label(variantId)}</Text>
-            <Input
-              aria-label={`Quantità di ${label(variantId)}`}
-              type="number"
-              min={0}
-              className="w-24"
-              disabled={!open}
-              value={current[variantId]}
-              onChange={(event) => setQuantities({ ...current, [variantId]: event.target.value })}
-            />
-          </div>
-        ))}
+        {Object.keys(current).map((variantId) => {
+          const variant = variantOf(variantId)
+          const max = maxOf(variantId)
+          return (
+            <div key={variantId} className="grid grid-cols-[1fr_auto] items-center gap-4">
+              <div>
+                <Text size="small">{label(variantId)}</Text>
+                {open && variant && stockLabel(variant, held(variantId)) && (
+                  <Text size="xsmall" className={overLimit(variantId) ? 'text-ui-fg-error' : 'text-ui-fg-subtle'}>
+                    {overLimit(variantId) ? `Disponibili solo ${max}.` : `Fino a ${stockLabel(variant, held(variantId)).replace('disponibili ', '')}`}
+                  </Text>
+                )}
+              </div>
+              <Input
+                aria-label={`Quantità di ${label(variantId)}`}
+                aria-invalid={overLimit(variantId)}
+                type="number"
+                min={0}
+                max={max ?? undefined}
+                className="w-24"
+                disabled={!open}
+                value={current[variantId]}
+                onChange={(event) => setQuantities({ ...current, [variantId]: event.target.value })}
+              />
+            </div>
+          )
+        })}
         {open && addable.length > 0 && (
           <Select
             value={toAdd}
@@ -102,7 +130,7 @@ export function BookingEditor({ bookingId, catalog, onDirtyChange }: BookingEdit
             <Select.Content>
               {addable.map((variant) => (
                 <Select.Item key={variant.variantId} value={variant.variantId}>
-                  {variant.product}, {variant.variant} ({formatEuro(variant.price ?? 0)})
+                  {variant.product}, {variant.variant} ({formatEuro(variant.price ?? 0)}{stockLabel(variant) ? `, ${stockLabel(variant)}` : ''})
                 </Select.Item>
               ))}
             </Select.Content>
@@ -113,7 +141,7 @@ export function BookingEditor({ bookingId, catalog, onDirtyChange }: BookingEdit
         </FormField>
         {open && (
           <div className="flex justify-end">
-            <Button size="small" variant="secondary" isLoading={action.isPending} disabled={quantities === null && notes === null} onClick={save}>
+            <Button size="small" variant="secondary" isLoading={action.isPending} disabled={(quantities === null && notes === null) || anyOver} onClick={save}>
               Salva modifiche
             </Button>
           </div>

@@ -2,6 +2,8 @@ import type { MedusaContainer } from '@medusajs/framework/types'
 import { ContainerRegistrationKeys, getVariantAvailability, Modules, QueryContext } from '@medusajs/framework/utils'
 import { isAgentDeliveryCode } from '../agent-delivery'
 import { isPickupOptionCode } from '../checkout-rules'
+import { availableAt, orderableQuantity } from './stock-rules'
+import { stockVariants } from './stock'
 
 /** Canale di vendita del seed: prenotazioni e ordini del sito condividono catalogo e giacenze. */
 export const SALES_CHANNEL = 'Sito web'
@@ -13,8 +15,15 @@ export type BookableVariant = {
   variant: string
   /** Prezzo IVA inclusa in euro; null se il listino della regione non lo prevede. */
   price: number | null
-  /** Pezzi disponibili nel canale del sito; null se la giacenza non è gestita. */
+  /** Pezzi disponibili nel canale del sito, tutte le sedi insieme; null se la giacenza non è gestita. */
   stock: number | null
+  /**
+   * Massimo per ordine: un ordine prende ogni prodotto da una sola sede (lib/bookings/stock-rules),
+   * quindi è la disponibilità della sede più fornita. null se la giacenza non è gestita.
+   */
+  available: number | null
+  /** Pezzi disponibili per sede, per id della sede; null se la giacenza non è gestita. */
+  stockByLocation: Record<string, number> | null
 }
 
 export type DeliveryOption = { id: string; name: string; pickup: boolean; agent: boolean }
@@ -43,7 +52,21 @@ export async function bookableVariants(container: MedusaContainer): Promise<Book
     calculated_price: { calculated_amount: number | null } | null
   }[]).filter((variant) => variant.product?.status === 'published')
 
-  const availability = await getVariantAvailability(query, { variant_ids: variants.map((variant) => variant.id), sales_channel_id: channel.id })
+  const variantIds = variants.map((variant) => variant.id)
+  const [availability, stock] = await Promise.all([
+    getVariantAvailability(query, { variant_ids: variantIds, sales_channel_id: channel.id }),
+    stockVariants(container, variantIds),
+  ])
+  const byLocation = (variantId: string): Record<string, number> | null => {
+    const variant = stock.get(variantId)
+    if (!variant || !variant.manage_inventory) return null
+    const locationIds = [...new Set(variant.inventory_items.flatMap((item) => item.levels.map((level) => level.location_id)))]
+    return Object.fromEntries(locationIds.map((locationId) => [locationId, availableAt(variant, locationId) ?? 0]))
+  }
+  const orderable = (variantId: string) => {
+    const variant = stock.get(variantId)
+    return variant ? orderableQuantity(variant) : null
+  }
   return variants
     .map((variant) => ({
       variantId: variant.id,
@@ -52,6 +75,8 @@ export async function bookableVariants(container: MedusaContainer): Promise<Book
       variant: variant.title,
       price: variant.calculated_price?.calculated_amount ?? null,
       stock: variant.manage_inventory ? (availability[variant.id]?.availability ?? 0) : null,
+      available: variant.manage_inventory ? (orderable(variant.id) ?? 0) : null,
+      stockByLocation: byLocation(variant.id),
     }))
     .sort((a, b) => a.product.localeCompare(b.product) || a.variant.localeCompare(b.variant))
 }
@@ -66,6 +91,11 @@ export async function deliveryOptions(container: MedusaContainer): Promise<Deliv
   return (data as unknown as { id: string; name: string; type: { code: string } | null; rules: { attribute: string; value: string }[] }[])
     .filter((option) => !option.rules.some((rule) => rule.attribute === 'is_return' && rule.value === 'true'))
     .filter((option) => !option.rules.some((rule) => rule.attribute === 'enabled_in_store' && rule.value === 'false'))
-    .map((option) => ({ id: option.id, name: option.name, pickup: isPickupOptionCode(option.type?.code), agent: isAgentDeliveryCode(option.type?.code) }))
+    .map((option) => ({
+      id: option.id,
+      name: option.name,
+      pickup: isPickupOptionCode(option.type?.code),
+      agent: isAgentDeliveryCode(option.type?.code),
+    }))
     .sort((a, b) => Number(b.pickup) - Number(a.pickup) || Number(b.agent) - Number(a.agent) || a.name.localeCompare(b.name))
 }

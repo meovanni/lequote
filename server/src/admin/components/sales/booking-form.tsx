@@ -58,8 +58,9 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
   const estimate = lines.reduce((sum, line) => sum + (line.variant.price ?? 0) * line.quantity, 0)
   const business = kind === 'azienda'
   const named = Boolean(customer.first_name.trim() || customer.last_name.trim())
+  const overStock = lines.some(({ variant, quantity }) => variant.available !== null && quantity > variant.available)
   const missing = [!named && 'il nome o il cognome del cliente', lines.length === 0 && 'almeno un prodotto'].filter(Boolean)
-  const ready = missing.length === 0
+  const ready = missing.length === 0 && !overStock
   const byAgent = catalog.delivery_options.some((option) => option.id === deliveryId && option.agent)
   const dirty =
     kind !== 'privato' ||
@@ -246,7 +247,11 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
             {submitLabel}
           </Button>
           <Text size="xsmall" className="text-ui-fg-muted" aria-live="polite">
-            {ready ? 'Il resto dei dati si può aggiungere dopo.' : `Manca ${missing.join(' e ')}.`}
+            {overStock
+              ? 'Alcune quantità superano la disponibilità: correggile per continuare.'
+              : ready
+                ? 'Il resto dei dati si può aggiungere dopo.'
+                : `Manca ${missing.join(' e ')}.`}
           </Text>
         </div>
       </aside>

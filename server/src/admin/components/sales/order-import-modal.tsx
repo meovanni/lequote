@@ -1,7 +1,7 @@
 import { Button, FocusModal, Heading, Input, Select, Text, toast } from '@medusajs/ui'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useState, type ChangeEvent } from 'react'
-import { planImport } from '../../../lib/order-import'
+import { planImport, type ImportRow } from '../../../lib/order-import'
 import { FormField } from '../form-field'
 import { useGuardedOpen } from '../use-guarded-open'
 import { OrderImportPreview } from './order-import-preview'
@@ -11,6 +11,25 @@ import { formatEuro, useBackofficeCatalog, type Catalog } from '../../lib/sales-
 const NONE = 'nessuno'
 
 type Step = { kind: 'file' } | { kind: 'preview'; sheet: unknown[][]; fileName: string } | { kind: 'sending'; done: number; total: number } | { kind: 'done'; outcomes: ImportOutcome[]; names: Map<number, string> }
+
+/**
+ * Simula le riservazioni come Medusa (ogni ordine nella prima sede che ne ha abbastanza) e avvisa
+ * sulle righe che probabilmente non troveranno disponibilità. Il controllo vero è sul server.
+ */
+function withStockWarnings(rows: ImportRow[], stockByLocation: Record<string, number> | null): ImportRow[] {
+  if (!stockByLocation) return rows
+  const sites = Object.values(stockByLocation)
+  return rows.map((row) => {
+    if (row.error) return row
+    const site = sites.findIndex((available) => available >= row.tanks)
+    if (site >= 0) {
+      sites[site] -= row.tanks
+      return row
+    }
+    const best = Math.max(0, ...sites)
+    return { ...row, warnings: [...row.warnings, `Probabilmente non disponibile: restano al massimo ${best} taniche per ordine.`] }
+  })
+}
 
 /** Formato della tanica, se il catalogo ce l'ha: la latta d'olio da 5 L. */
 const defaultVariant = (catalog: Catalog) =>
@@ -72,10 +91,11 @@ function ImportFlow({ catalog, onClose, onStatus }: ImportFlowProps) {
   const [agentId, setAgentId] = useState(NONE)
 
   const variant = catalog.variants.find((item) => item.variantId === variantId)
-  const plan = useMemo(
-    () => (step.kind === 'preview' ? planImport(step.sheet, { litersPerTank: Number(litersPerTank) || 5, unitPrice: variant?.price ?? null }) : null),
-    [step, litersPerTank, variant],
-  )
+  const plan = useMemo(() => {
+    if (step.kind !== 'preview') return null
+    const planned = planImport(step.sheet, { litersPerTank: Number(litersPerTank) || 5, unitPrice: variant?.price ?? null })
+    return { ...planned, rows: withStockWarnings(planned.rows, variant?.stockByLocation ?? null) }
+  }, [step, litersPerTank, variant])
   const valid = plan?.rows.filter((row) => !row.error) ?? []
 
   // Con un file in anteprima si chiede conferma prima di uscire; durante l'invio non si esce.
