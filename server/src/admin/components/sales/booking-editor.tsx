@@ -1,17 +1,27 @@
 import { Button, Heading, Input, Select, StatusBadge, Text, Textarea } from '@medusajs/ui'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormField } from '../form-field'
 import { PaymentForm, PaymentsSummary } from './payments'
 import { formatDay, formatEuro, useSalesAction, useSellBooking, type Catalog } from '../../lib/sales-api'
 
 /** Una prenotazione dell'agente (nel pannello dello storico): quantità e note modificabili, incassi registrabili. */
-export function BookingEditor({ bookingId, catalog }: { bookingId: string; catalog: Catalog }) {
+type BookingEditorProps = {
+  bookingId: string
+  catalog: Catalog
+  /** Avvisa quando ci sono modifiche o un incasso non ancora salvati. */
+  onDirtyChange?: (dirty: boolean) => void
+}
+
+export function BookingEditor({ bookingId, catalog, onDirtyChange }: BookingEditorProps) {
   const detail = useSellBooking(bookingId)
   const action = useSalesAction()
   const [quantities, setQuantities] = useState<Record<string, string> | null>(null)
   const [notes, setNotes] = useState<string | null>(null)
   // Tendina senza valore: mostra il segnaposto e torna vuota dopo ogni aggiunta.
   const [toAdd, setToAdd] = useState<string | undefined>(undefined)
+  const [paymentDirty, setPaymentDirty] = useState(false)
+  const dirty = quantities !== null || notes !== null || paymentDirty
+  useEffect(() => onDirtyChange?.(dirty), [dirty, onDirtyChange])
 
   if (detail.isLoading) return <Text className="text-ui-fg-subtle">Caricamento…</Text>
   if (!detail.data) return <Text className="text-ui-fg-error">Prenotazione non trovata.</Text>
@@ -116,6 +126,7 @@ export function BookingEditor({ bookingId, catalog }: { bookingId: string; catal
         {open && (
           <PaymentForm
             due={payments.due}
+            onDirtyChange={setPaymentDirty}
             submitting={action.isPending}
             onSubmit={(body) => action.mutate({ path: `/admin/sell/bookings/${booking.id}/payments`, body, success: 'Incasso registrato.' })}
           />

@@ -1,6 +1,6 @@
 import { ChevronDownMini } from '@medusajs/icons'
 import { Button, clx, Heading, Input, Label, RadioGroup, Select, Text, Textarea } from '@medusajs/ui'
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { FormField, orNull } from '../form-field'
 import { ProductPicker } from './product-picker'
 import { formatEuro, type Catalog } from '../../lib/sales-api'
@@ -33,6 +33,8 @@ type BookingFormProps = {
   submitting: boolean
   submitLabel: string
   onSubmit: (body: Record<string, unknown>) => void
+  /** Avvisa quando ci sono dati inseriti e non ancora inviati (per chiedere conferma prima di uscire). */
+  onDirtyChange?: (dirty: boolean) => void
 }
 
 /**
@@ -40,7 +42,7 @@ type BookingFormProps = {
  * Bastano il nome o il cognome del cliente e un prodotto: il resto è facoltativo e sta in
  * "Altri dati". A destra il riepilogo con il totale resta in vista mentre si scelgono i prodotti.
  */
-export function BookingForm({ catalog, showAgent = false, submitting, submitLabel, onSubmit }: BookingFormProps) {
+export function BookingForm({ catalog, showAgent = false, submitting, submitLabel, onSubmit, onDirtyChange }: BookingFormProps) {
   const [kind, setKind] = useState<'privato' | 'azienda'>('privato')
   const [customer, setCustomer] = useState<Customer>(EMPTY)
   const [moreData, setMoreData] = useState(false)
@@ -59,6 +61,14 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
   const missing = [!named && 'il nome o il cognome del cliente', lines.length === 0 && 'almeno un prodotto'].filter(Boolean)
   const ready = missing.length === 0
   const byAgent = catalog.delivery_options.some((option) => option.id === deliveryId && option.agent)
+  const dirty =
+    kind !== 'privato' ||
+    Object.values(customer).some((value) => value.trim() !== '') ||
+    lines.length > 0 ||
+    deliveryId !== NONE ||
+    agentId !== NONE ||
+    notes.trim() !== ''
+  useEffect(() => onDirtyChange?.(dirty), [dirty, onDirtyChange])
 
   // Con la consegna a cura dell'agente serve l'indirizzo del cliente: si aprono gli altri dati.
   const chooseDelivery = (id: string) => {

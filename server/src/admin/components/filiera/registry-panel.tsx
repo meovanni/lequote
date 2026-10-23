@@ -2,6 +2,7 @@ import { Button, Drawer, IconButton, Input, Table, Text, usePrompt } from '@medu
 import { Trash } from '@medusajs/icons'
 import { useState, type FormEvent } from 'react'
 import { FormField, orNull } from '../form-field'
+import { useGuardedOpen } from '../use-guarded-open'
 import { useFilieraAction, useRegistry, type RegistryItem, type RegistryKind } from '../../lib/filiera-api'
 
 type Field = {
@@ -124,28 +125,28 @@ export function RegistryPanel({ kind }: { kind: PlaceKind }) {
 export function RegistryDrawer({ kind }: { kind: PlaceKind }) {
   const action = useFilieraAction()
   const fields = REGISTRY_FIELDS[kind]
-  const [open, setOpen] = useState(false)
   const [values, setValues] = useState<Record<string, string>>({})
+  const { open, onOpenChange, close, contentProps } = useGuardedOpen({
+    dirty: Object.values(values).some((value) => value.trim() !== ''),
+    onDiscard: () => setValues({}),
+  })
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
     action.mutate(
       { path: `/admin/filiera/registries/${kind}`, body: toPayload(fields, values), success: 'Aggiunto in anagrafica.' },
       {
-        onSuccess: () => {
-          setValues({})
-          setOpen(false)
-        },
+        onSuccess: close,
       },
     )
   }
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <Drawer.Trigger asChild>
         <Button size="small">{NEW_LABEL[kind]}</Button>
       </Drawer.Trigger>
-      <Drawer.Content>
+      <Drawer.Content {...contentProps}>
         <form onSubmit={submit} className="flex h-full flex-col">
           <Drawer.Header>
             <Drawer.Title>{NEW_LABEL[kind]}</Drawer.Title>

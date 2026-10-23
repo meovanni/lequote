@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { BookingForm } from '../components/sales/booking-form'
 import { OrderImportModal } from '../components/sales/order-import-modal'
+import { useGuardedOpen } from '../components/use-guarded-open'
 import { useBackofficeCatalog, useSalesAction } from '../lib/sales-api'
 
 /**
@@ -13,7 +14,8 @@ import { useBackofficeCatalog, useSalesAction } from '../lib/sales-api'
  */
 const NewOrderWidget = () => {
   const { pathname } = useLocation()
-  const [open, setOpen] = useState(false)
+  const [dirty, setDirty] = useState(false)
+  const { open, onOpenChange, close, contentProps } = useGuardedOpen({ dirty, onDiscard: () => setDirty(false) })
   const navigate = useNavigate()
   const catalog = useBackofficeCatalog(open)
   const action = useSalesAction()
@@ -25,7 +27,7 @@ const NewOrderWidget = () => {
       { path: '/admin/backoffice/orders', body, success: 'Ordine inserito.' },
       {
         onSuccess: (data) => {
-          setOpen(false)
+          close()
           navigate(`/orders/${data.order_id as string}`)
         },
       },
@@ -34,11 +36,11 @@ const NewOrderWidget = () => {
   return (
     <div className="flex items-center gap-2">
       <OrderImportModal />
-      <FocusModal open={open} onOpenChange={setOpen}>
+      <FocusModal open={open} onOpenChange={onOpenChange}>
         <FocusModal.Trigger asChild>
           <Button size="small">Nuovo ordine</Button>
         </FocusModal.Trigger>
-        <FocusModal.Content>
+        <FocusModal.Content {...contentProps}>
           <FocusModal.Header />
           <FocusModal.Body className="flex justify-center overflow-y-auto px-6 py-8">
             <div className="flex w-full max-w-5xl flex-col gap-6">
@@ -50,7 +52,7 @@ const NewOrderWidget = () => {
               </div>
               {catalog.isLoading && <div className="h-96 animate-pulse rounded-lg bg-ui-bg-component" aria-label="Caricamento del catalogo" />}
               {catalog.isError && <Text className="text-ui-fg-error">Catalogo non disponibile.</Text>}
-              {catalog.data && <BookingForm catalog={catalog.data} showAgent submitting={action.isPending} submitLabel="Inserisci ordine" onSubmit={submit} />}
+              {catalog.data && <BookingForm catalog={catalog.data} showAgent submitting={action.isPending} submitLabel="Inserisci ordine" onSubmit={submit} onDirtyChange={setDirty} />}
             </div>
           </FocusModal.Body>
         </FocusModal.Content>

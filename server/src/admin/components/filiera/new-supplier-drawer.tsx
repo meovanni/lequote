@@ -1,6 +1,7 @@
 import { Button, Checkbox, Drawer, Input, Label, Text } from '@medusajs/ui'
 import { useState, type FormEvent } from 'react'
 import { FormField, orNull } from '../form-field'
+import { useGuardedOpen } from '../use-guarded-open'
 import { useFilieraAction, useSupplierTypes } from '../../lib/filiera-api'
 
 const FIELDS: { key: string; label: string; hint?: string; internal?: boolean }[] = [
@@ -16,11 +17,17 @@ const FIELDS: { key: string; label: string; hint?: string; internal?: boolean }[
 
 /** Nuovo fornitore con le sue tipologie: servono nome e comune, il resto si completa quando c'è. */
 export function NewSupplierDrawer() {
-  const [open, setOpen] = useState(false)
   const types = useSupplierTypes()
   const action = useFilieraAction()
   const [values, setValues] = useState<Record<string, string>>({})
   const [typeIds, setTypeIds] = useState<string[]>([])
+  const { open, onOpenChange, close, contentProps } = useGuardedOpen({
+    dirty: Object.values(values).some((value) => value.trim() !== '') || typeIds.length > 0,
+    onDiscard: () => {
+      setValues({})
+      setTypeIds([])
+    },
+  })
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
@@ -30,11 +37,7 @@ export function NewSupplierDrawer() {
     action.mutate(
       { path: '/admin/filiera/registries/suppliers', body: { ...body, type_ids: typeIds }, success: 'Fornitore aggiunto.' },
       {
-        onSuccess: () => {
-          setValues({})
-          setTypeIds([])
-          setOpen(false)
-        },
+        onSuccess: close,
       },
     )
   }
@@ -43,11 +46,11 @@ export function NewSupplierDrawer() {
     setTypeIds((current) => (checked ? [...current, id] : current.filter((value) => value !== id)))
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <Drawer.Trigger asChild>
         <Button size="small">Nuovo fornitore</Button>
       </Drawer.Trigger>
-      <Drawer.Content>
+      <Drawer.Content {...contentProps}>
         <form onSubmit={submit} className="flex h-full flex-col">
           <Drawer.Header>
             <Drawer.Title>Nuovo fornitore</Drawer.Title>

@@ -1,8 +1,9 @@
 import { Button, FocusModal, Heading, Input, Select, Text, toast } from '@medusajs/ui'
 import { useQueryClient } from '@tanstack/react-query'
-import { useMemo, useState, type ChangeEvent } from 'react'
+import { useEffect, useMemo, useState, type ChangeEvent } from 'react'
 import { planImport } from '../../../lib/order-import'
 import { FormField } from '../form-field'
+import { useGuardedOpen } from '../use-guarded-open'
 import { OrderImportPreview } from './order-import-preview'
 import { readFirstSheet, sendImport, type ImportOutcome } from '../../lib/order-import-api'
 import { formatEuro, useBackofficeCatalog, type Catalog } from '../../lib/sales-api'
@@ -20,17 +21,22 @@ const defaultVariant = (catalog: Catalog) =>
  * facoltativo). Prima l'anteprima con avvisi ed errori, poi l'invio a gruppi e il riepilogo.
  */
 export function OrderImportModal() {
-  const [open, setOpen] = useState(false)
+  const [status, setStatus] = useState<FlowStatus>(IDLE)
+  const { open, onOpenChange, close, contentProps } = useGuardedOpen({
+    dirty: status.dirty,
+    busy: status.busy ? 'Importazione in corso: attendi la fine.' : null,
+    onDiscard: () => setStatus(IDLE),
+  })
   const catalog = useBackofficeCatalog(open)
 
   return (
-    <FocusModal open={open} onOpenChange={setOpen}>
+    <FocusModal open={open} onOpenChange={onOpenChange}>
       <FocusModal.Trigger asChild>
         <Button size="small" variant="secondary">
           Importa da Excel
         </Button>
       </FocusModal.Trigger>
-      <FocusModal.Content>
+      <FocusModal.Content {...contentProps}>
         <FocusModal.Header />
         <FocusModal.Body className="flex justify-center overflow-y-auto px-6 py-8">
           <div className="flex w-full max-w-5xl flex-col gap-6">
@@ -43,7 +49,7 @@ export function OrderImportModal() {
             </div>
             {catalog.isLoading && <div className="h-48 animate-pulse rounded-lg bg-ui-bg-component" aria-label="Caricamento del catalogo" />}
             {catalog.isError && <Text className="text-ui-fg-error">Catalogo non disponibile.</Text>}
-            {catalog.data && <ImportFlow key={String(open)} catalog={catalog.data} onClose={() => setOpen(false)} />}
+            {catalog.data && <ImportFlow key={String(open)} catalog={catalog.data} onClose={close} onStatus={setStatus} />}
           </div>
         </FocusModal.Body>
       </FocusModal.Content>
@@ -51,7 +57,12 @@ export function OrderImportModal() {
   )
 }
 
-function ImportFlow({ catalog, onClose }: { catalog: Catalog; onClose: () => void }) {
+type FlowStatus = { dirty: boolean; busy: boolean }
+const IDLE: FlowStatus = { dirty: false, busy: false }
+
+type ImportFlowProps = { catalog: Catalog; onClose: () => void; onStatus: (status: FlowStatus) => void }
+
+function ImportFlow({ catalog, onClose, onStatus }: ImportFlowProps) {
   const queryClient = useQueryClient()
   const [step, setStep] = useState<Step>({ kind: 'file' })
   const [readError, setReadError] = useState<string | null>(null)
@@ -66,6 +77,11 @@ function ImportFlow({ catalog, onClose }: { catalog: Catalog; onClose: () => voi
     [step, litersPerTank, variant],
   )
   const valid = plan?.rows.filter((row) => !row.error) ?? []
+
+  // Con un file in anteprima si chiede conferma prima di uscire; durante l'invio non si esce.
+  const dirty = step.kind === 'preview'
+  const busy = step.kind === 'sending'
+  useEffect(() => onStatus({ dirty, busy }), [dirty, busy, onStatus])
 
   const choose = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]

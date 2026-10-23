@@ -1,6 +1,7 @@
 import { Button, Drawer, Input, Select, Text } from '@medusajs/ui'
 import { useState, type FormEvent } from 'react'
 import { FormField } from '../form-field'
+import { useGuardedOpen } from '../use-guarded-open'
 import { useCampaigns, useFilieraAction, type Lot, type ProductLine } from '../../lib/filiera-api'
 
 type NewLotDrawerProps = { onCreated: (id: string) => void }
@@ -11,11 +12,19 @@ const DEFAULT_NAME: Record<ProductLine, string> = {
 }
 
 export function NewLotDrawer({ onCreated }: NewLotDrawerProps) {
-  const [open, setOpen] = useState(false)
   const [line, setLine] = useState<ProductLine>('olio')
   const [code, setCode] = useState('')
   const [name, setName] = useState(DEFAULT_NAME.olio)
   const [campaignId, setCampaignId] = useState('')
+  const { open, onOpenChange, close, contentProps } = useGuardedOpen({
+    dirty: line !== 'olio' || code.trim() !== '' || name !== DEFAULT_NAME.olio || campaignId !== '',
+    onDiscard: () => {
+      setLine('olio')
+      setCode('')
+      setName(DEFAULT_NAME.olio)
+      setCampaignId('')
+    },
+  })
   const campaigns = useCampaigns(line)
   const action = useFilieraAction()
 
@@ -36,8 +45,7 @@ export function NewLotDrawer({ onCreated }: NewLotDrawerProps) {
       },
       {
         onSuccess: (data) => {
-          setOpen(false)
-          setCode('')
+          close()
           onCreated((data.lot as Lot).id)
         },
       },
@@ -47,11 +55,11 @@ export function NewLotDrawer({ onCreated }: NewLotDrawerProps) {
   const noCampaigns = campaigns.data && campaigns.data.campaigns.length === 0
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <Drawer.Trigger asChild>
         <Button size="small">Nuovo lotto</Button>
       </Drawer.Trigger>
-      <Drawer.Content>
+      <Drawer.Content {...contentProps}>
         <form onSubmit={submit} className="flex h-full flex-col">
           <Drawer.Header>
             <Drawer.Title>Nuovo lotto</Drawer.Title>

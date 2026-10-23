@@ -1,5 +1,5 @@
 import { Button, clx, Input, Select, Table, Text } from '@medusajs/ui'
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { FormField, orNull } from '../form-field'
 import { formatDay, formatEuro, PAYMENT_METHOD_LABEL, type PaymentMethod, type PaymentState } from '../../lib/sales-api'
 
@@ -53,11 +53,21 @@ function Figure({ label, value, strong = false }: { label: string; value: string
 }
 
 /** Nuovo incasso: acconto o saldo, con il residuo proposto come importo. */
-export function PaymentForm({ due, submitting, onSubmit }: { due: number; submitting: boolean; onSubmit: (body: Record<string, unknown>) => void }) {
+type PaymentFormProps = {
+  due: number
+  submitting: boolean
+  onSubmit: (body: Record<string, unknown>) => void
+  /** Avvisa quando c'è un incasso scritto e non ancora registrato. */
+  onDirtyChange?: (dirty: boolean) => void
+}
+
+export function PaymentForm({ due, submitting, onSubmit, onDirtyChange }: PaymentFormProps) {
   const [amount, setAmount] = useState('')
   const [method, setMethod] = useState<PaymentMethod>('contanti')
   const [day, setDay] = useState(today())
   const [notes, setNotes] = useState('')
+  const dirty = amount.trim() !== '' || notes.trim() !== ''
+  useEffect(() => onDirtyChange?.(dirty), [dirty, onDirtyChange])
 
   if (due <= 0) {
     return (

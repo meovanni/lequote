@@ -1,14 +1,18 @@
 import { Button, Drawer, Input, Text, Textarea } from '@medusajs/ui'
 import { useState, type FormEvent } from 'react'
 import { FormField, orNull } from '../form-field'
+import { useGuardedOpen } from '../use-guarded-open'
 import { useSalesAction } from '../../lib/sales-api'
 
 const EMPTY = { name: '', phone: '', email: '', notes: '' }
 
 /** Nuovo agente: basta il nome. L'account per l'area vendita si crea poi dalla sua scheda. */
 export function NewAgentDrawer() {
-  const [open, setOpen] = useState(false)
   const [values, setValues] = useState(EMPTY)
+  const { open, onOpenChange, close, contentProps } = useGuardedOpen({
+    dirty: Object.values(values).some((value) => value.trim() !== ''),
+    onDiscard: () => setValues(EMPTY),
+  })
   const action = useSalesAction()
   const set = (key: keyof typeof EMPTY) => (value: string) => setValues((current) => ({ ...current, [key]: value }))
 
@@ -21,20 +25,17 @@ export function NewAgentDrawer() {
         success: 'Agente aggiunto.',
       },
       {
-        onSuccess: () => {
-          setValues(EMPTY)
-          setOpen(false)
-        },
+        onSuccess: close,
       },
     )
   }
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <Drawer.Trigger asChild>
         <Button size="small">Nuovo agente</Button>
       </Drawer.Trigger>
-      <Drawer.Content>
+      <Drawer.Content {...contentProps}>
         <form onSubmit={submit} className="flex h-full flex-col">
           <Drawer.Header>
             <Drawer.Title>Nuovo agente</Drawer.Title>
