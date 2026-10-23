@@ -2,12 +2,16 @@ import { defineWidgetConfig } from '@medusajs/admin-sdk'
 import type { DetailWidgetProps, HttpTypes } from '@medusajs/framework/types'
 import { Container, Heading, Text } from '@medusajs/ui'
 import { PaymentForm, PaymentsSummary } from '../components/sales/payments'
+import { useState } from 'react'
 import { useOrderSales, useSalesAction } from '../lib/sales-api'
+import { useUnsavedChanges } from '../lib/unsaved-changes'
 
 /** Nella scheda ordine: chi l'ha inserito, l'agente, gli incassi registrati e il residuo. */
 const OrderSalesWidget = ({ data: order }: DetailWidgetProps<HttpTypes.AdminOrder>) => {
   const sales = useOrderSales(order.id)
   const action = useSalesAction()
+  const [paymentDirty, setPaymentDirty] = useState(false)
+  useUnsavedChanges(paymentDirty)
 
   if (!sales.data) return null
   const { booking, agent, payments } = sales.data
@@ -43,6 +47,7 @@ const OrderSalesWidget = ({ data: order }: DetailWidgetProps<HttpTypes.AdminOrde
         <div className="px-6 py-4">
           <PaymentForm
             due={payments.due}
+            onDirtyChange={setPaymentDirty}
             submitting={action.isPending}
             onSubmit={(body) => action.mutate({ path: `/admin/backoffice/orders/${order.id}/payments`, body, success: 'Incasso registrato.' })}
           />

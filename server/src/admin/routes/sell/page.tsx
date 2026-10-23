@@ -6,6 +6,7 @@ import { BookingEditor } from '../../components/sales/booking-editor'
 import { BookingForm } from '../../components/sales/booking-form'
 import { BookingStatus } from '../../components/sales/booking-status'
 import { useGuardedOpen } from '../../components/use-guarded-open'
+import { useUnsavedChanges } from '../../lib/unsaved-changes'
 import { ByCustomerTable, ByProductTable, PeriodFilter, RankingTable, SummaryFigures } from '../../components/sales/summary'
 import { formatDay, formatEuro, useSalesAction, useSellBookings, useSellCatalog, useSellMe, type Booking, type Catalog, type Period } from '../../lib/sales-api'
 
@@ -20,6 +21,8 @@ const SellPage = () => {
   const [editorDirty, setEditorDirty] = useState(false)
   // Cresce a ogni prenotazione inserita: il modulo riparte vuoto.
   const [formKey, setFormKey] = useState(0)
+  const [newDirty, setNewDirty] = useState(false)
+  useUnsavedChanges(newDirty)
   const me = useSellMe(period)
   const catalog = useSellCatalog()
   const bookings = useSellBookings(period)
@@ -54,6 +57,7 @@ const SellPage = () => {
       {
         onSuccess: (data) => {
           setFormKey((key) => key + 1)
+          setNewDirty(false)
           openBooking(data.booking as Booking)
           setTab('storico')
         },
@@ -92,7 +96,7 @@ const SellPage = () => {
 
           {/* Sempre montata: passando allo storico e tornando, quello che si stava scrivendo resta. */}
           <Tabs.Content value="nuova" forceMount className="data-[state=inactive]:hidden px-6 py-6">
-            <NewBooking key={formKey} catalog={catalog.data} failed={catalog.isError} submitting={action.isPending} onSubmit={create} />
+            <NewBooking key={formKey} catalog={catalog.data} failed={catalog.isError} submitting={action.isPending} onSubmit={create} onDirtyChange={setNewDirty} />
           </Tabs.Content>
 
           <Tabs.Content value="storico" className="data-[state=inactive]:hidden flex flex-col gap-5 px-6 py-6">
@@ -151,12 +155,18 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   )
 }
 
-type NewBookingProps = { catalog?: Catalog; failed: boolean; submitting: boolean; onSubmit: (body: Record<string, unknown>) => void }
+type NewBookingProps = {
+  catalog?: Catalog
+  failed: boolean
+  submitting: boolean
+  onSubmit: (body: Record<string, unknown>) => void
+  onDirtyChange: (dirty: boolean) => void
+}
 
-function NewBooking({ catalog, failed, submitting, onSubmit }: NewBookingProps) {
+function NewBooking({ catalog, failed, submitting, onSubmit, onDirtyChange }: NewBookingProps) {
   if (failed) return <Text className="text-ui-fg-error">Catalogo non disponibile: riprova tra poco.</Text>
   if (!catalog) return <div className="h-96 animate-pulse rounded-lg bg-ui-bg-component" aria-label="Caricamento del catalogo" />
-  return <BookingForm catalog={catalog} submitting={submitting} submitLabel="Inserisci prenotazione" onSubmit={onSubmit} />
+  return <BookingForm catalog={catalog} submitting={submitting} submitLabel="Inserisci prenotazione" onSubmit={onSubmit} onDirtyChange={onDirtyChange} />
 }
 
 type BookingListProps = { bookings?: Booking[]; loading: boolean; onOpen: (booking: Booking) => void; onNew: () => void }

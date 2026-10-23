@@ -6,6 +6,7 @@ import { FormField } from '../../../components/form-field'
 import { BookingStatus } from '../../../components/sales/booking-status'
 import { ByCustomerTable, ByProductTable, PeriodFilter, SummaryFigures } from '../../../components/sales/summary'
 import { formatDay, formatEuro, useAgentDetail, useSalesAction, type Agent, type Booking, type Period } from '../../../lib/sales-api'
+import { useUnsavedChanges } from '../../../lib/unsaved-changes'
 
 /** Scheda agente: riepilogo per prodotto e per cliente, prenotazioni, account per l'area vendita. */
 const AgentDetailPage = () => {
@@ -137,6 +138,7 @@ function Bookings({ bookings }: { bookings: Booking[] }) {
 function AccountPanel({ agent }: { agent: Agent }) {
   const action = useSalesAction()
   const [email, setEmail] = useState(agent.email ?? '')
+  useUnsavedChanges(email.trim() !== (agent.email ?? ''))
   const [invite, setInvite] = useState<{ url: string; to: string; sent: boolean } | null>(null)
 
   const send = (event: FormEvent) => {

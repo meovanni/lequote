@@ -3,6 +3,7 @@ import { Trash } from '@medusajs/icons'
 import { useState } from 'react'
 import { FormField, orNull } from '../form-field'
 import { toDateInput, useFilieraAction, useStageTemplates, type Lot, type LotStage, type Visibility } from '../../lib/filiera-api'
+import { useUnsavedChanges } from '../../lib/unsaved-changes'
 
 const VISIBILITY_LABEL: Record<Visibility, string> = {
   public: 'Pubblico',
@@ -20,12 +21,19 @@ function fromLot(lot: Lot): Draft[] {
     .map((stage) => ({ ...stage, date: toDateInput(stage.date), draftId: draftId() }))
 }
 
+/** Le fasi ridotte ai dati che si salvano: vuoto e "non indicato" contano uguale. */
+const comparable = (stages: LotStage[]) =>
+  JSON.stringify(
+    stages.map((stage) => [stage.template_id, stage.date || '', stage.place || '', stage.fields.map((field) => [field.key, field.value ?? ''])]),
+  )
+
 /** Fasi del lotto: si aggiungono dai modelli della linea e si compilano i loro campi. */
 export function StagesEditor({ lot }: { lot: Lot }) {
   const templates = useStageTemplates(lot.product_line)
   const action = useFilieraAction()
   const [stages, setStages] = useState<Draft[]>(() => fromLot(lot))
   const [templateId, setTemplateId] = useState('')
+  useUnsavedChanges(comparable(stages) !== comparable(fromLot(lot)))
 
   const update = (id: string, change: Partial<Draft>) =>
     setStages((current) => current.map((stage) => (stage.draftId === id ? { ...stage, ...change } : stage)))

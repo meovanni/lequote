@@ -2,24 +2,29 @@ import { Button, Container, Heading, Input, Select, Text, Textarea } from '@medu
 import { useState, type FormEvent } from 'react'
 import { FormField, orNull } from '../form-field'
 import { suppliersFor, toDateInput, useFilieraAction, useSuppliers, type Lot } from '../../lib/filiera-api'
+import { useUnsavedChanges } from '../../lib/unsaved-changes'
 
 const NONE = 'nessuno'
+
+/** I valori del modulo come sono salvati sul lotto: il confronto dice se ci sono modifiche. */
+const fromLot = (lot: Lot) => ({
+  product_name: lot.product_name,
+  nominal_quantity: lot.nominal_quantity ?? '',
+  origin: lot.origin,
+  packaging_date: toDateInput(lot.packaging_date),
+  best_before: toDateInput(lot.best_before),
+  packaging_establishment_id: lot.packaging_establishment_id ?? NONE,
+  units: lot.units === null ? '' : String(lot.units),
+  notes: lot.notes ?? '',
+})
 
 /** Dati obbligatori di etichetta (Reg. UE 1169/2011 art. 9) e dati di produzione del lotto. */
 export function LotLabelForm({ lot }: { lot: Lot }) {
   const suppliers = useSuppliers()
   const establishments = suppliersFor(suppliers.data?.items ?? [], ['imbottigliamento', 'invasettamento', 'laboratorio'])
   const action = useFilieraAction()
-  const [form, setForm] = useState({
-    product_name: lot.product_name,
-    nominal_quantity: lot.nominal_quantity ?? '',
-    origin: lot.origin,
-    packaging_date: toDateInput(lot.packaging_date),
-    best_before: toDateInput(lot.best_before),
-    packaging_establishment_id: lot.packaging_establishment_id ?? NONE,
-    units: lot.units === null ? '' : String(lot.units),
-    notes: lot.notes ?? '',
-  })
+  const [form, setForm] = useState(() => fromLot(lot))
+  useUnsavedChanges(JSON.stringify(form) !== JSON.stringify(fromLot(lot)))
   const set = (key: keyof typeof form) => (value: string) => setForm((current) => ({ ...current, [key]: value }))
 
   const submit = (event: FormEvent) => {

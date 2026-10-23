@@ -3,6 +3,7 @@ import { Trash } from '@medusajs/icons'
 import { useState, type FormEvent } from 'react'
 import { FormField } from '../form-field'
 import { useFilieraAction, useSupplierTypes, useSuppliers } from '../../lib/filiera-api'
+import { useUnsavedChanges } from '../../lib/unsaved-changes'
 
 /** Elenco dei fornitori, filtrabile per tipologia. Il nuovo fornitore si crea dal pannello laterale. */
 export function SupplierPanel() {
@@ -99,6 +100,7 @@ export function SupplierTypesPanel() {
   const types = useSupplierTypes()
   const action = useFilieraAction()
   const [name, setName] = useState('')
+  useUnsavedChanges(name.trim() !== '')
 
   const submit = (event: FormEvent) => {
     event.preventDefault()

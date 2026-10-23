@@ -3,6 +3,7 @@ import { Trash } from '@medusajs/icons'
 import { useState, type FormEvent } from 'react'
 import { FormField, orNull } from '../form-field'
 import { formatDate, useFilieraAction, type Campaign } from '../../lib/filiera-api'
+import { useUnsavedChanges } from '../../lib/unsaved-changes'
 
 const MAX_FILE_MB = 15
 
@@ -24,6 +25,7 @@ export function AnalysesPanel({ campaign }: { campaign: Campaign }) {
   const [visibility, setVisibility] = useState<'public' | 'internal'>('internal')
   const [file, setFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
+  useUnsavedChanges(title.trim() !== '' || lab.trim() !== '' || date !== '' || file !== null)
 
   const submit = async (event: FormEvent) => {
     event.preventDefault()

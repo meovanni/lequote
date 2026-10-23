@@ -1,8 +1,9 @@
 import { Button, Checkbox, Container, Heading, Input, Select, Text, Textarea } from '@medusajs/ui'
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { FormField, orNull } from '../form-field'
 import { suppliersFor, toDateInput, useFilieraAction, useRegistry, useSuppliers, type Campaign } from '../../lib/filiera-api'
 import { AnalysesPanel } from './analyses-panel'
+import { useUnsavedChanges } from '../../lib/unsaved-changes'
 
 const NONE = 'nessuno'
 
@@ -28,7 +29,13 @@ function SourcePicker({ campaign, selected, onToggle }: { campaign: Campaign; se
 }
 
 /** Campagna: periodo, frantoio (olio), oliveti o apiari di provenienza, analisi dell'anno. */
-export function CampaignEditor({ campaign }: { campaign: Campaign }) {
+type CampaignEditorProps = {
+  campaign: Campaign
+  /** Avvisa quando ci sono modifiche non salvate (per chiedere conferma prima di cambiare campagna). */
+  onDirtyChange?: (dirty: boolean) => void
+}
+
+export function CampaignEditor({ campaign, onDirtyChange }: CampaignEditorProps) {
   const suppliers = useSuppliers()
   const mills = suppliersFor(suppliers.data?.items ?? [], ['frantoio'])
   const action = useFilieraAction()
@@ -43,6 +50,13 @@ export function CampaignEditor({ campaign }: { campaign: Campaign }) {
   const [sources, setSources] = useState<string[]>(
     (isOil ? campaign.groves : campaign.apiaries)?.map((item) => item.id) ?? [],
   )
+  const saved = {
+    form: { label: campaign.label, harvest_start: toDateInput(campaign.harvest_start), harvest_end: toDateInput(campaign.harvest_end), mill_id: campaign.mill?.id ?? NONE, notes: campaign.notes ?? '' },
+    sources: ((isOil ? campaign.groves : campaign.apiaries)?.map((item) => item.id) ?? []).sort(),
+  }
+  const dirty = JSON.stringify({ form, sources: [...sources].sort() }) !== JSON.stringify(saved)
+  useUnsavedChanges(dirty)
+  useEffect(() => onDirtyChange?.(dirty), [dirty, onDirtyChange])
   const set = (key: keyof typeof form) => (value: string) => setForm((current) => ({ ...current, [key]: value }))
   const toggle = (id: string) =>
     setSources((current) => (current.includes(id) ? current.filter((item) => item !== id) : [...current, id]))

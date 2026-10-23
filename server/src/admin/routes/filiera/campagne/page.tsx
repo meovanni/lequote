@@ -1,13 +1,15 @@
 import { defineRouteConfig } from '@medusajs/admin-sdk'
-import { Button, Container, Heading, Input, Select, Text, clx } from '@medusajs/ui'
+import { Button, Container, Heading, Input, Select, Text, clx, usePrompt } from '@medusajs/ui'
 import { useState, type FormEvent } from 'react'
 import { CampaignEditor } from '../../../components/filiera/campaign-editor'
 import { LINE_LABEL, useCampaign, useCampaigns, useFilieraAction, type Campaign, type ProductLine } from '../../../lib/filiera-api'
+import { useUnsavedChanges } from '../../../lib/unsaved-changes'
 
 function NewCampaign({ onCreated }: { onCreated: (id: string) => void }) {
   const action = useFilieraAction()
   const [line, setLine] = useState<ProductLine>('olio')
   const [label, setLabel] = useState('')
+  useUnsavedChanges(label.trim() !== '')
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
@@ -46,6 +48,24 @@ const CampaignsPage = () => {
   const list = campaigns.data?.campaigns ?? []
   const selectedId = chosenId ?? list[0]?.id ?? null
   const selected = useCampaign(selectedId)
+  const [editorDirty, setEditorDirty] = useState(false)
+  const prompt = usePrompt()
+
+  // Cambiare campagna non cambia pagina: la conferma per le modifiche non salvate si chiede qui.
+  const choose = async (id: string) => {
+    if (id === selectedId) return
+    if (editorDirty) {
+      const confirmed = await prompt({
+        title: 'Uscire senza salvare?',
+        description: 'Nella campagna aperta ci sono modifiche non salvate: andranno perse.',
+        confirmText: 'Esci senza salvare',
+        cancelText: 'Resta',
+      })
+      if (!confirmed) return
+    }
+    setEditorDirty(false)
+    setChosenId(id)
+  }
 
   return (
     <div className="grid grid-cols-1 gap-3 lg:grid-cols-[18rem_1fr]">
@@ -67,7 +87,7 @@ const CampaignsPage = () => {
                     <button
                       type="button"
                       aria-current={selectedId === campaign.id ? 'true' : undefined}
-                      onClick={() => setChosenId(campaign.id)}
+                      onClick={() => void choose(campaign.id)}
                       className={clx(
                         'txt-compact-small w-full border-l-2 px-4 py-2 text-left hover:bg-ui-bg-base-hover',
                         selectedId === campaign.id ? 'border-ui-border-interactive bg-ui-bg-highlight text-ui-fg-base' : 'border-transparent text-ui-fg-subtle',
@@ -84,7 +104,7 @@ const CampaignsPage = () => {
       </Container>
 
       {selected.data ? (
-        <CampaignEditor key={selected.data.campaign.id + selected.dataUpdatedAt} campaign={selected.data.campaign} />
+        <CampaignEditor key={selected.data.campaign.id + selected.dataUpdatedAt} campaign={selected.data.campaign} onDirtyChange={setEditorDirty} />
       ) : (
         <Container className="flex min-h-48 items-center justify-center px-6 py-10">
           <Text size="small" className="text-center text-ui-fg-subtle">
