@@ -8,22 +8,29 @@
 */
 
 :root {
-  /* Palette nominata — famiglia oliva/miele del prodotto (vedi DESIGN.md) */
-  /* Quasi bianchi: le tinte crema (#f7f3e8, #efe7d4) risultavano fastidiose a chi ha provato il
-     sito. Resta solo un filo di calore, quanto basta a non sembrare un foglio da ufficio. */
-  --color-pergamena: #fdfcf9; /* bg chiaro primario */
-  --color-avorio: #f6f4ef; /* bg chiaro secondario, alternanza sezioni/card */
-  --color-bosco: #1c2417; /* verde quasi-nero, fasce scure alternate */
-  --color-miele: #9c6530; /* miele/ottone antico, accento primario — testo su sfondo chiaro */
-  --color-miele-tint: #cc9a5e; /* variante chiara di miele, per testo/badge su sfondo scuro (Bosco) */
-  --color-oliva: #4c5735; /* oliva scura, accento strutturale */
-  --color-inchiostro: #233142; /* testo su sfondo chiaro — blu inchiostro del logo */
-  --color-bone: #f3eedf; /* testo su sfondo scuro (Bosco) */
+  /* Palette (2026-10-24): bianchi neutri e l'inchiostro del logo. Niente crema, verde oliva o
+     ottone miele: il colore lo portano le foto e i prodotti, non le superfici. */
+  --color-bianco: #fcfcfb; /* sfondo primario: bianco con un filo di calore, non da ufficio */
+  --color-nebbia: #f2f2ef; /* sfondo alternato e card */
+  --color-linea: #e3e3df; /* bordi e divisori pieni */
+  --color-inchiostro: #233142; /* testo e unico colore d'azione: il blu inchiostro del logo */
+  --color-inchiostro-scuro: #18222e; /* hover dei pulsanti pieni */
+  --color-grafite: #8a919a; /* tratti strutturali secondari (barre, marcatori), mai testo */
+  --color-notte: #161b21; /* solo velo sulle foto (eroe) e testo su sfondi chiari forti */
 
-  /* Unico colore semantico fuori dai due accenti di brand: errori di validazione nei form.
-     Rosso mattone, intonato alla temperatura calda della palette. */
+  /* Unico colore semantico: errori di validazione nei form. */
   --color-error: #a8402c; /* testo su sfondo chiaro */
-  --color-error-tint: #e2836a; /* variante chiara per testo su sfondo scuro (Bosco) */
+  --color-error-tint: #e2836a; /* testo su sfondo scuro (eroe) */
+
+  /* Nomi storici della palette olio/miele, tenuti come alias dei nuovi neutri: i moduli che li
+     usano ancora prendono i colori nuovi. Da non usare nel codice nuovo. */
+  --color-pergamena: var(--color-bianco);
+  --color-avorio: var(--color-nebbia);
+  --color-bosco: var(--color-notte);
+  --color-miele: var(--color-inchiostro);
+  --color-miele-tint: var(--color-inchiostro);
+  --color-oliva: var(--color-grafite);
+  --color-bone: var(--color-bianco);
 
   /* Spaziature (scala 4/8px) */
   --space-1: 0.25rem;
@@ -56,34 +63,34 @@
   --container-pad: clamp(1.25rem, 4vw, 3rem);
 }
 
-/* Sistema semantico a superficie: le due tonalità chiare si alternano con fasce bosco a
-   tutta larghezza (Hero, Olio, Filiera, Shop, Footer). Mai due fasce bosco consecutive. */
+/* Sistema semantico a superficie: bianco e nebbia si alternano a tutta larghezza. L'unica
+   superficie scura è l'eroe, con la foto sotto un velo che tiene leggibile il testo. */
 [data-surface='light'] {
-  --surface-bg: var(--color-pergamena);
+  --surface-bg: var(--color-bianco);
   --surface-text: var(--color-inchiostro);
-  --surface-text-muted: rgba(35, 49, 66, 0.7);
-  --surface-border: rgba(35, 49, 66, 0.14);
-  --surface-card: var(--color-avorio);
-  --surface-accent: var(--color-miele);
-  --surface-accent-text: var(--color-bone);
+  --surface-text-muted: rgba(35, 49, 66, 0.72);
+  --surface-border: var(--color-linea);
+  --surface-card: var(--color-nebbia);
+  --surface-accent: var(--color-inchiostro);
+  --surface-accent-text: var(--color-bianco);
 }
 
 [data-surface='light-alt'] {
-  --surface-bg: var(--color-avorio);
+  --surface-bg: var(--color-nebbia);
   --surface-text: var(--color-inchiostro);
-  --surface-text-muted: rgba(35, 49, 66, 0.7);
-  --surface-border: rgba(35, 49, 66, 0.16);
-  --surface-card: var(--color-pergamena);
-  --surface-accent: var(--color-miele);
-  --surface-accent-text: var(--color-bone);
+  --surface-text-muted: rgba(35, 49, 66, 0.74);
+  --surface-border: #d9d9d4;
+  --surface-card: var(--color-bianco);
+  --surface-accent: var(--color-inchiostro);
+  --surface-accent-text: var(--color-bianco);
 }
 
 [data-surface='dark'] {
-  --surface-bg: var(--color-bosco);
-  --surface-text: var(--color-bone);
-  --surface-text-muted: rgba(243, 238, 223, 0.72);
-  --surface-border: rgba(243, 238, 223, 0.18);
-  --surface-card: rgba(243, 238, 223, 0.06);
-  --surface-accent: var(--color-miele-tint);
-  --surface-accent-text: var(--color-bosco);
+  --surface-bg: var(--color-notte);
+  --surface-text: var(--color-bianco);
+  --surface-text-muted: rgba(252, 252, 251, 0.78);
+  --surface-border: rgba(252, 252, 251, 0.24);
+  --surface-card: rgba(252, 252, 251, 0.08);
+  --surface-accent: var(--color-bianco);
+  --surface-accent-text: var(--color-inchiostro);
 }

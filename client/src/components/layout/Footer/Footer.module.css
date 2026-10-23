@@ -1,7 +1,7 @@
 .footer {
   position: relative;
   overflow: hidden;
-  min-height: 100svh;
+  /* Altezza naturale: a tutto schermo lasciava un grande vuoto sopra i contatti. */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -9,7 +9,7 @@
   scroll-snap-stop: always;
   background: var(--surface-bg);
   color: var(--surface-text);
-  padding-block: var(--space-8) var(--space-5);
+  padding-block: var(--space-8) var(--space-6);
 }
 
 .contact {
@@ -157,8 +157,8 @@
   left: 50%;
   bottom: 0;
   width: min(1400px, 150vw);
-  color: var(--color-bone);
-  opacity: 0.06;
+  color: var(--color-inchiostro);
+  opacity: 0.05;
   transform: translate(-50%, 28%);
   pointer-events: none;
   animation-name: footer-wordmark-drift;

@@ -36,7 +36,7 @@ export function Filiera() {
   }
 
   return (
-    <section id="filiera" data-surface="dark" className={styles.section}>
+    <section id="filiera" data-surface="light-alt" className={styles.section}>
       <div className={styles.inner}>
         <header className={styles.header}>
           <Reveal>

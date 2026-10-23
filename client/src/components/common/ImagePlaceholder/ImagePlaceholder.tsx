@@ -1,9 +1,13 @@
 import { CameraIcon } from '@/components/common/icons/Icons'
+import { useLocale } from '@/i18n/LocaleContext'
 import styles from './ImagePlaceholder.module.css'
+
+const PLACEHOLDER_TEXT = { it: 'Foto in arrivo', en: 'Photo coming soon', de: 'Foto folgt' } as const
 
 interface ImagePlaceholderProps {
   label: string
   aspectRatio?: string
+  /** Non più usato: la palette è neutra (resta per compatibilità con le chiamate esistenti). */
   variant?: 'neutral' | 'oliva' | 'miele'
   className?: string
   /** Se presente, mostra la foto reale al posto del placeholder testurizzato. */
@@ -18,13 +22,13 @@ interface ImagePlaceholderProps {
 export function ImagePlaceholder({
   label,
   aspectRatio = '4 / 5',
-  variant = 'neutral',
   className,
   src,
   alt,
   fit = 'cover',
   container = true,
 }: ImagePlaceholderProps) {
+  const locale = useLocale()
   if (src && !container) {
     return (
       <div className={[styles.bare, className].filter(Boolean).join(' ')} style={{ aspectRatio }}>
@@ -42,7 +46,7 @@ export function ImagePlaceholder({
   if (src) {
     return (
       <div
-        className={[styles.photo, styles[variant], className].filter(Boolean).join(' ')}
+        className={[styles.photo, className].filter(Boolean).join(' ')}
         style={{ aspectRatio }}
       >
         <img
@@ -56,16 +60,19 @@ export function ImagePlaceholder({
     )
   }
 
+  // Foto non ancora disponibile: al visitatore basta sapere che arriva; la descrizione completa
+  // (cosa fotografare) resta per gli screen reader e al passaggio del mouse.
   return (
     <div
       role="img"
       aria-label={label}
-      className={[styles.placeholder, styles[variant], className].filter(Boolean).join(' ')}
+      title={label}
+      className={[styles.placeholder, className].filter(Boolean).join(' ')}
       style={{ aspectRatio }}
     >
-      <span className={styles.caption}>
+      <span className={styles.caption} aria-hidden="true">
         <CameraIcon className={styles.icon} />
-        <span className={`${styles.label} mono-label`}>{label}</span>
+        <span className={`${styles.label} body-sm`}>{PLACEHOLDER_TEXT[locale]}</span>
       </span>
     </div>
   )

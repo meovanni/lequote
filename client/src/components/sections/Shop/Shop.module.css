@@ -1,5 +1,5 @@
 .section {
-  --accent: var(--color-miele-tint);
+  --accent: var(--color-inchiostro);
   position: relative;
   overflow: hidden;
   min-height: 100svh;
@@ -33,12 +33,12 @@
   margin-bottom: var(--space-2);
 }
 
-/* Catalogo: un prodotto per riga, impilati. Un prodotto in più (una futura terza linea, non
-   solo olio e miele) si aggiunge semplicemente in fondo, senza dover ripensare le colonne. */
+/* Catalogo: le linee affiancate dove c'è spazio, impilate sul telefono. Una linea in più si
+   aggiunge da sola nella griglia, senza ripensare le colonne. */
 .catalog {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
+  gap: var(--space-6) var(--space-7);
 }
 
 .product {
@@ -60,19 +60,25 @@
 /* Ogni formato è ormai un prodotto a sé (foto, prezzo, quantità propri): una griglia a
    riflusso, non righe di elenco. Un formato in più per prodotto si inserisce da solo. Il
    massimo esplicito (non 1fr) è deliberato: con solo 2-3 formati per prodotto, "auto-fit" con
-   1fr li avrebbe stirati a riempire tutta la riga, un segnaposto enorme per quel che è solo
-   un selettore di quantità. Le card restano compatte qualunque sia lo spazio disponibile. */
+   1fr li avrebbe stirati a riempire tutta la riga. Abbastanza larghe da far leggere la foto. */
 .variantGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 160px));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 232px));
   justify-content: start;
   gap: var(--space-4);
 }
 
+/* Sul telefono due formati affiancati riempiono la riga invece di una colonna stretta. */
+@media (max-width: 560px) {
+  .variantGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+}
+
 /* Prima le foto galleggiavano senza bordo: qui una cornice sottile le rende schede di
    prodotto vere e proprie, coerenti con lo stesso trattamento "considerato" delle opzioni di
-   consegna qui sotto. L'accento in hover resta sempre miele (l'unico colore interattivo del
-   sito) anche sulle card dell'olio — solo il prezzo, statico, usa l'accento di linea. */
+   consegna qui sotto. In hover il bordo prende l'inchiostro, l'unico colore interattivo. */
 .variantCard {
   display: flex;
   flex-direction: column;
@@ -86,7 +92,7 @@
 }
 
 .variantCard:hover {
-  border-color: var(--color-miele-tint);
+  border-color: var(--color-inchiostro);
   transform: translateY(-3px);
 }
 
@@ -100,7 +106,7 @@
 }
 
 .variantPrice {
-  color: var(--product-accent, var(--color-miele-tint));
+  color: var(--surface-text-muted);
   letter-spacing: 0.02em;
 }
 
@@ -138,11 +144,11 @@
   padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-md);
   border: 1px solid var(--surface-border);
-  background: rgba(0, 0, 0, 0.18);
+  background: var(--surface-card);
 }
 
 .summaryTitle {
-  color: var(--color-miele-tint);
+  color: var(--surface-text);
 }
 
 .summaryRow {
@@ -170,15 +176,15 @@
 }
 
 /* Stessa forma dei bottoni condivisi (.btn in global.css): pillola piena, nessuna ombra. Qui
-   resta il miele pieno anche su bosco: porta al carrello, dove si chiude l'ordine. */
+   inchiostro pieno: porta al carrello, dove si chiude l'ordine. */
 .cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 48px;
   padding: 0.875rem var(--space-6);
-  background: var(--color-miele);
-  color: var(--color-bone);
+  background: var(--surface-accent);
+  color: var(--surface-accent-text);
   border-radius: var(--radius-button);
   transition:
     background-color 0.22s ease,
@@ -186,7 +192,7 @@
 }
 
 .cta:hover {
-  background: color-mix(in srgb, var(--color-miele) 82%, var(--color-bone));
+  background: color-mix(in srgb, var(--surface-accent) 86%, var(--surface-accent-text));
 }
 
 .cta:active {
@@ -256,8 +262,8 @@
 }
 
 .addButton:hover {
-  border-color: var(--color-miele-tint);
-  background: color-mix(in srgb, var(--color-miele-tint) 14%, transparent);
+  border-color: var(--color-inchiostro);
+  background: color-mix(in srgb, var(--color-inchiostro) 14%, transparent);
 }
 
 .addButton:active {

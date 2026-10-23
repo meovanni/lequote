@@ -10,7 +10,7 @@ import styles from './Domande.module.css'
 export function Domande() {
   const { domande } = useContent()
   return (
-    <section id="domande" data-surface="light-alt" className={styles.section}>
+    <section id="domande" data-surface="light" className={styles.section}>
       <div className={styles.inner}>
         <Reveal>
           <SectionHeading title={domande.title} visible />

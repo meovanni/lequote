@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react'
 import { Link } from 'react-router'
 import { motion } from 'motion/react'
 import { useContent, useLocale } from '@/i18n/LocaleContext'
@@ -118,16 +117,7 @@ function ShopProductBlock({ product }: { product: ShopProduct }) {
   const variants = catalog.status === 'ready' ? (catalog.product?.variants ?? []) : []
 
   return (
-    // Ogni linea porta il proprio accento (oliva per l'olio, miele per il miele), solo su colore
-    // statico come il prezzo: l'accento miele resta l'unico colore "cliccabile" del sito.
-    <div
-      className={styles.product}
-      style={
-        {
-          '--product-accent': product.id === 'olio' ? 'var(--color-oliva)' : 'var(--color-miele-tint)',
-        } as CSSProperties
-      }
-    >
+    <div className={styles.product}>
       <div className={styles.productHeading}>
         <Link to={localizePath(locale, `/prodotti/${product.handle}`)} className={`${styles.productLink} display-3`}>
           {product.name}
@@ -170,7 +160,7 @@ export function Shop() {
   const count = cart?.itemCount ?? 0
 
   return (
-    <section id="shop" data-surface="dark" className={styles.section}>
+    <section id="shop" data-surface="light-alt" className={styles.section}>
       <div className={styles.inner}>
         <Reveal className={styles.heading}>
           <SectionHeading title={shop.title} subtitle={shop.intro} visible />

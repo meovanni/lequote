@@ -9,7 +9,7 @@ import styles from './Miele.module.css'
 export function Miele() {
   const { miele, ui } = useContent()
   return (
-    <section id="miele" data-surface="light-alt" className={styles.section}>
+    <section id="miele" data-surface="light" className={styles.section}>
       <HexPattern className={styles.hexPattern} />
 
       <div className={styles.inner}>

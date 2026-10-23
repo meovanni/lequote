@@ -13,7 +13,7 @@ export function Footer() {
   const locale = useLocale()
   const legal = legalByLocale[locale]
   return (
-    <footer id="contatti" className={styles.footer} data-surface="dark">
+    <footer id="contatti" className={styles.footer} data-surface="light-alt">
       <div className={styles.contact}>
         <Reveal>
           <SectionHeading title={contatti.title} align="center" />

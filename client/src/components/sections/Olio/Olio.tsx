@@ -7,7 +7,7 @@ import styles from './Olio.module.css'
 export function Olio() {
   const { olio, ui } = useContent()
   return (
-    <section id="olio" data-surface="dark" className={styles.section}>
+    <section id="olio" data-surface="light-alt" className={styles.section}>
       <div className={styles.inner}>
         <Reveal variant="sideLeft" className={styles.images}>
           <OilBottle className={styles.bottle} label={ui.oilBottleLabel} />

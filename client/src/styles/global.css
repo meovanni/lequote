@@ -78,8 +78,8 @@ section[id] {
 }
 
 ::selection {
-  background: var(--color-miele-tint);
-  color: var(--color-bosco);
+  background: var(--color-inchiostro);
+  color: var(--color-bianco);
 }
 
 /* Visivamente nascosto ma presente per screen reader / SEO (heading hierarchy) */
@@ -96,7 +96,7 @@ section[id] {
 }
 
 :focus-visible {
-  outline: 2px solid var(--surface-accent, var(--color-miele));
+  outline: 2px solid var(--surface-accent, var(--color-inchiostro));
   outline-offset: 3px;
   border-radius: var(--radius-sm);
 }
@@ -109,8 +109,8 @@ section[id] {
   z-index: calc(var(--z-overlay) + 1);
   padding: var(--space-3) var(--space-5);
   border-radius: var(--radius-pill);
-  background: var(--color-bosco);
-  color: var(--color-bone);
+  background: var(--color-inchiostro);
+  color: var(--color-bianco);
   transform: translateY(-200%);
   transition: transform 0.2s var(--ease-out);
 }
@@ -147,7 +147,7 @@ section[id] {
 }
 
 .btn-primary:hover {
-  background: color-mix(in srgb, var(--surface-accent) 82%, var(--surface-text));
+  background: color-mix(in srgb, var(--surface-accent) 86%, var(--surface-bg));
 }
 
 .btn-ghost {
@@ -183,8 +183,8 @@ section[id] {
   align-items: center;
   padding: 0.375rem 0.625rem;
   border-radius: var(--radius-pill);
-  background: var(--color-miele-tint);
-  color: var(--color-bosco);
+  background: var(--color-inchiostro);
+  color: var(--color-bianco);
   font-family: var(--font-mono);
   font-weight: 500;
   font-size: 0.75rem;
