@@ -40,7 +40,6 @@ export const de: Content = {
   ],
 
   footerNavItems: [
-    { id: 'chi-siamo', label: 'Über uns' },
     { id: 'territorio', label: 'Land' },
     { id: 'olio', label: 'Öl' },
     { id: 'miele', label: 'Honig' },
@@ -62,37 +61,15 @@ export const de: Content = {
     ctaSecondary: { label: 'Zu den Produkten ↓', href: '#olio' },
   },
 
-  chiSiamo: {
-    eyebrow: 'Über uns',
-    title: 'Eine Familie, zwei Landschaften',
-    paragraphs: [
-      'Le Quote entstand aus einer einfachen Entscheidung: dem Land treu zu bleiben, auf welcher Höhe es auch liegt. Auf der einen Seite der salzige Wind der Adriaküste, auf der anderen die dünne Luft der Apenninhöhen: zwei Landschaften, die gegensätzlich wirken und für uns doch dasselbe Zuhause sind.',
-      'An der Küste bauen wir Oliven an, in den Bergen pflegen wir unsere Bienenvölker, im Rhythmus der Jahreszeiten. Keine Abkürzungen: nur die Zeit, die eine Frucht oder eine Wabe braucht, um so zu reifen, wie sie soll.',
-      'Der Name Le Quote, „die Höhenlagen“, erzählt genau das: Der Betrieb lebt auf verschiedenen Höhen, vom Meeresspiegel bis auf achthundert Meter, und aus diesem Abstand entsteht die Vielfalt unserer Produkte.',
-    ],
-    imageLabel: 'Foto: Die tägliche Arbeit zwischen Olivenhainen und Bienenstöcken',
-  },
-
   territorio: {
-    eyebrow: 'Land',
-    title: 'Zwei Höhen, ein Land',
-    intro: 'Achthundert Höhenmeter trennen unsere beiden Standorte. Genug, um von zwei Welten zu erzählen.',
-    imageOliveto: '/images/oliveto.jpg',
-    imageOlivetoLabel: 'Foto: Die Olivenbaumallee im Reservat Borsacchio',
-    imageApiario: '/images/arnie.jpg',
-    imageApiarioLabel: 'Foto: Die Bienenstöcke auf den Höhen von Cerchio',
-    markers: [
-      {
-        id: 'roseto',
-        place: 'Roseto degli Abruzzi',
-        note: 'Das Reservat Borsacchio, zwischen Macchia und Olivenhainen nur wenige Schritte vom Meer.',
-      },
-      {
-        id: 'cerchio',
-        place: 'Cerchio',
-        note: 'Die Anhöhen im Hinterland von L’Aquila, wo die Bienen die Honige der Höhenlagen sammeln.',
-      },
+    title: 'Eine Familie, zwei Landschaften',
+    intro: 'Oliven am Meer, Bienen in den Bergen.',
+    places: [
+      { id: 'roseto', place: 'Roseto degli Abruzzi', elevation: 'Meeresspiegel', note: 'Die Olivenbäume des Reservats Borsacchio, wenige Schritte vom Meer.' },
+      { id: 'cerchio', place: 'Cerchio', elevation: '800 m', note: 'Die Bienenstöcke auf den Anhöhen im Hinterland von L’Aquila.' },
     ],
+    closing: 'Achthundert Höhenmeter dazwischen: darum heißen wir Le Quote, „die Höhenlagen“.',
+    credit: 'Relief: AWS Terrain Tiles. Grenzen: openpolis, CC BY 4.0.',
   },
 
   olio: {

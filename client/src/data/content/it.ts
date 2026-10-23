@@ -18,7 +18,6 @@ export const navItems: NavItem[] = [
 
 // Il footer porta anche le sezioni che non stanno nella barra principale.
 export const footerNavItems: NavItem[] = [
-  { id: 'chi-siamo', label: 'Chi siamo' },
   ...navItems,
   { id: 'domande', label: 'Domande frequenti' },
   { id: 'contatti', label: 'Contatti' },
@@ -35,37 +34,16 @@ export const hero = {
   ctaSecondary: { label: 'Scopri i prodotti ↓', href: '#olio' },
 }
 
-export const chiSiamo = {
-  eyebrow: 'Chi siamo',
-  title: 'Una famiglia, due paesaggi',
-  paragraphs: [
-    "Le Quote nasce da una scelta semplice: restare fedeli alla terra, qualunque sia la sua altitudine. Da una parte il vento salmastro della costa adriatica, dall'altra l'aria sottile delle quote appenniniche: due paesaggi che sembrano opposti e che, per noi, sono la stessa casa.",
-    'Sulla costa coltiviamo olivi, in montagna curiamo i nostri alveari, seguendo il ritmo delle stagioni. Nessuna scorciatoia: solo il tempo necessario perché un frutto o un favo maturino come devono.',
-    'Il nome Le Quote racconta proprio questo: l’azienda vive letteralmente su quote diverse, dal livello del mare fino a ottocento metri, e da questa distanza nasce la varietà dei nostri prodotti.',
-  ],
-  imageLabel: 'Foto: Il lavoro quotidiano tra uliveti e alveari',
-}
-
+// Una sola sezione: il volo sul rilievo dal mare a Cerchio (Territorio). Testi brevi, l'impatto è la mappa.
 export const territorio = {
-  eyebrow: 'Territorio',
-  title: 'Due quote, la stessa terra',
-  intro: 'Ottocento metri di dislivello separano le nostre due sedi. Bastano per raccontare due mondi.',
-  imageOliveto: '/images/oliveto.jpg',
-  imageOlivetoLabel: "Foto: Il viale degli ulivi della Riserva del Borsacchio",
-  imageApiario: '/images/arnie.jpg',
-  imageApiarioLabel: 'Foto: Gli alveari tra le alture di Cerchio',
-  markers: [
-    {
-      id: 'roseto',
-      place: 'Roseto degli Abruzzi',
-      note: 'La Riserva del Borsacchio, tra macchia mediterranea e uliveti a pochi passi dal mare.',
-    },
-    {
-      id: 'cerchio',
-      place: 'Cerchio',
-      note: "Le alture dell'entroterra aquilano, dove le api raccolgono i mieli di quota.",
-    },
+  title: 'Una famiglia, due paesaggi',
+  intro: 'Olivi sul mare, api in montagna.',
+  places: [
+    { id: 'roseto', place: 'Roseto degli Abruzzi', elevation: 'Livello del mare', note: 'Gli olivi della Riserva del Borsacchio, a pochi passi dal mare.' },
+    { id: 'cerchio', place: 'Cerchio', elevation: '800 m', note: 'Gli alveari sulle alture dell’entroterra aquilano.' },
   ],
+  closing: 'Ottocento metri di dislivello: per questo ci chiamiamo Le Quote.',
+  credit: 'Rilievo: AWS Terrain Tiles. Confini: openpolis, CC BY 4.0.',
 }
 
 export const olio = {
@@ -755,7 +733,6 @@ export const it = {
   navItems,
   footerNavItems,
   hero,
-  chiSiamo,
   territorio,
   olio,
   miele,

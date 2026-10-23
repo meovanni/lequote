@@ -40,7 +40,6 @@ export const en: Content = {
   ],
 
   footerNavItems: [
-    { id: 'chi-siamo', label: 'About us' },
     { id: 'territorio', label: 'Land' },
     { id: 'olio', label: 'Oil' },
     { id: 'miele', label: 'Honey' },
@@ -62,37 +61,15 @@ export const en: Content = {
     ctaSecondary: { label: 'Discover the products ↓', href: '#olio' },
   },
 
-  chiSiamo: {
-    eyebrow: 'About us',
-    title: 'One family, two landscapes',
-    paragraphs: [
-      'Le Quote began with a simple choice: to stay true to the land, whatever its altitude. On one side the salty wind of the Adriatic coast, on the other the thin air of the Apennine heights: two landscapes that seem opposite and that, for us, are the same home.',
-      'On the coast we grow olive trees, in the mountains we look after our beehives, following the rhythm of the seasons. No shortcuts: only the time it takes for a fruit or a honeycomb to ripen as it should.',
-      'The name Le Quote, “the altitudes”, says exactly this: the farm lives at different heights, from sea level up to eight hundred metres, and the variety of our products comes from that distance.',
-    ],
-    imageLabel: 'Photo: Daily work among olive groves and beehives',
-  },
-
   territorio: {
-    eyebrow: 'Land',
-    title: 'Two altitudes, one land',
-    intro: 'Eight hundred metres of height separate our two sites. Enough to tell the story of two worlds.',
-    imageOliveto: '/images/oliveto.jpg',
-    imageOlivetoLabel: 'Photo: The avenue of olive trees in the Borsacchio Reserve',
-    imageApiario: '/images/arnie.jpg',
-    imageApiarioLabel: 'Photo: The beehives on the heights of Cerchio',
-    markers: [
-      {
-        id: 'roseto',
-        place: 'Roseto degli Abruzzi',
-        note: 'The Borsacchio Reserve, between Mediterranean scrub and olive groves a few steps from the sea.',
-      },
-      {
-        id: 'cerchio',
-        place: 'Cerchio',
-        note: 'The uplands inland from L’Aquila, where the bees gather mountain honeys.',
-      },
+    title: 'One family, two landscapes',
+    intro: 'Olive trees by the sea, bees in the mountains.',
+    places: [
+      { id: 'roseto', place: 'Roseto degli Abruzzi', elevation: 'Sea level', note: 'The olive trees of the Borsacchio Reserve, a few steps from the sea.' },
+      { id: 'cerchio', place: 'Cerchio', elevation: '800 m', note: 'The beehives on the uplands inland from L’Aquila.' },
     ],
+    closing: 'Eight hundred metres apart in height: that is why we are called Le Quote, “the altitudes”.',
+    credit: 'Relief: AWS Terrain Tiles. Boundaries: openpolis, CC BY 4.0.',
   },
 
   olio: {

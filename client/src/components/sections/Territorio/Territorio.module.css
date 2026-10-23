@@ -1,21 +1,13 @@
+/* Una sola "slide": il plastico dell'Abruzzo a tutto schermo e testi brevi che compaiono lungo il
+   volo. --p (0-1) arriva da useFlightProgress sullo stage; ogni testo ha la sua finestra
+   [--in, --out] e sfuma ai margini (una dissolvenza lunga circa 1/16 del volo). */
 .section {
-  --accent: var(--color-miele);
-  /* Dimensioni iniziale e finale della maschera; devono combaciare con maskFromPx/maskToPx in
-     Territorio.tsx. La finale resta sempre più grande dell'iniziale: con il solo 40vmax, su un
-     telefono in verticale (vmax = altezza) la sagoma partiva da 60vh e scendeva a 40vh, cioè si
-     rimpiccioliva scorrendo in avanti invece di crescere. In svh, come .pinStage: sul telefono la
-     barra del browser che compare e sparisce cambia vh/innerHeight, e i segnaposto (calcolati in
-     JS) si staccavano dalla sagoma. */
-  --mask-from: min(60svh, 60vw);
-  --mask-to: max(40vw, 40svh, min(66svh, 92vw));
   position: relative;
-  height: 580vh;
+  height: 420vh;
   background: var(--surface-bg);
   color: var(--surface-text);
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  view-timeline-name: --territorio-reveal;
-  view-timeline-axis: block;
 }
 
 .snapStep {
@@ -27,534 +19,205 @@
   scroll-snap-align: start;
 }
 
-.pinStage {
+.stage {
   position: sticky;
   top: 0;
   height: 100svh;
   overflow: hidden;
 }
 
-.heading {
+.canvas {
   position: absolute;
-  z-index: 1;
-  top: 12%;
-  left: 50%;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+
+.section[data-ready='true'] .canvas {
+  opacity: 1;
+}
+
+.beat,
+.pin {
+  --in: -1;
+  --out: 2;
+  opacity: clamp(0, min(calc((var(--p) - var(--in)) * 16), calc((var(--out) - var(--p)) * 16)), 1);
+}
+
+.copy {
+  position: absolute;
+  inset: 0;
   width: 100%;
   max-width: var(--container-max);
-  padding-inline: var(--container-pad);
-  text-align: center;
-  animation-name: territorio-heading-fade;
-  animation-duration: 1ms; /* ignorata: il progresso è guidato da animation-timeline */
-  animation-timing-function: linear;
-  animation-fill-mode: both;
-  animation-timeline: --territorio-reveal;
-  animation-range: contain 0% contain 8%;
-}
-
-@keyframes territorio-heading-fade {
-  from {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
-
-  to {
-    opacity: 0;
-    transform: translate(-50%, -18px);
-  }
-}
-
-/* Le due foto (oliveto + apiario) sono statiche e a piena pagina fin dal primo frame: solo la
-   maschera (abruzzo.svg, sagoma reale, non stilizzata) si ingrandisce con lo scroll, rivelando
-   via via più foto invece di ingrandire un ritaglio già inquadrato. Rapporto larghezza/altezza
-   della maschera ricavato dal viewBox di abruzzo.svg, ritagliato sulla vera bounding box della
-   sagoma (270 x 244) così che mask-position:center scali dal centro reale della forma.
-   L'ingrandimento si esaurisce entro il 20% del percorso (vedi animation-range): il resto della
-   sequenza è dedicato ai due segnaposto, con la maschera ormai ferma alla sua dimensione
-   finale. */
-.maskedPhoto {
-  position: absolute;
-  inset: 0;
-  -webkit-mask-image: url('/images/abruzzo.svg');
-  mask-image: url('/images/abruzzo.svg');
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center 60%;
-  mask-position: center 60%;
-  -webkit-mask-mode: alpha;
-  mask-mode: alpha;
-  -webkit-mask-size: var(--mask-from) var(--mask-from);
-  mask-size: var(--mask-from) var(--mask-from);
-  animation-name: territorio-mask-grow;
-  animation-duration: 1ms; /* ignorata: il progresso è guidato da animation-timeline */
-  animation-timing-function: linear;
-  animation-fill-mode: both;
-  animation-timeline: --territorio-reveal;
-  animation-range: contain 0% contain 20%;
-}
-
-/* Parallasse: le foto continuano a "scorrere" leggermente sotto la maschera mentre questa si
-   ingrandisce, invece di restare perfettamente ferme — dà profondità al reveal. scale(1.18)
-   costante crea il margine di sovrascan necessario perché il translateY verticale non scopra
-   mai un bordo vuoto. Continua per tutta la sequenza (non solo la fase maschera) così lo sfondo
-   resta vivo anche durante i segnaposto. Le due foto (oliveto sotto, apiario sopra) condividono
-   esattamente lo stesso movimento, così la dissolvenza tra loro non "scivola". */
-.photo {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform-origin: center;
-  animation-name: territorio-photo-parallax;
-  animation-duration: 1ms; /* ignorata: il progresso è guidato da animation-timeline */
-  animation-timing-function: linear;
-  animation-fill-mode: both;
-  animation-timeline: --territorio-reveal;
-  animation-range: contain 0% contain 100%;
-}
-
-@keyframes territorio-photo-parallax {
-  from {
-    transform: scale(1.18) translateY(6%);
-  }
-
-  to {
-    transform: scale(1.18) translateY(-6%);
-  }
-}
-
-/* Foto dell'apiario: stessa posizione/parallasse della foto dell'oliveto (sotto di lei nel DOM,
-   sopra nell'ordine di stacking), ma invisibile finché il segnaposto Cerchio non si attiva — a
-   quel punto si dissolve dentro esattamente nella stessa finestra di scroll (66%-74%),
-   sostituendo elegantemente la foto sottostante invece di un taglio netto. Due animation
-   separate (virgola) sullo stesso elemento: la prima (parallasse) condivisa con .photo, la
-   seconda (dissolvenza) propria. */
-.photoApiary {
-  opacity: 0;
-  animation-name: territorio-photo-parallax, territorio-apiary-crossfade;
-  animation-duration: 1ms, 1ms;
-  animation-timing-function: linear, linear;
-  animation-fill-mode: both, both;
-  animation-timeline: --territorio-reveal, --territorio-reveal;
-  animation-range:
-    contain 0% contain 100%,
-    contain 66% contain 74%;
-}
-
-@keyframes territorio-apiary-crossfade {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes territorio-mask-grow {
-  from {
-    -webkit-mask-size: var(--mask-from) var(--mask-from);
-    mask-size: var(--mask-from) var(--mask-from);
-  }
-
-  to {
-    -webkit-mask-size: var(--mask-to) var(--mask-to);
-    mask-size: var(--mask-to) var(--mask-to);
-  }
-}
-
-/* Segnaposto (due <ellipse inkscape:label="segno-roseto|segno-cerchio"> aggiunti a
-   abruzzo.svg): la loro posizione a schermo è calcolata in Territorio.tsx dalla geometria
-   finale della maschera (costante dopo il 20% del percorso) e passata come left/top inline;
-   qui viene gestita solo la comparsa/scomparsa in sequenza, in stile "callout" — pallino con
-   anello pulsante + scheda informativa. Tra i due c'è una pausa di scroll deliberata (46%-66%,
-   nessuno dei due è attivo) prima che Cerchio si accenda. */
-.marker {
-  position: absolute;
-  z-index: 2;
+  margin-inline: auto;
+  padding: calc(var(--nav-height, 76px) + var(--space-6)) var(--container-pad) var(--space-8);
   pointer-events: none;
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.85);
-  animation-duration: 1ms; /* ignorata: il progresso è guidato da animation-timeline */
-  animation-timing-function: linear;
-  animation-fill-mode: both;
-  animation-timeline: --territorio-reveal;
 }
 
-.markerRoseto {
-  animation-name: territorio-marker-roseto;
-  animation-range: contain 20% contain 52%;
-}
-
-.markerCerchio {
-  animation-name: territorio-marker-cerchio;
-  animation-range: contain 66% contain 100%;
-}
-
-@keyframes territorio-marker-roseto {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.85);
-  }
-
-  25% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-
-  81.25% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.85);
-  }
-}
-
-@keyframes territorio-marker-cerchio {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.85);
-  }
-
-  23.5% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-.markerDot {
-  position: relative;
-  display: block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--color-miele);
-  outline: 4px solid color-mix(in srgb, var(--color-miele) 25%, transparent);
-}
-
-.markerDot::after {
-  content: '';
+.copy > * {
   position: absolute;
-  inset: -8px;
-  border-radius: 50%;
-  border: 1.5px solid var(--color-miele);
-  animation: territorio-marker-pulse 2.2s ease-out infinite;
+  left: var(--container-pad);
+  max-width: min(30rem, calc(100% - 2 * var(--container-pad)));
 }
 
-@keyframes territorio-marker-pulse {
-  0% {
-    transform: scale(0.6);
-    opacity: 0.9;
-  }
-
-  100% {
-    transform: scale(1.8);
-    opacity: 0;
-  }
-}
-
-.markerCard {
-  position: absolute;
-  left: 22px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: max-content;
-  max-width: 280px;
+.intro {
+  --out: 0.16;
+  top: calc(var(--nav-height, 76px) + var(--space-7));
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
-  padding: var(--space-4) var(--space-5);
+  gap: var(--space-3);
+}
+
+.title {
+  text-wrap: balance;
+}
+
+.place,
+.closing {
+  bottom: var(--space-8);
+}
+
+.place {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-5);
   border-radius: var(--radius-md);
   background: var(--surface-bg);
-  /* Callout flottante senza ombra: lo distingue la superficie piena e il filo da 1.5px. */
-  border: 1.5px solid var(--surface-text);
 }
 
-/* Cerchio è tipicamente più a sinistra nel riquadro-diagramma: la sua scheda si apre verso
-   sinistra del pallino invece che verso destra, per restare più centrata sullo schema. */
-.markerCerchio .markerCard {
-  left: auto;
-  right: 22px;
+.place[data-place='roseto'] {
+  --in: 0.14;
+  --out: 0.4;
 }
 
-/* Il nome del luogo usa lo stesso ruolo display-3 dei nomi varietà in Olio/Miele (era un
-   1.05rem inventato lì per lì, sotto il gradino più piccolo che il sistema già definisce): la
-   card è il payoff dell'intera sequenza di scroll, merita la stessa voce del resto del sito. */
-.markerPlace {
-  color: var(--surface-text);
+.place[data-place='cerchio'] {
+  --in: 0.6;
+  --out: 0.86;
 }
 
-.markerNote {
+.placeName {
+  margin-top: var(--space-1);
+}
+
+.closing {
+  --in: 0.86;
+  text-wrap: balance;
+}
+
+/* Etichetta sopra lo spillo: la posizione (transform) la scrive la scena a ogni frame. */
+.pin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  translate: -50% calc(-100% - 12px);
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-button);
+  background: var(--color-inchiostro);
+  color: var(--color-bianco);
+  white-space: nowrap;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.pin[data-place='roseto'] {
+  --in: 0.06;
+}
+
+.pin[data-place='cerchio'] {
+  --in: 0.56;
+}
+
+.section:not([data-ready='true']) .pin {
+  display: none;
+}
+
+.credit {
+  position: absolute;
+  right: var(--container-pad);
+  bottom: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
   color: var(--surface-text-muted);
 }
 
-/* Sotto i ~640px il riquadro-diagramma è stretto: una scheda offset lateralmente sconfina
-   facilmente fuori viewport in entrambe le direzioni. La si porta sotto, centrata sul
-   pallino, per entrambi i segnaposto. */
-@media (max-width: 640px) {
-  .markerCard,
-  .markerCerchio .markerCard {
-    left: 50%;
-    right: auto;
-    top: 22px;
-    transform: translateX(-50%);
-    max-width: min(78vw, 260px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .section {
-    height: auto;
-  }
-
-  .pinStage {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-7);
-    padding-block: var(--space-8);
-  }
-
-  .heading,
-  .maskedPhoto,
-  .photo,
-  .marker {
-    animation: none;
-  }
-
-  .heading {
-    position: relative;
-    top: auto;
-    left: auto;
-    transform: none;
-  }
-
-  .maskedPhoto {
-    position: relative;
-    inset: auto;
-    width: min(70vmin, 480px);
-    height: min(70vmin, 480px);
-    -webkit-mask-position: center;
-    mask-position: center;
-    -webkit-mask-size: contain;
-    mask-size: contain;
-  }
-
-  .photo {
-    position: relative;
-    inset: auto;
-    transform: none;
-  }
-
-  .photoApiary,
-  .marker {
-    display: none;
-  }
-}
-
-/* Browser senza scroll-driven animations: niente pin/ingrandimento, la foto dell'oliveto è
-   mostrata già rivelata alla dimensione massima, statica. I segnaposto (e la foto
-   dell'apiario, che dipende dall'attivazione del segnaposto Cerchio) vengono nascosti perché la
-   loro posizione è calcolata assumendo .maskedPhoto a piena pagina (inset:0), non il riquadro
-   statico più piccolo di questo fallback. */
-@supports not (animation-timeline: view()) {
-  .section {
-    height: auto;
-  }
-
-  .pinStage {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-7);
-    padding-block: var(--space-8);
-  }
-
-  .heading,
-  .maskedPhoto,
-  .photo,
-  .marker {
-    animation: none;
-  }
-
-  .heading {
-    position: relative;
-    top: auto;
-    left: auto;
-    transform: none;
-  }
-
-  .maskedPhoto {
-    position: relative;
-    inset: auto;
-    width: 77.5vh;
-    height: 70vh;
-    max-width: 100%;
-    -webkit-mask-position: center;
-    mask-position: center;
-    -webkit-mask-size: contain;
-    mask-size: contain;
-  }
-
-  .photo {
-    position: relative;
-    inset: auto;
-    transform: none;
-  }
-
-  .photoApiary,
-  .marker {
-    display: none;
-  }
-}
-
-/* JS ha rilevato l'assenza nativa di scroll-driven animations (Firefox) ma può eseguire:
-   ripristina il pin che il fallback statico qui sopra aveva collassato, e lascia che
-   Territorio.tsx guidi mask-size/opacità/segnaposto/dissolvenza leggendo lo scroll a mano,
-   frame per frame. */
-.jsFallback {
-  height: 580vh;
-}
-
-.jsFallback .pinStage {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  display: block;
-  padding-block: 0;
-}
-
-.jsFallback .heading {
-  position: absolute;
-  top: 12%;
-  left: 50%;
-  transform: translate(-50%, 0);
-}
-
-.jsFallback .maskedPhoto {
-  position: absolute;
-  inset: 0;
-  width: auto;
-  height: auto;
-  max-width: none;
-  -webkit-mask-position: center 60%;
-  mask-position: center 60%;
-}
-
-.jsFallback .photo {
-  position: absolute;
-  inset: 0;
-}
-
-/* Il blocco "@supports not (animation-timeline: view())" qui sopra nasconde .photoApiary e
-   .marker (display:none) perché in quel fallback statico la loro posizione/logica, calcolata
-   assumendo .maskedPhoto a piena pagina, non avrebbe senso. Qui invece .maskedPhoto TORNA a
-   piena pagina (regola precedente), quindi vanno resi di nuovo visibili. */
-.jsFallback .photoApiary {
-  display: block;
-}
-
-.jsFallback .marker {
-  display: block;
-}
-
-/* Il transform/opacità del parallasse/segnaposto/dissolvenza viene applicato inline via JS
-   (Territorio.tsx): l'animazione CSS va disattivata per non entrare in conflitto (le
-   animazioni CSS hanno priorità sullo stile inline sulla stessa proprietà, quindi altrimenti
-   "vincerebbe" restando bloccata sul frame finale, dato che qui animation-timeline non è
-   supportato). */
-.jsFallback .photo,
-.jsFallback .marker {
-  animation: none;
-}
-
-/* Telefono e schermi stretti (lib/nativeScroll.ts): niente pin da 580vh né sequenza guidata dallo
-   scroll. Su WebKit lo scroll inerziale veloce con un cambio di direzione faceva saltare la
-   pagina. La sezione diventa statica: titolo, sagoma già rivelata e, sotto, le due schede dei
-   luoghi una dopo l'altra (left/top calcolati in JS non valgono con position: static). */
+/* Telefono: niente pin né snap (scroll nativo). Il volo parte da solo in una slide alta quanto
+   lo schermo; i testi restano sovrapposti, uno alla volta. */
 @media (pointer: coarse), (hover: none), (max-width: 1024px) {
   .section {
     height: auto;
-    padding-block: var(--space-8);
+    scroll-snap-align: none;
+    scroll-snap-stop: normal;
   }
 
-  .snapStep {
-    display: none;
-  }
-
-  .pinStage {
+  .stage {
     position: relative;
-    height: auto;
-    overflow: visible;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-6);
-    padding-inline: var(--container-pad);
+    height: max(100svh, 560px);
   }
 
-  .heading,
-  .maskedPhoto,
-  .photo,
-  .marker {
-    animation: none;
+  .intro {
+    top: calc(var(--nav-height, 64px) + var(--space-5));
   }
 
-  .heading {
-    position: relative;
-    top: auto;
-    left: auto;
-    padding-inline: 0;
-    transform: none;
+  .place,
+  .closing {
+    bottom: var(--space-7);
   }
 
-  .maskedPhoto {
-    position: relative;
-    inset: auto;
-    width: min(100%, 480px);
-    aspect-ratio: 270 / 244;
-    -webkit-mask-position: center;
-    mask-position: center;
-    -webkit-mask-size: contain;
-    mask-size: contain;
+  .place {
+    padding: var(--space-4);
   }
 
-  .photo {
-    transform: none;
+  .credit {
+    left: var(--container-pad);
+    font-size: 0.625rem;
   }
+}
 
-  .photoApiary {
-    display: none;
-  }
+/* Movimento ridotto o niente WebGL: la vista d'insieme in alto e tutti i testi sotto, in colonna. */
+.section[data-mode='static'] {
+  height: auto;
+}
 
-  .marker,
-  .markerCerchio {
-    position: static;
-    width: min(100%, 480px);
-    opacity: 1;
-    transform: none;
-  }
+.section[data-mode='static'] .stage {
+  position: relative;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
 
-  .markerDot {
-    display: none;
-  }
+.section[data-mode='static'] .canvas {
+  position: relative;
+  height: min(70svh, 640px);
+}
 
-  .markerCard,
-  .markerCerchio .markerCard {
-    position: static;
-    width: 100%;
-    max-width: none;
-    transform: none;
-  }
+.section[data-mode='static'] .copy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding-top: var(--space-7);
+}
+
+.section[data-mode='static'] .copy > *,
+.section[data-mode='static'] .credit {
+  position: static;
+  opacity: 1;
+  max-width: 40rem;
+}
+
+.section[data-mode='static'] .place {
+  padding: 0;
+}
+
+.section[data-mode='static'] .pin {
+  opacity: 1;
+}
+
+.section[data-mode='static'] .credit {
+  padding: 0 var(--container-pad) var(--space-6);
+  max-width: var(--container-max);
+  margin-inline: auto;
+  width: 100%;
 }

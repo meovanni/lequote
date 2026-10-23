@@ -1,270 +1,103 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Component, Suspense, lazy, useCallback, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { useContent } from '@/i18n/LocaleContext'
-import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
-import { maskFromPx, maskToPx } from '@/lib/territorioMask'
-import { NATIVE_SCROLL_QUERY } from '@/lib/nativeScroll'
+import type { PlaceId } from './TerrainScene'
+import { useFlightProgress } from './useFlightProgress'
 import styles from './Territorio.module.css'
 
-// Deve combaciare con .section { height } in Territorio.module.css: la sezione è alta PIN_VH
-// e resta "pinnata" (position: sticky) per PIN_VH - STICKY_VH, cioè la porzione di scroll
-// dedicata all'intera sequenza (ingrandimento del clip + i due segnaposto in successione).
-// scroll-snap-type:y mandatory (impostato globalmente) forzerebbe un solo salto tra l'inizio
-// di questa sezione e l'inizio della prossima se non ci fossero altri punti di snap nel mezzo:
-// questi marcatori invisibili suddividono la sequenza in passi che ogni gesto di scroll può
-// raggiungere, mantenendo "uno scroll = un movimento" coerente col resto del sito.
-const PIN_VH = 580
-const STICKY_VH = 100
-const SNAP_STEPS = 26
-const containFraction = (PIN_VH - STICKY_VH) / PIN_VH
+// three e la scena arrivano in un pezzo a parte, solo nel browser e solo vicino alla sezione.
+const TerrainScene = lazy(() => import('./TerrainScene').then((module) => ({ default: module.TerrainScene })))
 
-// Fasi della sequenza, come frazione (0-1) della porzione "contain" (cioè dell'intero tratto
-// pinnato). Devono combaciare con gli animation-range dei keyframe in Territorio.module.css:
-// qui la stessa scala viene riletta a mano, in JS, per i browser (Firefox) privi di
-// scroll-driven animations native. Tra la scomparsa di Roseto (0.52) e la comparsa di Cerchio
-// (0.66) c'è una pausa deliberata (14% del percorso, ~81vh) prima che il secondo segnaposto si
-// attivi.
-const MASK_PHASE_END = 0.2
-const HEADING_FADE_END = 0.08
+// Punti di snap invisibili lungo il tratto pinnato (desktop): con lo snap obbligatorio della home,
+// senza questi un gesto salterebbe l'intera sezione. Devono stare dentro .section { height }.
+const SNAP_STEPS = 16
 
-const ROSETO_ENTER_START = 0.2
-const ROSETO_ENTER_END = 0.28
-const ROSETO_EXIT_START = 0.46
-const ROSETO_EXIT_END = 0.52
-
-const CERCHIO_ENTER_START = 0.66
-const CERCHIO_ENTER_END = 0.74
-
-// Devono combaciare con il keyframe territorio-photo-parallax in
-// Territorio.module.css.
-const PHOTO_PARALLAX_SCALE = 1.18
-const PHOTO_PARALLAX_TRAVEL = 6 // % di translateY, da +6% a -6%
-
-// Coordinate (nello spazio del viewBox di abruzzo.svg, "325 90 270 244") dei due <ellipse>
-// inkscape:label="segno-roseto" / "segno-cerchio" aggiunti all'SVG. Ricavate applicando il loro
-// transform="scale(1,-1)" a cx/cy: posizione resa = (cx, -cy).
-const VIEWBOX = { x: 325, y: 90, w: 270, h: 244 }
-const MARKER_COORDS = {
-  roseto: { x: 469.95334, y: 141.03619 },
-  cerchio: { x: 410.95575, y: 250.4272 },
-}
-// mask-position: center 60% in CSS: l'ancoraggio del riquadro della maschera nel contenitore.
-const MASK_ANCHOR_X_PCT = 0.5
-const MASK_ANCHOR_Y_PCT = 0.6
-
-/** Posizione (px, relativa al contenitore a piena pagina) di un punto del viewBox della
- * maschera, una volta che questa ha raggiunto la sua dimensione finale (dopo MASK_PHASE_END) e
- * tenendo conto del letterboxing di preserveAspectRatio (default "meet") quando mask-size non
- * rispetta esattamente il rapporto larghezza/altezza del viewBox. */
-function markerScreenPosition(vbX: number, vbY: number, containerW: number, containerH: number) {
-  const maskW = maskToPx(containerW, containerH)
-  const maskH = maskW
-  const scale = Math.min(maskW / VIEWBOX.w, maskH / VIEWBOX.h)
-  const renderedW = VIEWBOX.w * scale
-  const renderedH = VIEWBOX.h * scale
-  const maskBoxX = (containerW - maskW) * MASK_ANCHOR_X_PCT
-  const maskBoxY = (containerH - maskH) * MASK_ANCHOR_Y_PCT
-  const shapeOriginX = maskBoxX + (maskW - renderedW) / 2
-  const shapeOriginY = maskBoxY + (maskH - renderedH) / 2
-  return {
-    x: shapeOriginX + (vbX - VIEWBOX.x) * scale,
-    y: shapeOriginY + (vbY - VIEWBOX.y) * scale,
+/** Se WebGL manca o la scena si rompe, resta la pagina con i testi. */
+class SceneBoundary extends Component<{ onError: () => void; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false }
+  static getDerivedStateFromError() {
+    return { failed: true }
   }
-}
-
-/** Altezza del palco pinnato (100svh): resta ferma quando la barra del browser mobile compare o
- * sparisce, a differenza di window.innerHeight. È la stessa base su cui la CSS dimensiona la
- * maschera, quindi sagoma e segnaposto non si staccano. */
-function stageHeight(stage: HTMLElement | null) {
-  return stage?.clientHeight || window.innerHeight
-}
-
-/** Rampa lineare 0→1 tra due frazioni di progress; costante fuori dall'intervallo. */
-function rampIn(progress: number, start: number, end: number) {
-  if (end <= start) return progress >= end ? 1 : 0
-  return Math.min(1, Math.max(0, (progress - start) / (end - start)))
+  componentDidCatch() {
+    this.props.onError()
+  }
+  render() {
+    return this.state.failed ? null : this.props.children
+  }
 }
 
 export function Territorio() {
   const { territorio } = useContent()
   const sectionRef = useRef<HTMLElement | null>(null)
-  const pinStageRef = useRef<HTMLDivElement | null>(null)
-  const headingRef = useRef<HTMLDivElement | null>(null)
-  const maskedRef = useRef<HTMLDivElement | null>(null)
-  const photoRef = useRef<HTMLImageElement | null>(null)
-  const apiaryPhotoRef = useRef<HTMLImageElement | null>(null)
-  const rosetoRef = useRef<HTMLDivElement | null>(null)
-  const cerchioRef = useRef<HTMLDivElement | null>(null)
-  const [jsFallback, setJsFallback] = useState(false)
-  const [markerPositions, setMarkerPositions] = useState<{
-    roseto: { x: number; y: number }
-    cerchio: { x: number; y: number }
-  } | null>(null)
-
-  useEffect(() => {
-    const supportsScrollDriven = typeof CSS !== 'undefined' && CSS.supports('animation-timeline', 'view()')
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    // Sul telefono la sezione è statica (vedi Territorio.module.css): niente scroll guidato da JS.
-    const nativeScroll = window.matchMedia(NATIVE_SCROLL_QUERY).matches
-    if (!supportsScrollDriven && !prefersReducedMotion && !nativeScroll) setJsFallback(true)
-  }, [])
-
-  // La posizione dei segnaposto dipende solo dalla dimensione finale della maschera (costante
-  // dopo MASK_PHASE_END) e dal viewport: si ricalcola al resize, non ad ogni frame di scroll.
-  useLayoutEffect(() => {
-    const measure = () => {
-      const w = window.innerWidth
-      const h = stageHeight(pinStageRef.current)
-      setMarkerPositions({
-        roseto: markerScreenPosition(MARKER_COORDS.roseto.x, MARKER_COORDS.roseto.y, w, h),
-        cerchio: markerScreenPosition(MARKER_COORDS.cerchio.x, MARKER_COORDS.cerchio.y, w, h),
-      })
-    }
-    measure()
-    window.addEventListener('resize', measure)
-    return () => window.removeEventListener('resize', measure)
-  }, [])
-
-  useEffect(() => {
-    if (!jsFallback) return
-    const section = sectionRef.current
-    const heading = headingRef.current
-    const masked = maskedRef.current
-    const photo = photoRef.current
-    const apiaryPhoto = apiaryPhotoRef.current
-    const roseto = rosetoRef.current
-    const cerchio = cerchioRef.current
-    if (!section || !heading || !masked || !photo || !apiaryPhoto || !roseto || !cerchio) return
-
-    let raf = 0
-
-    const setMarkerState = (el: HTMLDivElement, visibility: number) => {
-      el.style.opacity = String(visibility)
-      el.style.transform = `translate(-50%, -50%) scale(${0.85 + visibility * 0.15})`
-    }
-
-    const update = () => {
-      raf = 0
-      const rect = section.getBoundingClientRect()
-      const vh = window.innerHeight
-      const pinRange = rect.height - vh
-      const progress = pinRange > 0 ? Math.min(1, Math.max(0, -rect.top / pinRange)) : 0
-
-      const maskProgress = rampIn(progress, 0, MASK_PHASE_END)
-      const stageH = stageHeight(pinStageRef.current)
-      const from = maskFromPx(window.innerWidth, stageH)
-      const size = from + maskProgress * (maskToPx(window.innerWidth, stageH) - from)
-      masked.style.setProperty('mask-size', `${size}px ${size}px`)
-      masked.style.setProperty('-webkit-mask-size', `${size}px ${size}px`)
-
-      const headingProgress = rampIn(progress, 0, HEADING_FADE_END)
-      heading.style.opacity = String(1 - headingProgress)
-      heading.style.transform = `translate(-50%, ${-18 * headingProgress}px)`
-
-      const travel = PHOTO_PARALLAX_TRAVEL - progress * (PHOTO_PARALLAX_TRAVEL * 2)
-      const photoTransform = `scale(${PHOTO_PARALLAX_SCALE}) translateY(${travel}%)`
-      photo.style.transform = photoTransform
-      apiaryPhoto.style.transform = photoTransform
-
-      const rosetoIn = rampIn(progress, ROSETO_ENTER_START, ROSETO_ENTER_END)
-      const rosetoOut = 1 - rampIn(progress, ROSETO_EXIT_START, ROSETO_EXIT_END)
-      setMarkerState(roseto, Math.min(rosetoIn, rosetoOut))
-
-      const cerchioIn = rampIn(progress, CERCHIO_ENTER_START, CERCHIO_ENTER_END)
-      setMarkerState(cerchio, cerchioIn)
-      // La foto dell'apiario compare in dissolvenza in sincronia con l'attivazione del
-      // segnaposto Cerchio, sopra la foto dell'oliveto (stesso parallasse dei due).
-      apiaryPhoto.style.opacity = String(cerchioIn)
-    }
-
-    const onScroll = () => {
-      if (raf) return
-      raf = window.requestAnimationFrame(update)
-    }
-
-    update()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll)
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-      if (raf) window.cancelAnimationFrame(raf)
-    }
-  }, [jsFallback])
-
-  const [rosetoContent, cerchioContent] = territorio.markers
+  const stageRef = useRef<HTMLDivElement | null>(null)
+  const labels = useRef<Record<PlaceId, HTMLElement | null>>({ roseto: null, cerchio: null })
+  const { progress, mode, setMode, near, onScreen } = useFlightProgress(sectionRef, stageRef)
+  const [ready, setReady] = useState(false)
+  const fail = useCallback(() => setMode('static'), [setMode])
+  const markReady = useCallback(() => setReady(true), [])
+  const isPhone = mode === 'autoplay'
 
   return (
     <section
       id="territorio"
       data-surface="light"
-      className={[styles.section, jsFallback ? styles.jsFallback : ''].filter(Boolean).join(' ')}
+      data-mode={mode}
+      data-ready={ready}
+      className={styles.section}
       ref={sectionRef}
     >
-      {Array.from({ length: SNAP_STEPS }, (_, index) => index / (SNAP_STEPS - 1)).map((step) => (
-        <div
-          key={step}
-          className={styles.snapStep}
-          style={{ top: `${step * containFraction * 100}%` }}
-          aria-hidden="true"
-        />
-      ))}
+      {mode === 'scroll' &&
+        Array.from({ length: SNAP_STEPS }, (_, index) => (
+          <div key={index} className={styles.snapStep} style={{ top: `${(index / SNAP_STEPS) * 100}%` }} aria-hidden="true" />
+        ))}
 
-      <div className={styles.pinStage} ref={pinStageRef}>
-        {/* Div semplice: il titolo ha già la sua dissolvenza legata allo scroll (CSS o JS). */}
-        <div className={styles.heading} ref={headingRef}>
-          <SectionHeading title={territorio.title} subtitle={territorio.intro} align="center" />
+      <div className={styles.stage} ref={stageRef} style={{ '--p': 0 } as CSSProperties}>
+        <div className={styles.canvas}>
+          {near && mode !== 'pending' && (
+            <SceneBoundary onError={fail}>
+              <Suspense fallback={null}>
+                <TerrainScene
+                  progress={progress}
+                  labels={labels}
+                  active={onScreen}
+                  segments={isPhone ? 220 : 420}
+                  onReady={markReady}
+                  onError={fail}
+                />
+              </Suspense>
+            </SceneBoundary>
+          )}
         </div>
 
-        <div className={styles.maskedPhoto} ref={maskedRef}>
-          <img
-            ref={photoRef}
-            className={styles.photo}
-            src={territorio.imageOliveto}
-            alt={territorio.imageOlivetoLabel}
-            loading="lazy"
-          />
-          <img
-            ref={apiaryPhotoRef}
-            className={`${styles.photo} ${styles.photoApiary}`}
-            src={territorio.imageApiario}
-            alt={territorio.imageApiarioLabel}
-            loading="lazy"
-          />
+        {territorio.places.map((place) => (
+          <span
+            key={place.id}
+            className={`${styles.pin} mono-label`}
+            data-place={place.id}
+            ref={(element) => {
+              labels.current[place.id as PlaceId] = element
+            }}
+            aria-hidden="true"
+          >
+            {place.place}
+          </span>
+        ))}
+
+        <div className={styles.copy}>
+          <div className={`${styles.beat} ${styles.intro}`}>
+            <h2 className={`${styles.title} display-1`}>{territorio.title}</h2>
+            <p className="body-lead">{territorio.intro}</p>
+          </div>
+          {territorio.places.map((place) => (
+            <div key={place.id} className={`${styles.beat} ${styles.place}`} data-place={place.id}>
+              <span className="specimen-tag specimen">{place.elevation}</span>
+              <h3 className={`${styles.placeName} display-2`}>{place.place}</h3>
+              <p className="body">{place.note}</p>
+            </div>
+          ))}
+          <p className={`${styles.beat} ${styles.closing} display-3`}>{territorio.closing}</p>
         </div>
 
-        {markerPositions && (
-          <>
-            <div
-              className={`${styles.marker} ${styles.markerRoseto}`}
-              style={{
-                left: markerPositions.roseto.x,
-                top: markerPositions.roseto.y,
-              }}
-              ref={rosetoRef}
-            >
-              <span className={styles.markerDot} aria-hidden="true" />
-              <div className={styles.markerCard}>
-                <span className={`${styles.markerPlace} display-3`}>{rosetoContent.place}</span>
-                <p className={`${styles.markerNote} body-sm`}>{rosetoContent.note}</p>
-              </div>
-            </div>
-
-            <div
-              className={`${styles.marker} ${styles.markerCerchio}`}
-              style={{
-                left: markerPositions.cerchio.x,
-                top: markerPositions.cerchio.y,
-              }}
-              ref={cerchioRef}
-            >
-              <span className={styles.markerDot} aria-hidden="true" />
-              <div className={styles.markerCard}>
-                <span className={`${styles.markerPlace} display-3`}>{cerchioContent.place}</span>
-                <p className={`${styles.markerNote} body-sm`}>{cerchioContent.note}</p>
-              </div>
-            </div>
-          </>
-        )}
+        <p className={styles.credit}>{territorio.credit}</p>
       </div>
     </section>
   )

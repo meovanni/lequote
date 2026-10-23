@@ -18,6 +18,11 @@ export default defineConfig({
   server: {
     proxy: { '/store': medusaTarget, '/filiera': medusaTarget },
   },
+  // La scena 3D di Territorio si importa in modo pigro: senza questo Vite scopre three e la
+  // fiber solo a pagina aperta, rifà il bundle delle dipendenze e la pagina resta con due React.
+  optimizeDeps: {
+    include: ['three', '@react-three/fiber'],
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

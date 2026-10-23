@@ -1,5 +1,4 @@
 import { Hero } from '@/components/sections/Hero/Hero'
-import { ChiSiamo } from '@/components/sections/ChiSiamo/ChiSiamo'
 import { Territorio } from '@/components/sections/Territorio/Territorio'
 import { Olio } from '@/components/sections/Olio/Olio'
 import { Miele } from '@/components/sections/Miele/Miele'
@@ -23,7 +22,6 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <ChiSiamo />
       <Territorio />
       <Olio />
       <Miele />
