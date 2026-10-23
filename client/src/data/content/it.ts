@@ -420,7 +420,7 @@ export const domande = {
           id: 'come-ordinare',
           question: 'Come posso ordinare?',
           answer:
-            'Dalla sezione Shop scegli prodotti e quantità e invia la richiesta: si apre il tuo programma di posta con il riepilogo. Ti rispondiamo per confermare disponibilità, costo della spedizione e modalità di pagamento. Il negozio online con pagamento diretto è in preparazione.',
+            'Nello Shop scegli prodotti e quantità e completa l’ordine dal carrello. Puoi pagare con bonifico bancario: trovi le coordinate nella pagina di conferma e prepariamo l’ordine quando il pagamento è accreditato. Oppure prenoti i prodotti e li ritiri in una delle nostre sedi, a Roseto degli Abruzzi o a Cerchio, pagando al ritiro.',
         },
         {
           id: 'dove-spedite',

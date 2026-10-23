@@ -431,7 +431,7 @@ export const de: Content = {
             id: 'come-ordinare',
             question: 'Wie kann ich bestellen?',
             answer:
-              'Wählen Sie im Bereich Shop Produkte und Mengen und senden Sie die Anfrage: Ihr E-Mail-Programm öffnet sich mit der Zusammenfassung. Wir antworten und bestätigen Verfügbarkeit, Versandkosten und Zahlungsart. Ein Onlineshop mit direkter Bezahlung ist in Vorbereitung.',
+              'Wählen Sie im Shop Produkte und Mengen und schließen Sie die Bestellung im Warenkorb ab. Sie können per Banküberweisung bezahlen: Die Bankdaten finden Sie auf der Bestätigungsseite, und wir bereiten die Bestellung vor, sobald die Zahlung eingegangen ist. Oder Sie reservieren die Produkte und holen sie an einem unserer Standorte ab, in Roseto degli Abruzzi oder Cerchio, und bezahlen bei der Abholung.',
           },
           {
             id: 'dove-spedite',

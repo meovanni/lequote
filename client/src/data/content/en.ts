@@ -431,7 +431,7 @@ export const en: Content = {
             id: 'come-ordinare',
             question: 'How can I order?',
             answer:
-              'In the Shop section choose products and quantities and send the request: your email program opens with the summary. We reply to confirm availability, shipping cost and payment method. An online shop with direct payment is on its way.',
+              'In the Shop choose products and quantities, then complete the order from the cart. You can pay by bank transfer: the details are on the confirmation page and we prepare the order once the payment has arrived. Or you can reserve the products and collect them at one of our sites, in Roseto degli Abruzzi or Cerchio, paying on collection.',
           },
           {
             id: 'dove-spedite',
