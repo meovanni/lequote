@@ -22,7 +22,7 @@ const ORGANIZATION_LD = {
   name: SITE_NAME,
   description:
     "Azienda agricola familiare tra la Riserva del Borsacchio e Cerchio (AQ): olio extravergine d'oliva e miele, dal mare alla montagna abruzzese.",
-  email: 'info@lequote.it',
+  email: 'info@le-quote.it',
   areaServed: [
     { '@type': 'Place', name: 'Roseto degli Abruzzi (TE)' },
     { '@type': 'Place', name: 'Cerchio (AQ)' },

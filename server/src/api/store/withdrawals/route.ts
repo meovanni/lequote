@@ -39,7 +39,7 @@ export async function POST(req: MedusaRequest<z.infer<typeof WithdrawalCreate>>,
     return
   }
   if (!allow(req.ip ?? 'sconosciuto')) {
-    throw new MedusaError(MedusaError.Types.NOT_ALLOWED, 'Troppe richieste: riprova tra un’ora o scrivici a info@lequote.it.')
+    throw new MedusaError(MedusaError.Types.NOT_ALLOWED, 'Troppe richieste: riprova tra un’ora o scrivici a info@le-quote.it.')
   }
 
   const orderId = await matchOrder(req.scope, body.order_reference, body.email)

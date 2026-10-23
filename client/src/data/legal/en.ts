@@ -39,8 +39,8 @@ export const legalEn: LegalContent = {
     sending: 'Sending…',
     doneTitle: 'Withdrawal sent',
     doneBody: (email, sentAt) => `We received your withdrawal statement on ${sentAt}. The receipt is on its way to ${email}: if you can’t find it, check your spam folder.`,
-    error: 'Sending failed. Please try again, or email your statement to info@lequote.it: it is still valid as long as it is sent within the 14 days.',
-    tooMany: 'Too many submissions from this connection. Try again in an hour, or write to info@lequote.it.',
+    error: 'Sending failed. Please try again, or email your statement to info@le-quote.it: it is still valid as long as it is sent within the 14 days.',
+    tooMany: 'Too many submissions from this connection. Try again in an hour, or write to info@le-quote.it.',
   },
 
   documents: {

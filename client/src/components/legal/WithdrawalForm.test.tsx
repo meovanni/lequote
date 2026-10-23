@@ -60,6 +60,6 @@ describe('WithdrawalForm (art. 54-bis)', () => {
     await userEvent.type(screen.getByLabelText('Nome e cognome'), 'Anna')
     await userEvent.type(screen.getByLabelText('Email'), 'anna@example.com')
     await userEvent.click(screen.getByRole('button', { name: 'Conferma recesso' }))
-    expect(await screen.findByRole('alert')).toHaveTextContent('info@lequote.it')
+    expect(await screen.findByRole('alert')).toHaveTextContent('info@le-quote.it')
   })
 })

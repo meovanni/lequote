@@ -25,7 +25,7 @@ export const en: Content = {
     notFoundTitle: 'Page not found',
     notFoundBody: 'This address does not match any page on the site.',
     errorTitle: 'Something went wrong',
-    errorBody: 'Reload the page; if the problem persists, write to us at info@lequote.it.',
+    errorBody: 'Reload the page; if the problem persists, write to us at info@le-quote.it.',
     backHome: 'Back to the home page',
     adminLink: 'Staff area',
   },
@@ -130,7 +130,7 @@ export const en: Content = {
   contatti: {
     eyebrow: 'Contact',
     title: 'Come and see us, at any altitude',
-    email: 'info@lequote.it',
+    email: 'info@le-quote.it',
     phone: '[Phone to be confirmed]',
     note: 'Write to us for visits, tastings or information about our products.',
   },
@@ -448,7 +448,7 @@ export const en: Content = {
           {
             id: 'visite',
             question: 'Can we visit you?',
-            answer: 'Yes, by appointment: write to info@lequote.it saying which of the two sites you would like to visit.',
+            answer: 'Yes, by appointment: write to info@le-quote.it saying which of the two sites you would like to visit.',
           },
         ],
       },
@@ -495,7 +495,7 @@ export const en: Content = {
     formatLabel: 'Size',
     taxIncluded: 'VAT included',
     loading: 'Loading prices and availability…',
-    loadError: 'Prices and availability cannot be reached right now. Try again later or write to us at info@lequote.it.',
+    loadError: 'Prices and availability cannot be reached right now. Try again later or write to us at info@le-quote.it.',
     available: 'In stock',
     lowStock: (count) => (count === 1 ? 'Last one left' : `Only ${count} left`),
     soldOut: 'Sold out for now',
@@ -656,7 +656,7 @@ export const en: Content = {
       payment: 'Choose how to pay.',
       terms: 'To order, please accept the terms of sale.',
       submit:
-        'The order did not go through and you have not been charged. Please try again, or write to info@lequote.it.',
+        'The order did not go through and you have not been charged. Please try again, or write to info@le-quote.it.',
     },
   },
 
@@ -668,7 +668,7 @@ export const en: Content = {
     loading: 'Loading your order…',
     missing: 'There is no order to show.',
     error:
-      'We can’t show the order right now. If you have just ordered, the order is recorded and we will write to you. Questions: info@lequote.it.',
+      'We can’t show the order right now. If you have just ordered, the order is recorded and we will write to you. Questions: info@le-quote.it.',
     bankTitle: 'Bank transfer details',
     bankHolder: 'Account holder',
     bankIban: 'IBAN',
@@ -698,9 +698,9 @@ export const en: Content = {
     loading: 'Loading the batch…',
     notFoundTitle: 'Batch not found',
     notFoundBody: (code: string) =>
-      `There is no published batch with code ${code}. Check the code on the label, or write to us at info@lequote.it.`,
+      `There is no published batch with code ${code}. Check the code on the label, or write to us at info@le-quote.it.`,
     invalidBody: 'This address does not contain a valid batch code.',
-    error: 'We can’t show the batch right now. Please try again shortly, or write to us at info@lequote.it.',
+    error: 'We can’t show the batch right now. Please try again shortly, or write to us at info@le-quote.it.',
     searchAgain: 'Find another batch',
     backHome: 'Back to home',
   },

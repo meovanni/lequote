@@ -108,7 +108,7 @@ export const miele = {
 export const contatti = {
   eyebrow: 'Contatti',
   title: 'Vieni a trovarci, a qualsiasi quota',
-  email: 'info@lequote.it',
+  email: 'info@le-quote.it',
   phone: '[Telefono da confermare]',
   note: 'Scriveteci per visite, degustazioni o informazioni sui nostri prodotti.',
 }
@@ -437,7 +437,7 @@ export const domande = {
         {
           id: 'visite',
           question: 'Si può venire a trovarvi?',
-          answer: 'Sì, su appuntamento: scrivici a info@lequote.it indicando quale delle due sedi vuoi visitare.',
+          answer: 'Sì, su appuntamento: scrivici a info@le-quote.it indicando quale delle due sedi vuoi visitare.',
         },
       ],
     },
@@ -512,7 +512,7 @@ export const ui = {
   notFoundTitle: 'Pagina non trovata',
   notFoundBody: 'L’indirizzo non corrisponde a nessuna pagina del sito.',
   errorTitle: 'Qualcosa non ha funzionato',
-  errorBody: 'Ricarica la pagina; se il problema resta, scrivici a info@lequote.it.',
+  errorBody: 'Ricarica la pagina; se il problema resta, scrivici a info@le-quote.it.',
   backHome: 'Torna alla home',
   adminLink: 'Area riservata',
 }
@@ -526,7 +526,7 @@ export const productUi = {
   taxIncluded: 'IVA inclusa',
   loading: 'Carico prezzi e disponibilità…',
   loadError:
-    'Prezzi e disponibilità non sono raggiungibili in questo momento. Riprova più tardi o scrivici a info@lequote.it.',
+    'Prezzi e disponibilità non sono raggiungibili in questo momento. Riprova più tardi o scrivici a info@le-quote.it.',
   available: 'Disponibile',
   lowStock: (count: number) => (count === 1 ? 'Ultimo pezzo' : `Ultimi ${count} pezzi`),
   soldOut: 'Esaurito al momento',
@@ -698,7 +698,7 @@ export const checkoutUi = {
     payment: 'Scegli come pagare.',
     terms: 'Per ordinare accetta le condizioni di vendita.',
     submit:
-      'L’ordine non è andato a buon fine e non ti è stato addebitato nulla. Riprova, oppure scrivici a info@lequote.it.',
+      'L’ordine non è andato a buon fine e non ti è stato addebitato nulla. Riprova, oppure scrivici a info@le-quote.it.',
   },
 }
 
@@ -710,7 +710,7 @@ export const orderUi = {
   loading: 'Carico l’ordine…',
   missing: 'Non c’è nessun ordine da mostrare.',
   error:
-    'Non riusciamo a mostrare l’ordine in questo momento. Se hai appena ordinato, l’ordine è registrato: ti scriviamo noi. Per dubbi: info@lequote.it.',
+    'Non riusciamo a mostrare l’ordine in questo momento. Se hai appena ordinato, l’ordine è registrato: ti scriviamo noi. Per dubbi: info@le-quote.it.',
   bankTitle: 'Coordinate per il bonifico',
   bankHolder: 'Intestatario',
   bankIban: 'IBAN',
@@ -742,9 +742,9 @@ export const lotUi = {
   loading: 'Carico il lotto…',
   notFoundTitle: 'Lotto non trovato',
   notFoundBody: (code: string) =>
-    `Non c’è nessun lotto pubblicato con codice ${code}. Controlla il codice in etichetta, oppure scrivici a info@lequote.it.`,
+    `Non c’è nessun lotto pubblicato con codice ${code}. Controlla il codice in etichetta, oppure scrivici a info@le-quote.it.`,
   invalidBody: 'Questo indirizzo non contiene un codice lotto valido.',
-  error: 'Non riusciamo a mostrare il lotto in questo momento. Riprova tra poco, oppure scrivici a info@lequote.it.',
+  error: 'Non riusciamo a mostrare il lotto in questo momento. Riprova tra poco, oppure scrivici a info@le-quote.it.',
   searchAgain: 'Cerca un altro lotto',
   backHome: 'Torna alla home',
 }

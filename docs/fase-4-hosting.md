@@ -92,6 +92,14 @@ Conclusione: con OVHcloud oggi un VPS in Italia non si può ordinare, e non c'è
 riassortimento. La scelta passa ad **Aruba Cloud VPS O2A4** (Arezzo), con il dominio di Le Quote su
 Aruba ("Dominio con email", 5 caselle) accanto a quello di colognasprelax.
 
+## Scelte fatte (2026-10-23)
+
+- Dominio **le-quote.it** su Aruba con "Dominio con email"; `lequote.it` è di un privato (scade il
+  2027-09-19): si tiene d'occhio per prenderlo se si libera.
+- Email del sito e dei clienti: **info@le-quote.it** (mittente delle email e indirizzo nelle pagine).
+- `STOREFRONT_URL` e `VITE_SITE_URL`: `https://le-quote.it`.
+- VPS: Aruba Cloud VPS O2A4.
+
 ## Backup: oltre a quello del fornitore
 
 Il backup del fornitore protegge dal guasto della macchina, non dalla perdita dell'account o da un

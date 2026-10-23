@@ -25,7 +25,7 @@ export const de: Content = {
     notFoundTitle: 'Seite nicht gefunden',
     notFoundBody: 'Diese Adresse gehört zu keiner Seite der Website.',
     errorTitle: 'Etwas ist schiefgelaufen',
-    errorBody: 'Laden Sie die Seite neu; besteht das Problem weiter, schreiben Sie uns an info@lequote.it.',
+    errorBody: 'Laden Sie die Seite neu; besteht das Problem weiter, schreiben Sie uns an info@le-quote.it.',
     backHome: 'Zur Startseite',
     adminLink: 'Interner Bereich',
   },
@@ -130,7 +130,7 @@ export const de: Content = {
   contatti: {
     eyebrow: 'Kontakt',
     title: 'Besuchen Sie uns, auf jeder Höhe',
-    email: 'info@lequote.it',
+    email: 'info@le-quote.it',
     phone: '[Telefon noch zu bestätigen]',
     note: 'Schreiben Sie uns für Besuche, Verkostungen oder Informationen zu unseren Produkten.',
   },
@@ -448,7 +448,7 @@ export const de: Content = {
           {
             id: 'visite',
             question: 'Kann man Sie besuchen?',
-            answer: 'Ja, nach Vereinbarung: Schreiben Sie an info@lequote.it und geben Sie an, welchen der beiden Standorte Sie besuchen möchten.',
+            answer: 'Ja, nach Vereinbarung: Schreiben Sie an info@le-quote.it und geben Sie an, welchen der beiden Standorte Sie besuchen möchten.',
           },
         ],
       },
@@ -496,7 +496,7 @@ export const de: Content = {
     taxIncluded: 'inkl. MwSt.',
     loading: 'Preise und Verfügbarkeit werden geladen…',
     loadError:
-      'Preise und Verfügbarkeit sind gerade nicht erreichbar. Versuchen Sie es später erneut oder schreiben Sie uns an info@lequote.it.',
+      'Preise und Verfügbarkeit sind gerade nicht erreichbar. Versuchen Sie es später erneut oder schreiben Sie uns an info@le-quote.it.',
     available: 'Verfügbar',
     lowStock: (count) => (count === 1 ? 'Nur noch ein Stück' : `Nur noch ${count} Stück`),
     soldOut: 'Derzeit ausverkauft',
@@ -657,7 +657,7 @@ export const de: Content = {
       payment: 'Bitte wählen Sie eine Zahlungsart.',
       terms: 'Um zu bestellen, akzeptieren Sie bitte die Verkaufsbedingungen.',
       submit:
-        'Die Bestellung ist fehlgeschlagen, es wurde nichts belastet. Bitte versuchen Sie es erneut oder schreiben Sie an info@lequote.it.',
+        'Die Bestellung ist fehlgeschlagen, es wurde nichts belastet. Bitte versuchen Sie es erneut oder schreiben Sie an info@le-quote.it.',
     },
   },
 
@@ -669,7 +669,7 @@ export const de: Content = {
     loading: 'Bestellung wird geladen…',
     missing: 'Es gibt keine Bestellung anzuzeigen.',
     error:
-      'Die Bestellung kann gerade nicht angezeigt werden. Wenn Sie eben bestellt haben, ist sie erfasst: Wir melden uns. Fragen: info@lequote.it.',
+      'Die Bestellung kann gerade nicht angezeigt werden. Wenn Sie eben bestellt haben, ist sie erfasst: Wir melden uns. Fragen: info@le-quote.it.',
     bankTitle: 'Bankverbindung für die Überweisung',
     bankHolder: 'Kontoinhaber',
     bankIban: 'IBAN',
@@ -699,9 +699,9 @@ export const de: Content = {
     loading: 'Charge wird geladen…',
     notFoundTitle: 'Charge nicht gefunden',
     notFoundBody: (code: string) =>
-      `Es gibt keine veröffentlichte Charge mit der Nummer ${code}. Prüfen Sie die Nummer auf dem Etikett oder schreiben Sie an info@lequote.it.`,
+      `Es gibt keine veröffentlichte Charge mit der Nummer ${code}. Prüfen Sie die Nummer auf dem Etikett oder schreiben Sie an info@le-quote.it.`,
     invalidBody: 'Diese Adresse enthält keine gültige Chargennummer.',
-    error: 'Die Charge kann gerade nicht angezeigt werden. Bitte versuchen Sie es gleich noch einmal oder schreiben Sie an info@lequote.it.',
+    error: 'Die Charge kann gerade nicht angezeigt werden. Bitte versuchen Sie es gleich noch einmal oder schreiben Sie an info@le-quote.it.',
     searchAgain: 'Andere Charge suchen',
     backHome: 'Zur Startseite',
   },

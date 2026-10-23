@@ -11,7 +11,7 @@ export const SELLER = {
   name: 'Le Quote, Azienda Agricola [ragione sociale da fornire]',
   address: '[sede legale da fornire]',
   vat: '[P.IVA da fornire]',
-  email: 'info@lequote.it',
+  email: 'info@le-quote.it',
   pec: '[PEC da fornire]',
   phone: '[telefono da fornire]',
 }

@@ -4,7 +4,7 @@ import { lotPageUrl, lotQrFileName, lotQrPng, lotQrSvg, storefrontUrl } from '..
 
 describe('storefrontUrl', () => {
   it('usa STOREFRONT_URL senza la barra finale', () => {
-    expect(storefrontUrl({ STOREFRONT_URL: 'https://lequote.it/' })).toBe('https://lequote.it')
+    expect(storefrontUrl({ STOREFRONT_URL: 'https://le-quote.it/' })).toBe('https://le-quote.it')
   })
 
   it('in sviluppo ricade sulla vetrina locale', () => {
@@ -16,13 +16,13 @@ describe('storefrontUrl', () => {
   })
 
   it('rifiuta un indirizzo che non è http o https', () => {
-    expect(() => storefrontUrl({ STOREFRONT_URL: 'lequote.it' })).toThrow(/STOREFRONT_URL/)
+    expect(() => storefrontUrl({ STOREFRONT_URL: 'le-quote.it' })).toThrow(/STOREFRONT_URL/)
   })
 })
 
 describe('lotPageUrl', () => {
   it('punta alla pagina del lotto con il codice canonico', () => {
-    expect(lotPageUrl('https://lequote.it', 'L2026-07')).toBe('https://lequote.it/lotto/L2026-07')
+    expect(lotPageUrl('https://le-quote.it', 'L2026-07')).toBe('https://le-quote.it/lotto/L2026-07')
   })
 })
 
@@ -34,7 +34,7 @@ describe('lotQrFileName', () => {
 })
 
 describe('QR del lotto', () => {
-  const url = 'https://lequote.it/lotto/L2026-07'
+  const url = 'https://le-quote.it/lotto/L2026-07'
   let png: PNG
 
   // Sotto Jest la codifica PNG (JavaScript puro) è molto più lenta che in Node: si fa una volta.

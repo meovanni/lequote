@@ -39,8 +39,8 @@ export const legalDe: LegalContent = {
     sending: 'Wird gesendet…',
     doneTitle: 'Widerruf gesendet',
     doneBody: (email, sentAt) => `Ihre Widerrufserklärung ist am ${sentAt} eingegangen. Die Bestätigung ist unterwegs an ${email}: Falls Sie sie nicht finden, sehen Sie im Spam-Ordner nach.`,
-    error: 'Das Senden ist fehlgeschlagen. Bitte versuchen Sie es erneut oder senden Sie die Erklärung per E-Mail an info@lequote.it: Sie gilt trotzdem, sofern sie innerhalb der 14 Tage abgeschickt wird.',
-    tooMany: 'Zu viele Übermittlungen von dieser Verbindung. Versuchen Sie es in einer Stunde erneut oder schreiben Sie an info@lequote.it.',
+    error: 'Das Senden ist fehlgeschlagen. Bitte versuchen Sie es erneut oder senden Sie die Erklärung per E-Mail an info@le-quote.it: Sie gilt trotzdem, sofern sie innerhalb der 14 Tage abgeschickt wird.',
+    tooMany: 'Zu viele Übermittlungen von dieser Verbindung. Versuchen Sie es in einer Stunde erneut oder schreiben Sie an info@le-quote.it.',
   },
 
   documents: {

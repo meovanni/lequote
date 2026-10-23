@@ -37,8 +37,8 @@ describe('toEmailLocale', () => {
 
 describe('renderCustomerConfirmation', () => {
   it('porta alla funzione di recesso con la dicitura di legge, se il link è noto', () => {
-    const withLink = renderCustomerConfirmation({ ...order, withdrawalUrl: 'https://lequote.it/recesso?ordine=12' })
-    expect(withLink.text).toContain('recedere dal contratto qui, https://lequote.it/recesso?ordine=12')
+    const withLink = renderCustomerConfirmation({ ...order, withdrawalUrl: 'https://le-quote.it/recesso?ordine=12' })
+    expect(withLink.text).toContain('recedere dal contratto qui, https://le-quote.it/recesso?ordine=12')
     expect(renderCustomerConfirmation(order).text).not.toContain('recedere')
   })
 
@@ -92,7 +92,7 @@ describe('escapeHtml', () => {
 
 describe('renderOwnerAlert, ordini del gestionale', () => {
   it('dice chi ha inserito l’ordine e dove si registrano gli incassi', () => {
-    const email = renderOwnerAlert({ ...order, paymentMethod: null, insertedBy: 'Bruno' }, 'https://lequote.it/app/orders/order_1')
+    const email = renderOwnerAlert({ ...order, paymentMethod: null, insertedBy: 'Bruno' }, 'https://le-quote.it/app/orders/order_1')
     expect(email.text).toContain('inserito da Bruno')
     expect(email.text).toContain('incassi registrati nel gestionale')
   })

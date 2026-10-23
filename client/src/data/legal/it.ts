@@ -40,8 +40,8 @@ export const legalIt: LegalContent = {
     sending: 'Invio in corso…',
     doneTitle: 'Recesso inviato',
     doneBody: (email, sentAt) => `Abbiamo ricevuto la tua dichiarazione di recesso il ${sentAt}. La ricevuta è in arrivo a ${email}: se non la trovi, controlla la posta indesiderata.`,
-    error: 'L’invio non è riuscito. Riprova, oppure manda la dichiarazione per email a info@lequote.it: vale comunque, purché parta entro i 14 giorni.',
-    tooMany: 'Troppi invii da questa connessione. Riprova tra un’ora, oppure scrivici a info@lequote.it.',
+    error: 'L’invio non è riuscito. Riprova, oppure manda la dichiarazione per email a info@le-quote.it: vale comunque, purché parta entro i 14 giorni.',
+    tooMany: 'Troppi invii da questa connessione. Riprova tra un’ora, oppure scrivici a info@le-quote.it.',
   },
 
   documents: {

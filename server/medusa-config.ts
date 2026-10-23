@@ -55,7 +55,7 @@ const notificationModule = {
           secure: process.env.SMTP_SECURE === 'true',
           user: process.env.SMTP_USER || undefined,
           pass: process.env.SMTP_PASS || undefined,
-          from: process.env.SMTP_FROM || 'Le Quote <info@lequote.it>',
+          from: process.env.SMTP_FROM || 'Le Quote <info@le-quote.it>',
           // Dove salvare le email senza SMTP_HOST (i test end-to-end usano server/.mail-e2e).
           previewDir: process.env.MAIL_PREVIEW_DIR || undefined,
         },

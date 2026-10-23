@@ -12,7 +12,7 @@ export interface SmtpOptions {
   secure?: boolean
   user?: string
   pass?: string
-  /** Mittente, per esempio "Le Quote <info@lequote.it>": le risposte arrivano lì. */
+  /** Mittente, per esempio "Le Quote <info@le-quote.it>": le risposte arrivano lì. */
   from: string
   previewDir?: string
 }

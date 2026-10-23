@@ -27,14 +27,14 @@ describe('email di annullamento per bonifico non ricevuto', () => {
   })
 
   it('avvisa i titolari in italiano con il link all’ordine', () => {
-    const email = renderOwnerCancellation(order, 7, 'https://lequote.it/app/orders/order_1')
+    const email = renderOwnerCancellation(order, 7, 'https://le-quote.it/app/orders/order_1')
     expect(email.subject).toMatch(/annullato/i)
-    expect(email.text).toContain('https://lequote.it/app/orders/order_1')
+    expect(email.text).toContain('https://le-quote.it/app/orders/order_1')
     expect(email.text).toContain('anna@example.com')
   })
 
   it('avvisa i titolari anche se il cliente non ha lasciato l’email', () => {
-    const email = renderOwnerCancellation({ ...order, email: '' }, 7, 'https://lequote.it/app/orders/order_1')
+    const email = renderOwnerCancellation({ ...order, email: '' }, 7, 'https://le-quote.it/app/orders/order_1')
     expect(email.text).toMatch(/nessuna email/i)
   })
 })
