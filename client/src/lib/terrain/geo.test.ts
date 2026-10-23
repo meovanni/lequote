@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { decodeHeight, elevationColor, heightToWorld, sampleHeight, uvToWorld } from './geo'
+import { decodeHeight, edgeFalloff, heightToWorld, sampleHeight, uvToWorld } from './geo'
 
 describe('rilievo', () => {
   it('legge la quota dai canali R e G', () => {
@@ -17,12 +17,11 @@ describe('rilievo', () => {
     expect(heightToWorld(1000)).toBe(3)
   })
 
-  it('colora per quota, dentro i limiti', () => {
-    expect(elevationColor(-5)).toEqual(elevationColor(0))
-    expect(elevationColor(9000)).toEqual(elevationColor(2700))
-    const mid = elevationColor(550)
-    const [low, high] = [elevationColor(300), elevationColor(800)]
-    mid.forEach((channel, i) => expect(channel).toBeCloseTo((low[i] + high[i]) / 2))
+  it('sfuma ai bordi e resta piena al centro', () => {
+    expect(edgeFalloff(0, 0.5)).toBe(0)
+    expect(edgeFalloff(0.5, 0.5)).toBe(1)
+    expect(edgeFalloff(0.03, 0.5)).toBeGreaterThan(0)
+    expect(edgeFalloff(0.03, 0.5)).toBeLessThan(1)
   })
 
   it('interpola tra i punti della griglia', () => {

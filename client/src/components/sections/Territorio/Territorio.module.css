@@ -1,9 +1,9 @@
-/* Una sola "slide": il plastico dell'Abruzzo intero, che ruota piano in un solo verso, e testi
-   brevi che compaiono uno alla volta. --p (0-1) arriva da useFlightProgress sullo stage; ogni
-   testo ha la sua finestra [--in, --out] e sfuma ai margini (circa 1/16 del percorso). */
+/* Una sola "slide": il plastico dell'Abruzzo a tutto schermo e testi brevi che compaiono mentre
+   la camera va da Roseto a Cerchio. --p (0-1) arriva da useFlightProgress sullo stage; ogni testo ha la sua finestra
+   [--in, --out] e sfuma ai margini (una dissolvenza lunga circa 1/16 del volo). */
 .section {
   position: relative;
-  height: 320vh;
+  height: 340vh;
   background: var(--surface-bg);
   color: var(--surface-text);
   scroll-snap-align: start;
@@ -57,11 +57,11 @@
 .copy > * {
   position: absolute;
   left: var(--container-pad);
-  max-width: min(26rem, 28vw);
+  max-width: min(30rem, calc(100% - 2 * var(--container-pad)));
 }
 
 .intro {
-  --out: 0.2;
+  --out: 0.16;
   top: calc(var(--nav-height, 76px) + var(--space-7));
   display: flex;
   flex-direction: column;
@@ -88,13 +88,13 @@
 }
 
 .place[data-place='roseto'] {
-  --in: 0.2;
-  --out: 0.5;
+  --in: 0.1;
+  --out: 0.42;
 }
 
 .place[data-place='cerchio'] {
-  --in: 0.52;
-  --out: 0.82;
+  --in: 0.58;
+  --out: 0.88;
 }
 
 .placeName {
@@ -102,7 +102,7 @@
 }
 
 .closing {
-  --in: 0.84;
+  --in: 0.88;
   text-wrap: balance;
 }
 
@@ -121,12 +121,8 @@
   visibility: hidden;
 }
 
-.pin[data-place='roseto'] {
-  --in: 0.16;
-}
-
 .pin[data-place='cerchio'] {
-  --in: 0.48;
+  --in: 0.4;
 }
 
 .section:not([data-ready='true']) .pin {
@@ -154,10 +150,6 @@
   .stage {
     position: relative;
     height: max(100svh, 560px);
-  }
-
-  .copy > * {
-    max-width: calc(100% - 2 * var(--container-pad));
   }
 
   .intro {
