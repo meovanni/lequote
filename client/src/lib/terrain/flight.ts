@@ -24,11 +24,14 @@ export const FLIGHT_END = 0.88
  * sezione si sblocca il diorama è ancora in vista e prosegue in alto con la pagina. */
 const EXIT_SCREENS = 0.3
 
-const TARGET_START: Vec3 = [5, 0.5, -41]
-const TARGET_BEND: Vec3 = [-2, 1.5, -12]
-const TARGET_END: Vec3 = [-29, 2.5, 26]
+// Il perno della rotazione resta vicino al centro della regione (≈ -8, 8): l'inquadratura parte
+// spostata verso Roseto e arriva spostata verso Cerchio, senza andarci sopra, così il diorama
+// gira su sé stesso invece di scorrere di lato.
+export const TARGET_START: Vec3 = [-4.6, 1, -4.3]
+const TARGET_BEND: Vec3 = [-8, 1.5, 4]
+export const TARGET_END: Vec3 = [-13, 2, 12.5]
 export const ORBIT_START: Orbit = { azimuthDeg: 21, distance: 145, height: 132 }
-export const ORBIT_END: Orbit = { azimuthDeg: 58, distance: 112, height: 104 }
+export const ORBIT_END: Orbit = { azimuthDeg: 46, distance: 112, height: 104 }
 
 const toRad = Math.PI / 180
 const clamp01 = (value: number) => Math.min(1, Math.max(0, value))

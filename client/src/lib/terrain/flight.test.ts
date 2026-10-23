@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { END_ZOOM, FLIGHT_END, ORBIT_END, ORBIT_START, damp, dollyForAspect, exitShift, fovForAspect, poseAt } from './flight'
+import { END_ZOOM, FLIGHT_END, ORBIT_END, ORBIT_START, TARGET_END, TARGET_START, damp, dollyForAspect, exitShift, fovForAspect, poseAt } from './flight'
 
 
 const azimuth = (progress: number) => {
@@ -8,9 +8,14 @@ const azimuth = (progress: number) => {
 }
 
 describe('movimento sul diorama', () => {
-  it('parte guardando Roseto e arriva su Cerchio', () => {
-    expect(poseAt(0).target).toEqual([5, 0.5, -41])
-    poseAt(FLIGHT_END).target.forEach((value, i) => expect(value).toBeCloseTo([-29, 2.5, 26][i]))
+  it('parte dal lato di Roseto e arriva dal lato di Cerchio, girando vicino al centro', () => {
+    expect(poseAt(0).target).toEqual(TARGET_START)
+    poseAt(FLIGHT_END).target.forEach((value, i) => expect(value).toBeCloseTo(TARGET_END[i]))
+    // Il punto guardato non si allontana mai più di 25 km dal centro della regione.
+    for (let i = 0; i <= 20; i++) {
+      const [x, , z] = poseAt((i / 20) * FLIGHT_END).target
+      expect(Math.hypot(x + 8, z - 8)).toBeLessThan(25)
+    }
   })
 
   it("gira in un solo verso lungo l'arco", () => {

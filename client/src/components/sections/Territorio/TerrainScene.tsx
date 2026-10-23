@@ -16,7 +16,7 @@ const LABEL_MARGIN = 12
 /** Sul telefono la camera si allontana poco più che sul desktop: di più il diorama diventa piccolo. */
 const MAX_PHONE_DOLLY = 1.3
 /** Sul desktop il soggetto si sposta a destra, lontano dai testi a sinistra (frazione della larghezza). */
-const DESKTOP_SHIFT = 0.12
+const DESKTOP_SHIFT = 0.06
 
 type TerrainSceneProps = {
   /** Progress voluto (0-1): la camera lo raggiunge con uno smorzamento. */
