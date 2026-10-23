@@ -135,12 +135,14 @@ type CameraRigProps = {
 function CameraRig({ progress, anchors, labels }: CameraRigProps) {
   const { camera, size } = useThree()
   const current = useRef(progress.current)
+  const baseFov = useRef(32)
   const projected = useMemo(() => new Vector3(), [])
 
   useEffect(() => {
     if (!(camera instanceof PerspectiveCamera)) return
     const aspect = size.width / Math.max(1, size.height)
-    camera.fov = fovForAspect(aspect)
+    baseFov.current = fovForAspect(aspect)
+    camera.fov = baseFov.current
     if (aspect > 1.2) camera.setViewOffset(size.width, size.height, -DESKTOP_SHIFT * size.width, 0, size.width, size.height)
     else camera.clearViewOffset()
     camera.updateProjectionMatrix()
@@ -151,10 +153,15 @@ function CameraRig({ progress, anchors, labels }: CameraRigProps) {
     current.current = damp(current.current, progress.current, 2.6, Math.min(delta, 0.1))
     const dolly = Math.min(MAX_PHONE_DOLLY, dollyForAspect(size.width / Math.max(1, size.height)))
     const pose = poseAt(current.current, dolly)
+    if (camera instanceof PerspectiveCamera) {
+      camera.fov = baseFov.current * pose.zoom
+      camera.updateProjectionMatrix()
+    }
     // L'uscita segue lo scroll senza smorzamento: deve andare alla stessa velocità della pagina.
-    const shift = exitShift(pose, camera instanceof PerspectiveCamera ? camera.fov : 32, progress.current)
+    const shift = exitShift(pose, baseFov.current * pose.zoom, progress.current)
     camera.position.set(pose.position[0] + shift[0], pose.position[1] + shift[1], pose.position[2] + shift[2])
     camera.lookAt(pose.target[0] + shift[0], pose.target[1] + shift[1], pose.target[2] + shift[2])
+    camera.rotateZ(pose.roll)
     camera.updateMatrixWorld()
 
     PLACE_IDS.forEach((id) => {

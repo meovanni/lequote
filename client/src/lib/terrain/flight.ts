@@ -6,7 +6,14 @@
 // come lib/terrain/geo.ts: Roseto ≈ (5, -41), Cerchio ≈ (-29, 26).
 
 export type Vec3 = [number, number, number]
-export type Pose = { position: Vec3; target: Vec3 }
+export type Pose = {
+  position: Vec3
+  target: Vec3
+  /** Moltiplicatore del campo visivo: sotto 1 è uno zoom in avanti, come stringere l'obiettivo. */
+  zoom: number
+  /** Inclinazione della camera (radianti), appena percettibile, come una ripresa a mano. */
+  roll: number
+}
 /** Camera attorno al punto guardato: angolo sul piano (0 = est, 90 = sud), distanza e quota. */
 type Orbit = { azimuthDeg: number; distance: number; height: number }
 
@@ -35,14 +42,31 @@ function bezier(a: Vec3, b: Vec3, c: Vec3, t: number): Vec3 {
   return a.map((value, axis) => u * u * value + 2 * u * t * b[axis] + t * t * c[axis]) as Vec3
 }
 
-/** Posizione e punto guardato lungo l'arco. dolly > 1 allontana la camera (schermi stretti). */
+/** Zoom in avanti alla fine dell'arco (campo visivo all'86%). */
+export const END_ZOOM = 0.86
+/** La gru sale di tanto a metà percorso e poi riscende verso Cerchio. */
+const CRANE_RISE = 14
+const MAX_ROLL = 1.4 * (Math.PI / 180)
+
+/**
+ * Posizione, punto guardato, zoom e inclinazione lungo l'arco. dolly > 1 allontana la camera
+ * (schermi stretti). L'arco gira sempre nello stesso verso; la gru sale e riscende, l'avvicinamento
+ * si concentra nella seconda metà e lo zoom stringe piano, così il movimento non è rigido.
+ */
 export function poseAt(progress: number, dolly = 1): Pose {
   const t = smoother(clamp01(progress / FLIGHT_END))
+  const swell = Math.sin(Math.PI * t)
   const target = bezier(TARGET_START, TARGET_BEND, TARGET_END, t)
   const azimuth = mix(ORBIT_START.azimuthDeg, ORBIT_END.azimuthDeg, t) * toRad
-  const distance = mix(ORBIT_START.distance, ORBIT_END.distance, t) * dolly
-  const height = mix(ORBIT_START.height, ORBIT_END.height, t) * dolly
-  return { position: [target[0] + distance * Math.cos(azimuth), target[1] + height, target[2] + distance * Math.sin(azimuth)], target }
+  // L'avvicinamento parte piano e si concentra verso Cerchio.
+  const distance = mix(ORBIT_START.distance, ORBIT_END.distance, t ** 1.6) * dolly
+  const height = (mix(ORBIT_START.height, ORBIT_END.height, t) + CRANE_RISE * swell) * dolly
+  return {
+    position: [target[0] + distance * Math.cos(azimuth), target[1] + height, target[2] + distance * Math.sin(azimuth)],
+    target,
+    zoom: mix(1, END_ZOOM, t),
+    roll: MAX_ROLL * swell,
+  }
 }
 
 /**

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { FLIGHT_END, ORBIT_END, ORBIT_START, damp, dollyForAspect, exitShift, fovForAspect, poseAt } from './flight'
+import { END_ZOOM, FLIGHT_END, ORBIT_END, ORBIT_START, damp, dollyForAspect, exitShift, fovForAspect, poseAt } from './flight'
 
 
 const azimuth = (progress: number) => {
@@ -26,6 +26,16 @@ describe('movimento sul diorama', () => {
     full.forEach((value, i) => expect(value).toBeCloseTo(half[i] * 2))
     // La camera scende: il mondo sale sullo schermo.
     expect(full[1]).toBeLessThan(0)
+  })
+
+  it('stringe lo zoom piano e si inclina appena, solo a metà', () => {
+    expect(poseAt(0).zoom).toBe(1)
+    expect(poseAt(FLIGHT_END).zoom).toBeCloseTo(END_ZOOM)
+    for (let i = 1; i <= 100; i++) expect(poseAt((i / 100) * FLIGHT_END).zoom).toBeLessThanOrEqual(poseAt(((i - 1) / 100) * FLIGHT_END).zoom)
+    expect(poseAt(0).roll).toBe(0)
+    expect(poseAt(FLIGHT_END).roll).toBeCloseTo(0)
+    expect(poseAt(FLIGHT_END / 2).roll).toBeGreaterThan(0)
+    expect(poseAt(FLIGHT_END / 2).roll).toBeLessThan(0.03)
   })
 
   it('resta ferma fuori da 0-1', () => {
