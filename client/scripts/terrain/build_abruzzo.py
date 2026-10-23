@@ -144,6 +144,25 @@ def land_colors(meters, slope_deg, inside, km_px):
     return np.clip(color * (1 + 0.05 * fine[..., None]), 0, 1)
 
 
+def sea_colors(coast_km, km_px):
+    """Acqua cristallina: turchese sul bassofondo con la sabbia che traspare, una riga di schiuma
+    sulla battigia, poi verso il blu al largo. La distanza dalla costa fa da profondità."""
+    h, w = coast_km.shape
+    shallow = hex_rgb('#8fe3d6')
+    lagoon = hex_rgb('#46bcc4')
+    deep = hex_rgb('#2f86aa')
+    foam = hex_rgb('#f4f8f6')
+    ripple = smooth_noise((h, w), 0.4 / km_px, rng)
+    color = shallow[None, None, :] * np.ones((h, w, 1))
+    color = color * (1 - smoothstep(1.5, 4.5, coast_km)[..., None]) + lagoon * smoothstep(1.5, 4.5, coast_km)[..., None]
+    color = color * (1 - smoothstep(5, 11, coast_km)[..., None]) + deep * smoothstep(5, 11, coast_km)[..., None]
+    # Sabbia e luce sul fondo basso: chiazze più chiare che spariscono andando al largo.
+    sand = smoothstep(0.2, 1.2, ripple) * (1 - smoothstep(0.8, 3.0, coast_km)) * 0.3
+    color = color * (1 - sand[..., None]) + hex_rgb('#e6f3e8') * sand[..., None]
+    surf = (1 - smoothstep(0.1, 0.5, coast_km)) * (0.8 + 0.2 * ripple.clip(-1, 1))
+    return color * (1 - surf[..., None]) + foam * surf[..., None]
+
+
 def soft_shadow(height_km, km_px, sun_dirs):
     """Ombra portata: per ogni direzione del sole si cammina sulla mappa delle quote e si vede se
     un rilievo copre il punto. Più direzioni vicine danno la penombra morbida."""
@@ -192,12 +211,12 @@ def main(src, out):
     # Mare: l'Adriatico davanti alla costa abruzzese, che sfuma nel bianco al largo.
     coast = inside & ndimage.binary_dilation(sea_raw, iterations=2)
     coast_km = ndimage.distance_transform_edt(~coast) * km_px
-    sea = sea_raw * (1 - smoothstep(SEA_KM * 0.2, SEA_KM, coast_km)) * (1 - land)
+    sea = sea_raw * (1 - smoothstep(SEA_KM * 0.45, SEA_KM, coast_km)) * (1 - land)
     # Anche ai bordi dei dati il mare sfuma, invece di finire con un taglio dritto.
     yy, xx = np.mgrid[0:color_h, 0:COLOR_W]
     border_km = np.minimum.reduce([xx, COLOR_W - 1 - xx, yy, color_h - 1 - yy]) * km_px
     sea = sea * smoothstep(2, 14, border_km)
-    sea = ndimage.gaussian_filter(sea.astype(float), 1.2 / km_px)
+    sea = ndimage.gaussian_filter(sea.astype(float), 0.25 / km_px)
 
     gy, gx = np.gradient(shown_km, km_px)
     slope_deg = np.degrees(np.arctan(np.hypot(*np.gradient(meters / 1000, km_px))))
@@ -222,9 +241,8 @@ def main(src, out):
     ao = np.clip(ao, 0.7, 1)
 
     albedo = land_colors(meters, slope_deg, land, km_px)
-    water = hex_rgb('#9cc0c6')
     base = FLOOR * (1 - land[..., None]) + albedo * land[..., None]
-    base = base * (1 - sea[..., None]) + water * sea[..., None]
+    base = base * (1 - sea[..., None]) + sea_colors(coast_km, km_px) * sea[..., None]
 
     light = (0.66 + 0.48 * diffuse * shadow)[..., None]
     warm = np.array([1.04, 1.0, 0.93])
