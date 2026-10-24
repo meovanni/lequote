@@ -18,10 +18,10 @@ export type Pose = {
 type Orbit = { azimuthDeg: number; distance: number; height: number }
 
 /** Fin qui l'arco; da qui alla fine la scena accompagna lo scroll verso l'alto. */
-export const FLIGHT_END = 0.88
-/** Di quanti schermi sale la scena nell'ultimo tratto: con 240vh di sezione bloccata, il 12% finale
- * dura circa 29vh di scroll, quindi 0,3 schermi vanno alla stessa velocità della pagina. Quando la
- * sezione si sblocca il diorama è ancora in vista e prosegue in alto con la pagina. */
+export const FLIGHT_END = 0.93
+/** Di quanti schermi sale la scena nell'ultimo tratto: con 420vh di sezione bloccata (520vh meno lo
+ * schermo), il 7% finale dura circa 29vh di scroll, quindi 0,3 schermi vanno alla stessa velocità
+ * della pagina. Quando la sezione si sblocca il diorama è ancora in vista e prosegue con la pagina. */
 const EXIT_SCREENS = 0.3
 
 // Il perno della rotazione resta vicino al centro della regione (≈ -8, 8): l'inquadratura parte

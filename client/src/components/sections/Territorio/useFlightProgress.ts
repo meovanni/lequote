@@ -11,7 +11,7 @@ import { NATIVE_SCROLL_QUERY } from '@/lib/nativeScroll'
  */
 export type FlightMode = 'pending' | 'scroll' | 'autoplay' | 'static'
 
-const AUTOPLAY_MS = 8000
+const AUTOPLAY_MS = 14000
 const STATIC_PROGRESS = FLIGHT_END / 2
 
 /** Progress 0-1 in un ref (letto dalla scena a ogni frame) e in --p sullo stage (letto dalla CSS). */

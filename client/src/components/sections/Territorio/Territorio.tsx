@@ -9,7 +9,7 @@ const TerrainScene = lazy(() => import('./TerrainScene').then((module) => ({ def
 
 // Punti di snap invisibili lungo il tratto pinnato (desktop): con lo snap obbligatorio della home,
 // senza questi un gesto salterebbe l'intera sezione. Devono stare dentro .section { height }.
-const SNAP_STEPS = 16
+const SNAP_STEPS = 24
 
 /** Se WebGL manca o la scena si rompe, resta la pagina con i testi. */
 class SceneBoundary extends Component<{ onError: () => void; children: ReactNode }, { failed: boolean }> {
@@ -67,6 +67,7 @@ export function Territorio() {
             </SceneBoundary>
           )}
         </div>
+        <div className={styles.veil} aria-hidden="true" />
 
         {territorio.places.map((place) => (
           <span

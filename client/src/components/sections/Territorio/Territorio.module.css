@@ -3,7 +3,7 @@
    [--in, --out] e sfuma ai margini (una dissolvenza lunga circa 1/16 del volo). */
 .section {
   position: relative;
-  height: 340vh;
+  height: 520vh;
   background: var(--surface-bg);
   color: var(--surface-text);
   scroll-snap-align: start;
@@ -44,7 +44,25 @@
   opacity: clamp(0, min(calc((var(--p) - var(--in)) * 16), calc((var(--out) - var(--p)) * 16)), 1);
 }
 
+/* Velatura al posto delle schede: il bianco della pagina sale piano dal lato dei testi e il
+   diorama ci passa sotto in dissolvenza, senza riquadri. Un alone chiaro tiene le lettere
+   staccate da quello che resta sotto. */
+.veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--surface-bg) 92%, transparent) 0%,
+    color-mix(in srgb, var(--surface-bg) 70%, transparent) 22%,
+    color-mix(in srgb, var(--surface-bg) 0%, transparent) 44%
+  );
+}
+
 .copy {
+  text-shadow:
+    0 0 18px var(--surface-bg),
+    0 0 4px var(--surface-bg);
   position: absolute;
   inset: 0;
   width: 100%;
@@ -57,11 +75,11 @@
 .copy > * {
   position: absolute;
   left: var(--container-pad);
-  max-width: min(30rem, calc(100% - 2 * var(--container-pad)));
+  max-width: min(24rem, 30vw);
 }
 
 .intro {
-  --out: 0.16;
+  --out: 0.2;
   top: calc(var(--nav-height, 76px) + var(--space-7));
   display: flex;
   flex-direction: column;
@@ -77,15 +95,6 @@
   bottom: var(--space-8);
 }
 
-/* Ogni testo sta su una scheda chiara: sotto c'è il diorama, colorato e in movimento. */
-.intro,
-.place,
-.closing {
-  padding: var(--space-5);
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--surface-bg) 94%, transparent);
-}
-
 .place {
   display: flex;
   flex-direction: column;
@@ -95,12 +104,12 @@
 
 .place[data-place='roseto'] {
   --in: 0.08;
-  --out: 0.4;
+  --out: 0.42;
 }
 
 .place[data-place='cerchio'] {
   --in: 0.5;
-  --out: 0.84;
+  --out: 0.88;
 }
 
 .placeName {
@@ -108,7 +117,7 @@
 }
 
 .closing {
-  --in: 0.82;
+  --in: 0.87;
   text-wrap: balance;
 }
 
@@ -161,6 +170,20 @@
     height: max(100svh, 560px);
   }
 
+  .copy > * {
+    max-width: calc(100% - 2 * var(--container-pad));
+  }
+
+  .veil {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--surface-bg) 88%, transparent) 0%,
+      color-mix(in srgb, var(--surface-bg) 0%, transparent) 30%,
+      color-mix(in srgb, var(--surface-bg) 0%, transparent) 58%,
+      color-mix(in srgb, var(--surface-bg) 90%, transparent) 100%
+    );
+  }
+
   .intro {
     top: calc(var(--nav-height, 64px) + var(--space-5));
   }
@@ -168,10 +191,6 @@
   .place,
   .closing {
     bottom: var(--space-7);
-  }
-
-  .place {
-    padding: var(--space-4);
   }
 
   .credit {
@@ -212,10 +231,8 @@
   max-width: 40rem;
 }
 
-.section[data-mode='static'] .intro,
-.section[data-mode='static'] .place,
-.section[data-mode='static'] .closing {
-  padding: 0;
+.section[data-mode='static'] .veil {
+  display: none;
 }
 
 .section[data-mode='static'] .pin {
