@@ -66,7 +66,7 @@ export const de: Content = {
     intro: 'Oliven am Meer, Bienen in den Bergen.',
     places: [
       { id: 'roseto', place: 'Roseto degli Abruzzi', elevation: 'Meeresspiegel', note: 'Die Olivenbäume des Reservats Borsacchio, wenige Schritte vom Meer.' },
-      { id: 'cerchio', place: 'Cerchio', elevation: '800 m', note: 'Die Bienenstöcke auf den Anhöhen im Hinterland von L’Aquila.' },
+      { id: 'cerchio', place: 'Cerchio', elevation: '800 m', note: 'Die Bienenstöcke auf den Anhöhen der Marsica, fern von jeder Verschmutzungsquelle.' },
     ],
     closing: 'Achthundert Höhenmeter dazwischen: darum heißen wir Le Quote, „die Höhenlagen“.',
     credit: 'Relief: AWS Terrain Tiles. Grenzen: openpolis, CC BY 4.0.',

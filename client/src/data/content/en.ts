@@ -66,7 +66,7 @@ export const en: Content = {
     intro: 'Olive trees by the sea, bees in the mountains.',
     places: [
       { id: 'roseto', place: 'Roseto degli Abruzzi', elevation: 'Sea level', note: 'The olive trees of the Borsacchio Reserve, a few steps from the sea.' },
-      { id: 'cerchio', place: 'Cerchio', elevation: '800 m', note: 'The beehives on the uplands inland from L’Aquila.' },
+      { id: 'cerchio', place: 'Cerchio', elevation: '800 m', note: 'The beehives on the Marsican uplands, far from any source of pollution.' },
     ],
     closing: 'Eight hundred metres apart in height: that is why we are called Le Quote, “the altitudes”.',
     credit: 'Relief: AWS Terrain Tiles. Boundaries: openpolis, CC BY 4.0.',

@@ -40,7 +40,7 @@ export const territorio = {
   intro: 'Olivi sul mare, api in montagna.',
   places: [
     { id: 'roseto', place: 'Roseto degli Abruzzi', elevation: 'Livello del mare', note: 'Gli olivi della Riserva del Borsacchio, a pochi passi dal mare.' },
-    { id: 'cerchio', place: 'Cerchio', elevation: '800 m', note: 'Gli alveari sulle alture dell’entroterra aquilano.' },
+    { id: 'cerchio', place: 'Cerchio', elevation: '800 m', note: 'Gli alveari sulle alture marsicane, lontano da fonti di inquinamento.' },
   ],
   closing: 'Ottocento metri di dislivello: per questo ci chiamiamo Le Quote.',
   credit: 'Rilievo: AWS Terrain Tiles. Confini: openpolis, CC BY 4.0.',
