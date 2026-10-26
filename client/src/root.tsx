@@ -14,6 +14,7 @@ import '@/styles/global.css'
 import { SITE_NAME } from '@/lib/site'
 import { HTML_LANG, localeFromPathname } from '@/i18n/locales'
 import { ErrorPage } from '@/components/common/ErrorPage/ErrorPage'
+import { useSectionLinks } from '@/hooks/useSectionLinks'
 import type { Route } from './+types/root'
 
 const ORGANIZATION_LD = {
@@ -56,6 +57,7 @@ export function Layout({ children }: { children: ReactNode }) {
 }
 
 export default function Root() {
+  useSectionLinks()
   return <Outlet />
 }
 
