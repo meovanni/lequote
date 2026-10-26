@@ -104,12 +104,12 @@
 
 .place[data-place='roseto'] {
   --in: 0.08;
-  --out: 0.42;
+  --out: 0.4;
 }
 
 .place[data-place='cerchio'] {
-  --in: 0.5;
-  --out: 0.88;
+  --in: 0.46;
+  --out: 0.82;
 }
 
 .placeName {
@@ -117,7 +117,7 @@
 }
 
 .closing {
-  --in: 0.87;
+  --in: 0.8;
   text-wrap: balance;
 }
 

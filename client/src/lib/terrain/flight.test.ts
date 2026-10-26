@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { END_ZOOM, FLIGHT_END, ORBIT_END, ORBIT_START, TARGET_END, TARGET_START, damp, dollyForAspect, exitShift, fovForAspect, poseAt } from './flight'
+import { END_ZOOM, FLIGHT_END, ORBIT_END, ORBIT_START, TARGET_END, TARGET_START, damp, dollyForAspect, exitPose, fovForAspect, poseAt } from './flight'
 
 
 const azimuth = (progress: number) => {
@@ -23,14 +23,28 @@ describe('movimento sul diorama', () => {
     expect(azimuth(FLIGHT_END) - azimuth(0)).toBeCloseTo(((ORBIT_END.azimuthDeg - ORBIT_START.azimuthDeg) * Math.PI) / 180)
   })
 
-  it("dopo l'arco resta ferma e la scena sale come con lo scroll", () => {
-    expect(poseAt(1)).toEqual(poseAt(FLIGHT_END))
-    expect(exitShift(poseAt(1), 34, FLIGHT_END)).toEqual([0, 0, 0])
-    const half = exitShift(poseAt(1), 34, (FLIGHT_END + 1) / 2)
-    const full = exitShift(poseAt(1), 34, 1)
-    full.forEach((value, i) => expect(value).toBeCloseTo(half[i] * 2))
-    // La camera scende: il mondo sale sullo schermo.
-    expect(full[1]).toBeLessThan(0)
+  it("dopo l'arco la camera scende di quota e la scena sale come con lo scroll", () => {
+    const pose = poseAt(1)
+    expect(pose).toEqual(poseAt(FLIGHT_END))
+    expect(exitPose(pose, 34, FLIGHT_END)).toEqual(pose)
+    const pitch = (p: { position: number[]; target: number[] }) => {
+      const o = p.position.map((value, i) => value - p.target[i])
+      return Math.atan2(o[1], Math.hypot(o[0], o[2]))
+    }
+    const end = exitPose(pose, 34, 1)
+    // Più bassa: l'inclinazione sull'orizzonte cala di molto, la distanza dal punto guardato no.
+    expect(pitch(end)).toBeLessThan(pitch(pose) * 0.6)
+    const length = (p: { position: number[]; target: number[] }) => Math.hypot(...p.position.map((value, i) => value - p.target[i]))
+    expect(length(end)).toBeCloseTo(length(pose))
+    // Camera e punto guardato si spostano verso il basso: il mondo sale sullo schermo.
+    expect(end.target[1]).toBeLessThan(pose.target[1])
+    // La discesa va in un solo verso.
+    let previous = pitch(pose)
+    for (let i = 1; i <= 50; i++) {
+      const current = pitch(exitPose(pose, 34, FLIGHT_END + ((1 - FLIGHT_END) * i) / 50))
+      expect(current).toBeLessThanOrEqual(previous + 1e-9)
+      previous = current
+    }
   })
 
   it('stringe lo zoom piano e si inclina appena, solo a metà', () => {

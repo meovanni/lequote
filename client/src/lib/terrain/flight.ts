@@ -1,7 +1,8 @@
 // Il movimento della camera sul diorama (sezione Territorio), come una ripresa su gru: un arco
 // che gira piano attorno alla regione mentre l'inquadratura scivola da Roseto a Cerchio, sempre
-// nello stesso verso. Nell'ultimo tratto la scena sale sullo schermo alla velocità della pagina,
-// così quando la sezione si sblocca il movimento continua nello scroll senza stacchi.
+// nello stesso verso. Nell'ultimo tratto la camera scende di quota (il plastico si inclina verso
+// l'alto) e la scena sale con la pagina, così quando la sezione si sblocca il movimento continua
+// nello scroll senza stacchi.
 // progress 0-1 viene dallo scroll (desktop) o dal tempo (telefono). Coordinate del mondo in km,
 // come lib/terrain/geo.ts: Roseto ≈ (5, -41), Cerchio ≈ (-29, 26).
 
@@ -17,12 +18,14 @@ export type Pose = {
 /** Camera attorno al punto guardato: angolo sul piano (0 = est, 90 = sud), distanza e quota. */
 type Orbit = { azimuthDeg: number; distance: number; height: number }
 
-/** Fin qui l'arco; da qui alla fine la scena accompagna lo scroll verso l'alto. */
-export const FLIGHT_END = 0.93
-/** Di quanti schermi sale la scena nell'ultimo tratto: con 420vh di sezione bloccata (520vh meno lo
- * schermo), il 7% finale dura circa 29vh di scroll, quindi 0,3 schermi vanno alla stessa velocità
- * della pagina. Quando la sezione si sblocca il diorama è ancora in vista e prosegue con la pagina. */
-const EXIT_SCREENS = 0.3
+/** Fin qui l'arco; da qui alla fine la camera scende di quota e la scena accompagna lo scroll. */
+export const FLIGHT_END = 0.84
+/** Di quanti schermi sale la scena nell'ultimo tratto (il 16% finale di 420vh bloccati, circa 67vh
+ * di scroll). Poco: la discesa da sola fa già salire il plastico verso l'orizzonte. Quando la
+ * sezione si sblocca il diorama riempie ancora la metà alta e prosegue con la pagina. */
+const EXIT_SCREENS = 0.18
+/** Nella discesa la quota della camera sul punto guardato scende a questa frazione (da ~40° a ~26°). */
+const DESCENT_HEIGHT = 0.6
 
 // Il perno della rotazione resta vicino al centro della regione (≈ -8, 8): l'inquadratura parte
 // spostata verso Roseto e arriva spostata verso Cerchio, senza andarci sopra, così il diorama
@@ -73,23 +76,35 @@ export function poseAt(progress: number, dolly = 1): Pose {
 }
 
 /**
- * Spostamento dell'ultimo tratto: la camera scende lungo il proprio "giù", così tutta la scena
- * sale sullo schermo come se scorresse con la pagina. Lineare nel progress, cioè nello scroll.
+ * Ultimo tratto, guidato dallo scroll senza smorzamento: la camera scende di quota girando attorno
+ * al punto guardato (stessa distanza), così il plastico si inclina verso l'alto davanti a chi
+ * guarda; intanto scende lungo il proprio "giù" e la scena sale sullo schermo come la pagina.
+ * La discesa parte e finisce morbida; lo scorrimento è lineare, come lo scroll.
  */
-export function exitShift(pose: Pose, verticalFovDeg: number, progress: number): Vec3 {
+export function exitPose(pose: Pose, verticalFovDeg: number, progress: number): Pose {
   const e = clamp01((progress - FLIGHT_END) / (1 - FLIGHT_END))
-  if (e === 0) return [0, 0, 0]
-  const forward = pose.target.map((value, axis) => value - pose.position[axis])
-  const distance = Math.hypot(...forward)
+  if (e === 0) return pose
+  const descent = e * e * (3 - 2 * e)
+  const offset = pose.position.map((value, axis) => value - pose.target[axis])
+  const distance = Math.hypot(...offset)
+  const horizontal = Math.hypot(offset[0], offset[2])
+  const height = offset[1] * (1 - (1 - DESCENT_HEIGHT) * descent)
+  const spread = Math.sqrt(Math.max(0, distance * distance - height * height)) / horizontal
+  const lowered: Vec3 = [pose.target[0] + offset[0] * spread, pose.target[1] + height, pose.target[2] + offset[2] * spread]
+
+  const forward = pose.target.map((value, axis) => value - lowered[axis])
   const [fx, fy, fz] = forward.map((value) => value / distance)
   // destra = avanti x su; su della camera = destra x avanti.
-  const right = [-fz, 0, fx]
-  const rightLength = Math.hypot(...right)
-  const [rx, , rz] = right.map((value) => value / rightLength)
+  const rightLength = Math.hypot(fz, fx)
+  const [rx, rz] = [-fz / rightLength, fx / rightLength]
   const up = [-rz * fy, rz * fx - rx * fz, rx * fy]
-  const screenHeight = 2 * distance * Math.tan((verticalFovDeg / 2) * toRad)
-  const amount = e * EXIT_SCREENS * screenHeight
-  return up.map((value) => -value * amount) as Vec3
+  const amount = e * EXIT_SCREENS * 2 * distance * Math.tan((verticalFovDeg / 2) * toRad)
+  const shift = up.map((value) => -value * amount)
+  return {
+    ...pose,
+    position: lowered.map((value, axis) => value + shift[axis]) as Vec3,
+    target: pose.target.map((value, axis) => value + shift[axis]) as Vec3,
+  }
 }
 
 // Campo visivo orizzontale di riferimento (desktop 16:10 con 34° verticali). In verticale, sul
