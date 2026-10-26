@@ -13,10 +13,10 @@ const BANKS: { position: [number, number, number]; size: number }[] = [
 const PUFFS_PER_BANK = 3
 /** Vento da ovest-sud-ovest: gli sbuffi vanno verso est, un poco a nord. */
 const WIND: [number, number] = [0.96, -0.28]
-/** km al secondo nel mondo del diorama: lento, si nota senza distrarre. */
-const WIND_SPEED = 0.45
+/** km al secondo nel mondo del diorama: si vede scorrere, senza fretta (un passaggio dura ~30 s). */
+const WIND_SPEED = 2
 /** Tratto che uno sbuffo percorre prima di svanire e ripartire. */
-const DRIFT_KM = 34
+const DRIFT_KM = 60
 
 function puffTexture() {
   const size = 256
@@ -45,7 +45,7 @@ const PUFFS = BANKS.flatMap((bank, b) =>
   })),
 )
 
-export function Mist({ opacity = 0.22 }: { opacity?: number }) {
+export function Mist({ opacity = 0.3 }: { opacity?: number }) {
   const texture = useMemo(puffTexture, [])
   const group = useRef<Group>(null)
   useEffect(() => () => texture.dispose(), [texture])
@@ -60,7 +60,7 @@ export function Mist({ opacity = 0.22 }: { opacity?: number }) {
       const along = (phase - 0.5) * DRIFT_KM
       const [x, y, z] = puff.bank.position
       sprite.position.set(x + WIND[0] * along, y + puff.lift + Math.sin(t * 0.3 + puff.seed) * 0.4, z + WIND[1] * along)
-      const breathe = 1 + Math.sin(t * 0.21 + puff.seed) * 0.12
+      const breathe = 1 + Math.sin(t * 0.35 + puff.seed) * 0.16
       const size = puff.bank.size * puff.scale
       sprite.scale.set(size * breathe, size * 0.45 * (2 - breathe), 1)
       ;(sprite.material as SpriteMaterial).opacity = opacity * Math.sin(Math.PI * phase)

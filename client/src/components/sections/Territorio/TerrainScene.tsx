@@ -2,7 +2,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { EffectComposer, Noise, TiltShift2, Vignette } from '@react-three/postprocessing'
 import { useEffect, useMemo, useRef, useState, type MutableRefObject } from 'react'
 import { Color, PerspectiveCamera, SRGBColorSpace, TextureLoader, Vector3, type Object3D, type Texture } from 'three'
-import { damp, dollyForAspect, exitPose, fovForAspect, poseAt } from '@/lib/terrain/flight'
+import { damp, dollyForAspect, fovForAspect, poseAt, riseShift } from '@/lib/terrain/flight'
 import { loadTerrain, type TerrainData } from '@/lib/terrain/load'
 import { Landmarks, type PlaceId } from './Landmarks'
 import { Mist } from './Mist'
@@ -119,7 +119,7 @@ function Diorama({ assets, floor, lite, progress, labels, onReady }: DioramaProp
       <Water data={data} alphaMap={sea} />
       <Trees data={data} density={lite ? 0.5 : 1} />
       <Landmarks data={data} anchors={anchors} />
-      <Mist opacity={lite ? 0.16 : 0.22} />
+      <Mist opacity={lite ? 0.22 : 0.3} />
       <CameraRig progress={progress} anchors={anchors} labels={labels} />
     </>
   )
@@ -152,16 +152,16 @@ function CameraRig({ progress, anchors, labels }: CameraRigProps) {
     // Smorzamento lento: la camera ha il peso di un carrello, non segue lo scroll a scatti.
     current.current = damp(current.current, progress.current, 2.6, Math.min(delta, 0.1))
     const dolly = Math.min(MAX_PHONE_DOLLY, dollyForAspect(size.width / Math.max(1, size.height)))
-    const arc = poseAt(current.current, dolly)
+    // Arco, discesa e zoom sono un solo movimento smorzato; la salita finale invece segue lo scroll
+    // senza smorzamento, perché deve andare con la pagina, che dopo la sezione scorre da sé.
+    const pose = poseAt(current.current, dolly)
     if (camera instanceof PerspectiveCamera) {
-      camera.fov = baseFov.current * arc.zoom
+      camera.fov = baseFov.current * pose.zoom
       camera.updateProjectionMatrix()
     }
-    // L'uscita (discesa di quota e salita con la pagina) segue lo scroll senza smorzamento: deve
-    // andare con la pagina, che dopo la sezione scorre da sé.
-    const pose = exitPose(arc, baseFov.current * arc.zoom, progress.current)
-    camera.position.set(...pose.position)
-    camera.lookAt(...pose.target)
+    const rise = riseShift(pose, baseFov.current * pose.zoom, progress.current)
+    camera.position.set(pose.position[0] + rise[0], pose.position[1] + rise[1], pose.position[2] + rise[2])
+    camera.lookAt(pose.target[0] + rise[0], pose.target[1] + rise[1], pose.target[2] + rise[2])
     camera.rotateZ(pose.roll)
     camera.updateMatrixWorld()
 
