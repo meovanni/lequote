@@ -2,6 +2,7 @@ import { Button, Container, Heading, IconButton, Input, Select, Table, Text, toa
 import { Trash } from '@medusajs/icons'
 import { useState, type FormEvent } from 'react'
 import { FormField, orNull } from '../form-field'
+import { AnalysisEditor } from './analysis-editor'
 import { formatDate, useFilieraAction, type Campaign } from '../../lib/filiera-api'
 import { useUnsavedChanges } from '../../lib/unsaved-changes'
 
@@ -59,7 +60,9 @@ export function AnalysesPanel({ campaign }: { campaign: Campaign }) {
       <div className="px-6 py-4">
         <Heading level="h2">Analisi della campagna</Heading>
         <Text size="small" className="text-ui-fg-subtle">
-          Le analisi «Pubbliche» si possono scaricare dalla pagina di ogni lotto della campagna.
+          Dal referto PDF si leggono acidità, perossidi, valori nutrizionali e panel test: controllali con «Valori» prima di
+          rendere pubblica l'analisi. Le analisi «Pubbliche» compaiono nella pagina Analisi del sito, nella scheda del prodotto e
+          nella pagina di ogni lotto della campagna.
         </Text>
       </div>
 
@@ -91,6 +94,7 @@ export function AnalysesPanel({ campaign }: { campaign: Campaign }) {
                 <Table.Cell>{formatDate(analysis.date)}</Table.Cell>
                 <Table.Cell>{analysis.visibility === 'public' ? 'Pubblica' : 'Interna'}</Table.Cell>
                 <Table.Cell className="text-right">
+                  <AnalysisEditor key={JSON.stringify(analysis)} campaignId={campaign.id} analysis={analysis} />
                   <IconButton
                     size="small"
                     variant="transparent"
@@ -133,7 +137,7 @@ export function AnalysesPanel({ campaign }: { campaign: Campaign }) {
             </Select.Content>
           </Select>
         </FormField>
-        <FormField id="analysis-file" label="Referto (PDF)" hint={`Massimo ${MAX_FILE_MB} MB.`}>
+        <FormField id="analysis-file" label="Referto (PDF)" hint={`Massimo ${MAX_FILE_MB} MB. Dal PDF si estrae il testo e se ne leggono i valori.`}>
           <input
             id="analysis-file"
             type="file"

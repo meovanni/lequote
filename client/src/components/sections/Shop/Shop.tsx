@@ -12,6 +12,7 @@ import { ImagePlaceholder } from '@/components/common/ImagePlaceholder/ImagePlac
 import { Reveal } from '@/components/common/Reveal/Reveal'
 import { OilBottle } from '@/components/common/Product/OilBottle'
 import { HoneyJar } from '@/components/common/Product/HoneyJar'
+import { OilTin } from '@/components/common/Product/OilTin'
 import { QuantityStepper } from '@/components/common/QuantityStepper/QuantityStepper'
 import { REVEAL_VIEWPORT, riseChild, staggerParent } from '@/lib/motion'
 import styles from './Shop.module.css'
@@ -26,14 +27,16 @@ interface VariantCardProps {
   loading: boolean
 }
 
+// Illustrazioni dei formati al posto delle foto, finché le foto vere non arrivano (option.image).
 function VariantImage({ product, option }: { product: ShopProduct; option: ShopVariantOption }) {
-  // Spike: i due formati disegnati usano l'illustrazione animata al posto della foto.
-  if (option.id === 'olio-750ml' || option.id === 'miele-500g') {
-    return (
-      <div className={styles.illustration}>
-        {option.id === 'olio-750ml' ? <OilBottle label={option.imageLabel} /> : <HoneyJar label={option.imageLabel} />}
-      </div>
-    )
+  const illustration = {
+    'olio-750ml': <OilBottle label={option.imageLabel} />,
+    'olio-5l': <OilTin label={option.imageLabel} />,
+    'miele-250g': <HoneyJar label={option.imageLabel} quantity="250 g" />,
+    'miele-500g': <HoneyJar label={option.imageLabel} />,
+  }[option.id]
+  if (illustration && !option.image) {
+    return <div className={styles.illustration} data-format={option.id}>{illustration}</div>
   }
   return (
     <ImagePlaceholder
@@ -53,6 +56,7 @@ function VariantCard({ product, option, variant, loading }: VariantCardProps) {
   const line = variant ? cart?.lines.find((item) => item.variantId === variant.id) : undefined
   const itemName = `${product.name}, ${option.label}`
   const max = variant?.stock ?? MAX_PER_LINE
+  const unavailable = !loading && (!variant || !variant.purchasable)
 
   let control
   if (loading) {
@@ -98,7 +102,11 @@ function VariantCard({ product, option, variant, loading }: VariantCardProps) {
         transition: { type: 'spring', stiffness: 300, damping: 20 },
       }}
     >
-      <VariantImage product={product} option={option} />
+      {/* Un formato che non si può ordinare resta in vetrina, spento e con la scritta. */}
+      <div className={styles.variantMedia} data-unavailable={unavailable}>
+        <VariantImage product={product} option={option} />
+        {unavailable && <span className={`${styles.unavailableBadge} mono-label`}>{productUi.unavailable}</span>}
+      </div>
       <div className={styles.variantCardBody}>
         <span className="body">{option.label}</span>
         <span className={`${styles.variantPrice} mono-figure`}>

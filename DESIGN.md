@@ -146,6 +146,8 @@ Full-viewport (`100svh`) sections with `scroll-snap-align: start` against site-w
 
 Section order and surfaces: Hero (dark, video/photo) · Territorio (white, 3D diorama) · Olio (mist) · Miele (white) · Filiera (mist) · Stagioni (white) · Shop (mist) · Domande (white) · Footer (mist).
 
+Data pages (`/lotto/:codice`, `/analisi`) share one readable 46rem column on White: pill tags for line and season, hairline tables with muted labels and tabular figures, underlined inline links. Lab values on the product page (acidity next to peroxides and UV absorption, panel test bars on a 0 to 10 scale, nutrition table) come from the reports published in the back office; until one exists, a muted line says so. Shop formats without a photo use the SVG illustrations (bottle, 5 L tin, 250 g and 500 g jars); a format that cannot be ordered stays visible, greyed out, with an Ink "Non disponibile" pill on the image.
+
 ## Elevation & Depth
 
 None. The system is shadowless: no box-shadow, no drop-shadow, no glow. Hierarchy comes from surface contrast (Mist card on White, White card on Mist, hairlines), weight, and space. A floating callout (Territorio markers) is distinguished by a solid surface fill and a 1.5px hairline, not a shadow. The only gradient allowed is a functional dark scrim over the hero video/photo so White text stays legible.

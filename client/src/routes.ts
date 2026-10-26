@@ -11,6 +11,7 @@ const pages = (locale: string) =>
     route('carrello', 'routes/cart.tsx', { id: `cart-${locale}` }),
     route('ordine', 'routes/order.tsx', { id: `order-${locale}` }),
     route('lotto/:codice', 'routes/lot.tsx', { id: `lot-${locale}` }),
+    route('analisi', 'routes/analyses.tsx', { id: `analyses-${locale}` }),
     ...LEGAL_PAGES.map((page) => route(page, 'routes/legal.tsx', { id: `legal-${page}-${locale}` })),
   ])
 

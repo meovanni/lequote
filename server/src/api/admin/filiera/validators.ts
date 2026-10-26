@@ -1,4 +1,5 @@
 import { z } from '@medusajs/framework/zod'
+import { VALUE_GROUPS } from '../../../modules/filiera/lib/analysis-values'
 import { parseLotCode } from '../../../modules/filiera/lib/lot-code'
 
 // Schemi delle richieste del back office per la filiera. Le date arrivano come "AAAA-MM-GG".
@@ -106,6 +107,34 @@ export const AnalysisCreate = z
     visibility: z.enum(['public', 'internal']).default('internal'),
     file_base64: z.string().min(1).max(21 * 1024 * 1024),
   })
+  .strict()
+
+// Correzioni dal back office: i valori letti dal referto si sistemano a mano, il testo si può
+// correggere e rileggere.
+const analysisValue = z
+  .object({
+    key: z.string().regex(/^[a-z][a-z0-9_]{0,39}$/, 'Chiave: minuscole, cifre e trattino basso'),
+    label: z.string().trim().min(1).max(100),
+    group: z.enum(VALUE_GROUPS),
+    value: z.string().trim().min(1).max(500),
+    unit: z.string().trim().max(40).nullish().transform((unit) => unit || null),
+  })
+  .strict()
+
+export const AnalysisUpdate = z
+  .object({
+    title: text,
+    lab: z.string().trim().max(200).nullish(),
+    date: isoDate,
+    visibility: z.enum(['public', 'internal']),
+    markdown: z.string().max(200_000),
+    nutrition_basis: z.enum(['100 g', '100 ml']),
+    values: z
+      .array(analysisValue)
+      .max(100)
+      .refine((values) => new Set(values.map((value) => value.key)).size === values.length, 'Parametri ripetuti'),
+  })
+  .partial()
   .strict()
 
 const province = z.string().trim().max(4).nullish()

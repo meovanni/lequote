@@ -1,6 +1,9 @@
 import { useContent, useLocale } from '@/i18n/LocaleContext'
 import { sectionHref } from '@/i18n/locales'
 import { useCatalogProduct } from '@/hooks/useCatalogProduct'
+import { usePublicAnalyses } from '@/hooks/usePublicAnalyses'
+import { latestValues } from '@/lib/medusa/analyses'
+import { valueText } from '@/lib/analysisDisplay'
 import type { ProductHandle } from '@/data/content/handles'
 import { OilBottle } from '@/components/common/Product/OilBottle'
 import { HoneyJar } from '@/components/common/Product/HoneyJar'
@@ -8,6 +11,7 @@ import { LegalPanel } from '@/components/common/LegalPanel/LegalPanel'
 import { Reveal } from '@/components/common/Reveal/Reveal'
 import { AnimatedWords } from '@/components/common/AnimatedWords/AnimatedWords'
 import { ProductBuyBox } from './ProductBuyBox'
+import { ChemistryBlock, NutritionTable, OrganolepticProfile } from './ProductAnalysis'
 import styles from './ProductDetail.module.css'
 
 interface ProductDetailProps {
@@ -15,13 +19,18 @@ interface ProductDetailProps {
 }
 
 // Scheda prodotto: racconto e informazioni obbligatorie dai contenuti tradotti, formati e prezzi
-// da Medusa. Le informazioni di legge sono le stesse della sezione Filiera per quella linea.
+// da Medusa, valori delle analisi dai referti pubblicati nel back office. Le informazioni di legge
+// sono le stesse della sezione Filiera per quella linea.
 export function ProductDetail({ handle }: ProductDetailProps) {
-  const { products, productUi, filiera, ui } = useContent()
+  const { products, productUi, filiera, ui, analysisUi } = useContent()
   const locale = useLocale()
   const page = products[handle]
   const catalog = useCatalogProduct(handle)
+  const analyses = usePublicAnalyses(page.line)
+  const latest = analyses.status === 'ready' ? latestValues(analyses.campaigns, page.line) : null
   const legal = filiera.lines.find((line) => line.line === page.line)
+  const acidity = page.acidity === null ? null : (valueText(latest?.byKey.get('acidita'), locale, analysisUi) ?? page.acidity)
+  const facts = acidity ? [{ label: productUi.acidityLabel, value: acidity }, ...page.facts] : page.facts
 
   return (
     <article>
@@ -63,7 +72,7 @@ export function ProductDetail({ handle }: ProductDetailProps) {
             <Reveal>
               <h2 className={`${styles.asideTitle} mono-label`}>{productUi.detailsTitle}</h2>
               <dl className={styles.facts}>
-                {page.facts.map((fact) => (
+                {facts.map((fact) => (
                   <div key={fact.label} className={styles.fact}>
                     <dt className="body-sm">{fact.label}</dt>
                     <dd className="body">{fact.value}</dd>
@@ -72,33 +81,9 @@ export function ProductDetail({ handle }: ProductDetailProps) {
               </dl>
             </Reveal>
 
-            {page.nutrition && (
-              <Reveal offset={8}>
-                <table className={styles.nutrition}>
-                  <caption className={`${styles.caption} mono-label`}>{productUi.nutritionTitle}</caption>
-                  <thead>
-                    <tr>
-                      <th scope="col" className="body-sm">
-                        {productUi.nutritionNutrient}
-                      </th>
-                      <th scope="col" className="body-sm">
-                        {page.nutrition.per}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {page.nutrition.rows.map((row) => (
-                      <tr key={row.label}>
-                        <th scope="row" className="body-sm">
-                          {row.label}
-                        </th>
-                        <td className="body-sm">{row.value}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </Reveal>
-            )}
+            {page.line === 'olio' && <OrganolepticProfile latest={latest} />}
+            {page.line === 'olio' && <ChemistryBlock latest={latest} />}
+            <NutritionTable latest={latest} fallback={page.nutrition} />
 
             {legal && <LegalPanel label={filiera.legalPanelLabel} items={legal.legalInfo} />}
 

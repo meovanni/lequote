@@ -2,7 +2,8 @@ import { useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import { motion } from 'motion/react'
 import { REVEAL_VIEWPORT, riseChild, staggerParent } from '@/lib/motion'
-import { useContent } from '@/i18n/LocaleContext'
+import { useContent, useLocale } from '@/i18n/LocaleContext'
+import { localizePath } from '@/i18n/locales'
 import type { ProductLine } from '@/types'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
 import { LegalPanel } from '@/components/common/LegalPanel/LegalPanel'
@@ -15,6 +16,7 @@ const panelId = (line: ProductLine) => `filiera-panel-${line}`
 
 export function Filiera() {
   const { filiera, ui } = useContent()
+  const locale = useLocale()
   const [activeLine, setActiveLine] = useState<ProductLine>(filiera.lines[0].line)
   const tabRefs = useRef<Partial<Record<ProductLine, HTMLButtonElement | null>>>({})
 
@@ -45,6 +47,9 @@ export function Filiera() {
           </Reveal>
           <Reveal offset={6}>
             <p className={`${styles.intro} body-lead`}>{filiera.intro}</p>
+            <a href={localizePath(locale, '/analisi')} className={`${styles.analysesLink} btn btn-ghost mono-label`}>
+              {filiera.analysesLink}
+            </a>
           </Reveal>
         </header>
 

@@ -17,9 +17,11 @@ const INK = '#1f2a38'
 interface HoneyJarProps {
   className?: string
   label?: string
+  /** Quantità stampata in etichetta. */
+  quantity?: string
 }
 
-export function HoneyJar({ className, label = 'Vasetto di miele Le Quote' }: HoneyJarProps) {
+export function HoneyJar({ className, label = 'Vasetto di miele Le Quote', quantity = '500 g' }: HoneyJarProps) {
   const uid = useId().replace(/:/g, '')
   const reduceMotion = useReducedMotion()
   const enter = (delay: number) => ({
@@ -121,7 +123,7 @@ export function HoneyJar({ className, label = 'Vasetto di miele Le Quote' }: Hon
           transition={{ duration: 1.1, ease: EASE_OUT, delay: 1.75 }}
         />
         <motion.text x="150" y="294" fontFamily="'Antic Didone', serif" fontSize="15" {...enter(1.9)}>
-          500 g <tspan fontFamily="'Segoe UI Symbol', 'Apple Symbols', 'Cambria Math', 'DejaVu Sans', sans-serif" fontSize="11">℮</tspan>
+          {quantity} <tspan fontFamily="'Segoe UI Symbol', 'Apple Symbols', 'Cambria Math', 'DejaVu Sans', sans-serif" fontSize="11">℮</tspan>
         </motion.text>
       </g>
     </motion.svg>

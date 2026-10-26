@@ -143,6 +143,9 @@ export function LotPage({ rawCode }: { rawCode: string }) {
                 </li>
               ))}
             </ul>
+            <a href={localizePath(locale, '/analisi')} className={`${styles.inlineLink} body-sm`}>
+              {lotUi.allAnalyses}
+            </a>
           </section>
         )}
 

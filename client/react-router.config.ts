@@ -5,12 +5,13 @@ import { LEGAL_PAGES } from './src/data/legal/types.ts'
 
 // Sito statico (ADR 0003): nessun server per la vetrina. Le pagine pubbliche diventano HTML al
 // build; prezzi, carrello, checkout e lotti si leggono da Medusa nel browser.
-// Carrello e conferma sono gusci statici: il contenuto si legge da Medusa nel browser.
+// Carrello, conferma e analisi sono gusci statici: il contenuto si legge da Medusa nel browser.
 const PUBLIC_PATHS = [
   '/',
   ...PRODUCT_HANDLES.map((handle) => `/prodotti/${handle}`),
   '/carrello',
   '/ordine',
+  '/analisi',
   ...LEGAL_PAGES.map((page) => `/${page}`),
 ]
 

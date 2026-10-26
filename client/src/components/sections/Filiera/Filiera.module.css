@@ -30,6 +30,10 @@
   color: var(--surface-text-muted);
 }
 
+.analysesLink {
+  margin-top: var(--space-4);
+}
+
 /* Selettore di linea: due pillole affiancate in un binario contornato. */
 .tabs {
   display: inline-flex;

@@ -252,3 +252,72 @@
 .addError {
   color: var(--color-error);
 }
+
+.note {
+  margin-top: var(--space-2);
+  color: var(--surface-text-muted);
+}
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.inlineLink {
+  align-self: flex-start;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--surface-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+.inlineLink:hover {
+  color: var(--surface-accent);
+}
+
+/* Panel test: una barra per intensità (0-10), come una scala stampata sull'etichetta. */
+.panel {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-2) 0 0;
+}
+
+.panelRow {
+  display: grid;
+  grid-template-columns: minmax(7rem, 1fr) 2fr;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.panelRow dt {
+  color: var(--surface-text-muted);
+}
+
+.panelValue {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 2.5rem;
+  align-items: center;
+  gap: var(--space-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.panelTrack {
+  position: relative;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-border);
+  overflow: hidden;
+}
+
+.panelBar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--level) * 100%);
+  border-radius: inherit;
+  background: var(--surface-text);
+}

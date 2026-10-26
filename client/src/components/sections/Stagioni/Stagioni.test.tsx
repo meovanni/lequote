@@ -16,14 +16,14 @@ describe('Stagioni', () => {
     const olio = screen.getByRole('list', { name: /olio/i })
     const miele = screen.getByRole('list', { name: /miele/i })
     expect(within(olio).getByText('Raccolta e molitura')).toBeInTheDocument()
-    expect(within(miele).getByText('Millefiori')).toBeInTheDocument()
+    expect(within(miele).getByText('Fioriture del millefiori')).toBeInTheDocument()
   })
 
   it('descrive a parole il periodo, anche a cavallo d’anno, una sola volta per attività', () => {
     render(<Stagioni now={new Date(2026, 0, 1)} />)
     expect(screen.getAllByText('Invernamento')).toHaveLength(1)
     expect(screen.getByText('da novembre a febbraio')).toBeInTheDocument()
-    expect(screen.getByText('maggio')).toBeInTheDocument()
+    expect(screen.getByText('ottobre')).toBeInTheDocument()
   })
 
   it('segna come in corso le attività del mese corrente', () => {

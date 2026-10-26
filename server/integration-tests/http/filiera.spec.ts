@@ -163,6 +163,32 @@ medusaIntegrationTestRunner({
       expect(adminCopy.status).toBe(200)
     })
 
+    it('corregge i valori letti dal referto e li pubblica senza il testo integrale', async () => {
+      const { campaignId } = await publishedLot()
+      const created = await api.post(
+        `/admin/filiera/campaigns/${campaignId}/analyses`,
+        { title: 'Analisi chimico-fisica', visibility: 'internal', file_base64: PDF_BASE64 },
+        admin,
+      )
+      // Un PDF senza testo leggibile: niente valori, si inseriscono a mano.
+      expect(created.data.analysis.results).toEqual({ markdown: '', values: [], nutrition_basis: '100 g' })
+      const path = `/admin/filiera/campaigns/${campaignId}/analyses/${created.data.analysis.id}`
+
+      const invalid = await api.post(path, { values: [{ key: 'acidita', label: 'Acidità', group: 'boh', value: '0.2' }] }, admin).catch(fail)
+      expect(invalid.status).toBe(400)
+
+      const acidity = { key: 'acidita', label: 'Acidità libera', group: 'chimica', value: '0.21', unit: '% acido oleico' }
+      await api.post(path, { visibility: 'public', markdown: 'Acidità 0,21 (nota interna)', values: [acidity] }, admin)
+
+      const { data } = await api.get('/store/filiera/analyses?line=olio', store)
+      expect(data.campaigns).toEqual([
+        expect.objectContaining({ product_line: 'olio', campaign: '2025/26', analyses: [expect.objectContaining({ values: [acidity] })] }),
+      ])
+      expect(JSON.stringify(data)).not.toContain('nota interna')
+      const honey = await api.get('/store/filiera/analyses?line=miele', store)
+      expect(honey.data.campaigns).toEqual([])
+    })
+
     it('rifiuta un file che non è un PDF né un\'immagine', async () => {
       const { campaignId } = await draftLot()
       const response = await api

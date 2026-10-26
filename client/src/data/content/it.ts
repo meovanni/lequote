@@ -50,9 +50,9 @@ export const olio = {
   eyebrow: 'Olio extravergine',
   title: 'L’olio della riserva',
   elevation: 'La quota del mare',
-  // Nessuna dichiarazione di acidità né descrittori organolettici: per legge richiedono le
-  // analisi complete e il panel test dell'annata (Reg. del. UE 2022/2104, art. 10). Torneranno
-  // per lotto, accanto ai referti, quando il back office li pubblicherà.
+  // Acidità e descrittori organolettici richiedono le analisi complete e il panel test
+  // dell'annata (Reg. del. UE 2022/2104): sulla scheda prodotto arrivano dai referti pubblicati nel
+  // back office, insieme agli altri parametri di qualità.
   body: 'Usiamo solo le olive dei nostri oliveti, alcuni con piante secolari. Le raccogliamo a mano o con leggere agevolatrici, al giusto grado di maturazione, e le portiamo al frantoio entro poche ore. Ogni campagna l’olio viene analizzato in laboratorio.',
   varieties: [
     { name: 'Moraiolo', note: 'cultivar tradizionale dell’Italia centrale' },
@@ -69,13 +69,12 @@ export const miele = {
   eyebrow: 'Miele',
   title: 'Il miele di quota',
   elevation: 'La quota della montagna',
-  body: 'I nostri alveari stanno tutti sulle alture di Cerchio, nella Marsica, e seguono le fioriture spontanee dei prati e dei boschi d’altura. Ne raccogliamo mieli diversi per colore, profumo e consistenza, sempre smielati a freddo.',
-  // La denominazione floreale (es. "acacia") va dimostrata dall'analisi dell'annata: se un anno
-  // l'analisi non la conferma, quel miele si vende come millefiori.
+  body: 'I nostri alveari stanno tutti sulle alture di Cerchio, nella Marsica. Produciamo solo millefiori di montagna: le api seguono le fioriture spontanee dei prati e dei boschi d’altura, così il miele racconta la stagione e ogni anno trova sfumature nuove di colore, profumo e consistenza. Sempre smielato a freddo.',
+  // Un solo miele, il millefiori di montagna: niente denominazioni monoflora da dimostrare.
   varieties: [
-    { name: 'Miele di acacia', note: 'chiaro e delicato, resta liquido a lungo' },
-    { name: 'Millefiori', note: 'cambia con le fioriture di ogni stagione' },
-    { name: 'Melata', note: 'scuro, raccolto a fine estate' },
+    { name: 'Millefiori di montagna', note: 'l’unico miele che produciamo, dai fiori spontanei in quota' },
+    { name: 'La stagione', note: 'primavera ed estate in montagna, in un solo vasetto' },
+    { name: 'Ogni anno diverso', note: 'colore e profumo cambiano con le fioriture dell’annata' },
   ],
   imageLabel: 'Foto: Le arnie sulle alture di Cerchio',
   imageLabelAlt: 'Foto: Vasetti di miele Le Quote',
@@ -108,7 +107,7 @@ export const shopCatalog: ShopProduct[] = [
     id: 'olio',
     handle: 'olio-extravergine',
     name: 'Olio Extravergine',
-    note: 'Il blend della riserva: Moraiolo, Leccino e Pendolino.',
+    note: 'Acidità 0,2%: Moraiolo, Leccino e Pendolino dalla Riserva del Borsacchio.',
     variants: [
       {
         id: 'olio-750ml',
@@ -156,7 +155,8 @@ export const filiera = {
   eyebrow: 'Filiera',
   title: 'Dalla pianta al tuo lotto',
   intro:
-    'Ogni bottiglia e ogni vasetto portano un codice lotto. Qui trovi il percorso che compie ciascun prodotto, dal campo all’etichetta.',
+    'Per noi la trasparenza viene prima di tutto. Ogni bottiglia e ogni vasetto portano un codice lotto: da qui vedi da dove viene, chi l’ha lavorato e cosa dicono le analisi di laboratorio, che pubblichiamo.',
+  analysesLink: 'Le nostre analisi di laboratorio',
   legalPanelLabel: 'Informazioni di legge',
   internalNote:
     'Per ogni lotto conserviamo anche i registri richiesti dalle autorità di controllo (Reg. CE 178/2002, art. 18): restano interni e non vengono pubblicati.',
@@ -330,7 +330,7 @@ export const filiera = {
   ] satisfies FilieraLine[],
   lookup: {
     label: 'Hai una bottiglia o un vasetto? Inserisci il codice lotto',
-    placeholder: 'Es. L2026-01',
+    placeholder: 'Codice lotto, es. L2026-01',
     submitLabel: 'Cerca il lotto',
     help: 'Lo trovi in etichetta, preceduto dalla lettera L, vicino al termine minimo di conservazione.',
     emptyError: 'Inserisci il codice lotto stampato in etichetta.',
@@ -367,7 +367,7 @@ export const stagioni = {
       activities: [
         { id: 'potatura', label: 'Potatura', from: 2, to: 3 },
         { id: 'fioritura-olivi', label: 'Fioritura degli olivi', from: 5, to: 6 },
-        { id: 'raccolta', label: 'Raccolta e molitura', from: 10, to: 11 },
+        { id: 'raccolta', label: 'Raccolta e molitura', from: 10, to: 10 },
         { id: 'imbottigliamento', label: 'Imbottigliamento', from: 11, to: 12 },
       ],
     },
@@ -377,9 +377,8 @@ export const stagioni = {
       place: 'Cerchio, in quota',
       activities: [
         { id: 'ripresa', label: 'Ripresa delle famiglie', from: 3, to: 4 },
-        { id: 'acacia', label: 'Fioritura dell’acacia', from: 5, to: 5 },
-        { id: 'millefiori', label: 'Millefiori', from: 6, to: 7 },
-        { id: 'melata', label: 'Melata', from: 8, to: 9 },
+        { id: 'millefiori', label: 'Fioriture del millefiori', from: 5, to: 8 },
+        { id: 'smielatura', label: 'Smielatura a freddo', from: 8, to: 9 },
         { id: 'invernamento', label: 'Invernamento', from: 11, to: 2 },
       ],
     },
@@ -433,7 +432,7 @@ export const domande = {
           id: 'miele-cristallizzato',
           question: 'Il miele si è solidificato: è normale?',
           answer:
-            'Sì. La cristallizzazione è un processo naturale e non altera il miele; i tempi dipendono dai fiori di origine, e l’acacia per esempio resta liquida a lungo. Se lo preferisci fluido, scalda il vasetto a bagnomaria senza superare i 40 °C.',
+            'Sì. La cristallizzazione è un processo naturale e non altera il miele; i tempi dipendono dai fiori dell’annata, per questo ogni anno il nostro millefiori cristallizza in modo diverso. Se lo preferisci fluido, scalda il vasetto a bagnomaria senza superare i 40 °C.',
         },
       ],
     },
@@ -517,6 +516,17 @@ export const productUi = {
     'In etichetta trovi il codice lotto: inseriscilo nella sezione Filiera per vedere raccolta, lavorazione e analisi della tua bottiglia o del tuo vasetto.',
   traceLink: 'Vai alla filiera',
   backToShop: 'Torna allo shop',
+  nutritionPer: (basis: string) => `per ${basis}`,
+  acidityLabel: 'Acidità',
+  analysisTitle: 'Analisi dell’annata',
+  analysisCampaign: (label: string) => `Campagna ${label}, dal referto di laboratorio`,
+  analysisPending: 'I valori dell’annata compaiono qui quando pubblichiamo il referto di laboratorio.',
+  analysesLink: 'Tutte le analisi',
+  profileTitle: 'Profilo organolettico',
+  profileScale: 'Intensità mediana del panel test, su una scala da 0 a 10.',
+  profilePending: 'Il profilo dell’annata compare qui quando pubblichiamo il panel test.',
+  defectsNone: 'Nessun difetto (mediana 0)',
+  unavailable: 'Non disponibile',
 }
 
 export const products = {
@@ -533,6 +543,8 @@ export const products = {
       'Raccogliamo a mano o con leggere agevolatrici, al giusto grado di maturazione, e portiamo le olive al frantoio entro poche ore. Il frantoio cambia di anno in anno: per ogni lotto indichiamo quale.',
       'Ogni campagna l’olio viene analizzato in laboratorio. I referti dell’annata si consultano per lotto, dalla sezione Filiera.',
     ],
+    // Valore di riserva: sulla pagina vince quello del referto più recente pubblicato.
+    acidity: '0,2%' as string | null,
     facts: [
       { label: 'Cultivar', value: 'Moraiolo, Leccino, Pendolino' },
       { label: 'Oliveti', value: 'Riserva del Borsacchio, Roseto degli Abruzzi (TE)' },
@@ -560,14 +572,15 @@ export const products = {
     illustration: 'honey',
     eyebrow: 'Miele',
     name: 'Miele di quota',
-    summary: 'Dagli alveari sulle alture di Cerchio, smielato a freddo. Acacia, millefiori o melata secondo l’annata.',
+    summary: 'Solo millefiori di montagna, dagli alveari sulle alture di Cerchio: ogni annata ha le sue sfumature. Smielato a freddo.',
     metaDescription:
       'Miele Le Quote dagli alveari sulle alture di Cerchio (AQ), smielato a freddo. Vasetti da 250 g e 500 g.',
     paragraphs: [
       'Tutti i nostri alveari stanno sulle alture di Cerchio, nella Marsica, e seguono le fioriture spontanee dei prati e dei boschi d’altura.',
-      'Estraiamo il miele a freddo, senza riscaldarlo. La denominazione floreale, per esempio acacia, la indichiamo solo quando le analisi dell’annata la confermano; altrimenti è millefiori.',
+      'Produciamo solo millefiori di montagna, per assaporare la stagionalità: ogni anno le fioriture cambiano e il miele trova sfumature nuove. Lo estraiamo a freddo, senza riscaldarlo.',
       'Col tempo il miele può cristallizzare: è un processo naturale. Se lo preferisci fluido, scalda il vasetto a bagnomaria senza superare i 40 °C.',
     ],
+    acidity: null as string | null,
     facts: [
       { label: 'Apiari', value: 'Cerchio (AQ), in quota' },
       { label: 'Fioriture', value: 'Spontanee, da maggio a settembre' },
@@ -588,6 +601,8 @@ export interface ProductPage {
   summary: string
   metaDescription: string
   paragraphs: string[]
+  /** Acidità di riserva finché non c'è un referto pubblicato; null per il miele. */
+  acidity: string | null
   facts: { label: string; value: string }[]
   nutrition: { per: string; rows: { label: string; value: string }[] } | null
   variantLabels: Record<string, string>
@@ -714,6 +729,7 @@ export const lotUi = {
   stagesTitle: 'Il percorso',
   noStages: 'Le fasi di questo lotto non sono ancora state descritte.',
   analysesTitle: 'Analisi',
+  allAnalyses: 'Tutte le analisi, campagna per campagna',
   openAnalysis: 'Apri il referto',
   legalLabel: 'Informazioni di legge',
   sourceNote: '',
@@ -725,6 +741,61 @@ export const lotUi = {
   error: 'Non riusciamo a mostrare il lotto in questo momento. Riprova tra poco, oppure scrivici a info@le-quote.it.',
   searchAgain: 'Cerca un altro lotto',
   backHome: 'Torna alla home',
+}
+
+// Pagina /analisi: i valori dei referti pubblicati nel back office, campagna per campagna.
+export const analysisUi = {
+  metaTitle: 'Analisi di laboratorio | Le Quote',
+  metaDescription: 'I referti di laboratorio dell’olio e del miele Le Quote, campagna per campagna: acidità, perossidi, valori nutrizionali e panel test.',
+  title: 'Le nostre analisi',
+  intro: 'Ogni campagna facciamo analizzare olio e miele da un laboratorio. Qui pubblichiamo i valori dei referti, così come li riceviamo, e il documento originale da scaricare.',
+  loading: 'Carico le analisi…',
+  error: 'Non riusciamo a mostrare le analisi in questo momento. Riprova tra poco, oppure scrivici a info@le-quote.it.',
+  empty: 'Non ci sono ancora analisi pubblicate. Arrivano con i primi lotti della campagna.',
+  lineName: { olio: 'Olio extravergine', miele: 'Miele' } satisfies Record<ProductLine, string>,
+  campaign: (label: string) => `Campagna ${label}`,
+  groups: {
+    chimica: 'Parametri chimici',
+    nutrizionale: 'Dichiarazione nutrizionale',
+    organolettica: 'Profilo organolettico',
+    altro: 'Altri valori',
+  },
+  nutritionPer: (basis: string) => `Valori medi per ${basis}`,
+  openReport: 'Apri il referto',
+  backToFiliera: 'Torna alla filiera',
+  backHome: 'Torna alla home',
+  valueLabels: {
+    acidita: 'Acidità libera',
+    perossidi: 'Numero di perossidi',
+    k232: 'K232',
+    k270: 'K270',
+    delta_k: 'Delta K',
+    etil_esteri: 'Esteri etilici degli acidi grassi',
+    cere: 'Cere',
+    polifenoli: 'Polifenoli totali',
+    umidita: 'Umidità',
+    hmf: 'HMF',
+    diastasi: 'Attività diastasica',
+    conducibilita: 'Conducibilità elettrica',
+    origine_botanica: 'Origine botanica',
+    energia_kj: 'Energia',
+    energia_kcal: 'Energia',
+    grassi: 'Grassi',
+    saturi: 'di cui acidi grassi saturi',
+    monoinsaturi: 'di cui acidi grassi monoinsaturi',
+    polinsaturi: 'di cui acidi grassi polinsaturi',
+    carboidrati: 'Carboidrati',
+    zuccheri: 'di cui zuccheri',
+    fibre: 'Fibre',
+    proteine: 'Proteine',
+    sale: 'Sale',
+    fruttato: 'Fruttato',
+    amaro: 'Amaro',
+    piccante: 'Piccante',
+    difetti: 'Mediana dei difetti',
+    descrittori: 'Note sensoriali',
+  } as Record<string, string>,
+  units: { acidita: '% acido oleico' } as Record<string, string>,
 }
 
 export const it = {
@@ -749,6 +820,7 @@ export const it = {
   checkoutUi,
   orderUi,
   lotUi,
+  analysisUi,
 }
 
 export type Content = typeof it

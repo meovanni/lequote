@@ -1,5 +1,6 @@
 import { toast } from '@medusajs/ui'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import type { AnalysisResults } from '../../modules/filiera/lib/analysis-values'
 import { sdk } from './sdk'
 
 // Tipi e accesso ai dati del back office della filiera. Le forme ricalcano le risposte di
@@ -22,8 +23,19 @@ export type Campaign = {
   mill?: { id: string; name: string } | null
   groves?: { id: string; name: string }[]
   apiaries?: { id: string; name: string }[]
-  analyses?: { id: string; title: string; lab: string | null; date: string | null; visibility: 'public' | 'internal' }[]
+  analyses?: Analysis[]
   lots?: { id: string; code: string; status: string }[]
+}
+
+export type Analysis = {
+  id: string
+  title: string
+  lab: string | null
+  date: string | null
+  visibility: 'public' | 'internal'
+  content_type?: string
+  /** Testo del referto e valori letti; null per le analisi caricate prima della lettura automatica. */
+  results?: AnalysisResults | null
 }
 
 export type Lot = {

@@ -1,6 +1,7 @@
 import { defineMiddlewares, validateAndTransformBody } from '@medusajs/framework/http'
 import {
   AnalysisCreate,
+  AnalysisUpdate,
   CampaignCreate,
   CampaignUpdate,
   LotCreate,
@@ -45,6 +46,11 @@ export default defineMiddlewares({
       method: 'POST',
       bodyParser: { sizeLimit: '22mb' },
       middlewares: [validateAndTransformBody(AnalysisCreate)],
+    },
+    {
+      matcher: '/admin/filiera/campaigns/:id/analyses/:analysisId',
+      method: 'POST',
+      middlewares: [validateAndTransformBody(AnalysisUpdate)],
     },
     { matcher: '/admin/filiera/stage-templates', method: 'POST', middlewares: [validateAndTransformBody(StageTemplateCreate)] },
     { matcher: '/admin/filiera/stage-templates/:id', method: 'POST', middlewares: [validateAndTransformBody(StageTemplateUpdate)] },

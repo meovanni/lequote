@@ -1,5 +1,7 @@
 import type { Context } from '@medusajs/framework/types'
 import { InjectTransactionManager, MedusaContext, MedusaError, MedusaService } from '@medusajs/framework/utils'
+import type { AnalysisResults } from './lib/analysis-values'
+import { toPublicAnalyses, type PublicCampaignAnalyses } from './lib/public-analyses'
 import { toPublicLot, type LotRecord, type PublicLot } from './lib/public-lot'
 import { publishBlockers } from './lib/publish-check'
 import { buildLotStages, type StageValuesInput, type TemplateForBuild } from './lib/stage-builder'
@@ -98,6 +100,27 @@ class FilieraModuleService extends MedusaService({
     }
 
     return toPublicLot(record)
+  }
+
+  /** Analisi pubbliche per linea, dalla campagna più recente (lib/public-analyses.ts). */
+  async listPublicAnalyses(line?: 'olio' | 'miele'): Promise<PublicCampaignAnalyses[]> {
+    const campaigns = await this.listCampaigns(line ? { product_line: line } : {}, { relations: ['analyses', 'lots'] })
+    return toPublicAnalyses(
+      campaigns.map((campaign) => ({
+        product_line: campaign.product_line,
+        label: campaign.label,
+        harvest_start: isoDate(campaign.harvest_start),
+        analyses: (campaign.analyses ?? []).map((analysis) => ({
+          id: analysis.id,
+          title: analysis.title,
+          lab: analysis.lab,
+          date: isoDate(analysis.date),
+          visibility: analysis.visibility,
+          results: (analysis.results as AnalysisResults | null) ?? null,
+        })),
+        lots: (campaign.lots ?? []).map((lot) => ({ status: lot.status })),
+      })),
+    )
   }
 
   /** Blocca la riga del lotto fino alla fine della transazione: niente controlli superati da scritture concorrenti. */
