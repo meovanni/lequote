@@ -1,7 +1,9 @@
 import { storeFetch } from './client'
 
 // Forma ridotta dei prodotti come li usa la vetrina: i testi stanno nei file di contenuto
-// tradotti, da Medusa arrivano solo varianti, prezzi IVA inclusa e disponibilità.
+// tradotti, da Medusa arrivano solo varianti, prezzi IVA inclusa e disponibilità. La disponibilità
+// la dà il magazzino in litri e chili (/store/magazzino): pezzi pronti più quelli che si
+// confezionano dallo sfuso. Le righe sfuse ("da imbottigliare") non si vendono dal sito.
 
 export interface CatalogVariant {
   id: string
@@ -37,9 +39,11 @@ interface RawProduct {
   variants?: RawVariant[] | null
 }
 
-export function toCatalogVariant(raw: RawVariant): CatalogVariant {
+/** `available`: pezzi ordinabili dal magazzino; se manca vale la giacenza di Medusa. */
+export function toCatalogVariant(raw: RawVariant, available?: number): CatalogVariant {
   const price = raw.calculated_price?.calculated_amount ?? null
-  const stock = raw.manage_inventory ? Math.max(0, raw.inventory_quantity ?? 0) : null
+  const stock =
+    available !== undefined ? Math.max(0, available) : raw.manage_inventory ? Math.max(0, raw.inventory_quantity ?? 0) : null
   const inStock = stock === null || stock > 0 || Boolean(raw.allow_backorder)
   return {
     id: raw.id,
@@ -51,12 +55,20 @@ export function toCatalogVariant(raw: RawVariant): CatalogVariant {
   }
 }
 
-export function toCatalogProduct(raw: RawProduct): CatalogProduct {
+/** Con `available` restano solo i formati che il magazzino vende dal sito. */
+export function toCatalogProduct(raw: RawProduct, available?: Record<string, number>): CatalogProduct {
+  const variants = (raw.variants ?? []).filter((variant) => !available || (variant.sku ?? '') in available)
   return {
     id: raw.id,
     handle: raw.handle,
-    variants: (raw.variants ?? []).map(toCatalogVariant),
+    variants: variants.map((variant) => toCatalogVariant(variant, available?.[variant.sku ?? ''])),
   }
+}
+
+/** Pezzi ordinabili dal sito per SKU. */
+export async function getAvailability(): Promise<Record<string, number>> {
+  const { available } = await storeFetch<{ available: Record<string, number> }>('/store/magazzino')
+  return available
 }
 
 interface Region {
@@ -100,6 +112,9 @@ export async function getProduct(handle: string): Promise<CatalogProduct | null>
     region_id: regionId,
     fields: PRODUCT_FIELDS,
   })
-  const { products } = await storeFetch<{ products: RawProduct[] }>(`/store/products?${query}`)
-  return products[0] ? toCatalogProduct(products[0]) : null
+  const [{ products }, available] = await Promise.all([
+    storeFetch<{ products: RawProduct[] }>(`/store/products?${query}`),
+    getAvailability(),
+  ])
+  return products[0] ? toCatalogProduct(products[0], available) : null
 }

@@ -1,9 +1,9 @@
 import type { MedusaContainer } from '@medusajs/framework/types'
-import { ContainerRegistrationKeys, getVariantAvailability, Modules, QueryContext } from '@medusajs/framework/utils'
+import { ContainerRegistrationKeys, Modules, QueryContext } from '@medusajs/framework/utils'
 import { isAgentDeliveryCode } from '../agent-delivery'
 import { isPickupOptionCode } from '../checkout-rules'
-import { availableAt, totalQuantity } from './stock-rules'
-import { stockVariants } from './stock'
+import { availability } from '../magazzino'
+import { LINE_UNIT, formatOf } from '../../modules/magazzino/lib/formats'
 
 /** Canale di vendita del seed: prenotazioni e ordini del sito condividono catalogo e giacenze. */
 export const SALES_CHANNEL = 'Sito web'
@@ -15,12 +15,14 @@ export type BookableVariant = {
   variant: string
   /** Prezzo IVA inclusa in euro; null se il listino della regione non lo prevede. */
   price: number | null
-  /** Pezzi disponibili nel canale del sito, tutte le sedi insieme; null se la giacenza non è gestita. */
+  /** Ordinabili dal magazzino (lib/magazzino.ts): pezzi, o litri e chili per lo sfuso. null se il formato non è a magazzino. */
   stock: number | null
-  /** Massimo per ordine: la disponibilità totale (lib/bookings/stock-rules). null se non gestita. */
+  /** Massimo per ordine: uguale a stock. */
   available: number | null
-  /** Pezzi disponibili per sede, per id della sede; null se la giacenza non è gestita. */
-  stockByLocation: Record<string, number> | null
+  /** Unità della quantità: pezzi, oppure litri o chili per le righe "da imbottigliare". */
+  unit: 'pz' | 'L' | 'kg'
+  /** Riga "da imbottigliare": litri o chili presi dallo sfuso, formato deciso dopo. */
+  bulk: boolean
 }
 
 export type DeliveryOption = { id: string; name: string; pickup: boolean; agent: boolean }
@@ -34,7 +36,7 @@ async function salesContext(container: MedusaContainer) {
 /** Formati prenotabili con prezzo e disponibilità, come li vede il sito. */
 export async function bookableVariants(container: MedusaContainer): Promise<BookableVariant[]> {
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
-  const { region, channel } = await salesContext(container)
+  const { region } = await salesContext(container)
   const { data } = await query.graph({
     entity: 'product_variant',
     fields: ['id', 'sku', 'title', 'manage_inventory', 'product.title', 'product.status', 'calculated_price.calculated_amount'],
@@ -49,33 +51,24 @@ export async function bookableVariants(container: MedusaContainer): Promise<Book
     calculated_price: { calculated_amount: number | null } | null
   }[]).filter((variant) => variant.product?.status === 'published')
 
-  const variantIds = variants.map((variant) => variant.id)
-  const [availability, stock] = await Promise.all([
-    getVariantAvailability(query, { variant_ids: variantIds, sales_channel_id: channel.id }),
-    stockVariants(container, variantIds),
-  ])
-  const byLocation = (variantId: string): Record<string, number> | null => {
-    const variant = stock.get(variantId)
-    if (!variant || !variant.manage_inventory) return null
-    const locationIds = [...new Set(variant.inventory_items.flatMap((item) => item.levels.map((level) => level.location_id)))]
-    return Object.fromEntries(locationIds.map((locationId) => [locationId, availableAt(variant, locationId) ?? 0]))
-  }
-  const orderable = (variantId: string) => {
-    const variant = stock.get(variantId)
-    return variant ? totalQuantity(variant) : null
-  }
+  const available = await availability(container)
   return variants
-    .map((variant) => ({
-      variantId: variant.id,
-      sku: variant.sku ?? '',
-      product: variant.product?.title ?? '',
-      variant: variant.title,
-      price: variant.calculated_price?.calculated_amount ?? null,
-      stock: variant.manage_inventory ? (availability[variant.id]?.availability ?? 0) : null,
-      available: variant.manage_inventory ? (orderable(variant.id) ?? 0) : null,
-      stockByLocation: byLocation(variant.id),
-    }))
-    .sort((a, b) => a.product.localeCompare(b.product) || a.variant.localeCompare(b.variant))
+    .map((variant): BookableVariant => {
+      const format = formatOf(variant.sku)
+      const stock = format ? (available[format.sku] ?? 0) : null
+      return {
+        variantId: variant.id,
+        sku: variant.sku ?? '',
+        product: variant.product?.title ?? '',
+        variant: variant.title,
+        price: variant.calculated_price?.calculated_amount ?? null,
+        stock,
+        available: stock,
+        unit: format?.bulk ? LINE_UNIT[format.line] : 'pz',
+        bulk: format?.bulk ?? false,
+      }
+    })
+    .sort((a, b) => a.product.localeCompare(b.product) || Number(a.bulk) - Number(b.bulk) || a.variant.localeCompare(b.variant))
 }
 
 /**

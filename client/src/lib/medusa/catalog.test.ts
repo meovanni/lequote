@@ -71,3 +71,24 @@ describe('varianti dal catalogo Medusa', () => {
     })
   })
 })
+
+describe('disponibilità dal magazzino', () => {
+  it('vale più della giacenza di Medusa e tiene fuori lo sfuso', () => {
+    const product = toCatalogProduct(
+      {
+        id: 'p1',
+        handle: 'olio-extravergine',
+        variants: [
+          { ...base, manage_inventory: false, calculated_price: { calculated_amount: 15 } },
+          { id: 'v2', sku: 'OLIO-SFUSO', title: 'Da imbottigliare (litri)', calculated_price: { calculated_amount: 15 } },
+          { id: 'v3', sku: 'OLIO-5L', title: 'Latta 5 l', calculated_price: { calculated_amount: 75 } },
+        ],
+      },
+      { 'OLIO-750ML': 12, 'OLIO-5L': 0 },
+    )
+    expect(product.variants.map((variant) => [variant.sku, variant.stock, variant.purchasable])).toEqual([
+      ['OLIO-750ML', 12, true],
+      ['OLIO-5L', 0, false],
+    ])
+  })
+})

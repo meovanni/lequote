@@ -12,13 +12,13 @@ import { VENDITE_MODULE } from '../../modules/vendite'
 import { backofficeSecret, signBackofficeCart } from '../backoffice-signature'
 import { BACKOFFICE_PROVIDER_ID } from '../checkout-rules'
 import { deliveryOptions, SALES_CHANNEL } from './catalog'
-import { consolidateStock } from '../stock-pool'
-import { assertStock, explainInventoryError } from './stock'
+import { assertAvailable } from '../magazzino'
+import { explainInventoryError } from './stock'
 import type { Actor, BookingInput } from './types'
 
 /**
  * Nuovo ordine dal gestionale: un carrello costruito dal server e chiuso con lo stesso flusso del
- * sito, così IVA, giacenze riservate, regole del checkout ed email restano quelle di sempre. Il
+ * sito, così IVA, regole del checkout ed email restano quelle di sempre. Il
  * pagamento è quello del gestionale (incassi registrati a mano, anche ad acconti).
  */
 export async function placeBooking(container: MedusaContainer, input: BookingInput, actor: Actor): Promise<{ orderId: string }> {
@@ -28,10 +28,8 @@ export async function placeBooking(container: MedusaContainer, input: BookingInp
   // Consegna non indicata (prenotazione veloce di un agente): la prima disponibile, cioè un ritiro in sede.
   const shippingOptionId = input.shipping_option_id ?? (await deliveryOptions(container))[0]?.id
   if (!shippingOptionId) throw new MedusaError(MedusaError.Types.NOT_ALLOWED, 'Nessuna consegna disponibile: attiva almeno un ritiro.')
-  // Prima di creare il carrello: merce libera tutta nel magazzino (di solito lo è già, ci pensa il
-  // subscriber stock-pool), poi si ordina solo quello che c'è.
-  await consolidateStock(container)
-  await assertStock(container, input.items)
+  // Si ordina solo quello che il magazzino può dare: pezzi pronti o sfuso da confezionare.
+  await assertAvailable(container, input.items)
   const address = {
     first_name: customer.first_name ?? undefined,
     last_name: customer.last_name ?? undefined,

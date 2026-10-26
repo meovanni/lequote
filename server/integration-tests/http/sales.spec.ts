@@ -55,8 +55,9 @@ medusaIntegrationTestRunner({
       const { data } = await api.get('/admin/sell/catalog', bruno)
       const olio = data.variants.find((variant: { sku: string }) => variant.sku === 'OLIO-750ML')
       expect(olio.price).toBeGreaterThan(0)
-      // 50 pezzi di prova in ciascuna delle due sedi del canale.
-      expect(olio.stock).toBe(100)
+      // Magazzino di prova: 50 bottiglie pronte più le 400 che i 300 L di sfuso permettono.
+      expect(olio.stock).toBe(450)
+      expect(data.variants.find((variant: { sku: string }) => variant.sku === 'OLIO-SFUSO')).toMatchObject({ unit: 'L', bulk: true, available: 300 })
       const names = (options: { name: string }[]) => options.map((option) => option.name)
       expect(names(data.delivery_options)).toEqual(expect.arrayContaining(['Ritiro a Roseto degli Abruzzi', 'Ritiro a Cerchio', 'Spedizione in Italia']))
 

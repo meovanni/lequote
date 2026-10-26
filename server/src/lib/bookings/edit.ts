@@ -10,8 +10,8 @@ import {
   updateOrderWorkflow,
 } from '@medusajs/medusa/core-flows'
 import { planBookingEdit, type BookingLine } from '../../modules/vendite/lib/sales'
-import { consolidateStock } from '../stock-pool'
-import { assertStock, explainInventoryError } from './stock'
+import { assertAvailable, deliveryOf } from '../magazzino'
+import { explainInventoryError } from './stock'
 import type { Actor } from './types'
 
 export type BookingChanges = {
@@ -33,8 +33,8 @@ type OrderForEdit = {
  */
 export async function editBooking(container: MedusaContainer, orderId: string, changes: BookingChanges, actor: Actor) {
   const order = await loadOrder(container, orderId)
-  if (order.status === 'canceled' || order.status === 'completed') {
-    throw new MedusaError(MedusaError.Types.NOT_ALLOWED, 'La prenotazione è chiusa o annullata: non si modifica.')
+  if (order.status === 'canceled' || order.status === 'completed' || deliveryOf(order.metadata)) {
+    throw new MedusaError(MedusaError.Types.NOT_ALLOWED, 'L’ordine è consegnato o annullato: non si modifica.')
   }
 
   if (changes.items) {
@@ -43,11 +43,8 @@ export async function editBooking(container: MedusaContainer, orderId: string, c
     }
     const plan = planBookingEdit(order.items, changes.items)
     if (plan.update.length > 0 || plan.add.length > 0) {
-      // I pezzi che l'ordine tiene già restano suoi: conta solo quanto chiede in più.
-      const held = new Map<string, number>()
-      for (const item of order.items) if (item.variant_id) held.set(item.variant_id, (held.get(item.variant_id) ?? 0) + item.quantity)
-      await consolidateStock(container)
-      await assertStock(container, changes.items, held)
+      // L'ordine si confronta con il magazzino senza le sue righe attuali: conta come è dopo la modifica.
+      await assertAvailable(container, changes.items, orderId)
       await beginOrderEditOrderWorkflow(container).run({ input: { order_id: orderId, created_by: actor.id } })
       try {
         if (plan.update.length > 0) {

@@ -78,5 +78,5 @@ module.exports = defineConfig({
       cookieSecret: required('COOKIE_SECRET'),
     },
   },
-  modules: [{ resolve: './src/modules/filiera' }, { resolve: './src/modules/recesso' }, { resolve: './src/modules/vendite' }, paymentModule, notificationModule],
+  modules: [{ resolve: './src/modules/filiera' }, { resolve: './src/modules/recesso' }, { resolve: './src/modules/vendite' }, { resolve: './src/modules/magazzino' }, paymentModule, notificationModule],
 })

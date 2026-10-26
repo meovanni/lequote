@@ -60,7 +60,7 @@ Collega la vetrina a Medusa: con il back end acceso (`npm run db`), una sola vol
 ```sh
 cd server
 npm run storefront-env   # scrive la chiave pubblica della vetrina in client/.env.local
-npm run dev:stock        # facoltativo, solo sviluppo: giacenze di prova per provare il checkout
+npm run dev:stock        # facoltativo, solo sviluppo: magazzino di prova per provare il checkout
 ```
 
 Poi:
@@ -109,7 +109,7 @@ Il dominio usato nei meta tag (canonical, Open Graph, hreflang) si imposta al bu
 | `npm run migrate` | Applica le migrazioni del database |
 | `npm run seed` | Dati iniziali (da lanciare su un database vuoto) |
 | `npm run storefront-env` | Scrive la chiave pubblica della vetrina in `client/.env.local` |
-| `npm run dev:stock` | Solo sviluppo: 50 pezzi di prova per formato in ogni sede, per provare carrello e checkout (le giacenze nascono a zero) |
+| `npm run dev:stock` | Solo sviluppo: magazzino di prova (300 L d'olio e 60 kg di miele sfusi, qualche pezzo pronto) per provare carrello e checkout; il magazzino nasce vuoto |
 | `npm run typecheck` | Controllo dei tipi di server e back office |
 | `npm run test:unit` | Test unitari |
 | `npm run test:integration:modules` | Test del modulo Filiera sul database (serve `npm run db` acceso) |

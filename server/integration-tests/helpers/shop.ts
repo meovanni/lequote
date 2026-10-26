@@ -9,7 +9,7 @@ type Api = {
 }
 
 /**
- * Negozio come in sviluppo: dati del seed, giacenze di prova e spedizione accesa (nel seed nasce
+ * Negozio come in sviluppo: dati del seed, magazzino di prova e spedizione accesa (nel seed nasce
  * spenta in attesa della tariffa). Restituisce gli header della chiave pubblica della vetrina.
  */
 export async function seedShop(container: MedusaContainer): Promise<{ headers: Record<string, string> }> {
@@ -37,11 +37,13 @@ export async function readyCart(
   provider: string,
 ): Promise<string> {
   const { data: regions } = await api.get('/store/regions', store)
-  const { data: products } = await api.get('/store/products?fields=variants.id', store)
+  const { data: products } = await api.get('/store/products?fields=variants.id,variants.sku', store)
+  // Un formato confezionato: lo sfuso "da imbottigliare" non si vende dal sito.
+  const variant = products.products[0].variants.find((entry: { sku: string }) => !entry.sku.endsWith('-SFUSO'))
   const { data: created } = await api.post('/store/carts', { region_id: regions.regions[0].id }, store)
   const cartId = created.cart.id as string
 
-  await api.post(`/store/carts/${cartId}/line-items`, { variant_id: products.products[0].variants[0].id, quantity: 1 }, store)
+  await api.post(`/store/carts/${cartId}/line-items`, { variant_id: variant.id, quantity: 1 }, store)
   const address = { first_name: 'Anna', last_name: 'Di Marco', address_1: 'Via Roma 1', city: 'Teramo', postal_code: '64100', country_code: 'it', phone: '3330000000' }
   await api.post(`/store/carts/${cartId}`, { email: 'anna@example.com', shipping_address: address, billing_address: address }, store)
 

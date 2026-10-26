@@ -6,8 +6,8 @@ import { sdk } from './sdk'
 // Le forme ricalcano le risposte di src/api/admin/{backoffice,agents,sell}.
 
 /**
- * stock e available: pezzi disponibili in tutte le sedi, il limite di un ordine (la merce libera sta
- * in un solo magazzino, lib/stock-pool.ts). null = giacenza non gestita, nessun limite.
+ * stock e available: quanto si può ancora ordinare secondo il magazzino (lib/magazzino.ts): pezzi,
+ * oppure litri e chili per le righe "da imbottigliare" (bulk). null = formato non a magazzino.
  */
 export type Variant = {
   variantId: string
@@ -17,7 +17,8 @@ export type Variant = {
   price: number | null
   stock: number | null
   available: number | null
-  stockByLocation: Record<string, number> | null
+  unit: 'pz' | 'L' | 'kg'
+  bulk: boolean
 }
 export type DeliveryOption = { id: string; name: string; pickup: boolean; agent: boolean }
 export type Catalog = { variants: Variant[]; delivery_options: DeliveryOption[]; agents?: { id: string; name: string }[] }
@@ -37,6 +38,8 @@ export type Booking = {
   delivery: string
   notes: string | null
   insertedBy: { type: string; name: string } | null
+  /** Consegna segnata nella pagina Gestione; null se ancora da consegnare. */
+  delivered: { at: string; by: string | null } | null
   lines: BookingLine[]
 }
 

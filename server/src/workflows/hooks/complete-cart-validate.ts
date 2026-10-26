@@ -2,6 +2,8 @@ import { completeCartWorkflow } from '@medusajs/medusa/core-flows'
 import { ContainerRegistrationKeys, MedusaError } from '@medusajs/framework/utils'
 import { backofficeSecret, verifyBackofficeCart } from '../../lib/backoffice-signature'
 import { backofficePaymentViolation, payAtPickupViolation } from '../../lib/checkout-rules'
+import { assertAvailable } from '../../lib/magazzino'
+import { formatOf } from '../../modules/magazzino/lib/formats'
 
 type CartForValidation = {
   id: string
@@ -11,7 +13,8 @@ type CartForValidation = {
 }
 
 // Prima di creare l'ordine: il pagamento al ritiro vale solo con il ritiro in sede, quello del
-// gestionale solo per i carrelli costruiti e firmati dal server.
+// gestionale solo per i carrelli costruiti e firmati dal server. Dal sito si ordinano solo i formati
+// confezionati (lo sfuso "da imbottigliare" passa dal gestionale) e nei limiti del magazzino.
 completeCartWorkflow.hooks.validate(async ({ cart }, { container }) => {
   const { shipping_methods, payment_collection } = cart as CartForValidation
   const providerIds = (payment_collection?.payment_sessions ?? []).flatMap((session) =>
@@ -37,4 +40,15 @@ completeCartWorkflow.hooks.validate(async ({ cart }, { container }) => {
   if (violation) {
     throw new MedusaError(MedusaError.Types.NOT_ALLOWED, violation)
   }
+  // I carrelli del gestionale sono già controllati da placeBooking (lib/bookings/create.ts).
+  if (signed) return
+
+  const { data: carts } = await query.graph({ entity: 'cart', fields: ['id', 'items.variant_sku', 'items.quantity'], filters: { id: cart.id } })
+  const items = ((carts[0] as unknown as { items?: ({ variant_sku: string | null; quantity: unknown } | null)[] } | undefined)?.items ?? []).flatMap(
+    (item) => (item ? [{ sku: item.variant_sku, quantity: Number(item.quantity) }] : []),
+  )
+  if (items.some((item) => formatOf(item.sku)?.bulk)) {
+    throw new MedusaError(MedusaError.Types.NOT_ALLOWED, 'L’olio e il miele sfusi si ordinano solo contattando l’azienda.')
+  }
+  await assertAvailable(container, items)
 })

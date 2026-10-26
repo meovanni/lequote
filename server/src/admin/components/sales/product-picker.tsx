@@ -1,7 +1,7 @@
 import { Minus, Plus } from '@medusajs/icons'
 import { clx, IconButton, Input, Text } from '@medusajs/ui'
 import { formatEuro, type Variant } from '../../lib/sales-api'
-import { maxFor, stockLabel } from './stock-label'
+import { maxFor, priceLabel, stockLabel } from './stock-label'
 
 type ProductPickerProps = {
   variants: Variant[]
@@ -36,9 +36,14 @@ export function ProductPicker({ variants, quantities, onChange }: ProductPickerP
                 {label}
               </Text>
               <Text size="xsmall" className="text-ui-fg-subtle">
-                {variant.price === null ? 'Prezzo non impostato' : formatEuro(variant.price)}
+                {priceLabel(variant, formatEuro)}
                 {stockLabel(variant) ? `, ${stockLabel(variant)}` : ''}
               </Text>
+              {variant.bulk && (
+                <Text size="xsmall" className="text-ui-fg-muted">
+                  Quantità in {variant.unit === 'L' ? 'litri' : 'chili'}, il formato si decide dopo.
+                </Text>
+              )}
               {over && (
                 <Text size="xsmall" className="text-ui-fg-error">
                   Disponibili solo {max}.

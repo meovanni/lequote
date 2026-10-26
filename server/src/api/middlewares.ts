@@ -11,6 +11,7 @@ import {
   StageTemplateUpdate,
   SupplierTypeCreate,
 } from './admin/filiera/validators'
+import { PackCreate, PriceSet, StockSet } from './admin/gestione/validators'
 import { WithdrawalUpdate } from './admin/withdrawals/validators'
 import { AgentCreate, AgentInvite, AgentUpdate, BookingCreate, BookingUpdate, OrderImport, PaymentCreate, SellBookingCreate } from './admin/backoffice/validators'
 import { guard } from './permissions'
@@ -33,6 +34,8 @@ export default defineMiddlewares({
     ...guard('order', '/admin/backoffice/orders'),
     ...guard('order', '/admin/backoffice/catalog'),
     ...guard('order', '/admin/backoffice/order-imports'),
+    // Pagina Gestione: magazzino, prezzi e consegne stanno con gli ordini.
+    ...guard('order', '/admin/gestione'),
     ...guard('agent', '/admin/agents'),
     ...guard('sales', '/admin/sell'),
     { matcher: '/admin/filiera/lots', method: 'POST', middlewares: [validateAndTransformBody(LotCreate)] },
@@ -55,6 +58,9 @@ export default defineMiddlewares({
     { matcher: '/admin/filiera/stage-templates', method: 'POST', middlewares: [validateAndTransformBody(StageTemplateCreate)] },
     { matcher: '/admin/filiera/stage-templates/:id', method: 'POST', middlewares: [validateAndTransformBody(StageTemplateUpdate)] },
     { matcher: '/admin/filiera/supplier-types', method: 'POST', middlewares: [validateAndTransformBody(SupplierTypeCreate)] },
+    { matcher: '/admin/gestione/stock', method: 'POST', middlewares: [validateAndTransformBody(StockSet)] },
+    { matcher: '/admin/gestione/pack', method: 'POST', middlewares: [validateAndTransformBody(PackCreate)] },
+    { matcher: '/admin/gestione/prices', method: 'POST', middlewares: [validateAndTransformBody(PriceSet)] },
     { matcher: '/admin/backoffice/orders', method: 'POST', middlewares: [validateAndTransformBody(BookingCreate)] },
     { matcher: '/admin/backoffice/order-imports', method: 'POST', middlewares: [validateAndTransformBody(OrderImport)] },
     { matcher: '/admin/backoffice/orders/:id', method: 'POST', middlewares: [validateAndTransformBody(BookingUpdate)] },

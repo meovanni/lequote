@@ -182,6 +182,7 @@ const CATALOG = [
     variants: [
       { title: 'Bottiglia 750 ml', sku: 'OLIO-750ML', price: 15 },
       { title: 'Latta 5 l', sku: 'OLIO-5L', price: 75 },
+      { title: 'Da imbottigliare (litri)', sku: 'OLIO-SFUSO', price: 15 },
     ],
   },
   {
@@ -192,6 +193,7 @@ const CATALOG = [
     variants: [
       { title: 'Vasetto 250 g', sku: 'MIELE-250G', price: 5 },
       { title: 'Vasetto 500 g', sku: 'MIELE-500G', price: 8 },
+      { title: 'Da invasettare (kg)', sku: 'MIELE-SFUSO', price: 16 },
     ],
   },
 ] as const
@@ -210,7 +212,8 @@ async function seedProducts(ctx: Ctx, refs: { channelId: string; profileId: stri
         variants: product.variants.map((variant) => ({
           title: variant.title,
           sku: variant.sku,
-          manage_inventory: true,
+          // Le giacenze le tiene il magazzino in litri e chili (modules/magazzino), non Medusa.
+          manage_inventory: false,
           options: { Formato: variant.title },
           prices: [{ currency_code: 'eur', amount: variant.price }],
         })),
@@ -218,7 +221,7 @@ async function seedProducts(ctx: Ctx, refs: { channelId: string; profileId: stri
       })),
     },
   })
-  ctx.log('Catalogo creato: olio 750 ml e 5 l, miele 250 g e 500 g (giacenze a zero).')
+  ctx.log('Catalogo creato: olio 750 ml, 5 l e sfuso al litro, miele 250 g, 500 g e sfuso al chilo (magazzino vuoto).')
 }
 
 async function seedApiKey({ container, log }: Ctx, channelId: string) {

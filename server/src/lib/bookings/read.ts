@@ -3,6 +3,7 @@ import { ContainerRegistrationKeys } from '@medusajs/framework/utils'
 import { VENDITE_MODULE } from '../../modules/vendite'
 import { balanceDue, customerLabel, rankAgents, summarizeSales, type SaleOrder } from '../../modules/vendite/lib/sales'
 import type VenditeModuleService from '../../modules/vendite/service'
+import { deliveryOf } from '../magazzino'
 
 export type Period = { from?: Date; to?: Date }
 
@@ -49,6 +50,8 @@ export type BookingView = SaleOrder & {
   delivery: string
   notes: string | null
   insertedBy: { type: string; name: string } | null
+  /** Consegna segnata nella pagina Gestione (lib/magazzino.ts); null se ancora da consegnare. */
+  delivered: { at: string; by: string | null } | null
   lines: { id: string; variantId: string | null; sku: string; title: string; subtitle: string; quantity: number; unitPrice: number; total: number }[]
 }
 
@@ -85,6 +88,7 @@ export async function loadBookings(container: MedusaContainer, orderIds: string[
         total: Number(item.total),
       }))
       const insertedBy = order.metadata?.inserted_by as { type?: string; name?: string } | undefined
+      const handedOver = deliveryOf(order.metadata)
       return {
         id: order.id,
         displayId: order.display_id,
@@ -100,6 +104,7 @@ export async function loadBookings(container: MedusaContainer, orderIds: string[
         delivery: order.shipping_methods?.[0]?.name ?? '',
         notes: typeof order.metadata?.notes === 'string' && order.metadata.notes ? order.metadata.notes : null,
         insertedBy: insertedBy?.type ? { type: insertedBy.type, name: insertedBy.name ?? '' } : null,
+        delivered: handedOver ? { at: handedOver.at, by: handedOver.by } : null,
         lines,
       }
     })
