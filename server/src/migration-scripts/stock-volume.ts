@@ -12,7 +12,7 @@ import type MagazzinoModuleService from '../modules/magazzino/service'
 // Su un database nuovo, prima del seed, non c'è ancora nessun prodotto: fa tutto il seed.
 
 const BULK = [
-  { handle: 'olio-extravergine', sku: 'OLIO-SFUSO', title: 'Da imbottigliare (litri)', price: 15 },
+  { handle: 'olio-extravergine', sku: 'OLIO-SFUSO', title: 'Da imbottigliare (litri)', price: 14 },
   { handle: 'miele', sku: 'MIELE-SFUSO', title: 'Da invasettare (kg)', price: 16 },
 ]
 

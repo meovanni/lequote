@@ -182,7 +182,7 @@ const CATALOG = [
     variants: [
       { title: 'Bottiglia 750 ml', sku: 'OLIO-750ML', price: 15 },
       { title: 'Latta 5 l', sku: 'OLIO-5L', price: 75 },
-      { title: 'Da imbottigliare (litri)', sku: 'OLIO-SFUSO', price: 15 },
+      { title: 'Da imbottigliare (litri)', sku: 'OLIO-SFUSO', price: 14 },
     ],
   },
   {

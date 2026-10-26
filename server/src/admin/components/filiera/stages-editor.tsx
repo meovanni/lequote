@@ -33,7 +33,8 @@ export function StagesEditor({ lot }: { lot: Lot }) {
   const action = useFilieraAction()
   const [stages, setStages] = useState<Draft[]>(() => fromLot(lot))
   const [templateId, setTemplateId] = useState('')
-  useUnsavedChanges(comparable(stages) !== comparable(fromLot(lot)))
+  const dirty = comparable(stages) !== comparable(fromLot(lot))
+  useUnsavedChanges(dirty)
 
   const update = (id: string, change: Partial<Draft>) =>
     setStages((current) => current.map((stage) => (stage.draftId === id ? { ...stage, ...change } : stage)))
@@ -150,11 +151,17 @@ export function StagesEditor({ lot }: { lot: Lot }) {
         </div>
       ))}
 
-      <div className="flex justify-end px-6 py-4">
-        <Button size="small" onClick={save} isLoading={action.isPending}>
-          Salva le fasi
-        </Button>
-      </div>
+      {/* Le fasi si salvano insieme (date, luoghi e campi): il pulsante compare solo con modifiche. */}
+      {dirty && (
+        <div className="flex justify-end gap-2 px-6 py-4">
+          <Button size="small" variant="transparent" onClick={() => setStages(fromLot(lot))}>
+            Annulla
+          </Button>
+          <Button size="small" onClick={save} isLoading={action.isPending}>
+            Salva le fasi
+          </Button>
+        </div>
+      )}
     </Container>
   )
 }
