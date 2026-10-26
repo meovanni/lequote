@@ -54,7 +54,7 @@ export const en: Content = {
     eyebrow: 'Family farm, Abruzzo',
     title: 'Le Quote',
     subtitle: 'From sea level to the heights of the Abruzzo Apennines.',
-    body: 'A family farm split between two very different places: the Borsacchio Nature Reserve, on the coast at Roseto degli Abruzzi, and the uplands of Cerchio, inland from L’Aquila. This is where our extra virgin olive oil and our honey come from.',
+    body: 'A family farm split between two very different places: the Borsacchio Nature Reserve, on the coast at Roseto degli Abruzzi, and the uplands of Cerchio, in the Marsica. This is where our extra virgin olive oil and our honey come from.',
     poster: '/images/oliveto.jpg',
     posterAlt: 'The avenue of olive trees in the Borsacchio Reserve',
     ctaPrimary: { label: 'Explore the land', href: '#territorio' },
@@ -92,7 +92,7 @@ export const en: Content = {
     eyebrow: 'Honey',
     title: 'Mountain honey',
     elevation: 'Mountain altitude',
-    body: 'All our hives stand on the heights of Cerchio, inland from L’Aquila, and follow the wild blossoms of the upland meadows and woods. We harvest honeys that differ in colour, scent and texture, always extracted cold.',
+    body: 'All our hives stand on the heights of Cerchio, in the Marsica, and follow the wild blossoms of the upland meadows and woods. We harvest honeys that differ in colour, scent and texture, always extracted cold.',
     varieties: [
       { name: 'Acacia honey', note: 'pale and delicate, stays runny for a long time' },
       { name: 'Wildflower', note: 'changes with each season’s blossoms' },
@@ -529,7 +529,7 @@ export const en: Content = {
       summary: 'From the hives on the heights of Cerchio, extracted cold. Acacia, wildflower or honeydew depending on the year.',
       metaDescription: 'Le Quote honey from the hives on the heights of Cerchio (AQ), extracted cold. 250 g and 500 g jars.',
       paragraphs: [
-        'All our hives stand on the heights of Cerchio, inland from L’Aquila, and follow the wild blossoms of the upland meadows and woods.',
+        'All our hives stand on the heights of Cerchio, in the Marsica, and follow the wild blossoms of the upland meadows and woods.',
         'We extract the honey cold, without heating it. We give a floral name, such as acacia, only when the year’s tests confirm it; otherwise it is wildflower.',
         'Over time honey may crystallise: it is a natural process. If you prefer it runny, warm the jar in a water bath without going above 40 °C.',
       ],

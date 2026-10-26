@@ -27,7 +27,7 @@ export const hero = {
   eyebrow: 'Azienda agricola, Abruzzo',
   title: 'Le Quote',
   subtitle: "Dal livello del mare alla quota dell'Appennino abruzzese.",
-  body: "Un'azienda agricola familiare divisa tra due territori profondamente diversi: la Riserva Naturale del Borsacchio, sulla costa di Roseto degli Abruzzi, e le alture di Cerchio, nell'entroterra dell'Aquila. Da qui nascono il nostro olio extravergine e il nostro miele.",
+  body: "Un'azienda agricola familiare divisa tra due territori profondamente diversi: la Riserva Naturale del Borsacchio, sulla costa di Roseto degli Abruzzi, e le alture di Cerchio, nella Marsica. Da qui nascono il nostro olio extravergine e il nostro miele.",
   poster: '/images/oliveto.jpg',
   posterAlt: 'Il viale degli ulivi della Riserva del Borsacchio',
   ctaPrimary: { label: 'Esplora il territorio', href: '#territorio' },
@@ -69,7 +69,7 @@ export const miele = {
   eyebrow: 'Miele',
   title: 'Il miele di quota',
   elevation: 'La quota della montagna',
-  body: 'I nostri alveari stanno tutti sulle alture di Cerchio, nell’entroterra aquilano, e seguono le fioriture spontanee dei prati e dei boschi d’altura. Ne raccogliamo mieli diversi per colore, profumo e consistenza, sempre smielati a freddo.',
+  body: 'I nostri alveari stanno tutti sulle alture di Cerchio, nella Marsica, e seguono le fioriture spontanee dei prati e dei boschi d’altura. Ne raccogliamo mieli diversi per colore, profumo e consistenza, sempre smielati a freddo.',
   // La denominazione floreale (es. "acacia") va dimostrata dall'analisi dell'annata: se un anno
   // l'analisi non la conferma, quel miele si vende come millefiori.
   varieties: [
@@ -564,7 +564,7 @@ export const products = {
     metaDescription:
       'Miele Le Quote dagli alveari sulle alture di Cerchio (AQ), smielato a freddo. Vasetti da 250 g e 500 g.',
     paragraphs: [
-      'Tutti i nostri alveari stanno sulle alture di Cerchio, nell’entroterra aquilano, e seguono le fioriture spontanee dei prati e dei boschi d’altura.',
+      'Tutti i nostri alveari stanno sulle alture di Cerchio, nella Marsica, e seguono le fioriture spontanee dei prati e dei boschi d’altura.',
       'Estraiamo il miele a freddo, senza riscaldarlo. La denominazione floreale, per esempio acacia, la indichiamo solo quando le analisi dell’annata la confermano; altrimenti è millefiori.',
       'Col tempo il miele può cristallizzare: è un processo naturale. Se lo preferisci fluido, scalda il vasetto a bagnomaria senza superare i 40 °C.',
     ],

@@ -54,7 +54,7 @@ export const de: Content = {
     eyebrow: 'Landwirtschaftlicher Familienbetrieb, Abruzzen',
     title: 'Le Quote',
     subtitle: 'Vom Meeresspiegel bis auf die Höhen des Abruzzen-Apennins.',
-    body: 'Ein Familienbetrieb an zwei sehr unterschiedlichen Orten: im Naturreservat Borsacchio an der Küste von Roseto degli Abruzzi und auf den Anhöhen von Cerchio im Hinterland von L’Aquila. Von hier kommen unser natives Olivenöl extra und unser Honig.',
+    body: 'Ein Familienbetrieb an zwei sehr unterschiedlichen Orten: im Naturreservat Borsacchio an der Küste von Roseto degli Abruzzi und auf den Anhöhen von Cerchio in der Marsica. Von hier kommen unser natives Olivenöl extra und unser Honig.',
     poster: '/images/oliveto.jpg',
     posterAlt: 'Die Olivenbaumallee im Reservat Borsacchio',
     ctaPrimary: { label: 'Das Land entdecken', href: '#territorio' },
@@ -92,7 +92,7 @@ export const de: Content = {
     eyebrow: 'Honig',
     title: 'Honig aus der Höhe',
     elevation: 'Im Gebirge',
-    body: 'Alle unsere Bienenvölker stehen auf den Höhen von Cerchio im Hinterland von L’Aquila und folgen den wilden Blüten der Bergwiesen und -wälder. Wir ernten Honige, die sich in Farbe, Duft und Konsistenz unterscheiden, immer kalt geschleudert.',
+    body: 'Alle unsere Bienenvölker stehen auf den Höhen von Cerchio in der Marsica und folgen den wilden Blüten der Bergwiesen und -wälder. Wir ernten Honige, die sich in Farbe, Duft und Konsistenz unterscheiden, immer kalt geschleudert.',
     varieties: [
       { name: 'Akazienhonig', note: 'hell und mild, bleibt lange flüssig' },
       { name: 'Blütenhonig', note: 'wechselt mit den Blüten jeder Saison' },
@@ -530,7 +530,7 @@ export const de: Content = {
       summary: 'Von den Bienenstöcken auf den Höhen von Cerchio, kalt geschleudert. Akazie, Blüte oder Honigtau, je nach Jahrgang.',
       metaDescription: 'Honig von Le Quote von den Bienenstöcken auf den Höhen von Cerchio (AQ), kalt geschleudert. Gläser zu 250 g und 500 g.',
       paragraphs: [
-        'Alle unsere Bienenvölker stehen auf den Höhen von Cerchio im Hinterland von L’Aquila und folgen den wilden Blüten der Bergwiesen und -wälder.',
+        'Alle unsere Bienenvölker stehen auf den Höhen von Cerchio in der Marsica und folgen den wilden Blüten der Bergwiesen und -wälder.',
         'Wir gewinnen den Honig kalt, ohne ihn zu erwärmen. Eine Sortenbezeichnung wie Akazie geben wir nur an, wenn die Analysen des Jahrgangs sie bestätigen; sonst ist es Blütenhonig.',
         'Mit der Zeit kann Honig kristallisieren: Das ist ein natürlicher Vorgang. Wenn Sie ihn flüssig mögen, erwärmen Sie das Glas im Wasserbad, ohne 40 °C zu überschreiten.',
       ],
