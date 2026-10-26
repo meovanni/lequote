@@ -23,7 +23,7 @@ describe('Stagioni', () => {
     render(<Stagioni now={new Date(2026, 0, 1)} />)
     expect(screen.getAllByText('Invernamento')).toHaveLength(1)
     expect(screen.getByText('da novembre a febbraio')).toBeInTheDocument()
-    expect(screen.getByText('ottobre')).toBeInTheDocument()
+    expect(screen.getByText('da settembre a ottobre')).toBeInTheDocument()
   })
 
   it('segna come in corso le attività del mese corrente', () => {

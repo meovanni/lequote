@@ -107,7 +107,7 @@ export const shopCatalog: ShopProduct[] = [
     id: 'olio',
     handle: 'olio-extravergine',
     name: 'Olio Extravergine',
-    note: 'Acidità 0,2%: Moraiolo, Leccino e Pendolino dalla Riserva del Borsacchio.',
+    note: 'Il nostro extravergine con acidità 0,2%, dalla Riserva del Borsacchio.',
     variants: [
       {
         id: 'olio-750ml',
@@ -178,7 +178,7 @@ export const filiera = {
           id: 'raccolta',
           title: 'Raccolta',
           place: 'Borsacchio',
-          period: 'Ottobre, novembre',
+          period: 'Settembre, ottobre, secondo l’annata',
           description: 'A mano o con leggere agevolatrici, al giusto grado di maturazione.',
         },
         {
@@ -367,7 +367,7 @@ export const stagioni = {
       activities: [
         { id: 'potatura', label: 'Potatura', from: 2, to: 3 },
         { id: 'fioritura-olivi', label: 'Fioritura degli olivi', from: 5, to: 6 },
-        { id: 'raccolta', label: 'Raccolta e molitura', from: 10, to: 10 },
+        { id: 'raccolta', label: 'Raccolta e molitura', from: 9, to: 10 },
         { id: 'imbottigliamento', label: 'Imbottigliamento', from: 11, to: 12 },
       ],
     },
@@ -548,7 +548,7 @@ export const products = {
     facts: [
       { label: 'Cultivar', value: 'Moraiolo, Leccino, Pendolino' },
       { label: 'Oliveti', value: 'Riserva del Borsacchio, Roseto degli Abruzzi (TE)' },
-      { label: 'Raccolta', value: 'Ottobre e novembre, a mano o con agevolatrici' },
+      { label: 'Raccolta', value: 'Settembre e ottobre, secondo l’annata, a mano o con agevolatrici' },
       { label: 'Estrazione', value: 'Solo meccanica, entro poche ore dalla raccolta' },
     ],
     // Valori per 100 ml dalle analisi dell'annata (Reg. UE 1169/2011, art. 30 e all. XV): non

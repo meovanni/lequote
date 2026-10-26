@@ -126,7 +126,7 @@ export const de: Content = {
       id: 'olio',
       handle: 'olio-extravergine',
       name: 'Natives Olivenöl extra',
-      note: 'Säuregehalt 0,2 %: Moraiolo, Leccino und Pendolino aus dem Reservat Borsacchio.',
+      note: 'Unser natives Olivenöl extra mit 0,2 % Säuregehalt, aus dem Reservat Borsacchio.',
       variants: [
         {
           id: 'olio-750ml',
@@ -191,7 +191,7 @@ export const de: Content = {
             id: 'raccolta',
             title: 'Ernte',
             place: 'Borsacchio',
-            period: 'Oktober, November',
+            period: 'September, Oktober, je nach Jahrgang',
             description: 'Von Hand oder mit leichten Erntehilfen, im richtigen Reifegrad.',
           },
           {
@@ -378,7 +378,7 @@ export const de: Content = {
         activities: [
           { id: 'potatura', label: 'Baumschnitt', from: 2, to: 3 },
           { id: 'fioritura-olivi', label: 'Olivenblüte', from: 5, to: 6 },
-          { id: 'raccolta', label: 'Ernte und Mahlen', from: 10, to: 10 },
+          { id: 'raccolta', label: 'Ernte und Mahlen', from: 9, to: 10 },
           { id: 'imbottigliamento', label: 'Abfüllung', from: 11, to: 12 },
         ],
       },
@@ -517,7 +517,7 @@ export const de: Content = {
       facts: [
         { label: 'Sorten', value: 'Moraiolo, Leccino, Pendolino' },
         { label: 'Haine', value: 'Reservat Borsacchio, Roseto degli Abruzzi (TE)' },
-        { label: 'Ernte', value: 'Oktober und November, von Hand oder mit Erntehilfen' },
+        { label: 'Ernte', value: 'September und Oktober, je nach Jahrgang, von Hand oder mit Erntehilfen' },
         { label: 'Gewinnung', value: 'Ausschließlich mechanisch, wenige Stunden nach der Ernte' },
       ],
       nutrition: {

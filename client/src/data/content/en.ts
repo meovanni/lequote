@@ -126,7 +126,7 @@ export const en: Content = {
       id: 'olio',
       handle: 'olio-extravergine',
       name: 'Extra Virgin Olive Oil',
-      note: 'Acidity 0.2%: Moraiolo, Leccino and Pendolino from the Borsacchio Reserve.',
+      note: 'Our extra virgin oil with 0.2% acidity, from the Borsacchio Reserve.',
       variants: [
         {
           id: 'olio-750ml',
@@ -191,7 +191,7 @@ export const en: Content = {
             id: 'raccolta',
             title: 'Harvest',
             place: 'Borsacchio',
-            period: 'October, November',
+            period: 'September, October, depending on the year',
             description: 'By hand or with light harvesting aids, at the right ripeness.',
           },
           {
@@ -378,7 +378,7 @@ export const en: Content = {
         activities: [
           { id: 'potatura', label: 'Pruning', from: 2, to: 3 },
           { id: 'fioritura-olivi', label: 'Olive blossom', from: 5, to: 6 },
-          { id: 'raccolta', label: 'Harvest and milling', from: 10, to: 10 },
+          { id: 'raccolta', label: 'Harvest and milling', from: 9, to: 10 },
           { id: 'imbottigliamento', label: 'Bottling', from: 11, to: 12 },
         ],
       },
@@ -516,7 +516,7 @@ export const en: Content = {
       facts: [
         { label: 'Cultivars', value: 'Moraiolo, Leccino, Pendolino' },
         { label: 'Groves', value: 'Borsacchio Reserve, Roseto degli Abruzzi (TE)' },
-        { label: 'Harvest', value: 'October and November, by hand or with harvesting aids' },
+        { label: 'Harvest', value: 'September and October, depending on the year, by hand or with harvesting aids' },
         { label: 'Extraction', value: 'Mechanical only, within a few hours of picking' },
       ],
       nutrition: {
