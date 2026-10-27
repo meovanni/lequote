@@ -2,7 +2,7 @@ import type { MedusaContainer } from '@medusajs/framework/types'
 import { ContainerRegistrationKeys, MedusaError } from '@medusajs/framework/utils'
 import { capturePaymentWorkflow } from '@medusajs/medusa/core-flows'
 import { VENDITE_MODULE } from '../../modules/vendite'
-import { balanceDue, paymentViolation } from '../../modules/vendite/lib/sales'
+import { balanceDue, paymentEditViolation, paymentViolation } from '../../modules/vendite/lib/sales'
 import type VenditeModuleService from '../../modules/vendite/service'
 import type { Actor, PaymentInput } from './types'
 
@@ -69,6 +69,35 @@ export async function addPayment(container: MedusaContainer, orderId: string, in
     }
   }
   return after
+}
+
+export type PaymentChanges = { amount?: number; method?: PaymentInput['method']; paid_at?: Date; notes?: string | null }
+
+async function paymentOfOrder(container: MedusaContainer, orderId: string, paymentId: string) {
+  const vendite: VenditeModuleService = container.resolve(VENDITE_MODULE)
+  const [payment] = await vendite.listSalePayments({ id: paymentId, order_id: orderId }, { take: 1 })
+  if (!payment) throw new MedusaError(MedusaError.Types.NOT_FOUND, 'Incasso non trovato in questo ordine.')
+  return { vendite, payment }
+}
+
+/** Corregge un incasso registrato (mezzo, importo, data, note), senza superare il totale dell'ordine. */
+export async function updatePayment(container: MedusaContainer, orderId: string, paymentId: string, changes: PaymentChanges): Promise<PaymentState> {
+  const { vendite, payment } = await paymentOfOrder(container, orderId, paymentId)
+  if (changes.amount !== undefined) {
+    const order = await loadOrder(container, orderId)
+    const others = (await vendite.listSalePayments({ order_id: orderId })).filter((entry) => entry.id !== paymentId).map((entry) => Number(entry.amount))
+    const violation = paymentEditViolation(Number(order.total), others, changes.amount)
+    if (violation) throw new MedusaError(MedusaError.Types.INVALID_DATA, violation)
+  }
+  await vendite.updateSalePayments({ id: payment.id, ...changes })
+  return paymentState(container, orderId)
+}
+
+/** Elimina un incasso registrato per sbaglio: il residuo da incassare torna a salire. */
+export async function deletePayment(container: MedusaContainer, orderId: string, paymentId: string): Promise<PaymentState> {
+  const { vendite, payment } = await paymentOfOrder(container, orderId, paymentId)
+  await vendite.deleteSalePayments(payment.id)
+  return paymentState(container, orderId)
 }
 
 async function loadOrder(container: MedusaContainer, orderId: string): Promise<OrderForPayment> {

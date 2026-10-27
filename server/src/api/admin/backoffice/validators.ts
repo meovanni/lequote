@@ -72,6 +72,16 @@ export const OrderImport = z
 export const BookingUpdate = z
   .object({
     items: lines.optional(),
+    // Dati del cliente corretti dal dettaglio dell'ordine: solo quelli indicati.
+    customer: z
+      .object({
+        first_name: z.string().trim().max(100).nullish(),
+        last_name: z.string().trim().max(100).nullish(),
+        company: z.string().trim().max(200).nullish(),
+        phone: z.string().trim().max(50).nullish(),
+      })
+      .strict()
+      .optional(),
     notes: z.string().trim().max(1000).nullish(),
     email: z.string().trim().email().max(320).nullish(),
   })
@@ -90,6 +100,9 @@ export const PaymentCreate = z
     notes: z.string().trim().max(500).nullish(),
   })
   .strict()
+
+/** Correzione di un incasso già registrato: solo i campi indicati. */
+export const PaymentUpdate = PaymentCreate.partial().strict()
 
 export const AgentCreate = z
   .object({

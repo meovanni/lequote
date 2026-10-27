@@ -38,6 +38,8 @@ export type Booking = {
   delivery: string
   notes: string | null
   insertedBy: { type: string; name: string } | null
+  payments: { id: string; amount: number; method: PaymentMethod; paid_at: string }[]
+  customerFields: { first_name: string; last_name: string; company: string }
   /** Consegna segnata nella pagina Gestione; null se ancora da consegnare. */
   delivered: { at: string; by: string | null } | null
   lines: BookingLine[]

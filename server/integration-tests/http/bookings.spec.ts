@@ -2,7 +2,8 @@ import { medusaIntegrationTestRunner } from '@medusajs/test-utils'
 import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
 import { placeBooking } from '../../src/lib/bookings/create'
 import { editBooking } from '../../src/lib/bookings/edit'
-import { addPayment, paymentState } from '../../src/lib/bookings/payments'
+import { deliverOrder } from '../../src/lib/magazzino'
+import { addPayment, deletePayment, paymentState, updatePayment } from '../../src/lib/bookings/payments'
 import { agentOrderIds, loadBookings, salesByAgent } from '../../src/lib/bookings/read'
 import type { Actor, BookingInput } from '../../src/lib/bookings/types'
 import { VENDITE_MODULE } from '../../src/modules/vendite'
@@ -89,6 +90,33 @@ medusaIntegrationTestRunner({
       expect(after.lines.map((line) => line.quantity)).toEqual([3])
       expect(after.total).toBeCloseTo((before.total / 2) * 3, 2)
       expect(after.notes).toBe('Consegna il sabato')
+    })
+
+    it('corregge ed elimina un incasso, senza superare il totale', async () => {
+      const { orderId } = await placeBooking(getContainer(), input, agentActor())
+      const { total } = await paymentState(getContainer(), orderId)
+      const paid = await addPayment(getContainer(), orderId, { amount: total, method: 'contanti' }, agentActor())
+      const [payment] = paid.payments
+
+      const changed = await updatePayment(getContainer(), orderId, payment.id, { method: 'bonifico' })
+      expect(changed.payments[0].method).toBe('bonifico')
+      expect(changed.due).toBe(0)
+      await expect(updatePayment(getContainer(), orderId, payment.id, { amount: total + 1 })).rejects.toThrow(/resta da incassare/)
+
+      const reopened = await deletePayment(getContainer(), orderId, payment.id)
+      expect(reopened.payments).toEqual([])
+      expect(reopened.due).toBeCloseTo(total, 2)
+    })
+
+    it('corregge i dati del cliente anche dopo la consegna, ma non i prodotti', async () => {
+      const { orderId } = await placeBooking(getContainer(), input, agentActor())
+      await deliverOrder(getContainer(), orderId, 'Titolare')
+      await editBooking(getContainer(), orderId, { customer: { first_name: 'Marta', last_name: 'Ferri', company: null, phone: '3331112222' } }, agentActor())
+      const booking = (await loadBookings(getContainer(), [orderId]))[0]
+      expect(booking.customer).toBe('Marta Ferri')
+      expect(booking.phone).toBe('3331112222')
+      expect(booking.customerFields).toEqual({ first_name: 'Marta', last_name: 'Ferri', company: '' })
+      await expect(editBooking(getContainer(), orderId, { items: [{ variant_id: input.items[0].variant_id, quantity: 5 }] }, agentActor())).rejects.toThrow(/consegnato/)
     })
 
     it('riassume le vendite per agente e prepara la classifica', async () => {

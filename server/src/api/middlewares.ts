@@ -13,7 +13,7 @@ import {
 } from './admin/filiera/validators'
 import { PackCreate, PriceSet, StockSet } from './admin/gestione/validators'
 import { WithdrawalUpdate } from './admin/withdrawals/validators'
-import { AgentCreate, AgentInvite, AgentUpdate, BookingCreate, BookingUpdate, OrderImport, PaymentCreate, SellBookingCreate } from './admin/backoffice/validators'
+import { AgentCreate, AgentInvite, AgentUpdate, BookingCreate, BookingUpdate, OrderImport, PaymentCreate, PaymentUpdate, SellBookingCreate } from './admin/backoffice/validators'
 import { guard } from './permissions'
 import { WithdrawalCreate } from './store/withdrawals/validators'
 
@@ -65,12 +65,14 @@ export default defineMiddlewares({
     { matcher: '/admin/backoffice/order-imports', method: 'POST', middlewares: [validateAndTransformBody(OrderImport)] },
     { matcher: '/admin/backoffice/orders/:id', method: 'POST', middlewares: [validateAndTransformBody(BookingUpdate)] },
     { matcher: '/admin/backoffice/orders/:id/payments', method: 'POST', middlewares: [validateAndTransformBody(PaymentCreate)] },
+    { matcher: '/admin/backoffice/orders/:id/payments/:paymentId', method: 'POST', middlewares: [validateAndTransformBody(PaymentUpdate)] },
     { matcher: '/admin/agents', method: 'POST', middlewares: [validateAndTransformBody(AgentCreate)] },
     { matcher: '/admin/agents/:id', method: 'POST', middlewares: [validateAndTransformBody(AgentUpdate)] },
     { matcher: '/admin/agents/:id/invite', method: 'POST', middlewares: [validateAndTransformBody(AgentInvite)] },
     { matcher: '/admin/sell/bookings', method: 'POST', middlewares: [validateAndTransformBody(SellBookingCreate)] },
     { matcher: '/admin/sell/bookings/:id', method: 'POST', middlewares: [validateAndTransformBody(BookingUpdate)] },
     { matcher: '/admin/sell/bookings/:id/payments', method: 'POST', middlewares: [validateAndTransformBody(PaymentCreate)] },
+    { matcher: '/admin/sell/bookings/:id/payments/:paymentId', method: 'POST', middlewares: [validateAndTransformBody(PaymentUpdate)] },
     { matcher: '/store/withdrawals', method: 'POST', middlewares: [validateAndTransformBody(WithdrawalCreate)] },
     { matcher: '/admin/withdrawals/:id', method: 'POST', middlewares: [validateAndTransformBody(WithdrawalUpdate)] },
   ],

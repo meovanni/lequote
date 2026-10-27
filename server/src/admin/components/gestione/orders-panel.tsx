@@ -1,9 +1,10 @@
-import { ChevronDownMini } from '@medusajs/icons'
-import { Button, Container, Heading, Input, Text, clx } from '@medusajs/ui'
+import { ChevronDownMini, PencilSquare, Trash } from '@medusajs/icons'
+import { Button, Container, Heading, IconButton, Input, Text, Tooltip, clx, usePrompt } from '@medusajs/ui'
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
-import { describeLine, type FormatRow, type GestioneOrder, type LineRow } from '../../lib/gestione-api'
+import { lineParts, type FormatRow, type GestioneOrder, type LineRow } from '../../lib/gestione-api'
 import { formatDay, formatEuro, useBackofficeCatalog, useSalesAction } from '../../lib/sales-api'
 import { BookingForm } from '../sales/booking-form'
+import { InlineLines } from '../sales/inline-lines'
 import { OrderImportModal } from '../sales/order-import-modal'
 import { DeliveryCell, PaymentCell } from './order-actions'
 import { OrderDetail } from './order-detail'
@@ -12,6 +13,38 @@ type Filter = 'consegnare' | 'incassare' | 'tutti'
 
 const toDeliver = (order: GestioneOrder) => order.status !== 'canceled' && !order.delivered
 const toCollect = (order: GestioneOrder) => order.status !== 'canceled' && order.due > 0
+
+/** Modifica (apre il dettaglio sotto la riga) ed elimina (annulla l'ordine), sempre a portata di clic. */
+function RowActions({ order, open, onToggle }: { order: GestioneOrder; open: boolean; onToggle: () => void }) {
+  const action = useSalesAction()
+  const prompt = usePrompt()
+  const removable = order.status !== 'canceled' && !order.delivered
+  const remove = async () => {
+    const confirmed = await prompt({
+      title: `Eliminare l'ordine n. ${order.displayId}?`,
+      description: 'L’ordine resta nell’elenco come annullato e la merce torna disponibile. Gli incassi già registrati vanno restituiti a mano.',
+      confirmText: 'Elimina l’ordine',
+      cancelText: 'Lascia così',
+    })
+    if (confirmed) action.mutate({ path: `/admin/orders/${order.id}/cancel`, success: `Ordine n. ${order.displayId} eliminato (annullato).` })
+  }
+  return (
+    <div className="flex justify-end gap-0.5">
+      <Tooltip content={open ? 'Chiudi' : 'Modifica cliente, prodotti e incassi'}>
+        <IconButton size="small" variant="transparent" aria-label={`${open ? 'Chiudi' : 'Modifica'} l’ordine ${order.displayId}`} aria-pressed={open} onClick={onToggle}>
+          <PencilSquare />
+        </IconButton>
+      </Tooltip>
+      {removable && (
+        <Tooltip content="Elimina ordine">
+          <IconButton size="small" variant="transparent" aria-label={`Elimina l’ordine ${order.displayId}`} onClick={() => void remove()} className="hover:text-ui-fg-error">
+            <Trash />
+          </IconButton>
+        </Tooltip>
+      )}
+    </div>
+  )
+}
 
 function NewOrder({ onDone }: { onDone: () => void }) {
   const catalog = useBackofficeCatalog()
@@ -109,7 +142,10 @@ export function OrdersPanel({ orders, formats, lines }: { orders: GestioneOrder[
                 <th className="py-2 pl-4 text-left font-normal">Prodotti</th>
                 <th className="py-2 text-right font-normal">Totale</th>
                 <th className="py-2 pl-4 text-right font-normal">Da incassare</th>
-                <th className="px-6 py-2 text-right font-normal">Consegna</th>
+                <th className="py-2 pl-4 text-right font-normal">Consegna</th>
+                <th className="px-6 py-2 text-right font-normal">
+                  <span className="sr-only">Azioni</span>
+                </th>
               </tr>
             </thead>
             <tbody className="txt-compact-small">
@@ -135,18 +171,28 @@ export function OrdersPanel({ orders, formats, lines }: { orders: GestioneOrder[
                         {order.customer}
                         {order.agent && <span className="text-ui-fg-muted"> · {order.agent}</span>}
                       </td>
-                      <td className="py-2 pl-4 text-ui-fg-subtle">{order.lines.map((line) => describeLine(line, formats, lines)).join(', ')}</td>
+                      <td className="py-2 pl-4">
+                        <InlineLines
+                          lines={order.lines}
+                          describe={(line) => lineParts(line, formats, lines)}
+                          editable={order.status !== 'canceled' && !order.delivered}
+                          path={`/admin/backoffice/orders/${order.id}`}
+                        />
+                      </td>
                       <td className="lq-figure py-2 text-right">{formatEuro(order.total)}</td>
                       <td className="py-2 pl-4">
                         <PaymentCell order={order} />
                       </td>
-                      <td className="px-6 py-2">
+                      <td className="py-2 pl-4">
                         <DeliveryCell order={order} />
+                      </td>
+                      <td className="px-4 py-2">
+                        <RowActions order={order} open={open} onToggle={() => setOpenId(open ? null : order.id)} />
                       </td>
                     </tr>
                     {open && (
                       <tr>
-                        <td colSpan={7} className="p-0">
+                        <td colSpan={8} className="p-0">
                           <OrderDetail order={order} formats={formats} />
                         </td>
                       </tr>

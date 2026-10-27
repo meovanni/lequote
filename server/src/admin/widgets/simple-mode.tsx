@@ -9,8 +9,12 @@ import { sdk } from '../lib/sdk'
 // le schermate tecniche di Medusa (ordini, prodotti, inventario, clienti, promozioni, listini)
 // spariscono dal menu e l'ingresso porta a Gestione. L'interruttore "Strumenti avanzati" in alto le
 // rimette, per chi deve proprio usarle; la scelta resta su questo browser.
-const HIDDEN = ['orders', 'products', 'inventory', 'customers', 'promotions', 'price-lists']
+const HIDDEN = ['orders', 'products', 'customers', 'promotions', 'price-lists']
 const SIMPLE_CSS = HIDDEN.map((path) => `nav a[href$="/${path}"]`).join(', ') + ' { display: none !important; }'
+// L'Inventario di Medusa non si usa più (il magazzino è in litri e chili, pagina Gestione): sparisce
+// anche con gli strumenti avanzati, e il suo indirizzo porta a Gestione.
+const INVENTORY_CSS = 'nav a[href$="/inventory"] { display: none !important; }'
+const INVENTORY_STYLE_ID = 'lequote-no-inventory'
 const STYLE_ID = 'lequote-simple-mode'
 const STORAGE_KEY = 'lequote-advanced'
 
@@ -59,8 +63,16 @@ const SimpleMode = () => {
 
   useSimpleStyle(owner && !advanced)
   useEffect(() => {
+    if (document.getElementById(INVENTORY_STYLE_ID)) return
+    const style = document.createElement('style')
+    style.id = INVENTORY_STYLE_ID
+    style.textContent = INVENTORY_CSS
+    document.head.appendChild(style)
+  }, [])
+  useEffect(() => {
     // L'ingresso del back office (l'elenco ordini di Medusa) porta alla pagina Gestione.
     if (owner && !advanced && (pathname === '/' || pathname === '/orders')) navigate('/gestione', { replace: true })
+    if (pathname.startsWith('/inventory')) navigate('/gestione', { replace: true })
   }, [owner, advanced, pathname, navigate])
 
   if (!owner) return null

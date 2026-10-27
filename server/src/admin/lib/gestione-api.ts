@@ -59,7 +59,6 @@ export function useGestione() {
 }
 
 const decimal = new Intl.NumberFormat('it-IT', { maximumFractionDigits: 1 })
-const euro = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' })
 
 /** Valore della merce in magazzino ai prezzi di listino: sfuso al litro o al chilo, pezzi pronti al loro prezzo. */
 export function stockValue(line: LineRow, formats: FormatRow[]): number {
@@ -71,23 +70,22 @@ export function stockValue(line: LineRow, formats: FormatRow[]): number {
 export const formatVolume = (amount: number, unit: 'L' | 'kg') => `${decimal.format(amount / 1000)} ${unit}`
 
 /**
- * Una riga d'ordine a parole: "2 × Olio bottiglia 750 ml" oppure, per lo sfuso, "20 L da
- * imbottigliare (4 latte da 5 L)" con il formato in cui si confeziona di norma.
+ * Nome e unità di una riga d'ordine, per le quantità modificabili nella riga: "Olio bottiglia
+ * 750 ml" in pezzi, oppure "da imbottigliare (4 × latta 5 L)" in litri.
  */
-export function describeLine(
-  line: { variantId: string | null; sku: string; quantity: number; title: string; subtitle: string; unitPrice: number },
+export function lineParts(
+  line: { variantId: string | null; sku: string; quantity: number; title: string; subtitle: string },
   formats: FormatRow[],
   lines: LineRow[],
-): string {
-  // Il prezzo è quello fissato quando l'ordine è nato: un cambio di listino vale per gli ordini nuovi.
-  const at = ` a ${euro.format(line.unitPrice)}`
+): { label: string; unit: string; perUnit?: string } {
   const format = formats.find((entry) => entry.variantId === line.variantId || entry.sku === line.sku)
-  if (!format) return `${line.quantity} × ${line.subtitle || line.title}${at}`
+  if (!format) return { label: line.subtitle || line.title, unit: 'pz' }
   const product = format.line === 'olio' ? 'Olio' : 'Miele'
-  if (!format.bulk) return `${line.quantity} × ${product} ${format.label.toLowerCase()}${at}`
+  if (!format.bulk) return { label: `${product} ${format.label.toLowerCase()}`, unit: 'pz' }
   const unit = format.line === 'olio' ? 'L' : 'kg'
   const packing = formats.find((entry) => entry.sku === lines.find((row) => row.line === format.line)?.defaultPacking)
   const pieces = packing ? Math.ceil((line.quantity * format.size) / packing.size) : null
   const hint = packing && pieces ? ` (${pieces} × ${packing.label.toLowerCase()})` : ''
-  return `${formatVolume(line.quantity * format.size, unit)} ${format.line === 'olio' ? 'da imbottigliare' : 'da invasettare'}${hint}${at}/${unit}`
+  return { label: `${product.toLowerCase()} ${format.line === 'olio' ? 'da imbottigliare' : 'da invasettare'}${hint}`, unit, perUnit: unit }
 }
+

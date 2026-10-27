@@ -50,6 +50,10 @@ export type BookingView = SaleOrder & {
   delivery: string
   notes: string | null
   insertedBy: { type: string; name: string } | null
+  /** Incassi registrati, dal più recente: si correggono dalla riga e dal dettaglio. */
+  payments: { id: string; amount: number; method: string; paid_at: string }[]
+  /** Dati del cliente come sono sull'ordine, per correggerli dal dettaglio. */
+  customerFields: { first_name: string; last_name: string; company: string }
   /** Consegna segnata nella pagina Gestione (lib/magazzino.ts); null se ancora da consegnare. */
   delivered: { at: string; by: string | null } | null
   lines: { id: string; variantId: string | null; sku: string; title: string; subtitle: string; quantity: number; unitPrice: number; total: number }[]
@@ -74,7 +78,10 @@ export async function loadBookings(container: MedusaContainer, orderIds: string[
   return (data as unknown as RawOrder[])
     .filter((order) => inPeriod(new Date(order.created_at), period))
     .map((order) => {
-      const paidAmounts = payments.filter((payment) => payment.order_id === order.id).map((payment) => Number(payment.amount))
+      const own = payments
+        .filter((payment) => payment.order_id === order.id)
+        .sort((a, b) => new Date(b.paid_at).getTime() - new Date(a.paid_at).getTime())
+      const paidAmounts = own.map((payment) => Number(payment.amount))
       const total = Number(order.total)
       const due = order.status === 'canceled' ? 0 : balanceDue(total, paidAmounts)
       const lines = (order.items ?? []).map((item) => ({
@@ -104,6 +111,12 @@ export async function loadBookings(container: MedusaContainer, orderIds: string[
         delivery: order.shipping_methods?.[0]?.name ?? '',
         notes: typeof order.metadata?.notes === 'string' && order.metadata.notes ? order.metadata.notes : null,
         insertedBy: insertedBy?.type ? { type: insertedBy.type, name: insertedBy.name ?? '' } : null,
+        payments: own.map((payment) => ({ id: payment.id, amount: Number(payment.amount), method: payment.method, paid_at: new Date(payment.paid_at).toISOString() })),
+        customerFields: {
+          first_name: order.shipping_address?.first_name ?? '',
+          last_name: order.shipping_address?.last_name ?? '',
+          company: order.shipping_address?.company ?? '',
+        },
         delivered: handedOver ? { at: handedOver.at, by: handedOver.by } : null,
         lines,
       }

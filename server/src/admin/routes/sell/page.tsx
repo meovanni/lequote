@@ -6,15 +6,15 @@ import { PaymentCell } from '../../components/gestione/order-actions'
 import { Segmented } from '../../components/inline/inline-fields'
 import { BookingForm } from '../../components/sales/booking-form'
 import { BookingStatus } from '../../components/sales/booking-status'
+import { InlineLines } from '../../components/sales/inline-lines'
 import { LinesEditor, type LineOption } from '../../components/sales/lines-editor'
+import { PaymentsEditor } from '../../components/sales/payments-editor'
 import { ByCustomerTable, ByProductTable, PeriodFilter, RankingTable, SummaryFigures } from '../../components/sales/summary'
 import { useUnsavedChanges } from '../../lib/unsaved-changes'
 import {
   formatDay,
   formatEuro,
-  PAYMENT_METHOD_LABEL,
   useSalesAction,
-  useSellBooking,
   useSellBookings,
   useSellCatalog,
   useSellMe,
@@ -36,15 +36,11 @@ const optionsOf = (catalog: Catalog | undefined): LineOption[] =>
     available: variant.available,
   }))
 
-/** "2 × Latta 5 l a 70,00 €, 20 L da imbottigliare a 14,00 €/L". */
-function describe(booking: Booking, catalog: Catalog | undefined): string {
-  return booking.lines
-    .map((line) => {
-      const variant = catalog?.variants.find((entry) => entry.variantId === line.variantId)
-      if (variant?.bulk) return `${line.quantity} ${variant.unit} ${line.subtitle.toLowerCase()} a ${formatEuro(line.unitPrice)}/${variant.unit}`
-      return `${line.quantity} × ${line.subtitle || line.title} a ${formatEuro(line.unitPrice)}`
-    })
-    .join(', ')
+/** Nome e unità di una riga: "Latta 5 l" in pezzi, "da imbottigliare (litri)" in litri. */
+function lineParts(line: Booking['lines'][number], catalog: Catalog | undefined) {
+  const variant = catalog?.variants.find((entry) => entry.variantId === line.variantId)
+  if (variant?.bulk) return { label: line.subtitle.toLowerCase(), unit: variant.unit, perUnit: variant.unit }
+  return { label: line.subtitle || line.title, unit: 'pz' }
 }
 
 function NewBooking({ catalog, onDone }: { catalog: Catalog | undefined; onDone: () => void }) {
@@ -89,10 +85,8 @@ function NewBooking({ catalog, onDone }: { catalog: Catalog | undefined; onDone:
 }
 
 function BookingDetail({ booking, catalog }: { booking: Booking; catalog: Catalog | undefined }) {
-  const detail = useSellBooking(booking.id)
   const action = useSalesAction()
   const open = booking.status !== 'canceled' && booking.status !== 'completed' && !booking.delivered
-  const payments = detail.data?.payments.payments ?? []
 
   return (
     <div className="grid grid-cols-1 gap-5 bg-ui-bg-subtle px-4 py-4 sm:px-6 lg:grid-cols-3">
@@ -119,23 +113,7 @@ function BookingDetail({ booking, catalog }: { booking: Booking; catalog: Catalo
         </label>
       </div>
       <LinesEditor key={JSON.stringify(booking.lines)} lines={booking.lines} options={optionsOf(catalog)} editable={open} path={`/admin/sell/bookings/${booking.id}`} />
-      <div className="flex flex-col gap-2">
-        <Text size="small" weight="plus">Incassi</Text>
-        {payments.length === 0 ? (
-          <Text size="small" className="text-ui-fg-subtle">Nessun incasso registrato.</Text>
-        ) : (
-          <ul className="flex flex-col gap-1">
-            {payments.map((payment) => (
-              <li key={payment.id} className="flex justify-between gap-3">
-                <Text size="small" className="text-ui-fg-subtle">
-                  {formatDay(payment.paid_at)}, {PAYMENT_METHOD_LABEL[payment.method].toLowerCase()}
-                </Text>
-                <Text size="small" className="lq-figure">{formatEuro(Number(payment.amount))}</Text>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <PaymentsEditor payments={booking.payments} basePath={`/admin/sell/bookings/${booking.id}/payments`} editable={booking.status !== 'canceled'} />
     </div>
   )
 }
@@ -190,14 +168,17 @@ function Bookings({ bookings, catalog }: { bookings: Booking[]; catalog: Catalog
                   </button>
                   <Text size="small" className="lq-figure text-ui-fg-subtle md:order-none">{formatDay(booking.createdAt)}</Text>
                   <Text size="small" weight="plus" className="col-span-2 md:col-span-1">{booking.customer}</Text>
-                  <Text size="small" className="col-span-2 text-ui-fg-subtle md:col-span-1">{describe(booking, catalog)}</Text>
+                  <div className="col-span-2 md:col-span-1">
+                    <InlineLines
+                      lines={booking.lines}
+                      describe={(line) => lineParts(line, catalog)}
+                      editable={booking.status !== 'canceled' && booking.status !== 'completed' && !booking.delivered}
+                      path={`/admin/sell/bookings/${booking.id}`}
+                    />
+                  </div>
                   <Text size="small" className="lq-figure md:text-right">{booking.status === 'canceled' ? '-' : formatEuro(booking.total)}</Text>
                   <div className="flex justify-end">
-                    {booking.status === 'canceled' || booking.due <= 0 ? (
-                      <BookingStatus booking={booking} />
-                    ) : (
-                      <PaymentCell order={booking} path={`/admin/sell/bookings/${booking.id}/payments`} />
-                    )}
+                    {booking.status === 'canceled' ? <BookingStatus booking={booking} /> : <PaymentCell order={booking} path={`/admin/sell/bookings/${booking.id}/payments`} />}
                   </div>
                 </div>
                 {open && <BookingDetail booking={booking} catalog={catalog} />}

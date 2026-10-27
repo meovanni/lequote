@@ -5,9 +5,10 @@ import { useEffect, useState, type KeyboardEvent, type ReactNode } from 'react'
 // diventano un campo, si salvano uscendo dal campo o con Invio (Esc annulla). Niente pulsanti
 // "Salva" per i dati semplici.
 
+// Bordo tratteggiato leggero: si vede subito che il dato si può cambiare, senza pesare come un modulo.
 const FIELD = clx(
-  'txt-compact-small w-full min-w-0 rounded-md border border-transparent bg-transparent px-2 py-1 text-ui-fg-base outline-none transition-colors',
-  'placeholder:text-ui-fg-muted hover:border-ui-border-base focus:border-ui-border-interactive focus:bg-ui-bg-field',
+  'txt-compact-small w-full min-w-0 cursor-text rounded-md border border-dashed border-ui-border-base bg-transparent px-2 py-1 text-ui-fg-base outline-none transition-colors',
+  'placeholder:text-ui-fg-muted hover:border-solid hover:border-ui-border-interactive focus:border-solid focus:border-ui-border-interactive focus:bg-ui-bg-field',
 )
 
 type InlineTextProps = {

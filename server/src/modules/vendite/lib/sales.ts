@@ -18,6 +18,17 @@ export function paymentViolation(due: number, amount: number): string | null {
   return null
 }
 
+/**
+ * Una correzione di incasso non può portare il totale incassato oltre il totale dell'ordine.
+ * others: gli altri incassi dell'ordine.
+ */
+export function paymentEditViolation(total: number, others: number[], amount: number): string | null {
+  if (!(amount > 0)) return 'L’importo deve essere maggiore di zero.'
+  const room = cents(total - others.reduce((sum, value) => sum + value, 0))
+  if (cents(amount) > room) return `L’importo supera quanto resta da incassare (${room.toFixed(2)} €).`
+  return null
+}
+
 type Address = { company?: string | null; first_name?: string | null; last_name?: string | null } | null | undefined
 
 /** Come si chiama il cliente nei riepiloghi: la ragione sociale per le aziende, altrimenti nome e cognome. */

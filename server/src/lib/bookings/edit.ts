@@ -18,6 +18,8 @@ export type BookingChanges = {
   items?: BookingLine[]
   notes?: string | null
   email?: string | null
+  /** Nome, ragione sociale e telefono del cliente (indirizzo di consegna dell'ordine). */
+  customer?: { first_name?: string | null; last_name?: string | null; company?: string | null; phone?: string | null }
 }
 
 type OrderForEdit = {
@@ -28,13 +30,17 @@ type OrderForEdit = {
 }
 
 /**
- * Modifica una prenotazione: le righe con una modifica d'ordine di Medusa (giacenze e totali
- * ricalcolati), email e note sull'ordine. Una modifica rimasta a metà si annulla.
+ * Modifica una prenotazione: le righe con una modifica d'ordine di Medusa (totali ricalcolati),
+ * dati del cliente, email e note. Le righe si cambiano solo su un ordine aperto; i dati del cliente
+ * e le note si correggono anche dopo la consegna. Una modifica rimasta a metà si annulla.
  */
 export async function editBooking(container: MedusaContainer, orderId: string, changes: BookingChanges, actor: Actor) {
   const order = await loadOrder(container, orderId)
-  if (order.status === 'canceled' || order.status === 'completed' || deliveryOf(order.metadata)) {
-    throw new MedusaError(MedusaError.Types.NOT_ALLOWED, 'L’ordine è consegnato o annullato: non si modifica.')
+  if (order.status === 'canceled') {
+    throw new MedusaError(MedusaError.Types.NOT_ALLOWED, 'L’ordine è annullato: non si modifica.')
+  }
+  if (changes.items && (order.status === 'completed' || deliveryOf(order.metadata))) {
+    throw new MedusaError(MedusaError.Types.NOT_ALLOWED, 'L’ordine è consegnato: i prodotti non si modificano più.')
   }
 
   if (changes.items) {
@@ -64,12 +70,15 @@ export async function editBooking(container: MedusaContainer, orderId: string, c
     }
   }
 
-  if (changes.email !== undefined || changes.notes !== undefined) {
+  if (changes.email !== undefined || changes.notes !== undefined || changes.customer) {
+    // Medusa vuole stringhe nell'indirizzo: un dato cancellato diventa vuoto.
+    const address = changes.customer ? Object.fromEntries(Object.entries(changes.customer).map(([key, value]) => [key, value ?? ''])) : null
     await updateOrderWorkflow(container).run({
       input: {
         id: orderId,
         user_id: actor.id,
         ...(changes.email ? { email: changes.email } : {}),
+        ...(address ? { shipping_address: address, billing_address: address } : {}),
         ...(changes.notes !== undefined ? { metadata: { ...(order.metadata ?? {}), notes: changes.notes ?? '' } } : {}),
       },
     })

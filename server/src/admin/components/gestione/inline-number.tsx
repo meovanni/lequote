@@ -55,8 +55,9 @@ export function InlineNumber({ value, label, suffix, decimals = false, money = f
         onFocus={(event) => event.target.select()}
         disabled={saving}
         className={clx(
-          'lq-figure w-20 rounded-md border border-transparent bg-transparent px-2 py-1 text-right text-ui-fg-base outline-none transition-colors',
-          'hover:border-ui-border-base focus:border-ui-border-interactive focus:bg-ui-bg-field',
+          // Bordo tratteggiato: si vede subito che il numero si può cambiare.
+          'lq-figure w-20 cursor-text rounded-md border border-dashed border-ui-border-strong bg-ui-bg-field px-2 py-1 text-right text-ui-fg-base outline-none transition-colors',
+          'hover:border-solid hover:border-ui-border-interactive focus:border-solid focus:border-ui-border-interactive',
           'aria-[invalid=true]:border-ui-border-error',
           saving && 'opacity-50',
         )}

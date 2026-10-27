@@ -1,9 +1,10 @@
 import { defineRouteConfig } from '@medusajs/admin-sdk'
 import { ArrowUturnLeft } from '@medusajs/icons'
-import { Button, Container, Heading, StatusBadge, Switch, Table, Text, toast } from '@medusajs/ui'
+import { Container, Heading, StatusBadge, Switch, Table, Text, toast } from '@medusajs/ui'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { InlineText } from '../../components/inline/inline-fields'
 import { refundDeadline } from '../../lib/refund-deadline'
 import { sdk } from '../../lib/sdk'
 
@@ -17,6 +18,8 @@ type Withdrawal = {
   locale: string
   submitted_at: string
   handled_at: string | null
+  /** Note interne: rimborso fatto, merce rientrata, accordi col cliente. */
+  notes: string | null
 }
 
 const KEY = ['recessi']
@@ -51,11 +54,11 @@ const WithdrawalsPage = () => {
       }),
   })
   const update = useMutation({
-    mutationFn: ({ id, handled }: { id: string; handled: boolean }) =>
-      sdk.client.fetch(`/admin/withdrawals/${id}`, { method: 'POST', body: { handled } }),
+    mutationFn: ({ id, ...body }: { id: string; handled?: boolean; notes?: string | null }) =>
+      sdk.client.fetch(`/admin/withdrawals/${id}`, { method: 'POST', body }),
     onSuccess: (_data, { handled }) => {
       queryClient.invalidateQueries({ queryKey: KEY })
-      toast.success(handled ? 'Recesso segnato come gestito.' : 'Recesso riaperto.')
+      toast.success(handled === undefined ? 'Note salvate.' : handled ? 'Recesso segnato come gestito.' : 'Recesso riaperto.')
     },
     onError: (error: Error) => toast.error(error.message || 'Operazione non riuscita.'),
   })
@@ -92,8 +95,8 @@ const WithdrawalsPage = () => {
               <Table.HeaderCell>Ordine</Table.HeaderCell>
               <Table.HeaderCell>Prodotti o note</Table.HeaderCell>
               <Table.HeaderCell>Rimborso entro</Table.HeaderCell>
-              <Table.HeaderCell>Stato</Table.HeaderCell>
-              <Table.HeaderCell />
+              <Table.HeaderCell>Note interne</Table.HeaderCell>
+              <Table.HeaderCell>Gestito</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -121,20 +124,27 @@ const WithdrawalsPage = () => {
                 <Table.Cell>
                   <RefundDue withdrawal={withdrawal} />
                 </Table.Cell>
-                <Table.Cell>
-                  <StatusBadge color={withdrawal.handled_at ? 'green' : 'orange'}>
-                    {withdrawal.handled_at ? 'Gestito' : 'Da gestire'}
-                  </StatusBadge>
+                <Table.Cell className="min-w-[14rem]">
+                  <InlineText
+                    multiline
+                    value={withdrawal.notes}
+                    label={`Note interne sul recesso di ${withdrawal.name}`}
+                    placeholder="es. rimborsato con bonifico il…"
+                    onSave={(notes) => update.mutate({ id: withdrawal.id, notes })}
+                  />
                 </Table.Cell>
                 <Table.Cell>
-                  <Button
-                    size="small"
-                    variant="secondary"
-                    isLoading={update.isPending && update.variables?.id === withdrawal.id}
-                    onClick={() => update.mutate({ id: withdrawal.id, handled: !withdrawal.handled_at })}
-                  >
-                    {withdrawal.handled_at ? 'Riapri' : 'Segna gestito'}
-                  </Button>
+                  {/* Un clic: gestito o da gestire, senza pulsanti a parte. */}
+                  <label className="flex items-center gap-2">
+                    <Switch
+                      checked={Boolean(withdrawal.handled_at)}
+                      onCheckedChange={(handled) => update.mutate({ id: withdrawal.id, handled })}
+                      aria-label={`Recesso di ${withdrawal.name} gestito`}
+                    />
+                    <Text size="small" className={withdrawal.handled_at ? 'text-ui-fg-subtle' : 'text-ui-tag-orange-text'}>
+                      {withdrawal.handled_at ? 'Gestito' : 'Da gestire'}
+                    </Text>
+                  </label>
                 </Table.Cell>
               </Table.Row>
             ))}

@@ -2,18 +2,31 @@ import { Button, Text, usePrompt } from '@medusajs/ui'
 import { useState } from 'react'
 import { formatDay, formatEuro, PAYMENT_METHOD_LABEL, useSalesAction, type PaymentMethod } from '../../lib/sales-api'
 import type { GestioneOrder } from '../../lib/gestione-api'
+import { MethodSelect } from '../sales/payments-editor'
 
 // Le due azioni di ogni giorno, direttamente nella riga dell'ordine: incassare e consegnare.
 
 /** Incasso in riga. `path` è la rotta degli incassi: quella del gestionale o, per gli agenti, dell'area vendita. */
-export function PaymentCell({ order, path = `/admin/backoffice/orders/${order.id}/payments` }: { order: Pick<GestioneOrder, 'id' | 'status' | 'due'>; path?: string }) {
+export function PaymentCell({ order, path = `/admin/backoffice/orders/${order.id}/payments` }: { order: Pick<GestioneOrder, 'id' | 'status' | 'due' | 'payments'>; path?: string }) {
   const action = useSalesAction()
   const [open, setOpen] = useState(false)
   const [amount, setAmount] = useState('')
   const [method, setMethod] = useState<PaymentMethod>('contanti')
 
   if (order.status === 'canceled') return <Text size="small" className="text-ui-fg-muted">-</Text>
-  if (order.due <= 0) return <Text size="small" className="text-ui-fg-subtle">Saldato</Text>
+  if (order.due <= 0) {
+    // Saldato con un solo incasso: il mezzo (contanti, bonifico…) si cambia qui; con più incassi, dal dettaglio.
+    return (
+      <div className="flex items-center justify-end gap-2">
+        <Text size="small" className="text-ui-fg-subtle">Saldato</Text>
+        {order.payments.length === 1 ? (
+          <MethodSelect payment={order.payments[0]} basePath={path} compact />
+        ) : (
+          order.payments.length > 1 && <Text size="small" className="text-ui-fg-muted">{order.payments.length} incassi</Text>
+        )}
+      </div>
+    )
+  }
   if (!open) {
     return (
       <div className="flex items-center justify-end gap-2">
