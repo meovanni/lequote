@@ -21,7 +21,7 @@
   }
 }
 
-.videoLayer {
+.mediaLayer {
   position: absolute;
   inset: -6% 0;
   overflow: hidden;
@@ -35,29 +35,29 @@
 }
 
 @supports not (animation-timeline: scroll()) {
-  .videoLayer {
+  .mediaLayer {
     animation: none;
   }
 }
 
-.videoBox,
-.video,
-.poster {
+.photo {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* Scatto con il cielo coperto: una spinta leggera ridà vita ai verdi senza snaturare la foto. */
+  filter: saturate(1.18) contrast(1.04);
 }
 
-/* Unico gradiente ammesso dal sistema (DESIGN.md): uno scrim funzionale che scurisce il basso
-   a sinistra, dove sta il testo, perché il Bone resti leggibile su qualsiasi fotogramma. */
+/* Unico gradiente ammesso dal sistema (DESIGN.md): uno scrim funzionale solo dove sta il testo,
+   in basso a sinistra, perché resti leggibile. Il resto della foto resta con i suoi colori. */
 .overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to top right,
-    color-mix(in srgb, var(--color-bosco) 88%, transparent) 0%,
-    color-mix(in srgb, var(--color-bosco) 55%, transparent) 45%,
-    color-mix(in srgb, var(--color-bosco) 15%, transparent) 100%
+    color-mix(in srgb, var(--color-bosco) 72%, transparent) 0%,
+    color-mix(in srgb, var(--color-bosco) 38%, transparent) 32%,
+    color-mix(in srgb, var(--color-bosco) 0%, transparent) 62%
   );
   pointer-events: none;
 }
@@ -144,8 +144,21 @@
 
 /* Scroll nativo sul telefono: nessuna animazione legata allo scroll (lib/nativeScroll.ts). */
 @media (pointer: coarse), (hover: none), (max-width: 1024px) {
-  .videoLayer {
+  .mediaLayer {
     animation: none;
+  }
+}
+
+/* Sul telefono il testo occupa quasi tutta l'altezza e passa sopra cielo e mare chiari: il velo
+   sale dal basso fin sopra il titolo. */
+@media (max-width: 768px) {
+  .overlay {
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--color-bosco) 80%, transparent) 0%,
+      color-mix(in srgb, var(--color-bosco) 62%, transparent) 55%,
+      color-mix(in srgb, var(--color-bosco) 0%, transparent) 88%
+    );
   }
 }
 

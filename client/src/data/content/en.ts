@@ -56,6 +56,7 @@ export const en: Content = {
     subtitle: 'From sea level to the heights of the Abruzzo Apennines.',
     body: 'A family farm split between two very different places: the Borsacchio Nature Reserve, on the coast at Roseto degli Abruzzi, and the uplands of Cerchio, in the Marsica. This is where our extra virgin olive oil and our honey come from.',
     poster: '/images/oliveto.jpg',
+    posterSmall: '/images/oliveto-1080.jpg',
     posterAlt: 'The avenue of olive trees in the Borsacchio Reserve',
     ctaPrimary: { label: 'Explore the land', href: '#territorio' },
     ctaSecondary: { label: 'Discover the products ↓', href: '#olio' },

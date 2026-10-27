@@ -56,6 +56,7 @@ export const de: Content = {
     subtitle: 'Vom Meeresspiegel bis auf die Höhen des Abruzzen-Apennins.',
     body: 'Ein Familienbetrieb an zwei sehr unterschiedlichen Orten: im Naturreservat Borsacchio an der Küste von Roseto degli Abruzzi und auf den Anhöhen von Cerchio in der Marsica. Von hier kommen unser natives Olivenöl extra und unser Honig.',
     poster: '/images/oliveto.jpg',
+    posterSmall: '/images/oliveto-1080.jpg',
     posterAlt: 'Die Olivenbaumallee im Reservat Borsacchio',
     ctaPrimary: { label: 'Das Land entdecken', href: '#territorio' },
     ctaSecondary: { label: 'Zu den Produkten ↓', href: '#olio' },

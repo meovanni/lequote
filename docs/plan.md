@@ -4,7 +4,7 @@ Decisioni: `../PRODUCT.md`, `../DESIGN.md`, `adr/`.
 
 ## Fase 1: vetrina (completata il 2026-10-11; su telefono scroll del tutto nativo dopo la prova su iPhone)
 - Redesign ibrido Seed / Le Quote (DESIGN.md): titoli leggeri, pillole, niente ombre né gradienti decorativi, specimen tag mono, ritmo chiaro / bosco.
-- Hero: foto poster + video MP4/WebM dove disponibile.
+- Hero: foto del viale degli ulivi a tutto schermo (il video è stato tolto il 2026-10-27, scelta dei titolari).
 - Nuove sezioni con contenuti statici tipizzati come le future API: Filiera e tracciabilità (pannello "Informazioni di legge", campo lotto non ancora attivo), Calendario delle stagioni, Domande frequenti.
 - Correzione dei testi non dimostrabili (acidità, descrittori organolettici, alveari solo a Cerchio).
 - Test unitari e di componente (Vitest).
@@ -63,4 +63,4 @@ Fatto (2026-10-14):
 VPS (ADR 0004), dopo la validazione legale da parte del consulente. Ricerca su fornitori, backup e checklist: `fase-4-hosting.md` (2026-10-22; OVHcloud in Italia oggi esaurito: scelta Aruba Cloud VPS O2A4 con il dominio di Le Quote su Aruba).
 
 ## Dati mancanti dai titolari
-Per le pagine legali: ragione sociale, sede legale, PEC, termine per il bonifico, tempi di risposta ai reclami, fornitore della casella di posta. Telefono, P.IVA, social, sede dell'operatore, tariffe e soglia di spedizione, IBAN e intestatario per il bonifico, dati SMTP della casella (server, porta, utente) e indirizzo per gli avvisi d'ordine, orari di ritiro e mezzi accettati al ritiro (contanti / carta), frantoio della campagna, prezzo e foto dei formati (il catalogo attuale ha miele 250 g / 500 g, le etichette prevedono 500 g / 1 kg), misure e grafica delle etichette, hosting e gestore del dominio, video hero in formato sorgente.
+Per le pagine legali: ragione sociale, sede legale, PEC, termine per il bonifico, tempi di risposta ai reclami, fornitore della casella di posta. Telefono, P.IVA, social, sede dell'operatore, tariffe e soglia di spedizione, IBAN e intestatario per il bonifico, dati SMTP della casella (server, porta, utente) e indirizzo per gli avvisi d'ordine, orari di ritiro e mezzi accettati al ritiro (contanti / carta), frantoio della campagna, prezzo e foto dei formati (il catalogo attuale ha miele 250 g / 500 g, le etichette prevedono 500 g / 1 kg), misure e grafica delle etichette, hosting e gestore del dominio.

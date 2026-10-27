@@ -145,9 +145,6 @@ Lavoro nostro:
   `/store` e `/filiera` inoltrati a Medusa, `__spa-fallback.html` per le pagine non prerenderizzate
   (`/lotto/...`, `/ordine`);
 - aggiornamenti di sicurezza automatici, firewall (solo 80, 443 e SSH con chiave);
-- se si aggiunge una Content-Security-Policy, deve ammettere il gestore `oncanplay` del video
-  dell'Hero (avvio appena arriva il primo pezzo, prima del JavaScript) e i video in `/videos`
-  con richieste a intervalli (Range), che Caddy serve già;
 - durata dei log del server (rimasta aperta dalla Fase 3);
 - controllo di raggiungibilità del sito (anche gratuito) con avviso per email;
 - prova completa sul server prima di puntare il dominio: ordine con bonifico, ritiro, recesso, QR.

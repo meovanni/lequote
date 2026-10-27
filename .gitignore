@@ -24,9 +24,7 @@ bash.exe.stackdump
 .claude/settings.local.json
 claude/settings.local.json
 
-# Large media not tracked in git (exceeds GitHub's 100MB file limit). The compressed hero videos
-# (client/public/videos/intro*.mp4|webm, from scripts/encode-hero-video.sh) are tracked: without
-# them the hero shows only the poster.
+# Large media not tracked in git (exceeds GitHub's 100MB file limit).
 client/public/videos/*.mov
 
 # impeccable-live-ignore-start

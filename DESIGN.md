@@ -91,7 +91,7 @@ The farm's own record book, set out like a specimen under laboratory glass. The 
 
 What stays Le Quote, not Seed: the logo's ink blue as the one colour, the one serif family (Fraunces), and the Territorio signature reveal. Seed's lime accent and its sans-serif display voice are deliberately not adopted.
 
-Confirmed rejections: no Tailwind, no animation library (Motion/Framer/GSAP; three.js with React Three Fiber and @react-three/postprocessing are allowed for the Territorio diorama only), no box-shadows or drop-shadows, no decorative gradients (a functional legibility scrim over video/photo is the single exception), no AI-purple or glass-panel decoration, no generic three-card feature grids, no em dashes in shipped copy or headings.
+Confirmed rejections: no Tailwind, no animation library (Motion/Framer/GSAP; three.js with React Three Fiber and @react-three/postprocessing are allowed for the Territorio diorama only), no box-shadows or drop-shadows, no decorative gradients (a functional legibility scrim over the hero photo is the single exception), no AI-purple or glass-panel decoration, no generic three-card feature grids, no em dashes in shipped copy or headings.
 
 **Key Characteristics:**
 - White canvas alternating with Mist bands as page rhythm; Night only under the hero photo.
@@ -136,7 +136,7 @@ The legacy token names (`--color-pergamena`, `--color-miele`, `--color-oliva`, `
 - **Label** (DM Mono 500, 0.8125rem, 0.1em, uppercase): nav, buttons, eyebrows. **Specimen** (DM Mono 400, 0.75rem, 0.04em, no uppercase transform for codes): lot codes, dates, figures, with tabular numbers.
 
 ### Named Rules
-**The Whisper Rule.** Display roles stay between 300 and 380. On Night or over video, every display role sits at the top of the range (380) for legibility. Never 600+ on a headline.
+**The Whisper Rule.** Display roles stay between 300 and 380. On Night or over the hero photo, every display role sits at the top of the range (380) for legibility. Never 600+ on a headline.
 
 **The One-Serif Rule.** Every display need is Fraunces on its own axes (opsz per role, SOFT 0 for the crisper reference voice). Emphasis inside a headline is italic, not weight.
 
@@ -144,13 +144,13 @@ The legacy token names (`--color-pergamena`, `--color-miele`, `--color-oliva`, `
 
 Full-viewport (`100svh`) sections with `scroll-snap-align: start` against site-wide `scroll-snap-type: y mandatory` on mouse devices only. Touch, hover-less and narrow (≤1024px) devices get fully native scrolling: no snap, no scroll-driven animation, no pinned sequence (Territorio becomes a static map plus the two place cards). On WebKit, fast inertial scrolling with a direction change made the page jump elsewhere. The query lives in `client/src/lib/nativeScroll.ts` and is repeated in the stylesheets. Content max-width 1240px, inline padding `clamp(1.25rem, 4vw, 3rem)`. Spacing on a 4/8px scale up to 128px; section vertical padding at least 80px. Content sections use asymmetric two-column splits (roughly 40/60), not equal columns. Breakpoints are literal values per stylesheet: 480 / 768 / 1024 / 1280px. Territorio remains the one pinned multi-stage exception (520vh, desktop only).
 
-Section order and surfaces: Hero (dark, video/photo) · Territorio (white, 3D diorama) · Olio (mist) · Miele (white) · Filiera (mist) · Stagioni (white) · Shop (mist) · Domande (white) · Footer (mist).
+Section order and surfaces: Hero (dark, full-bleed photo) · Territorio (white, 3D diorama) · Olio (mist) · Miele (white) · Filiera (mist) · Stagioni (white) · Shop (mist) · Domande (white) · Footer (mist).
 
 Data pages (`/lotto/:codice`, `/analisi`) share one readable 46rem column on White: pill tags for line and season, hairline tables with muted labels and tabular figures, underlined inline links. Lab values on the product page (acidity next to peroxides and UV absorption, panel test bars on a 0 to 10 scale, nutrition table) come from the reports published in the back office; until one exists, a muted line says so. Shop formats without a photo use the SVG illustrations (bottle, 5 L tin, 250 g and 500 g jars); a format that cannot be ordered stays visible, greyed out, with an Ink "Non disponibile" pill on the image.
 
 ## Elevation & Depth
 
-None. The system is shadowless: no box-shadow, no drop-shadow, no glow. Hierarchy comes from surface contrast (Mist card on White, White card on Mist, hairlines), weight, and space. A floating callout (Territorio markers) is distinguished by a solid surface fill and a 1.5px hairline, not a shadow. The only gradient allowed is a functional dark scrim over the hero video/photo so White text stays legible.
+None. The system is shadowless: no box-shadow, no drop-shadow, no glow. Hierarchy comes from surface contrast (Mist card on White, White card on Mist, hairlines), weight, and space. A floating callout (Territorio markers) is distinguished by a solid surface fill and a 1.5px hairline, not a shadow. The only gradient allowed is a functional dark scrim over the hero photo, limited to the text corner (bottom left) so White text stays legible and the rest of the photo keeps its colour. Photos keep their original colour profile (iPhone shots are Display P3): never strip it when compressing, or they turn dull.
 
 ## Shapes
 

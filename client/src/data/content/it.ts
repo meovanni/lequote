@@ -29,6 +29,7 @@ export const hero = {
   subtitle: "Dal livello del mare alla quota dell'Appennino abruzzese.",
   body: "Un'azienda agricola familiare divisa tra due territori profondamente diversi: la Riserva Naturale del Borsacchio, sulla costa di Roseto degli Abruzzi, e le alture di Cerchio, nella Marsica. Da qui nascono il nostro olio extravergine e il nostro miele.",
   poster: '/images/oliveto.jpg',
+  posterSmall: '/images/oliveto-1080.jpg',
   posterAlt: 'Il viale degli ulivi della Riserva del Borsacchio',
   ctaPrimary: { label: 'Esplora il territorio', href: '#territorio' },
   ctaSecondary: { label: 'Scopri i prodotti ↓', href: '#olio' },
