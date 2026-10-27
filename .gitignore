@@ -24,8 +24,10 @@ bash.exe.stackdump
 .claude/settings.local.json
 claude/settings.local.json
 
-# Large media not tracked in git (exceeds GitHub's 100MB file limit)
-client/public/videos/intro_long.mov
+# Large media not tracked in git (exceeds GitHub's 100MB file limit). The compressed hero videos
+# (client/public/videos/intro*.mp4|webm, from scripts/encode-hero-video.sh) are tracked: without
+# them the hero shows only the poster.
+client/public/videos/*.mov
 
 # impeccable-live-ignore-start
 .impeccable/hook.cache.json
@@ -59,5 +61,3 @@ plugins/impeccable-live.client.ts
 app/plugins/impeccable-live.client.ts
 src/plugins/impeccable-live.client.ts
 # impeccable-live-ignore-end
-client/public/videos/intro.mp4
-client/public/videos/intro.webm
