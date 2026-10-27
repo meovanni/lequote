@@ -1,3 +1,4 @@
+import { linePrices, priceOf } from '../pricing'
 import { availabilityBySku, deliveryMovements, lineStock, packMovements, shortfalls } from '../stock'
 
 // 300 L di sfuso, 10 bottiglie e 2 latte pronte.
@@ -79,5 +80,19 @@ describe('movimenti', () => {
       { sku: 'OLIO-5L', delta: 4 },
     ])
     expect(packMovements('OLIO-SFUSO', 4)).toEqual([])
+  })
+})
+
+describe('listino al litro', () => {
+  it('ogni formato costa il prodotto che contiene, più il supplemento della confezione', () => {
+    const pricing = { unitPrice: 14, surcharges: { 'OLIO-750ML': 1.5 } }
+    expect(priceOf('OLIO-5L', pricing)).toBe(70)
+    expect(priceOf('OLIO-750ML', pricing)).toBe(12)
+    expect(priceOf('OLIO-SFUSO', pricing)).toBe(14)
+    expect(linePrices('miele', { unitPrice: 16, surcharges: {} })).toEqual([
+      { sku: 'MIELE-SFUSO', price: 16, surcharge: 0 },
+      { sku: 'MIELE-250G', price: 4, surcharge: 0 },
+      { sku: 'MIELE-500G', price: 8, surcharge: 0 },
+    ])
   })
 })

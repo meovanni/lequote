@@ -1,6 +1,6 @@
 import { Badge, Button, Container, Heading, Text, clx } from '@medusajs/ui'
 import { useState } from 'react'
-import { formatVolume, LINE_LABEL, type FormatRow, type LineRow } from '../../lib/gestione-api'
+import { formatVolume, LINE_LABEL, stockValue, type FormatRow, type LineRow } from '../../lib/gestione-api'
 import { formatEuro, useSalesAction } from '../../lib/sales-api'
 import { InlineNumber } from './inline-number'
 
@@ -44,7 +44,11 @@ function LineCard({ line, formats }: { line: LineRow; formats: FormatRow[] }) {
   const bulkFormat = formats.find((format) => format.line === line.line && format.bulk)!
   const saveCount = (sku: string, quantity: number, what: string) =>
     action.mutate({ path: '/admin/gestione/stock', body: { sku, quantity }, success: `${what} aggiornato.` })
-  const savePrice = (sku: string, price: number) => action.mutate({ path: '/admin/gestione/prices', body: { sku, price }, success: 'Prezzo aggiornato.' })
+  const perUnit = line.unit === 'L' ? 'litro' : 'chilo'
+  const saveUnitPrice = (unit_price: number) =>
+    action.mutate({ path: '/admin/gestione/prices', body: { line: line.line, unit_price }, success: `Prezzo al ${perUnit} aggiornato: ricalcolati i prezzi dei formati.` })
+  const saveSurcharge = (sku: string, amount: number) =>
+    action.mutate({ path: '/admin/gestione/prices', body: { line: line.line, surcharge: { sku, amount } }, success: 'Supplemento aggiornato: ricalcolato il prezzo.' })
   const bulkWord = line.line === 'olio' ? 'da imbottigliare' : 'da invasettare'
 
   return (
@@ -53,7 +57,8 @@ function LineCard({ line, formats }: { line: LineRow; formats: FormatRow[] }) {
         <div>
           <Heading level="h2">{LINE_LABEL[line.line]}</Heading>
           <Text size="small" className="text-ui-fg-subtle">
-            {formatVolume(line.total, line.unit)} in magazzino · <span className="text-ui-fg-base">{formatVolume(Math.max(0, line.free), line.unit)} liberi</span>
+            {formatVolume(line.total, line.unit)} in magazzino · <span className="text-ui-fg-base">{formatVolume(Math.max(0, line.free), line.unit)} liberi</span> · valore{' '}
+            {formatEuro(stockValue(line, formats))}
           </Text>
         </div>
         {line.freeBulk < 0 && <Badge color="red">Mancano {formatVolume(-line.freeBulk, line.unit)} di sfuso per gli ordini aperti</Badge>}
@@ -66,6 +71,7 @@ function LineCard({ line, formats }: { line: LineRow; formats: FormatRow[] }) {
             <th className="pb-2 text-right font-normal">In magazzino</th>
             <th className="pb-2 pl-4 text-left font-normal">Ordini aperti</th>
             <th className="pb-2 text-right font-normal">Ancora vendibili</th>
+            <th className="pb-2 text-right font-normal">Confezione</th>
             <th className="pb-2 text-right font-normal">Prezzo</th>
             <th className="px-6 pb-2 text-right font-normal">Dallo sfuso</th>
           </tr>
@@ -78,8 +84,9 @@ function LineCard({ line, formats }: { line: LineRow; formats: FormatRow[] }) {
             </td>
             <td className="py-2 pl-4 text-ui-fg-subtle">{line.bulkOrdered > 0 ? `${formatVolume(line.bulkOrdered, line.unit)} ${bulkWord}` : '-'}</td>
             <td className={clx('lq-figure py-2 text-right', line.freeBulk < 0 && 'text-ui-fg-error')}>{formatVolume(line.freeBulk, line.unit)}</td>
+            <td className="py-2 text-right text-ui-fg-muted">-</td>
             <td className="py-2 text-right">
-              <InlineNumber value={bulkFormat.price} decimals suffix={`€/${line.unit}`} label={`Prezzo al ${line.unit === 'L' ? 'litro' : 'chilo'} dello sfuso`} onSave={(value) => savePrice(bulkFormat.sku, value)} />
+              <InlineNumber value={line.unitPrice} decimals suffix={`€/${line.unit}`} label={`Prezzo al ${perUnit}`} onSave={saveUnitPrice} />
             </td>
             <td className="px-6 py-2" />
           </tr>
@@ -97,7 +104,10 @@ function LineCard({ line, formats }: { line: LineRow; formats: FormatRow[] }) {
                 </td>
                 <td className={clx('lq-figure py-2 text-right', row.available === 0 && 'text-ui-fg-error')}>{row.available === 0 ? 'esaurito' : `${row.available} pz`}</td>
                 <td className="py-2 text-right">
-                  <InlineNumber value={format.price} decimals suffix="€" label={`Prezzo di ${format.label}`} onSave={(value) => savePrice(row.sku, value)} />
+                  <InlineNumber value={format.surcharge} decimals suffix="€" label={`Supplemento confezione di ${format.label}`} onSave={(value) => saveSurcharge(row.sku, value)} />
+                </td>
+                <td className="lq-figure py-2 text-right" title={`${formatVolume(format.size, line.unit)} × ${formatEuro(line.unitPrice)}/${line.unit}${format.surcharge > 0 ? ` + ${formatEuro(format.surcharge)}` : ''}`}>
+                  {format.price === null ? '-' : formatEuro(format.price)}
                 </td>
                 <td className="px-6 py-2">
                   <PackButton key={row.toPack} format={format} toPack={row.toPack} unit={line.unit} />
@@ -108,8 +118,8 @@ function LineCard({ line, formats }: { line: LineRow; formats: FormatRow[] }) {
         </tbody>
       </table>
       <Text size="xsmall" className="px-6 pb-4 text-ui-fg-muted">
-        Clicca su un numero per correggerlo. Gli ordini prendono prima i pezzi pronti; quelli che mancano si confezionano dallo sfuso.
-        {bulkFormat.price !== null && ` Sfuso venduto a ${formatEuro(bulkFormat.price)} al ${line.unit === 'L' ? 'litro' : 'chilo'}.`}
+        Clicca su un numero per correggerlo. Il prezzo di ogni formato è il prodotto che contiene a {formatEuro(line.unitPrice)} al {perUnit}, più
+        l’eventuale supplemento per la confezione. Gli ordini prendono prima i pezzi pronti; quelli che mancano si confezionano dallo sfuso.
       </Text>
     </Container>
   )

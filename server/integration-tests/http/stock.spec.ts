@@ -107,8 +107,19 @@ medusaIntegrationTestRunner({
       const tooMuch = await api.post('/admin/gestione/pack', { sku: 'OLIO-5L', pieces: 15 }, admin).catch(fail)
       expect(tooMuch.status).toBe(400)
 
-      await api.post('/admin/gestione/prices', { sku: 'OLIO-SFUSO', price: 14 }, admin)
-      expect((await variantOf('OLIO-SFUSO')).price).toBe(14)
+      // Il prezzo al litro trascina i formati; il supplemento si somma solo al suo formato.
+      await api.post('/admin/gestione/prices', { line: 'olio', unit_price: 12 }, admin)
+      expect((await variantOf('OLIO-SFUSO')).price).toBe(12)
+      expect((await variantOf('OLIO-5L')).price).toBe(60)
+      expect((await variantOf('OLIO-750ML')).price).toBe(9)
+      await api.post('/admin/gestione/prices', { line: 'olio', surcharge: { sku: 'OLIO-750ML', amount: 1.5 } }, admin)
+      expect((await variantOf('OLIO-750ML')).price).toBe(10.5)
+      await api.post('/admin/gestione/prices', { line: 'olio', unit_price: 14 }, admin)
+      expect((await variantOf('OLIO-750ML')).price).toBe(12)
+      expect((await variantOf('OLIO-5L')).price).toBe(70)
+      const { data: shop } = await api.get('/store/products?fields=variants.sku,*variants.calculated_price&region_id=' + (await api.get('/store/regions', store)).data.regions[0].id, store)
+      const tin = shop.products.flatMap((product: { variants: { sku: string; calculated_price: { calculated_amount: number } }[] }) => product.variants).find((variant: { sku: string }) => variant.sku === 'OLIO-5L')
+      expect(tin.calculated_price.calculated_amount).toBe(70)
     })
 
     it('dal sito si vendono i formati fino a quanto lo sfuso permette, non lo sfuso', async () => {
