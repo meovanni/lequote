@@ -107,15 +107,25 @@ medusaIntegrationTestRunner({
       const tooMuch = await api.post('/admin/gestione/pack', { sku: 'OLIO-5L', pieces: 15 }, admin).catch(fail)
       expect(tooMuch.status).toBe(400)
 
-      // Il prezzo al litro trascina i formati; il supplemento si somma solo al suo formato.
+      // Prezzo standard: contenuto al prezzo al litro più la confezione, per eccesso ai 50 centesimi.
+      expect((await variantOf('OLIO-750ML')).price).toBe(12)
+      expect((await variantOf('OLIO-5L')).price).toBe(70)
+      expect((await variantOf('MIELE-250G')).price).toBe(5.5)
       await api.post('/admin/gestione/prices', { line: 'olio', unit_price: 12 }, admin)
       expect((await variantOf('OLIO-SFUSO')).price).toBe(12)
       expect((await variantOf('OLIO-5L')).price).toBe(60)
-      expect((await variantOf('OLIO-750ML')).price).toBe(9)
-      await api.post('/admin/gestione/prices', { line: 'olio', surcharge: { sku: 'OLIO-750ML', amount: 1.5 } }, admin)
       expect((await variantOf('OLIO-750ML')).price).toBe(10.5)
+      await api.post('/admin/gestione/prices', { line: 'olio', surcharge: { sku: 'OLIO-750ML', amount: 2 } }, admin)
+      expect((await variantOf('OLIO-750ML')).price).toBe(11)
+
+      // Un prezzo scelto a mano resta quando cambia il prezzo al litro, finché non lo si riallinea.
+      await api.post('/admin/gestione/prices', { line: 'olio', custom: { sku: 'OLIO-750ML', price: 12.9 } }, admin)
       await api.post('/admin/gestione/prices', { line: 'olio', unit_price: 14 }, admin)
-      expect((await variantOf('OLIO-750ML')).price).toBe(12)
+      expect((await variantOf('OLIO-750ML')).price).toBe(12.9)
+      const bottle = (await api.get('/admin/gestione', admin)).data.formats.find((format: { sku: string }) => format.sku === 'OLIO-750ML')
+      expect(bottle).toMatchObject({ price: 12.9, standardPrice: 12.5, custom: true })
+      await api.post('/admin/gestione/prices', { line: 'olio', custom: { sku: 'OLIO-750ML', price: null } }, admin)
+      expect((await variantOf('OLIO-750ML')).price).toBe(12.5)
       expect((await variantOf('OLIO-5L')).price).toBe(70)
       const { data: shop } = await api.get('/store/products?fields=variants.sku,*variants.calculated_price&region_id=' + (await api.get('/store/regions', store)).data.regions[0].id, store)
       const tin = shop.products.flatMap((product: { variants: { sku: string; calculated_price: { calculated_amount: number } }[] }) => product.variants).find((variant: { sku: string }) => variant.sku === 'OLIO-5L')

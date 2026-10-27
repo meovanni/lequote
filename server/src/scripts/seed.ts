@@ -172,8 +172,9 @@ function shippingOption(name: string, code: string, zoneId: string, profileId: s
   }
 }
 
-// Catalogo e prezzi IVA inclusa: 14 €/L l'olio e 16 €/kg il miele, i formati in proporzione e
-// senza supplemento confezione (lib/pricing.ts); si cambiano nella pagina Gestione.
+// Catalogo e prezzi IVA inclusa: 14 €/L l'olio e 16 €/kg il miele; ogni formato costa il prodotto
+// che contiene più la confezione, arrotondato per eccesso ai 50 centesimi (DEFAULT_SURCHARGE in
+// modules/magazzino/lib/pricing.ts). Si cambiano nella pagina Gestione.
 const CATALOG = [
   {
     handle: 'olio-extravergine',
@@ -181,7 +182,7 @@ const CATALOG = [
     line: 'olio',
     description: 'Solo olive dei nostri oliveti di Roseto degli Abruzzi.',
     variants: [
-      { title: 'Bottiglia 750 ml', sku: 'OLIO-750ML', price: 10.5 },
+      { title: 'Bottiglia 750 ml', sku: 'OLIO-750ML', price: 12 },
       { title: 'Latta 5 l', sku: 'OLIO-5L', price: 70 },
       { title: 'Da imbottigliare (litri)', sku: 'OLIO-SFUSO', price: 14 },
     ],
@@ -192,8 +193,8 @@ const CATALOG = [
     line: 'miele',
     description: 'Dagli apiari di Cerchio, in quota.',
     variants: [
-      { title: 'Vasetto 250 g', sku: 'MIELE-250G', price: 4 },
-      { title: 'Vasetto 500 g', sku: 'MIELE-500G', price: 8 },
+      { title: 'Vasetto 250 g', sku: 'MIELE-250G', price: 5.5 },
+      { title: 'Vasetto 500 g', sku: 'MIELE-500G', price: 9 },
       { title: 'Da invasettare (kg)', sku: 'MIELE-SFUSO', price: 16 },
     ],
   },

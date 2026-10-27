@@ -18,7 +18,11 @@ export type FormatRow = {
   variantId: string | null
   /** Prezzo IVA inclusa, calcolato dal prezzo al litro o al chilo più il supplemento. */
   price: number | null
-  /** Supplemento confezione IVA inclusa (0 per lo sfuso). */
+  /** Prezzo standard: prodotto contenuto più confezione, arrotondato per eccesso ai 50 centesimi. */
+  standardPrice: number | null
+  /** Prezzo scelto a mano al posto dello standard. */
+  custom: boolean
+  /** Costo di confezione e lavoro per pezzo, IVA inclusa (0 per lo sfuso). */
   surcharge: number
   available: number
 }

@@ -84,15 +84,23 @@ describe('movimenti', () => {
 })
 
 describe('listino al litro', () => {
-  it('ogni formato costa il prodotto che contiene, più il supplemento della confezione', () => {
-    const pricing = { unitPrice: 14, surcharges: { 'OLIO-750ML': 1.5 } }
-    expect(priceOf('OLIO-5L', pricing)).toBe(70)
-    expect(priceOf('OLIO-750ML', pricing)).toBe(12)
-    expect(priceOf('OLIO-SFUSO', pricing)).toBe(14)
-    expect(linePrices('miele', { unitPrice: 16, surcharges: {} })).toEqual([
-      { sku: 'MIELE-SFUSO', price: 16, surcharge: 0 },
-      { sku: 'MIELE-250G', price: 4, surcharge: 0 },
-      { sku: 'MIELE-500G', price: 8, surcharge: 0 },
+  it('contenuto più confezione, arrotondato per eccesso ai 50 centesimi', () => {
+    const oil = { unitPrice: 14, surcharges: {}, overrides: {} }
+    expect(priceOf('OLIO-750ML', oil)).toBe(12)
+    expect(priceOf('OLIO-5L', oil)).toBe(70)
+    expect(priceOf('OLIO-SFUSO', oil)).toBe(14)
+    expect(priceOf('OLIO-750ML', { ...oil, unitPrice: 15 })).toBe(13)
+    expect(priceOf('OLIO-750ML', { ...oil, surcharges: { 'OLIO-750ML': 0 } })).toBe(10.5)
+    expect(linePrices('miele', { unitPrice: 16, surcharges: {}, overrides: {} }).map(({ sku, price }) => [sku, price])).toEqual([
+      ['MIELE-SFUSO', 16],
+      ['MIELE-250G', 5.5],
+      ['MIELE-500G', 9],
     ])
+  })
+
+  it('un prezzo scelto a mano resta, e si vede quanto sarebbe lo standard', () => {
+    const oil = { unitPrice: 16, surcharges: {}, overrides: { 'OLIO-750ML': 12.9 } }
+    expect(linePrices('olio', oil).find((entry) => entry.sku === 'OLIO-750ML')).toEqual({ sku: 'OLIO-750ML', price: 12.9, standard: 13.5, surcharge: 1.5, custom: true })
+    expect(linePrices('olio', oil).find((entry) => entry.sku === 'OLIO-5L')).toMatchObject({ price: 80, custom: false })
   })
 })

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { formatVolume, LINE_LABEL, stockValue, type FormatRow, type LineRow } from '../../lib/gestione-api'
 import { formatEuro, useSalesAction } from '../../lib/sales-api'
 import { InlineNumber } from './inline-number'
+import { PriceCell } from './price-cell'
 
 // Magazzino in litri e chili: per ogni linea lo sfuso e i pezzi pronti, quello che serve agli ordini
 // aperti e quello che resta da vendere. Quantità e prezzi si cambiano sul posto.
@@ -46,9 +47,9 @@ function LineCard({ line, formats }: { line: LineRow; formats: FormatRow[] }) {
     action.mutate({ path: '/admin/gestione/stock', body: { sku, quantity }, success: `${what} aggiornato.` })
   const perUnit = line.unit === 'L' ? 'litro' : 'chilo'
   const saveUnitPrice = (unit_price: number) =>
-    action.mutate({ path: '/admin/gestione/prices', body: { line: line.line, unit_price }, success: `Prezzo al ${perUnit} aggiornato: ricalcolati i prezzi dei formati.` })
+    action.mutate({ path: '/admin/gestione/prices', body: { line: line.line, unit_price }, success: `Prezzo al ${perUnit} aggiornato: ricalcolati i prezzi standard (quelli personalizzati restano).` })
   const saveSurcharge = (sku: string, amount: number) =>
-    action.mutate({ path: '/admin/gestione/prices', body: { line: line.line, surcharge: { sku, amount } }, success: 'Supplemento aggiornato: ricalcolato il prezzo.' })
+    action.mutate({ path: '/admin/gestione/prices', body: { line: line.line, surcharge: { sku, amount } }, success: 'Costo di confezione aggiornato: ricalcolato il prezzo standard.' })
   const bulkWord = line.line === 'olio' ? 'da imbottigliare' : 'da invasettare'
 
   return (
@@ -71,7 +72,7 @@ function LineCard({ line, formats }: { line: LineRow; formats: FormatRow[] }) {
             <th className="pb-2 text-right font-normal">In magazzino</th>
             <th className="pb-2 pl-4 text-left font-normal">Ordini aperti</th>
             <th className="pb-2 text-right font-normal">Ancora vendibili</th>
-            <th className="pb-2 text-right font-normal">Confezione</th>
+            <th className="pb-2 text-right font-normal">Costo confezione</th>
             <th className="pb-2 text-right font-normal">Prezzo</th>
             <th className="px-6 pb-2 text-right font-normal">Dallo sfuso</th>
           </tr>
@@ -86,7 +87,7 @@ function LineCard({ line, formats }: { line: LineRow; formats: FormatRow[] }) {
             <td className={clx('lq-figure py-2 text-right', line.freeBulk < 0 && 'text-ui-fg-error')}>{formatVolume(line.freeBulk, line.unit)}</td>
             <td className="py-2 text-right text-ui-fg-muted">-</td>
             <td className="py-2 text-right">
-              <InlineNumber value={line.unitPrice} decimals suffix={`€/${line.unit}`} label={`Prezzo al ${perUnit}`} onSave={saveUnitPrice} />
+              <InlineNumber value={line.unitPrice} decimals money suffix={`€/${line.unit}`} label={`Prezzo al ${perUnit}`} onSave={saveUnitPrice} />
             </td>
             <td className="px-6 py-2" />
           </tr>
@@ -104,10 +105,10 @@ function LineCard({ line, formats }: { line: LineRow; formats: FormatRow[] }) {
                 </td>
                 <td className={clx('lq-figure py-2 text-right', row.available === 0 && 'text-ui-fg-error')}>{row.available === 0 ? 'esaurito' : `${row.available} pz`}</td>
                 <td className="py-2 text-right">
-                  <InlineNumber value={format.surcharge} decimals suffix="€" label={`Supplemento confezione di ${format.label}`} onSave={(value) => saveSurcharge(row.sku, value)} />
+                  <InlineNumber value={format.surcharge} decimals money suffix="€" label={`Supplemento confezione di ${format.label}`} onSave={(value) => saveSurcharge(row.sku, value)} />
                 </td>
-                <td className="lq-figure py-2 text-right" title={`${formatVolume(format.size, line.unit)} × ${formatEuro(line.unitPrice)}/${line.unit}${format.surcharge > 0 ? ` + ${formatEuro(format.surcharge)}` : ''}`}>
-                  {format.price === null ? '-' : formatEuro(format.price)}
+                <td className="py-2 text-right">
+                  <PriceCell format={format} line={line.line} />
                 </td>
                 <td className="px-6 py-2">
                   <PackButton key={row.toPack} format={format} toPack={row.toPack} unit={line.unit} />
@@ -118,8 +119,9 @@ function LineCard({ line, formats }: { line: LineRow; formats: FormatRow[] }) {
         </tbody>
       </table>
       <Text size="xsmall" className="px-6 pb-4 text-ui-fg-muted">
-        Clicca su un numero per correggerlo. Il prezzo di ogni formato è il prodotto che contiene a {formatEuro(line.unitPrice)} al {perUnit}, più
-        l’eventuale supplemento per la confezione. Gli ordini prendono prima i pezzi pronti; quelli che mancano si confezionano dallo sfuso.
+        Clicca su un numero per correggerlo. Il prezzo standard di ogni formato è il prodotto che contiene a {formatEuro(line.unitPrice)} al {perUnit} più il
+        costo di confezione, arrotondato per eccesso ai 50 centesimi; cliccando sul prezzo lo scegli a mano. Gli ordini prendono prima i pezzi pronti,
+        quelli che mancano si confezionano dallo sfuso.
       </Text>
     </Container>
   )

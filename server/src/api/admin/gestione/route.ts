@@ -3,7 +3,7 @@ import { ContainerRegistrationKeys } from '@medusajs/framework/utils'
 import { bookableVariants } from '../../../lib/bookings/catalog'
 import { loadBookings } from '../../../lib/bookings/read'
 import { stockState } from '../../../lib/magazzino'
-import { currentPricing } from '../../../lib/pricing'
+import { currentPrices } from '../../../lib/pricing'
 import { DEFAULT_PACKING, FORMATS, LINE_UNIT } from '../../../modules/magazzino/lib/formats'
 
 /** Ordini mostrati nella pagina: gli ultimi, dal più recente. */
@@ -18,8 +18,8 @@ export async function GET(req: AuthenticatedMedusaRequest, res: MedusaResponse) 
   const [stock, variants, oil, honey, { data }] = await Promise.all([
     stockState(req.scope),
     bookableVariants(req.scope),
-    currentPricing(req.scope, 'olio'),
-    currentPricing(req.scope, 'miele'),
+    currentPrices(req.scope, 'olio'),
+    currentPrices(req.scope, 'miele'),
     query.graph({
       entity: 'order',
       fields: ['id', 'created_at', 'sales_agent.name'],
@@ -36,16 +36,18 @@ export async function GET(req: AuthenticatedMedusaRequest, res: MedusaResponse) 
       ...line,
       unit: LINE_UNIT[line.line],
       defaultPacking: DEFAULT_PACKING[line.line],
-      unitPrice: (line.line === 'olio' ? oil : honey).unitPrice,
+      unitPrice: (line.line === 'olio' ? oil : honey).pricing.unitPrice,
     })),
     formats: FORMATS.map((format) => {
       const variant = variants.find((entry) => entry.sku === format.sku)
-      const pricing = format.line === 'olio' ? oil : honey
+      const entry = (format.line === 'olio' ? oil : honey).prices.find((row) => row.sku === format.sku)
       return {
         ...format,
         variantId: variant?.variantId ?? null,
         price: variant?.price ?? null,
-        surcharge: format.bulk ? 0 : (pricing.surcharges[format.sku] ?? 0),
+        standardPrice: entry?.standard ?? null,
+        custom: entry?.custom ?? false,
+        surcharge: entry?.surcharge ?? 0,
         available: stock.available[format.sku] ?? 0,
       }
     }),

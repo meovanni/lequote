@@ -13,6 +13,8 @@ export const PriceSet = z
     line: z.enum(['olio', 'miele']),
     unit_price: z.number().min(0).max(10_000).optional(),
     surcharge: z.object({ sku, amount: z.number().min(0).max(10_000) }).strict().optional(),
+    // Prezzo scelto a mano per un formato; null lo riallinea al prezzo standard.
+    custom: z.object({ sku, price: z.number().min(0).max(10_000).nullable() }).strict().optional(),
   })
   .strict()
-  .refine((body) => body.unit_price !== undefined || body.surcharge !== undefined, 'Indica il prezzo al litro o il supplemento.')
+  .refine((body) => body.unit_price !== undefined || body.surcharge !== undefined || body.custom !== undefined, 'Indica cosa cambiare nel listino.')

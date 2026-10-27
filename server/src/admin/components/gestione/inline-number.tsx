@@ -8,21 +8,23 @@ type InlineNumberProps = {
   /** Unità mostrata accanto al numero: "L", "pz", "€". */
   suffix?: string
   decimals?: boolean
+  /** Importi in euro: sempre con due decimali (12,90). */
+  money?: boolean
   onSave: (value: number) => void
   saving?: boolean
 }
 
 // Virgola o punto come decimali: "12,5" e "12.5" valgono uguale.
 const parse = (text: string) => Number(text.trim().replace(',', '.'))
-const show = (value: number | null) => (value === null ? '' : String(value).replace('.', ','))
+const show = (value: number | null, money = false) => (value === null ? '' : (money ? value.toFixed(2) : String(value)).replace('.', ','))
 
 /**
  * Numero modificabile sul posto: sembra un testo, al clic diventa un campo. Si salva uscendo dal
  * campo o con Invio; Esc annulla. Niente pulsanti "Salva": la modifica è il gesto stesso.
  */
-export function InlineNumber({ value, label, suffix, decimals = false, onSave, saving = false }: InlineNumberProps) {
-  const [text, setText] = useState(show(value))
-  useEffect(() => setText(show(value)), [value])
+export function InlineNumber({ value, label, suffix, decimals = false, money = false, onSave, saving = false }: InlineNumberProps) {
+  const [text, setText] = useState(show(value, money))
+  useEffect(() => setText(show(value, money)), [value, money])
 
   const parsed = parse(text)
   const valid = text.trim() !== '' && Number.isFinite(parsed) && parsed >= 0 && (decimals || Number.isInteger(parsed))
@@ -30,12 +32,12 @@ export function InlineNumber({ value, label, suffix, decimals = false, onSave, s
 
   const commit = () => {
     if (changed) onSave(parsed)
-    else setText(show(value))
+    else setText(show(value, money))
   }
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') event.currentTarget.blur()
     if (event.key === 'Escape') {
-      setText(show(value))
+      setText(show(value, money))
       requestAnimationFrame(() => (event.target as HTMLInputElement).blur())
     }
   }
