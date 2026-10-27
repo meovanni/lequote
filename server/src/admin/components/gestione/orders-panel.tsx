@@ -18,7 +18,9 @@ function NewOrder({ onDone }: { onDone: () => void }) {
   const action = useSalesAction()
   const ref = useRef<HTMLDivElement>(null)
   // Il modulo si apre sopra l'elenco: lo si porta in vista subito.
-  useEffect(() => ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), [])
+  useEffect(() => {
+    ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [])
   return (
     <Container ref={ref} className="scroll-mt-4 px-6 py-5">
       <div className="mb-4 flex items-center justify-between">

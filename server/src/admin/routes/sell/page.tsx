@@ -1,232 +1,278 @@
 import { defineRouteConfig } from '@medusajs/admin-sdk'
-import { ShoppingBag } from '@medusajs/icons'
-import { Button, Container, Drawer, Heading, Table, Tabs, Text } from '@medusajs/ui'
-import { useState, type ReactNode } from 'react'
-import { BookingEditor } from '../../components/sales/booking-editor'
+import { ChevronDownMini, ShoppingBag } from '@medusajs/icons'
+import { Button, Container, Heading, Input, Text, clx } from '@medusajs/ui'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { PaymentCell } from '../../components/gestione/order-actions'
+import { Segmented } from '../../components/inline/inline-fields'
 import { BookingForm } from '../../components/sales/booking-form'
 import { BookingStatus } from '../../components/sales/booking-status'
-import { useGuardedOpen } from '../../components/use-guarded-open'
-import { useUnsavedChanges } from '../../lib/unsaved-changes'
+import { LinesEditor, type LineOption } from '../../components/sales/lines-editor'
 import { ByCustomerTable, ByProductTable, PeriodFilter, RankingTable, SummaryFigures } from '../../components/sales/summary'
-import { formatDay, formatEuro, useSalesAction, useSellBookings, useSellCatalog, useSellMe, type Booking, type Catalog, type Period } from '../../lib/sales-api'
+import { useUnsavedChanges } from '../../lib/unsaved-changes'
+import {
+  formatDay,
+  formatEuro,
+  PAYMENT_METHOD_LABEL,
+  useSalesAction,
+  useSellBooking,
+  useSellBookings,
+  useSellCatalog,
+  useSellMe,
+  type Booking,
+  type Catalog,
+  type Period,
+} from '../../lib/sales-api'
 
-/**
- * Area vendita degli agenti (/app/sell): nuova prenotazione, storico con modifiche e incassi,
- * riepilogo e classifica. Si apre solo con un account collegato a un agente attivo.
- */
+// Area vendita degli agenti (/app/sell), nello stesso stile della pagina Gestione: i numeri del
+// periodo sempre in vista, la nuova prenotazione nella pagina, l'incasso dalla riga e il dettaglio
+// sotto la riga. Sul telefono le righe diventano schede una sotto l'altra.
+
+const optionsOf = (catalog: Catalog | undefined): LineOption[] =>
+  (catalog?.variants ?? []).map((variant) => ({
+    variantId: variant.variantId,
+    label: `${variant.product}, ${variant.variant}`,
+    unit: variant.unit,
+    price: variant.price,
+    available: variant.available,
+  }))
+
+/** "2 × Latta 5 l a 70,00 €, 20 L da imbottigliare a 14,00 €/L". */
+function describe(booking: Booking, catalog: Catalog | undefined): string {
+  return booking.lines
+    .map((line) => {
+      const variant = catalog?.variants.find((entry) => entry.variantId === line.variantId)
+      if (variant?.bulk) return `${line.quantity} ${variant.unit} ${line.subtitle.toLowerCase()} a ${formatEuro(line.unitPrice)}/${variant.unit}`
+      return `${line.quantity} × ${line.subtitle || line.title} a ${formatEuro(line.unitPrice)}`
+    })
+    .join(', ')
+}
+
+function NewBooking({ catalog, onDone }: { catalog: Catalog | undefined; onDone: () => void }) {
+  const action = useSalesAction()
+  const [dirty, setDirty] = useState(false)
+  useUnsavedChanges(dirty)
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [])
+  return (
+    <Container ref={ref} className="scroll-mt-4 px-4 py-5 sm:px-6">
+      <div className="mb-4 flex items-center justify-between">
+        <Heading level="h2">Nuova prenotazione</Heading>
+        <Button size="small" variant="transparent" onClick={onDone}>
+          Chiudi
+        </Button>
+      </div>
+      {catalog ? (
+        <BookingForm
+          catalog={catalog}
+          submitting={action.isPending}
+          submitLabel="Inserisci prenotazione"
+          onDirtyChange={setDirty}
+          onSubmit={(body) =>
+            action.mutate(
+              { path: '/admin/sell/bookings', body, success: 'Prenotazione inserita.' },
+              {
+                onSuccess: () => {
+                  setDirty(false)
+                  onDone()
+                },
+              },
+            )
+          }
+        />
+      ) : (
+        <div className="h-64 animate-pulse rounded-lg bg-ui-bg-component" aria-label="Caricamento del catalogo" />
+      )}
+    </Container>
+  )
+}
+
+function BookingDetail({ booking, catalog }: { booking: Booking; catalog: Catalog | undefined }) {
+  const detail = useSellBooking(booking.id)
+  const action = useSalesAction()
+  const open = booking.status !== 'canceled' && booking.status !== 'completed' && !booking.delivered
+  const payments = detail.data?.payments.payments ?? []
+
+  return (
+    <div className="grid grid-cols-1 gap-5 bg-ui-bg-subtle px-4 py-4 sm:px-6 lg:grid-cols-3">
+      <div className="flex flex-col gap-1">
+        <Text size="small" className="text-ui-fg-subtle">{booking.delivery}</Text>
+        {booking.phone && (
+          <a href={`tel:${booking.phone}`} className="txt-compact-small text-ui-fg-interactive">
+            Chiama {booking.phone}
+          </a>
+        )}
+        {booking.email && <Text size="small" className="text-ui-fg-subtle">{booking.email}</Text>}
+        <label className="mt-2 flex flex-col gap-1">
+          <span className="txt-compact-xsmall text-ui-fg-subtle">Note</span>
+          <textarea
+            defaultValue={booking.notes ?? ''}
+            disabled={!open}
+            rows={2}
+            onBlur={(event) => {
+              const notes = event.target.value.trim()
+              if (notes !== (booking.notes ?? '')) action.mutate({ path: `/admin/sell/bookings/${booking.id}`, body: { notes: notes || null }, success: 'Note salvate.' })
+            }}
+            className="txt-compact-small rounded-md border border-ui-border-base bg-ui-bg-field px-2 py-1 outline-none focus:border-ui-border-interactive"
+          />
+        </label>
+      </div>
+      <LinesEditor key={JSON.stringify(booking.lines)} lines={booking.lines} options={optionsOf(catalog)} editable={open} path={`/admin/sell/bookings/${booking.id}`} />
+      <div className="flex flex-col gap-2">
+        <Text size="small" weight="plus">Incassi</Text>
+        {payments.length === 0 ? (
+          <Text size="small" className="text-ui-fg-subtle">Nessun incasso registrato.</Text>
+        ) : (
+          <ul className="flex flex-col gap-1">
+            {payments.map((payment) => (
+              <li key={payment.id} className="flex justify-between gap-3">
+                <Text size="small" className="text-ui-fg-subtle">
+                  {formatDay(payment.paid_at)}, {PAYMENT_METHOD_LABEL[payment.method].toLowerCase()}
+                </Text>
+                <Text size="small" className="lq-figure">{formatEuro(Number(payment.amount))}</Text>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  )
+}
+
+type Filter = 'incassare' | 'tutte'
+
+function Bookings({ bookings, catalog }: { bookings: Booking[]; catalog: Catalog | undefined }) {
+  const [filter, setFilter] = useState<Filter>('tutte')
+  const [search, setSearch] = useState('')
+  const [openId, setOpenId] = useState<string | null>(null)
+  const toCollect = (booking: Booking) => booking.status !== 'canceled' && booking.due > 0
+  const visible = useMemo(() => {
+    const term = search.trim().toLowerCase()
+    return bookings.filter((booking) => (filter === 'incassare' ? toCollect(booking) : true)).filter((booking) => !term || booking.customer.toLowerCase().includes(term))
+  }, [bookings, filter, search])
+
+  return (
+    <Container className="p-0">
+      <div className="flex flex-wrap items-center gap-3 px-4 py-4 sm:px-6">
+        <Heading level="h2" className="mr-2">Le mie prenotazioni</Heading>
+        <Segmented
+          label="Quali prenotazioni"
+          value={filter}
+          onChange={setFilter}
+          options={[
+            { value: 'tutte', label: 'Tutte', count: bookings.length },
+            { value: 'incassare', label: 'Da incassare', count: bookings.filter(toCollect).length },
+          ]}
+        />
+        <Input size="small" type="search" placeholder="Cerca cliente" aria-label="Cerca cliente" value={search} onChange={(event) => setSearch(event.target.value)} className="w-full sm:w-56" />
+      </div>
+      {visible.length === 0 ? (
+        <Text size="small" className="border-t border-ui-border-base px-6 py-8 text-center text-ui-fg-subtle">
+          {filter === 'incassare' ? 'Niente da incassare.' : 'Nessuna prenotazione nel periodo.'}
+        </Text>
+      ) : (
+        <ul>
+          {visible.map((booking) => {
+            const open = openId === booking.id
+            return (
+              <li key={booking.id} className={clx('border-t border-ui-border-base', open && 'bg-ui-bg-subtle', booking.status === 'canceled' && 'text-ui-fg-muted')}>
+                <div className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-1 px-4 py-3 sm:px-6 md:grid-cols-[auto_6rem_minmax(0,1fr)_minmax(0,1.6fr)_6rem_auto]">
+                  <button
+                    type="button"
+                    aria-expanded={open}
+                    aria-label={`${open ? 'Chiudi' : 'Apri'} la prenotazione ${booking.displayId}`}
+                    onClick={() => setOpenId(open ? null : booking.id)}
+                    className="flex items-center gap-1 text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+                  >
+                    <ChevronDownMini className={clx('transition-transform', open && 'rotate-180')} />
+                    <span className="lq-figure txt-compact-small">{booking.displayId}</span>
+                  </button>
+                  <Text size="small" className="lq-figure text-ui-fg-subtle md:order-none">{formatDay(booking.createdAt)}</Text>
+                  <Text size="small" weight="plus" className="col-span-2 md:col-span-1">{booking.customer}</Text>
+                  <Text size="small" className="col-span-2 text-ui-fg-subtle md:col-span-1">{describe(booking, catalog)}</Text>
+                  <Text size="small" className="lq-figure md:text-right">{booking.status === 'canceled' ? '-' : formatEuro(booking.total)}</Text>
+                  <div className="flex justify-end">
+                    {booking.status === 'canceled' || booking.due <= 0 ? (
+                      <BookingStatus booking={booking} />
+                    ) : (
+                      <PaymentCell order={booking} path={`/admin/sell/bookings/${booking.id}/payments`} />
+                    )}
+                  </div>
+                </div>
+                {open && <BookingDetail booking={booking} catalog={catalog} />}
+              </li>
+            )
+          })}
+        </ul>
+      )}
+    </Container>
+  )
+}
+
 const SellPage = () => {
   const [period, setPeriod] = useState<Period>({})
-  const [tab, setTab] = useState('nuova')
-  const [selected, setSelected] = useState<Booking | null>(null)
-  const [editorDirty, setEditorDirty] = useState(false)
-  // Cresce a ogni prenotazione inserita: il modulo riparte vuoto.
-  const [formKey, setFormKey] = useState(0)
-  const [newDirty, setNewDirty] = useState(false)
-  useUnsavedChanges(newDirty)
+  const [creating, setCreating] = useState(false)
   const me = useSellMe(period)
   const catalog = useSellCatalog()
   const bookings = useSellBookings(period)
-  const action = useSalesAction()
-  const drawer = useGuardedOpen({
-    dirty: editorDirty,
-    onDiscard: () => {
-      setEditorDirty(false)
-      setSelected(null)
-    },
-  })
-  const openBooking = (booking: Booking) => {
-    setSelected(booking)
-    drawer.onOpenChange(true)
-  }
 
-  if (me.isLoading) return <PageSkeleton />
+  if (me.isLoading) return <div className="h-96 animate-pulse rounded-lg bg-ui-bg-component" aria-label="Caricamento" />
   if (me.isError || !me.data) {
     return (
       <Container className="flex flex-col gap-2 px-6 py-8">
         <Heading level="h1">Area vendita</Heading>
         <Text className="text-ui-fg-subtle">
-          Questo account non è collegato a un agente attivo. L’area vendita si apre con l’account creato dalla scheda dell’agente.
+          Questo account non è collegato a un agente attivo. L’area vendita si apre con l’invito mandato dalla pagina Agenti.
         </Text>
       </Container>
     )
   }
-
-  const create = (body: Record<string, unknown>) =>
-    action.mutate(
-      { path: '/admin/sell/bookings', body, success: 'Prenotazione inserita.' },
-      {
-        onSuccess: (data) => {
-          setFormKey((key) => key + 1)
-          setNewDirty(false)
-          openBooking(data.booking as Booking)
-          setTab('storico')
-        },
-      },
-    )
-
-  const toolbar = (title: string) => (
-    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-      <Heading level="h2">{title}</Heading>
-      <PeriodFilter period={period} onChange={setPeriod} />
-    </div>
-  )
 
   return (
     <div className="flex flex-col gap-y-3">
-      <Container className="px-6 py-5">
-        <Heading level="h1">Ciao {me.data.agent.name}</Heading>
-        <Text size="small" className="text-ui-fg-subtle">
-          Le tue prenotazioni, gli incassi e la classifica.
-        </Text>
+      <Container className="flex flex-col gap-5 px-4 py-5 sm:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <Heading level="h1">Ciao {me.data.agent.name}</Heading>
+          <div className="flex flex-wrap items-center gap-2">
+            <PeriodFilter period={period} onChange={setPeriod} />
+            <Button size="small" onClick={() => setCreating(true)} disabled={creating}>
+              Nuova prenotazione
+            </Button>
+          </div>
+        </div>
+        <SummaryFigures summary={me.data.summary} />
       </Container>
 
-      <Container className="p-0">
-        <Tabs value={tab} onValueChange={setTab}>
-          <Tabs.List className="border-b border-ui-border-base px-6 py-3">
-            <Tabs.Trigger value="nuova">
-              <TabLabel full="Nuova prenotazione" short="Nuova" />
-            </Tabs.Trigger>
-            <Tabs.Trigger value="storico">
-              <TabLabel full="Le mie prenotazioni" short="Storico" />
-            </Tabs.Trigger>
-            <Tabs.Trigger value="riepilogo">
-              <TabLabel full="Riepilogo e classifica" short="Riepilogo" />
-            </Tabs.Trigger>
-          </Tabs.List>
+      {creating && <NewBooking catalog={catalog.data} onDone={() => setCreating(false)} />}
+      {catalog.isError && <Text className="px-1 text-ui-fg-error">Catalogo non disponibile: riprova tra poco.</Text>}
 
-          {/* Sempre montata: passando allo storico e tornando, quello che si stava scrivendo resta. */}
-          <Tabs.Content value="nuova" forceMount className="data-[state=inactive]:hidden px-6 py-6">
-            <NewBooking key={formKey} catalog={catalog.data} failed={catalog.isError} submitting={action.isPending} onSubmit={create} onDirtyChange={setNewDirty} />
-          </Tabs.Content>
+      {bookings.isLoading ? (
+        <div className="h-48 animate-pulse rounded-lg bg-ui-bg-component" aria-label="Caricamento" />
+      ) : (
+        <Bookings bookings={bookings.data?.bookings ?? []} catalog={catalog.data} />
+      )}
 
-          <Tabs.Content value="storico" className="data-[state=inactive]:hidden flex flex-col gap-5 px-6 py-6">
-            {toolbar('Le mie prenotazioni')}
-            <BookingList bookings={bookings.data?.bookings} loading={bookings.isLoading} onOpen={openBooking} onNew={() => setTab('nuova')} />
-          </Tabs.Content>
-
-          <Tabs.Content value="riepilogo" className="data-[state=inactive]:hidden flex flex-col gap-8 px-6 py-6">
-            {toolbar('Il tuo periodo')}
-            <SummaryFigures summary={me.data.summary} />
-            <Section title="Classifica">
-              <RankingTable ranking={me.data.ranking} />
-            </Section>
-            <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
-              <Section title="Per prodotto">
-                <ByProductTable summary={me.data.summary} />
-              </Section>
-              <Section title="Per cliente">
-                <ByCustomerTable summary={me.data.summary} />
-              </Section>
-            </div>
-          </Tabs.Content>
-        </Tabs>
+      <Container className="flex flex-col gap-6 px-4 py-5 sm:px-6">
+        <section className="flex flex-col gap-3">
+          <Heading level="h2">Classifica</Heading>
+          <RankingTable ranking={me.data.ranking} />
+        </section>
+        <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
+          <section className="flex flex-col gap-3">
+            <Heading level="h3">Per prodotto</Heading>
+            <ByProductTable summary={me.data.summary} />
+          </section>
+          <section className="flex flex-col gap-3">
+            <Heading level="h3">Per cliente</Heading>
+            <ByCustomerTable summary={me.data.summary} />
+          </section>
+        </div>
       </Container>
-
-      <Drawer open={drawer.open} onOpenChange={drawer.onOpenChange}>
-        <Drawer.Content {...drawer.contentProps}>
-          <Drawer.Header>
-            <Drawer.Title>{selected ? `Prenotazione n. ${selected.displayId}` : 'Prenotazione'}</Drawer.Title>
-          </Drawer.Header>
-          <Drawer.Body className="overflow-y-auto">
-            {selected && catalog.data && <BookingEditor key={selected.id} bookingId={selected.id} catalog={catalog.data} onDirtyChange={setEditorDirty} />}
-          </Drawer.Body>
-        </Drawer.Content>
-      </Drawer>
     </div>
   )
 }
 
-/** Etichetta della scheda: per intero da tablet in su, corta sul telefono, sempre su una riga. */
-function TabLabel({ full, short }: { full: string; short: string }) {
-  return (
-    <>
-      <span className="sm:hidden">{short}</span>
-      <span className="hidden sm:inline">{full}</span>
-    </>
-  )
-}
-
-function Section({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section className="flex flex-col gap-3">
-      <Heading level="h3">{title}</Heading>
-      {children}
-    </section>
-  )
-}
-
-type NewBookingProps = {
-  catalog?: Catalog
-  failed: boolean
-  submitting: boolean
-  onSubmit: (body: Record<string, unknown>) => void
-  onDirtyChange: (dirty: boolean) => void
-}
-
-function NewBooking({ catalog, failed, submitting, onSubmit, onDirtyChange }: NewBookingProps) {
-  if (failed) return <Text className="text-ui-fg-error">Catalogo non disponibile: riprova tra poco.</Text>
-  if (!catalog) return <div className="h-96 animate-pulse rounded-lg bg-ui-bg-component" aria-label="Caricamento del catalogo" />
-  return <BookingForm catalog={catalog} submitting={submitting} submitLabel="Inserisci prenotazione" onSubmit={onSubmit} onDirtyChange={onDirtyChange} />
-}
-
-type BookingListProps = { bookings?: Booking[]; loading: boolean; onOpen: (booking: Booking) => void; onNew: () => void }
-
-/** Storico: una riga per prenotazione, il clic apre il pannello con righe, note e incassi. */
-function BookingList({ bookings, loading, onOpen, onNew }: BookingListProps) {
-  if (loading) return <div className="h-48 animate-pulse rounded-lg bg-ui-bg-component" aria-label="Caricamento" />
-  if (!bookings || bookings.length === 0) {
-    return (
-      <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-ui-border-strong px-6 py-10 text-center">
-        <Text size="small" className="text-ui-fg-subtle">
-          Nessuna prenotazione nel periodo.
-        </Text>
-        <Button size="small" variant="secondary" onClick={onNew}>
-          Nuova prenotazione
-        </Button>
-      </div>
-    )
-  }
-  return (
-    <Table>
-      <Table.Header>
-        <Table.Row>
-          <Table.HeaderCell>N.</Table.HeaderCell>
-          <Table.HeaderCell>Data</Table.HeaderCell>
-          <Table.HeaderCell>Cliente</Table.HeaderCell>
-          <Table.HeaderCell className="text-right">Totale</Table.HeaderCell>
-          <Table.HeaderCell>Incasso</Table.HeaderCell>
-        </Table.Row>
-      </Table.Header>
-      <Table.Body>
-        {bookings.map((booking) => (
-          <Table.Row key={booking.id} className="cursor-pointer" onClick={() => onOpen(booking)}>
-            <Table.Cell className="text-ui-fg-subtle">#{booking.displayId}</Table.Cell>
-            <Table.Cell>{formatDay(booking.createdAt)}</Table.Cell>
-            <Table.Cell>
-              <button type="button" className="text-left hover:text-ui-fg-interactive" onClick={() => onOpen(booking)}>
-                {booking.customer}
-              </button>
-            </Table.Cell>
-            <Table.Cell className="text-right">{booking.status === 'canceled' ? '-' : formatEuro(booking.total)}</Table.Cell>
-            <Table.Cell>
-              <BookingStatus booking={booking} />
-            </Table.Cell>
-          </Table.Row>
-        ))}
-      </Table.Body>
-    </Table>
-  )
-}
-
-function PageSkeleton() {
-  return (
-    <div className="flex flex-col gap-y-3" aria-label="Caricamento">
-      <div className="h-20 animate-pulse rounded-lg bg-ui-bg-component" />
-      <div className="h-96 animate-pulse rounded-lg bg-ui-bg-component" />
-    </div>
-  )
-}
-
-export const config = defineRouteConfig({ label: 'Area vendita', icon: ShoppingBag })
+export const config = defineRouteConfig({ label: 'Area vendita', icon: ShoppingBag, rank: 4 })
 
 export default SellPage

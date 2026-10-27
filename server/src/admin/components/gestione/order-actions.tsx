@@ -5,7 +5,8 @@ import type { GestioneOrder } from '../../lib/gestione-api'
 
 // Le due azioni di ogni giorno, direttamente nella riga dell'ordine: incassare e consegnare.
 
-export function PaymentCell({ order }: { order: GestioneOrder }) {
+/** Incasso in riga. `path` è la rotta degli incassi: quella del gestionale o, per gli agenti, dell'area vendita. */
+export function PaymentCell({ order, path = `/admin/backoffice/orders/${order.id}/payments` }: { order: Pick<GestioneOrder, 'id' | 'status' | 'due'>; path?: string }) {
   const action = useSalesAction()
   const [open, setOpen] = useState(false)
   const [amount, setAmount] = useState('')
@@ -40,7 +41,7 @@ export function PaymentCell({ order }: { order: GestioneOrder }) {
         event.preventDefault()
         if (!valid) return
         action.mutate(
-          { path: `/admin/backoffice/orders/${order.id}/payments`, body: { amount: value, method }, success: `Incassati ${formatEuro(value)}.` },
+          { path, body: { amount: value, method }, success: `Incassati ${formatEuro(value)}.` },
           { onSuccess: () => setOpen(false) },
         )
       }}
