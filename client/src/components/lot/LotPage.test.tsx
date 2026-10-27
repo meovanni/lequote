@@ -19,7 +19,7 @@ const lot: PublicLot = {
     { label: 'Lotto', value: 'L2026-07' },
     { label: 'Da consumarsi preferibilmente entro', value: '2027-12-31' },
   ],
-  analyses: [{ title: 'Analisi chimica', lab: 'Lab Teramo', date: '2025-11-02', url: '/filiera/analisi/an_1' }],
+  analyses: [{ title: 'Analisi chimica', lab: 'Lab Teramo', date: '2025-11-02' }],
 }
 
 describe('LotPage', () => {
@@ -40,7 +40,9 @@ describe('LotPage', () => {
     expect(screen.getByText('20 ottobre 2025 · Roseto degli Abruzzi')).toBeInTheDocument()
     expect(screen.getByText('Leccino')).toBeInTheDocument()
 
-    expect(screen.getByRole('link', { name: 'Apri il referto' })).toHaveAttribute('href', '/filiera/analisi/an_1')
+    // Il referto non si apre dal sito: c'è l'analisi, non un link al PDF.
+    expect(screen.getByText('Analisi chimica')).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Apri il referto' })).not.toBeInTheDocument()
 
     const legal = screen.getByText('Informazioni di legge').closest('details')!
     expect(within(legal).getByText('31 dicembre 2027')).toBeInTheDocument()

@@ -11,26 +11,27 @@ const value = (key: string, v: string, group: 'chimica' | 'nutrizionale' | 'orga
 })
 
 describe('analisi pubbliche', () => {
-  it('aggiunge il prefisso del back end ai link dei referti', () => {
-    const campaign = toCampaignAnalyses(
-      { product_line: 'olio', campaign: '2025/26', analyses: [{ title: 'T', lab: null, date: null, url: '/filiera/analisi/anl_1', values: [], nutrition_basis: '100 ml' }] },
-      'https://api.example',
-    )
-    expect(campaign.analyses[0]).toMatchObject({ url: 'https://api.example/filiera/analisi/anl_1', nutritionBasis: '100 ml' })
+  it('porta solo i valori, senza alcun link al referto', () => {
+    const campaign = toCampaignAnalyses({
+      product_line: 'olio',
+      campaign: '2025/26',
+      analyses: [{ title: 'T', lab: null, date: null, values: [], nutrition_basis: '100 ml' }],
+    })
+    expect(campaign.analyses[0]).toEqual({ title: 'T', lab: null, date: null, values: [], nutritionBasis: '100 ml' })
   })
 
   it('prende i valori della campagna più recente della linea, il primo referto per parametro', () => {
     const campaigns: CampaignAnalyses[] = [
-      { productLine: 'miele', campaign: '2026', analyses: [{ title: 'M', lab: null, date: null, url: '', nutritionBasis: '100 g', values: [value('umidita', '17')] }] },
+      { productLine: 'miele', campaign: '2026', analyses: [{ title: 'M', lab: null, date: null, nutritionBasis: '100 g', values: [value('umidita', '17')] }] },
       {
         productLine: 'olio',
         campaign: '2025/26',
         analyses: [
-          { title: 'A', lab: null, date: null, url: '', nutritionBasis: '100 g', values: [value('acidita', '0.21')] },
-          { title: 'B', lab: null, date: null, url: '', nutritionBasis: '100 ml', values: [value('acidita', '0.3'), value('grassi', '91.6', 'nutrizionale')] },
+          { title: 'A', lab: null, date: null, nutritionBasis: '100 g', values: [value('acidita', '0.21')] },
+          { title: 'B', lab: null, date: null, nutritionBasis: '100 ml', values: [value('acidita', '0.3'), value('grassi', '91.6', 'nutrizionale')] },
         ],
       },
-      { productLine: 'olio', campaign: '2024/25', analyses: [{ title: 'C', lab: null, date: null, url: '', nutritionBasis: '100 g', values: [value('acidita', '0.4')] }] },
+      { productLine: 'olio', campaign: '2024/25', analyses: [{ title: 'C', lab: null, date: null, nutritionBasis: '100 g', values: [value('acidita', '0.4')] }] },
     ]
     const latest = latestValues(campaigns, 'olio')
     expect(latest?.campaign).toBe('2025/26')

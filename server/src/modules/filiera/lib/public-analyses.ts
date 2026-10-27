@@ -1,10 +1,8 @@
 import type { AnalysisResults, AnalysisValue, NutritionBasis } from './analysis-values'
-import { publicAnalysisPath } from './public-lot'
 
-// Proiezione pubblica delle analisi (pagina Analisi e schede prodotto del sito): stessa regola del
-// download dei referti (api/filiera/analisi/[id]): solo analisi «Pubbliche» di campagne con almeno
-// un lotto pubblicato. Il testo integrale del referto resta nel back office; escono solo i valori
-// controllati.
+// Proiezione pubblica delle analisi (pagina Analisi e schede prodotto del sito): solo analisi
+// «Pubbliche» di campagne con almeno un lotto pubblicato. Il referto (PDF e testo integrale) resta nel
+// back office; sul sito escono solo i valori letti e controllati.
 
 export type CampaignRecord = {
   product_line: 'olio' | 'miele'
@@ -25,7 +23,6 @@ export type PublicAnalysis = {
   title: string
   lab: string | null
   date: string | null
-  url: string
   nutrition_basis: NutritionBasis
   values: AnalysisValue[]
 }
@@ -58,7 +55,6 @@ export function toPublicAnalyses(campaigns: CampaignRecord[]): PublicCampaignAna
           title: analysis.title,
           lab: analysis.lab,
           date: analysis.date,
-          url: publicAnalysisPath(analysis.id),
           nutrition_basis: analysis.results?.nutrition_basis ?? '100 g',
           values: (analysis.results?.values ?? []).filter((value) => value.value.trim() !== ''),
         })),

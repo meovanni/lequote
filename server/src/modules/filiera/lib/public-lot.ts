@@ -56,7 +56,7 @@ export type PublicLot = {
   campaign: string | null
   stages: { name: string; date: string | null; place: string | null; fields: LabelValue[] }[]
   legal: LabelValue[]
-  analyses: { title: string; lab: string | null; date: string | null; url: string }[]
+  analyses: { title: string; lab: string | null; date: string | null }[]
 }
 
 function hasValue(value: string | number | null | undefined): value is string | number {
@@ -72,11 +72,6 @@ function pick(fields: StageFieldValue[], visibility: Visibility): LabelValue[] {
 function establishmentLabel(establishment: NonNullable<LotRecord['packaging_establishment']>): string {
   const place = [establishment.name, establishment.municipality].filter(Boolean).join(', ')
   return establishment.province ? `${place} (${establishment.province})` : place
-}
-
-/** Percorso pubblico di un referto: la rotta ricontrolla la visibilità a ogni richiesta. */
-export function publicAnalysisPath(id: string): string {
-  return `/filiera/analisi/${id}`
 }
 
 export function toPublicLot(lot: LotRecord): PublicLot | null {
@@ -112,6 +107,6 @@ export function toPublicLot(lot: LotRecord): PublicLot | null {
     legal,
     analyses: (lot.campaign?.analyses ?? [])
       .filter((analysis) => analysis.visibility === 'public')
-      .map(({ id, title, lab, date }) => ({ title, lab, date, url: publicAnalysisPath(id) })),
+      .map(({ title, lab, date }) => ({ title, lab, date })),
   }
 }

@@ -87,7 +87,7 @@ describe('toPublicLot', () => {
   it('include solo le analisi pubbliche della campagna', () => {
     const result = toPublicLot(lot())!
     expect(result.analyses).toEqual([
-      { title: 'Analisi chimico-fisica', lab: 'Laboratorio Alfa', date: '2025-12-10', url: '/filiera/analisi/anl_pub' },
+      { title: 'Analisi chimico-fisica', lab: 'Laboratorio Alfa', date: '2025-12-10' },
     ])
   })
 

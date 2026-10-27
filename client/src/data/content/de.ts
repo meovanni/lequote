@@ -703,7 +703,6 @@ export const de: Content = {
     noStages: 'Die Schritte dieser Charge sind noch nicht beschrieben.',
     analysesTitle: 'Analysen',
     allAnalyses: 'Alle Analysen, Saison für Saison',
-    openAnalysis: 'Bericht öffnen',
     legalLabel: 'Pflichtangaben',
     sourceNote: 'Angaben zu den Schritten und Pflichtangaben erfasst der Hof auf Italienisch.',
     loading: 'Charge wird geladen…',
@@ -733,7 +732,6 @@ export const de: Content = {
       altro: 'Weitere Werte',
     },
     nutritionPer: (basis: string) => `Durchschnittswerte je ${basis}`,
-    openReport: 'Bericht öffnen',
     backToFiliera: 'Zurück zur Lieferkette',
     backHome: 'Zur Startseite',
     valueLabels: {

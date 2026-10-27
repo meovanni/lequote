@@ -149,16 +149,12 @@ medusaIntegrationTestRunner({
       )
 
       const lookup = await api.get('/store/filiera/lots/L2026-07', store)
-      expect(lookup.data.lot.analyses).toEqual([
-        expect.objectContaining({ title: 'Analisi chimico-fisica', url: `/filiera/analisi/${pub.data.analysis.id}` }),
-      ])
+      // Sul sito escono solo titolo, laboratorio e data: il referto non è raggiungibile dal front.
+      expect(lookup.data.lot.analyses).toEqual([{ title: 'Analisi chimico-fisica', lab: null, date: null }])
+      expect(internal.data.analysis.id).toBeTruthy()
 
-      const download = await api.get(`/filiera/analisi/${pub.data.analysis.id}`)
-      expect(download.status).toBe(200)
-      expect(download.headers['content-type']).toContain('application/pdf')
-
-      const hidden = await api.get(`/filiera/analisi/${internal.data.analysis.id}`).catch(fail)
-      expect(hidden.status).toBe(404)
+      const download = await api.get(`/filiera/analisi/${pub.data.analysis.id}`).catch(fail)
+      expect(download.status).toBe(404)
       const adminCopy = await api.get(`/admin/filiera/campaigns/${campaignId}/analyses/${internal.data.analysis.id}`, admin)
       expect(adminCopy.status).toBe(200)
     })

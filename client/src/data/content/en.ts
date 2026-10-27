@@ -702,7 +702,6 @@ export const en: Content = {
     noStages: 'The stages of this batch have not been described yet.',
     analysesTitle: 'Test results',
     allAnalyses: 'All test results, season by season',
-    openAnalysis: 'Open the report',
     legalLabel: 'Legal information',
     sourceNote: 'Stage details and legal information are recorded by the farm in Italian.',
     loading: 'Loading the batch…',
@@ -732,7 +731,6 @@ export const en: Content = {
       altro: 'Other values',
     },
     nutritionPer: (basis: string) => `Average values per ${basis}`,
-    openReport: 'Open the report',
     backToFiliera: 'Back to the supply chain',
     backHome: 'Back to home',
     valueLabels: {

@@ -1,5 +1,5 @@
 import type { ProductLine } from '@/types'
-import { STORE_BASE_URL, StoreApiError, storeFetch } from './client'
+import { StoreApiError, storeFetch } from './client'
 
 // Pagina pubblica di un lotto (/lotto/:codice), raggiunta dal QR in etichetta o dalla ricerca
 // nella sezione Filiera. Medusa risponde solo con la proiezione pubblica: i dati interni non
@@ -18,7 +18,7 @@ export interface PublicLot {
   campaign: string | null
   stages: { name: string; date: string | null; place: string | null; fields: LotField[] }[]
   legal: LotField[]
-  analyses: { title: string; lab: string | null; date: string | null; url: string }[]
+  analyses: { title: string; lab: string | null; date: string | null }[]
 }
 
 interface RawPublicLot {
@@ -31,8 +31,8 @@ interface RawPublicLot {
   analyses?: PublicLot['analyses'] | null
 }
 
-/** I referti si scaricano dal back end, che ricontrolla la loro visibilità a ogni richiesta. */
-export function toPublicLot(raw: RawPublicLot, baseUrl: string = STORE_BASE_URL): PublicLot {
+/** Delle analisi escono solo titolo, laboratorio e data: il referto resta nel back office. */
+export function toPublicLot(raw: RawPublicLot): PublicLot {
   return {
     code: raw.code,
     productLine: raw.product_line,
@@ -40,7 +40,7 @@ export function toPublicLot(raw: RawPublicLot, baseUrl: string = STORE_BASE_URL)
     campaign: raw.campaign ?? null,
     stages: raw.stages ?? [],
     legal: raw.legal ?? [],
-    analyses: (raw.analyses ?? []).map((analysis) => ({ ...analysis, url: `${baseUrl}${analysis.url}` })),
+    analyses: raw.analyses ?? [],
   }
 }
 

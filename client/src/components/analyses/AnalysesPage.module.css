@@ -92,21 +92,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-.inlineLink {
-  align-self: flex-start;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  color: var(--surface-text);
-  text-decoration: underline;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 3px;
-}
-
-.inlineLink:hover {
-  color: var(--surface-accent);
-}
-
 .links {
   display: flex;
   flex-wrap: wrap;

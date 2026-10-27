@@ -41,9 +41,6 @@ function AnalysisBlock({ analysis }: { analysis: PublicAnalysis }) {
           </table>
         )
       })}
-      <a href={analysis.url} target="_blank" rel="noopener" className={`${styles.inlineLink} body-sm`}>
-        {analysisUi.openReport}
-      </a>
     </article>
   )
 }
@@ -57,7 +54,7 @@ function CampaignBlock({ campaign }: { campaign: CampaignAnalyses }) {
         <span className="specimen-tag specimen">{analysisUi.campaign(campaign.campaign)}</span>
       </h2>
       {campaign.analyses.map((analysis) => (
-        <AnalysisBlock key={analysis.url} analysis={analysis} />
+        <AnalysisBlock key={`${analysis.title}-${analysis.date ?? ''}`} analysis={analysis} />
       ))}
     </section>
   )

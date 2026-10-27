@@ -749,7 +749,6 @@ export const lotUi = {
   noStages: 'Le fasi di questo lotto non sono ancora state descritte.',
   analysesTitle: 'Analisi',
   allAnalyses: 'Tutte le analisi, campagna per campagna',
-  openAnalysis: 'Apri il referto',
   legalLabel: 'Informazioni di legge',
   sourceNote: '',
   loading: 'Carico il lotto…',
@@ -780,7 +779,6 @@ export const analysisUi = {
     altro: 'Altri valori',
   },
   nutritionPer: (basis: string) => `Valori medi per ${basis}`,
-  openReport: 'Apri il referto',
   backToFiliera: 'Torna alla filiera',
   backHome: 'Torna alla home',
   valueLabels: {

@@ -132,14 +132,11 @@ export function LotPage({ rawCode }: { rawCode: string }) {
             </h2>
             <ul className={styles.analyses}>
               {lot.analyses.map((analysis) => (
-                <li key={analysis.url} className={styles.analysis}>
+                <li key={`${analysis.title}-${analysis.date ?? ''}`} className={styles.analysis}>
                   <span className="body">{analysis.title}</span>
                   <span className={`${styles.stageMeta} specimen`}>
                     {[analysis.lab, analysis.date && formatIsoDate(locale, analysis.date)].filter(Boolean).join(' · ')}
                   </span>
-                  <a href={analysis.url} target="_blank" rel="noopener" className={`${styles.inlineLink} body-sm`}>
-                    {lotUi.openAnalysis}
-                  </a>
                 </li>
               ))}
             </ul>

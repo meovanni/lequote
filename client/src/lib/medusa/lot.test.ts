@@ -14,17 +14,16 @@ describe('toPublicLot', () => {
           { name: 'Molitura', date: null, place: null, fields: [] },
         ],
         legal: [{ label: 'Lotto', value: 'L2026-07' }],
-        analyses: [{ title: 'Analisi chimica', lab: 'Lab Teramo', date: '2025-11-02', url: '/filiera/analisi/an_1' }],
+        analyses: [{ title: 'Analisi chimica', lab: 'Lab Teramo', date: '2025-11-02' }],
       },
-      'https://api.example.it',
     )
     expect(lot.code).toBe('L2026-07')
     expect(lot.stages.map((stage) => stage.name)).toEqual(['Raccolta', 'Molitura'])
-    expect(lot.analyses[0].url).toBe('https://api.example.it/filiera/analisi/an_1')
+    expect(lot.analyses[0]).toEqual({ title: 'Analisi chimica', lab: 'Lab Teramo', date: '2025-11-02' })
   })
 
   it('regge campi mancanti senza inventare dati', () => {
-    const lot = toPublicLot({ code: 'L2026-08', product_line: 'miele', product_name: 'Miele' }, '')
+    const lot = toPublicLot({ code: 'L2026-08', product_line: 'miele', product_name: 'Miele' })
     expect(lot.campaign).toBeNull()
     expect(lot.stages).toEqual([])
     expect(lot.legal).toEqual([])

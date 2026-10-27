@@ -1,9 +1,9 @@
 import type { Locale } from '@/i18n/locales'
 import type { ProductLine } from '@/types'
-import { STORE_BASE_URL, storeFetch } from './client'
+import { storeFetch } from './client'
 
 // Analisi pubbliche delle campagne (pagina /analisi e schede prodotto). Medusa manda solo i valori
-// controllati nel back office: il testo integrale dei referti non arriva mai al browser
+// controllati nel back office: il referto (PDF e testo integrale) non arriva mai al browser
 // (server/src/modules/filiera/lib/public-analyses.ts).
 
 export type ValueGroup = 'chimica' | 'nutrizionale' | 'organolettica' | 'altro'
@@ -21,7 +21,6 @@ export interface PublicAnalysis {
   title: string
   lab: string | null
   date: string | null
-  url: string
   nutritionBasis: '100 g' | '100 ml'
   values: AnalysisValue[]
 }
@@ -38,13 +37,12 @@ interface RawCampaign {
   analyses?: (Omit<PublicAnalysis, 'nutritionBasis'> & { nutrition_basis?: PublicAnalysis['nutritionBasis'] })[] | null
 }
 
-export function toCampaignAnalyses(raw: RawCampaign, baseUrl: string = STORE_BASE_URL): CampaignAnalyses {
+export function toCampaignAnalyses(raw: RawCampaign): CampaignAnalyses {
   return {
     productLine: raw.product_line,
     campaign: raw.campaign,
     analyses: (raw.analyses ?? []).map(({ nutrition_basis, ...analysis }) => ({
       ...analysis,
-      url: `${baseUrl}${analysis.url}`,
       nutritionBasis: nutrition_basis ?? '100 g',
       values: analysis.values ?? [],
     })),

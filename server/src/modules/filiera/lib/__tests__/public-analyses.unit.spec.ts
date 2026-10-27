@@ -34,7 +34,6 @@ describe('toPublicAnalyses', () => {
       title: 'Chimica',
       lab: 'Lab',
       date: '2025-11-20',
-      url: '/filiera/analisi/anl_202526aaaaaaaaaa',
       nutrition_basis: '100 g',
       values: [acidity],
     })
