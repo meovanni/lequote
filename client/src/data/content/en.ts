@@ -480,7 +480,7 @@ export const en: Content = {
             id: 'analisi',
             question: 'Can I see the test results?',
             answer:
-              'We test our oil and honey every year. With the batch lookup, now in preparation, the year’s reports will be downloadable; until then we send them on request.',
+              'Yes. We test our oil and honey every year and publish each season’s laboratory values on the site’s Analyses page and on every product page.',
           },
         ],
       },

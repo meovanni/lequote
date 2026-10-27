@@ -480,7 +480,7 @@ export const de: Content = {
             id: 'analisi',
             question: 'Kann ich die Analysen sehen?',
             answer:
-              'Wir lassen Öl und Honig jedes Jahr analysieren. Mit der Chargensuche, die in Vorbereitung ist, können Sie die Berichte des Jahrgangs herunterladen; bis dahin senden wir sie Ihnen auf Anfrage.',
+              'Ja. Wir lassen Öl und Honig jedes Jahr analysieren und veröffentlichen die Laborwerte jedes Jahrgangs auf der Seite Analysen und auf jeder Produktseite.',
           },
         ],
       },

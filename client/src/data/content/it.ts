@@ -469,7 +469,7 @@ export const domande = {
           id: 'analisi',
           question: 'Posso vedere le analisi?',
           answer:
-            'Analizziamo olio e miele ogni anno. Con la consultazione per lotto, in preparazione, i referti dell’annata saranno scaricabili; fino ad allora te li inviamo su richiesta.',
+            'Sì. Analizziamo olio e miele ogni anno e pubblichiamo i valori di laboratorio di ogni annata nella pagina Analisi del sito e nella scheda di ogni prodotto.',
         },
       ],
     },
