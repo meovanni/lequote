@@ -105,7 +105,7 @@
 .panelHead {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: baseline;
   gap: var(--space-3) var(--space-4);
 }
 
@@ -156,6 +156,7 @@
 
 .stepMeta {
   display: grid;
+  align-content: start;
   gap: 0.125rem;
   color: var(--surface-accent);
 }
@@ -261,22 +262,31 @@
   }
 
   .steps {
-    /* Una colonna per passaggio, quanti che siano: in Fase 2 le fasi arrivano dal back office. */
+    /* Una colonna per passaggio, quanti che siano: in Fase 2 le fasi arrivano dal back office.
+       Le tre righe (titolo, luogo e periodo, testo) sono condivise da tutte le colonne: se un luogo
+       va a capo, le descrizioni restano comunque allineate e la catena si legge in orizzontale. */
     grid-auto-flow: column;
     grid-auto-columns: minmax(0, 1fr);
-    gap: var(--space-4);
+    grid-template-rows: repeat(3, auto);
+    gap: var(--space-2) var(--space-5);
   }
 
   .step {
+    grid-row: span 3;
+    grid-template-rows: subgrid;
     padding-left: 0;
     padding-top: calc(var(--space-7) + var(--space-2));
+  }
+
+  .stepText {
+    margin-top: var(--space-1);
   }
 
   .step::before {
     top: 1rem;
     bottom: auto;
     left: 0;
-    right: calc(-1 * var(--space-4));
+    right: calc(-1 * var(--space-5));
     border-left: none;
     border-top: 1.5px solid var(--surface-border);
   }
