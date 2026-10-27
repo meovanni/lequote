@@ -42,6 +42,8 @@ export function customerLabel(address: Address): string {
 export type SaleOrder = {
   id: string
   displayId: number
+  /** Codice per clienti e titolari (lib/order-code.ts), es. H3E5C26. */
+  code: string
   createdAt: string
   status: string
   total: number

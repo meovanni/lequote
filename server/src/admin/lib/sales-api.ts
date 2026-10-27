@@ -27,6 +27,8 @@ export type BookingLine = { id: string; variantId: string | null; sku: string; t
 export type Booking = {
   id: string
   displayId: number
+  /** Codice d'ordine mostrato a clienti e titolari, es. H3E5C26. */
+  code: string
   createdAt: string
   status: string
   total: number

@@ -29,11 +29,11 @@ describe('WithdrawalForm (art. 54-bis)', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Recedere dal contratto qui' }))
     await userEvent.type(screen.getByLabelText('Nome e cognome'), 'Anna Di Marco')
     await userEvent.type(screen.getByLabelText('Email'), 'anna@example.com')
-    await userEvent.type(screen.getByLabelText('Numero dell’ordine'), '12')
+    await userEvent.type(screen.getByLabelText('Codice dell’ordine'), 'H3E5C26')
     await userEvent.click(screen.getByRole('button', { name: 'Conferma recesso' }))
 
     expect(submit).toHaveBeenCalledWith(
-      expect.objectContaining({ name: 'Anna Di Marco', email: 'anna@example.com', orderReference: '12', locale: 'it', website: '' }),
+      expect.objectContaining({ name: 'Anna Di Marco', email: 'anna@example.com', orderReference: 'H3E5C26', locale: 'it', website: '' }),
     )
     expect(await screen.findByRole('heading', { name: 'Recesso inviato' })).toBeInTheDocument()
     expect(screen.getByRole('status')).toHaveTextContent('anna@example.com')
@@ -49,14 +49,14 @@ describe('WithdrawalForm (art. 54-bis)', () => {
   })
 
   it('arriva già aperto e compilato dal link dell’ordine', () => {
-    renderForm('/recesso?ordine=12')
-    expect(screen.getByLabelText('Numero dell’ordine')).toHaveValue('12')
+    renderForm('/recesso?ordine=H3E5C26')
+    expect(screen.getByLabelText('Codice dell’ordine')).toHaveValue('H3E5C26')
   })
 
   it('se l’invio fallisce indica come recedere comunque', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
     submit.mockRejectedValue(new Error('rete'))
-    renderForm('/recesso?ordine=12')
+    renderForm('/recesso?ordine=H3E5C26')
     await userEvent.type(screen.getByLabelText('Nome e cognome'), 'Anna')
     await userEvent.type(screen.getByLabelText('Email'), 'anna@example.com')
     await userEvent.click(screen.getByRole('button', { name: 'Conferma recesso' }))

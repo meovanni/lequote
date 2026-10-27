@@ -1,5 +1,6 @@
 import { storeFetch } from './client'
 import { getRegionId } from './catalog'
+import { orderCode } from '@/lib/orderCode'
 
 // Carrello e checkout ospite sulla Store API di Medusa. Gli importi arrivano in euro, IVA inclusa.
 
@@ -59,7 +60,8 @@ export interface Address {
 
 export interface OrderSummary {
   id: string
-  displayId: number
+  /** Codice d'ordine per il cliente, es. H3E5C26 (lib/orderCode.ts). */
+  code: string
   email: string
   lines: CartLine[]
   itemTotal: number
@@ -109,6 +111,7 @@ interface RawShippingOption {
 
 interface RawOrder extends Omit<RawCart, 'shipping_methods' | 'payment_collection'> {
   display_id: number
+  created_at: string
   shipping_methods?: { name?: string | null }[] | null
   payment_collections?: { payments?: { provider_id?: string | null }[] | null }[] | null
 }
@@ -170,7 +173,7 @@ export function toOrderSummary(raw: RawOrder): OrderSummary {
   const providerId = raw.payment_collections?.[0]?.payments?.[0]?.provider_id
   return {
     id: raw.id,
-    displayId: raw.display_id,
+    code: orderCode(raw.display_id, raw.created_at),
     email: base.email,
     lines: base.lines,
     itemTotal: base.itemTotal,
@@ -198,6 +201,7 @@ const CART_FIELDS = [
 const ORDER_FIELDS = [
   'id',
   'display_id',
+  'created_at',
   'email',
   'item_total',
   'shipping_total',

@@ -21,23 +21,23 @@ function RowActions({ order, open, onToggle }: { order: GestioneOrder; open: boo
   const removable = order.status !== 'canceled' && !order.delivered
   const remove = async () => {
     const confirmed = await prompt({
-      title: `Eliminare l'ordine n. ${order.displayId}?`,
+      title: `Eliminare l'ordine n. ${order.code}?`,
       description: 'L’ordine resta nell’elenco come annullato e la merce torna disponibile. Gli incassi già registrati vanno restituiti a mano.',
       confirmText: 'Elimina l’ordine',
       cancelText: 'Lascia così',
     })
-    if (confirmed) action.mutate({ path: `/admin/orders/${order.id}/cancel`, success: `Ordine n. ${order.displayId} eliminato (annullato).` })
+    if (confirmed) action.mutate({ path: `/admin/orders/${order.id}/cancel`, success: `Ordine n. ${order.code} eliminato (annullato).` })
   }
   return (
     <div className="flex justify-end gap-0.5">
       <Tooltip content={open ? 'Chiudi' : 'Modifica cliente, prodotti e incassi'}>
-        <IconButton size="small" variant="transparent" aria-label={`${open ? 'Chiudi' : 'Modifica'} l’ordine ${order.displayId}`} aria-pressed={open} onClick={onToggle}>
+        <IconButton size="small" variant="transparent" aria-label={`${open ? 'Chiudi' : 'Modifica'} l’ordine ${order.code}`} aria-pressed={open} onClick={onToggle}>
           <PencilSquare />
         </IconButton>
       </Tooltip>
       {removable && (
         <Tooltip content="Elimina ordine">
-          <IconButton size="small" variant="transparent" aria-label={`Elimina l’ordine ${order.displayId}`} onClick={() => void remove()} className="hover:text-ui-fg-error">
+          <IconButton size="small" variant="transparent" aria-label={`Elimina l’ordine ${order.code}`} onClick={() => void remove()} className="hover:text-ui-fg-error">
             <Trash />
           </IconButton>
         </Tooltip>
@@ -88,7 +88,7 @@ export function OrdersPanel({ orders, formats, lines }: { orders: GestioneOrder[
     const term = search.trim().toLowerCase()
     return orders
       .filter((order) => (filter === 'consegnare' ? toDeliver(order) : filter === 'incassare' ? toCollect(order) : true))
-      .filter((order) => !term || order.customer.toLowerCase().includes(term) || String(order.displayId) === term.replace('#', ''))
+      .filter((order) => !term || order.customer.toLowerCase().includes(term) || order.code.toLowerCase().includes(term.replace('#', '')))
   }, [orders, filter, search])
 
   const tabs: { key: Filter; label: string }[] = [
@@ -119,7 +119,7 @@ export function OrdersPanel({ orders, formats, lines }: { orders: GestioneOrder[
               </button>
             ))}
           </div>
-          <Input size="small" type="search" placeholder="Cerca cliente o numero" aria-label="Cerca cliente o numero" value={search} onChange={(event) => setSearch(event.target.value)} className="w-56" />
+          <Input size="small" type="search" placeholder="Cerca cliente o codice" aria-label="Cerca cliente o codice" value={search} onChange={(event) => setSearch(event.target.value)} className="w-56" />
           <div className="ml-auto flex items-center gap-2">
             <OrderImportModal />
             <Button size="small" onClick={() => setCreating(true)} disabled={creating}>
@@ -158,12 +158,12 @@ export function OrdersPanel({ orders, formats, lines }: { orders: GestioneOrder[
                         <button
                           type="button"
                           aria-expanded={open}
-                          aria-label={`${open ? 'Chiudi' : 'Apri'} il dettaglio dell'ordine ${order.displayId}`}
+                          aria-label={`${open ? 'Chiudi' : 'Apri'} il dettaglio dell'ordine ${order.code}`}
                           onClick={() => setOpenId(open ? null : order.id)}
                           className="flex items-center gap-1 text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
                         >
                           <ChevronDownMini className={clx('transition-transform', open && 'rotate-180')} />
-                          <span className="lq-figure">{order.displayId}</span>
+                          <span className="lq-figure">{order.code}</span>
                         </button>
                       </td>
                       <td className="lq-figure py-2 text-ui-fg-subtle">{formatDay(order.createdAt)}</td>

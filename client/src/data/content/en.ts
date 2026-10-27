@@ -672,7 +672,7 @@ export const en: Content = {
   orderUi: {
     title: 'Order received',
     metaDescription: 'Order confirmation on Le Quote.',
-    number: (id: number) => `Order no. ${id}`,
+    number: (id: string) => `Order no. ${id}`,
     body: (email: string) => `Thank you. We will write to ${email} when your order is ready.`,
     loading: 'Loading your order…',
     missing: 'There is no order to show.',
@@ -682,7 +682,7 @@ export const en: Content = {
     bankHolder: 'Account holder',
     bankIban: 'IBAN',
     bankReason: 'Reference',
-    bankReasonValue: (id: number) => `Ordine ${id} Le Quote`,
+    bankReasonValue: (id: string) => `Ordine ${id} Le Quote`,
     bankAmount: 'Amount',
     bankNote: 'We prepare the order once the transfer has cleared.',
     pickupPaymentTitle: 'Payment on pickup',

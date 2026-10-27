@@ -8,7 +8,7 @@ import {
 } from '../order-emails'
 
 const order: OrderEmailData = {
-  displayId: 12,
+  code: 'BBTHK26',
   email: 'anna@example.com',
   customerName: 'Anna <Di Marco>',
   phone: '3330000000',
@@ -37,24 +37,24 @@ describe('toEmailLocale', () => {
 
 describe('renderCustomerConfirmation', () => {
   it('porta alla funzione di recesso con la dicitura di legge, se il link è noto', () => {
-    const withLink = renderCustomerConfirmation({ ...order, withdrawalUrl: 'https://le-quote.it/recesso?ordine=12' })
-    expect(withLink.text).toContain('recedere dal contratto qui, https://le-quote.it/recesso?ordine=12')
+    const withLink = renderCustomerConfirmation({ ...order, withdrawalUrl: 'https://le-quote.it/recesso?ordine=BBTHK26' })
+    expect(withLink.text).toContain('recedere dal contratto qui, https://le-quote.it/recesso?ordine=BBTHK26')
     expect(renderCustomerConfirmation(order).text).not.toContain('recedere')
   })
 
   it('in italiano riporta numero, prodotti, totale e coordinate del bonifico', () => {
     const email = renderCustomerConfirmation(order)
-    expect(email.subject).toContain('n. 12')
+    expect(email.subject).toContain('n. BBTHK26')
     expect(email.text).toContain('2 × Olio Extravergine, Bottiglia 750 ml')
     expect(email.text).toMatch(/Totale: 35,00\s€/)
     expect(email.text).toContain(`IBAN: ${BANK_TRANSFER.iban}`)
-    expect(email.text).toContain('Causale: Ordine 12 Le Quote')
+    expect(email.text).toContain('Causale: Ordine BBTHK26 Le Quote')
     expect(email.text).toContain('Orari: [da confermare]')
   })
 
   it('traduce testi e nomi dei prodotti per chi ha ordinato in tedesco', () => {
     const email = renderCustomerConfirmation({ ...order, locale: 'de', paymentMethod: 'ritiro' })
-    expect(email.subject).toContain('Bestellung Nr. 12')
+    expect(email.subject).toContain('Bestellung Nr. BBTHK26')
     expect(email.text).toContain('Natives Olivenöl extra, Flasche 750 ml')
     expect(email.text).toContain('Abholung in Roseto degli Abruzzi')
     expect(email.text).toContain('bei der Abholung')
@@ -77,7 +77,7 @@ describe('renderCustomerConfirmation', () => {
 describe('renderOwnerAlert', () => {
   it('riassume cliente, pagamento e link al gestionale', () => {
     const email = renderOwnerAlert(order, 'http://localhost:9000/app/orders/order_1')
-    expect(email.subject).toMatch(/Nuovo ordine n\. 12: 35,00\s€, Anna/)
+    expect(email.subject).toMatch(/Nuovo ordine n\. BBTHK26: 35,00\s€, Anna/)
     expect(email.text).toContain('Pagamento: Bonifico bancario')
     expect(email.text).toContain('anna@example.com, 3330000000')
     expect(email.text).toContain('http://localhost:9000/app/orders/order_1')

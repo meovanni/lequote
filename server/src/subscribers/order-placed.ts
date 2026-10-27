@@ -14,7 +14,7 @@ export default async function orderPlaced({ event, container }: SubscriberArgs<{
     logger.warn(`Email d'ordine: ordine ${event.data.id} non trovato.`)
     return
   }
-  const order = { id: event.data.id, display_id: emailData.displayId, email: emailData.email }
+  const order = { id: event.data.id, code: emailData.code, email: emailData.email }
   const alertTo = process.env.ORDER_ALERT_EMAIL
   const adminUrl = adminOrderUrl(order.id)
 
@@ -42,7 +42,7 @@ export default async function orderPlaced({ event, container }: SubscriberArgs<{
 
   const results = await Promise.allSettled(sends)
   for (const result of results) {
-    if (result.status === 'rejected') logger.error(`Email dell'ordine ${order.display_id} non inviata: ${String(result.reason)}`)
+    if (result.status === 'rejected') logger.error(`Email dell'ordine ${order.code} non inviata: ${String(result.reason)}`)
   }
 }
 

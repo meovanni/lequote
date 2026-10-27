@@ -1,18 +1,4 @@
-import { createRateLimiter, orderDisplayId, renderOwnerWithdrawal, renderWithdrawalReceipt, type WithdrawalEmailData } from '../withdrawal'
-
-describe('orderDisplayId', () => {
-  it('ricava il numero d’ordine da come lo scrive il cliente', () => {
-    expect(orderDisplayId('12')).toBe(12)
-    expect(orderDisplayId('n. 12')).toBe(12)
-    expect(orderDisplayId('Ordine #0012 ')).toBe(12)
-  })
-
-  it('non indovina se il riferimento non è un numero chiaro', () => {
-    expect(orderDisplayId('il miele di settembre')).toBeNull()
-    expect(orderDisplayId('12 e 13')).toBeNull()
-    expect(orderDisplayId('')).toBeNull()
-  })
-})
+import { createRateLimiter, renderOwnerWithdrawal, renderWithdrawalReceipt, type WithdrawalEmailData } from '../withdrawal'
 
 describe('createRateLimiter', () => {
   it('blocca oltre il limite nella finestra e riparte dopo', () => {

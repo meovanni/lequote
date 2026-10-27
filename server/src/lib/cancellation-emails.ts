@@ -5,27 +5,27 @@ import { formatEuro, summaryBlocks, toHtml, toText, type Block, type OrderEmailD
 
 const COPY = {
   it: {
-    subject: (id: number) => `Le Quote: ordine n. ${id} annullato`,
+    subject: (id: string) => `Le Quote: ordine n. ${id} annullato`,
     greeting: (name: string) => `Ciao ${name},`,
-    body: (id: number, days: number) =>
+    body: (id: string, days: number) =>
       `non abbiamo ricevuto il bonifico per l'ordine n. ${id} entro ${days} giorni, quindi l'ordine è stato annullato e i prodotti sono tornati disponibili.`,
     paidAnyway: 'Se hai già fatto il bonifico, rispondi a questa email con la ricevuta: sistemiamo tutto noi.',
     again: 'Se vuoi ancora i prodotti, puoi ordinarli di nuovo dal sito.',
     signature: 'Le Quote, Azienda Agricola',
   },
   en: {
-    subject: (id: number) => `Le Quote: order no. ${id} cancelled`,
+    subject: (id: string) => `Le Quote: order no. ${id} cancelled`,
     greeting: (name: string) => `Hello ${name},`,
-    body: (id: number, days: number) =>
+    body: (id: string, days: number) =>
       `we did not receive the bank transfer for order no. ${id} within ${days} days, so the order has been cancelled and the products are available again.`,
     paidAnyway: 'If you have already made the transfer, reply to this email with the receipt and we will sort it out.',
     again: 'If you still want the products, you can order them again on the site.',
     signature: 'Le Quote, Azienda Agricola',
   },
   de: {
-    subject: (id: number) => `Le Quote: Bestellung Nr. ${id} storniert`,
+    subject: (id: string) => `Le Quote: Bestellung Nr. ${id} storniert`,
     greeting: (name: string) => `Hallo ${name},`,
-    body: (id: number, days: number) =>
+    body: (id: string, days: number) =>
       `die Überweisung für die Bestellung Nr. ${id} ist nicht innerhalb von ${days} Tagen eingegangen. Die Bestellung wurde daher storniert, die Produkte sind wieder verfügbar.`,
     paidAnyway: 'Falls Sie bereits überwiesen haben, antworten Sie bitte mit dem Beleg auf diese E-Mail: Wir kümmern uns darum.',
     again: 'Wenn Sie die Produkte weiterhin möchten, können Sie sie erneut auf der Website bestellen.',
@@ -36,11 +36,11 @@ const COPY = {
 export function renderCustomerCancellation(order: OrderEmailData, days: number): RenderedEmail {
   const copy = COPY[order.locale]
   const blocks: Block[] = [
-    { rows: [copy.greeting(order.customerName), copy.body(order.displayId, days)] },
+    { rows: [copy.greeting(order.customerName), copy.body(order.code, days)] },
     ...summaryBlocks(order, order.locale),
     { rows: [copy.paidAnyway, copy.again, copy.signature] },
   ]
-  return { subject: copy.subject(order.displayId), text: toText(blocks), html: toHtml(blocks) }
+  return { subject: copy.subject(order.code), text: toText(blocks), html: toHtml(blocks) }
 }
 
 export function renderOwnerCancellation(order: OrderEmailData, days: number, adminUrl: string): RenderedEmail {
@@ -50,7 +50,7 @@ export function renderOwnerCancellation(order: OrderEmailData, days: number, adm
   const blocks: Block[] = [
     {
       rows: [
-        `L'ordine n. ${order.displayId} (${formatEuro('it', order.total)}) è stato annullato in automatico: il bonifico non è arrivato entro ${days} giorni.`,
+        `L'ordine n. ${order.code} (${formatEuro('it', order.total)}) è stato annullato in automatico: il bonifico non è arrivato entro ${days} giorni.`,
         `Cliente: ${customer}`,
         'Se il bonifico arriva comunque, contatta il cliente: l’ordine annullato non si riapre, va creato di nuovo.',
       ],
@@ -59,7 +59,7 @@ export function renderOwnerCancellation(order: OrderEmailData, days: number, adm
     { rows: [`Apri l'ordine nel gestionale: ${adminUrl}`] },
   ]
   return {
-    subject: `Ordine n. ${order.displayId} annullato: bonifico non ricevuto`,
+    subject: `Ordine n. ${order.code} annullato: bonifico non ricevuto`,
     text: toText(blocks),
     html: toHtml(blocks),
   }

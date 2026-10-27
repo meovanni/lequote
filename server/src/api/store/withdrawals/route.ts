@@ -3,10 +3,10 @@ import type { MedusaContainer } from '@medusajs/framework/types'
 import { ContainerRegistrationKeys, MedusaError, Modules } from '@medusajs/framework/utils'
 import type { z } from '@medusajs/framework/zod'
 import { adminOrderUrl } from '../../../lib/order-email-data'
+import { orderCode, parseOrderCode } from '../../../lib/order-code'
 import { RECESSO_MODULE } from '../../../modules/recesso'
 import {
   createRateLimiter,
-  orderDisplayId,
   renderOwnerWithdrawal,
   renderWithdrawalReceipt,
   type WithdrawalEmailData,
@@ -18,14 +18,19 @@ import type { WithdrawalCreate } from './validators'
 // chi volesse usare la ricevuta per mandare email a terzi.
 const allow = createRateLimiter({ limit: 5, windowMs: 60 * 60 * 1000 })
 
-/** L'ordine a cui si riferisce il recesso, se numero ed email corrispondono. */
+/** L'ordine a cui si riferisce il recesso, se codice (anno compreso) ed email corrispondono. */
 async function matchOrder(container: MedusaContainer, reference: string, email: string): Promise<string | null> {
-  const displayId = orderDisplayId(reference)
-  if (displayId === null) return null
+  const parsed = parseOrderCode(reference)
+  if (!parsed) return null
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
-  const { data } = await query.graph({ entity: 'order', fields: ['id', 'email'], filters: { display_id: String(displayId) } })
-  const order = data[0] as { id: string; email: string | null } | undefined
-  return order?.email?.toLowerCase() === email.toLowerCase() ? order.id : null
+  const { data } = await query.graph({
+    entity: 'order',
+    fields: ['id', 'email', 'display_id', 'created_at'],
+    filters: { display_id: String(parsed.displayId) },
+  })
+  const order = data[0] as unknown as { id: string; email: string | null; display_id: number | string; created_at: string } | undefined
+  if (!order || orderCode(Number(order.display_id), order.created_at) !== parsed.code) return null
+  return order.email?.toLowerCase() === email.toLowerCase() ? order.id : null
 }
 
 /** Funzione di recesso (art. 54-bis Cod. Consumo): registra la dichiarazione e invia la ricevuta. */

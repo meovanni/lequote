@@ -2,7 +2,7 @@ import { renderCustomerCancellation, renderOwnerCancellation } from '../cancella
 import type { OrderEmailData } from '../order-emails'
 
 const order: OrderEmailData = {
-  displayId: 12,
+  code: 'BBTHK26',
   email: 'anna@example.com',
   customerName: 'Anna <Di Marco>',
   phone: '3330000000',
@@ -20,7 +20,7 @@ const order: OrderEmailData = {
 describe('email di annullamento per bonifico non ricevuto', () => {
   it('scrive al cliente nella sua lingua, con il numero d’ordine e i giorni del termine', () => {
     const email = renderCustomerCancellation(order, 7)
-    expect(email.subject).toContain('12')
+    expect(email.subject).toContain('BBTHK26')
     expect(email.text).toContain('7')
     expect(email.text).toMatch(/storniert/i)
     expect(email.html).toContain('Anna &lt;Di Marco&gt;')

@@ -3,6 +3,7 @@ import { balanceDue, customerLabel, paymentViolation, planBookingEdit, rankAgent
 const order = (overrides: Partial<SaleOrder>): SaleOrder => ({
   id: 'order_1',
   displayId: 1,
+  code: 'BBTHK26',
   createdAt: '2026-10-01T10:00:00Z',
   status: 'pending',
   total: 30,

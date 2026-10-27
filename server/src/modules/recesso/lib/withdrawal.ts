@@ -4,14 +4,6 @@ import { toHtml, toText, type Block, type EmailLocale, type RenderedEmail } from
 // cliente invia la dichiarazione dal sito e riceve senza ritardo un avviso di ricevimento su
 // supporto durevole (email) con il contenuto della dichiarazione e data e ora di trasmissione.
 
-/** Numero d'ordine da come lo scrive il cliente ("12", "n. 12", "#0012"); null se ambiguo. */
-export function orderDisplayId(reference: string): number | null {
-  const numbers = reference.match(/\d+/g)
-  if (!numbers || numbers.length !== 1) return null
-  const value = Number(numbers[0])
-  return value > 0 ? value : null
-}
-
 /**
  * Limite di invii per chiave (indirizzo IP) in una finestra fissa: la rotta è pubblica e manda
  * email a un indirizzo scelto da chi scrive, quindi va protetta dagli abusi. In memoria: basta

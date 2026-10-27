@@ -20,7 +20,8 @@ export interface OrderEmailLine {
 }
 
 export interface OrderEmailData {
-  displayId: number
+  /** Codice d'ordine per il cliente (lib/order-code.ts), es. H3E5C26. */
+  code: string
   email: string
   customerName: string
   phone: string
@@ -74,9 +75,9 @@ const PRODUCT_NAMES: Record<Exclude<EmailLocale, 'it'>, Record<string, string>> 
 
 const COPY = {
   it: {
-    subject: (id: number) => `Le Quote: abbiamo ricevuto l'ordine n. ${id}`,
+    subject: (id: string) => `Le Quote: abbiamo ricevuto l'ordine n. ${id}`,
     greeting: (name: string) => `Ciao ${name},`,
-    intro: (id: number) => `grazie per il tuo ordine n. ${id}. Ecco il riepilogo.`,
+    intro: (id: string) => `grazie per il tuo ordine n. ${id}. Ecco il riepilogo.`,
     products: 'Prodotti',
     delivery: 'Consegna',
     pickup: (place: string) => `Ritiro a ${place}`,
@@ -89,7 +90,7 @@ const COPY = {
     bankTitle: 'Come pagare con bonifico',
     holder: 'Intestatario',
     reason: 'Causale',
-    reasonValue: (id: number) => `Ordine ${id} Le Quote`,
+    reasonValue: (id: string) => `Ordine ${id} Le Quote`,
     amount: 'Importo',
     bankNote: "Prepariamo l'ordine quando il bonifico risulta accreditato.",
     pickupPayment: "Paghi in azienda quando ritiri l'ordine: [contanti e/o carta, da confermare].",
@@ -99,9 +100,9 @@ const COPY = {
     signature: 'Le Quote, Azienda Agricola',
   },
   en: {
-    subject: (id: number) => `Le Quote: we have received order no. ${id}`,
+    subject: (id: string) => `Le Quote: we have received order no. ${id}`,
     greeting: (name: string) => `Hello ${name},`,
-    intro: (id: number) => `thank you for your order no. ${id}. Here is the summary.`,
+    intro: (id: string) => `thank you for your order no. ${id}. Here is the summary.`,
     products: 'Products',
     delivery: 'Delivery',
     pickup: (place: string) => `Pickup in ${place}`,
@@ -114,7 +115,7 @@ const COPY = {
     bankTitle: 'How to pay by bank transfer',
     holder: 'Account holder',
     reason: 'Reference',
-    reasonValue: (id: number) => `Ordine ${id} Le Quote`,
+    reasonValue: (id: string) => `Ordine ${id} Le Quote`,
     amount: 'Amount',
     bankNote: 'We prepare the order once the transfer has cleared.',
     pickupPayment: 'Pay at the farm when you collect the order: [cash and/or card, to be confirmed].',
@@ -124,9 +125,9 @@ const COPY = {
     signature: 'Le Quote, Azienda Agricola',
   },
   de: {
-    subject: (id: number) => `Le Quote: Ihre Bestellung Nr. ${id} ist eingegangen`,
+    subject: (id: string) => `Le Quote: Ihre Bestellung Nr. ${id} ist eingegangen`,
     greeting: (name: string) => `Guten Tag ${name},`,
-    intro: (id: number) => `vielen Dank für Ihre Bestellung Nr. ${id}. Hier die Übersicht.`,
+    intro: (id: string) => `vielen Dank für Ihre Bestellung Nr. ${id}. Hier die Übersicht.`,
     products: 'Produkte',
     delivery: 'Lieferung',
     pickup: (place: string) => `Abholung in ${place}`,
@@ -139,7 +140,7 @@ const COPY = {
     bankTitle: 'Bezahlung per Überweisung',
     holder: 'Kontoinhaber',
     reason: 'Verwendungszweck',
-    reasonValue: (id: number) => `Ordine ${id} Le Quote`,
+    reasonValue: (id: string) => `Ordine ${id} Le Quote`,
     amount: 'Betrag',
     bankNote: 'Wir bereiten die Bestellung vor, sobald die Überweisung eingegangen ist.',
     pickupPayment: 'Sie bezahlen auf dem Hof bei der Abholung: [bar und/oder Karte, noch zu bestätigen].',
@@ -233,7 +234,7 @@ export function renderCustomerConfirmation(order: OrderEmailData): RenderedEmail
             rows: [
               `${copy.holder}: ${BANK_TRANSFER.holder}`,
               `IBAN: ${BANK_TRANSFER.iban}`,
-              `${copy.reason}: ${copy.reasonValue(order.displayId)}`,
+              `${copy.reason}: ${copy.reasonValue(order.code)}`,
               `${copy.amount}: ${formatEuro(locale, order.total)}`,
               copy.bankNote,
             ],
@@ -245,14 +246,14 @@ export function renderCustomerConfirmation(order: OrderEmailData): RenderedEmail
   const pickup = order.address ? [] : [{ rows: [copy.pickupNote] }]
 
   const blocks: Block[] = [
-    { rows: [copy.greeting(order.customerName), copy.intro(order.displayId)] },
+    { rows: [copy.greeting(order.customerName), copy.intro(order.code)] },
     ...summaryBlocks(order, locale),
     ...payment,
     ...pickup,
     ...(order.withdrawalUrl ? [{ rows: [copy.withdrawal(order.withdrawalUrl)] }] : []),
     { rows: [copy.closing, copy.signature] },
   ]
-  return { subject: copy.subject(order.displayId), text: toText(blocks), html: toHtml(blocks) }
+  return { subject: copy.subject(order.code), text: toText(blocks), html: toHtml(blocks) }
 }
 
 const PAYMENT_LABEL: Record<PaymentMethod, string> = { bonifico: 'Bonifico bancario', ritiro: 'Pagamento al ritiro' }
@@ -261,7 +262,7 @@ export function renderOwnerAlert(order: OrderEmailData, adminUrl: string): Rende
   const blocks: Block[] = [
     {
       rows: [
-        `Nuovo ordine n. ${order.displayId} ${order.insertedBy ? `inserito da ${order.insertedBy}` : 'dal sito'}: ${formatEuro('it', order.total)}.`,
+        `Nuovo ordine n. ${order.code} ${order.insertedBy ? `inserito da ${order.insertedBy}` : 'dal sito'}: ${formatEuro('it', order.total)}.`,
         `Cliente: ${order.customerName}, ${order.email}${order.phone ? `, ${order.phone}` : ''}`,
         `Pagamento: ${order.paymentMethod ? PAYMENT_LABEL[order.paymentMethod] : order.insertedBy ? 'incassi registrati nel gestionale' : 'non indicato'}`,
         `Lingua del cliente: ${order.locale}`,
@@ -271,7 +272,7 @@ export function renderOwnerAlert(order: OrderEmailData, adminUrl: string): Rende
     { rows: [`Apri l'ordine nel gestionale: ${adminUrl}`] },
   ]
   return {
-    subject: `Nuovo ordine n. ${order.displayId}: ${formatEuro('it', order.total)}, ${order.customerName}`,
+    subject: `Nuovo ordine n. ${order.code}: ${formatEuro('it', order.total)}, ${order.customerName}`,
     text: toText(blocks),
     html: toHtml(blocks),
   }

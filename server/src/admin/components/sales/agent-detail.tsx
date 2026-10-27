@@ -70,7 +70,7 @@ export function AgentDetail({ agent, period }: { agent: Agent; period: Period })
             {bookings.map((booking) => (
               <li key={booking.id} className="flex items-center justify-between gap-3">
                 <Text size="small" className="min-w-0 truncate">
-                  <span className="lq-figure text-ui-fg-muted">{booking.displayId}</span> · {formatDay(booking.createdAt)} · {booking.customer}
+                  <span className="lq-figure text-ui-fg-muted">{booking.code}</span> · {formatDay(booking.createdAt)} · {booking.customer}
                 </Text>
                 <span className="flex shrink-0 items-center gap-2">
                   <Text size="small" className="lq-figure">{booking.status === 'canceled' ? '-' : formatEuro(booking.total)}</Text>

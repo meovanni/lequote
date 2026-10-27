@@ -70,7 +70,7 @@ export function OrderConfirmation() {
     <section className={styles.page} data-surface="light">
       <div className={styles.inner}>
         <header className={styles.header}>
-          <span className="specimen-tag specimen">{orderUi.number(order.displayId)}</span>
+          <span className="specimen-tag specimen">{orderUi.number(order.code)}</span>
           <h1 className="display-2">{orderUi.title}</h1>
           <p className="body-lead">{orderUi.body(order.email)}</p>
         </header>
@@ -93,7 +93,7 @@ export function OrderConfirmation() {
                   </div>
                   <div className={styles.detail}>
                     <dt className="body-sm">{orderUi.bankReason}</dt>
-                    <dd className="body">{orderUi.bankReasonValue(order.displayId)}</dd>
+                    <dd className="body">{orderUi.bankReasonValue(order.code)}</dd>
                   </div>
                   <div className={styles.detail}>
                     <dt className="body-sm">{orderUi.bankAmount}</dt>
@@ -142,7 +142,7 @@ export function OrderConfirmation() {
             </a>
             {/* Funzione di recesso raggiungibile anche dall'ordine, con il numero già compilato. */}
             <p className={`${styles.status} body-sm`}>
-              <a href={`${localizePath(locale, '/recesso')}?ordine=${order.displayId}`}>
+              <a href={`${localizePath(locale, '/recesso')}?ordine=${order.code}`}>
                 {legalByLocale[locale].withdrawalForm.openButton}
               </a>
             </p>

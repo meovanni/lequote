@@ -159,12 +159,12 @@ function Bookings({ bookings, catalog }: { bookings: Booking[]; catalog: Catalog
                   <button
                     type="button"
                     aria-expanded={open}
-                    aria-label={`${open ? 'Chiudi' : 'Apri'} la prenotazione ${booking.displayId}`}
+                    aria-label={`${open ? 'Chiudi' : 'Apri'} la prenotazione ${booking.code}`}
                     onClick={() => setOpenId(open ? null : booking.id)}
                     className="flex items-center gap-1 text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
                   >
                     <ChevronDownMini className={clx('transition-transform', open && 'rotate-180')} />
-                    <span className="lq-figure txt-compact-small">{booking.displayId}</span>
+                    <span className="lq-figure txt-compact-small">{booking.code}</span>
                   </button>
                   <Text size="small" className="lq-figure text-ui-fg-subtle md:order-none">{formatDay(booking.createdAt)}</Text>
                   <Text size="small" weight="plus" className="col-span-2 md:col-span-1">{booking.customer}</Text>

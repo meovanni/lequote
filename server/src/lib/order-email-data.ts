@@ -1,6 +1,7 @@
 import type { MedusaContainer } from '@medusajs/framework/types'
 import { ContainerRegistrationKeys } from '@medusajs/framework/utils'
 import { storefrontUrl } from '../modules/filiera/lib/lot-qr'
+import { orderCode } from './order-code'
 import { PAYMENT_METHODS, toEmailLocale, type EmailLocale, type OrderEmailData } from './order-emails'
 
 // Dati di un ordine come li usano le email (conferma, avviso ai titolari, annullamento).
@@ -8,6 +9,7 @@ import { PAYMENT_METHODS, toEmailLocale, type EmailLocale, type OrderEmailData }
 const ORDER_FIELDS = [
   'id',
   'display_id',
+  'created_at',
   'email',
   'locale',
   'item_total',
@@ -28,6 +30,7 @@ const ORDER_FIELDS = [
 interface RawOrder {
   id: string
   display_id: number
+  created_at: string | Date
   email: string | null
   locale: string | null
   item_total: number
@@ -56,7 +59,7 @@ export function toOrderEmailData(order: RawOrder): OrderEmailData {
     .filter(Boolean)
     .join(' ')
   return {
-    displayId: order.display_id,
+    code: orderCode(order.display_id, order.created_at),
     email: order.email ?? '',
     customerName: [address?.first_name, address?.last_name].filter(Boolean).join(' '),
     phone: address?.phone ?? '',
@@ -91,15 +94,15 @@ export async function loadOrderEmailData(container: MedusaContainer, id: string)
   const order = data[0] as unknown as RawOrder | undefined
   if (!order) return null
   const emailData = toOrderEmailData(order)
-  return { ...emailData, withdrawalUrl: withdrawalUrl(emailData.locale, emailData.displayId) }
+  return { ...emailData, withdrawalUrl: withdrawalUrl(emailData.locale, emailData.code) }
 }
 
 const LOCALE_PREFIX: Record<EmailLocale, string> = { it: '', en: '/en', de: '/de' }
 
 /** Pagina del sito con la funzione di recesso già aperta su questo ordine; assente se manca STOREFRONT_URL. */
-function withdrawalUrl(locale: EmailLocale, displayId: number): string | undefined {
+function withdrawalUrl(locale: EmailLocale, code: string): string | undefined {
   try {
-    return `${storefrontUrl()}${LOCALE_PREFIX[locale]}/recesso?ordine=${displayId}`
+    return `${storefrontUrl()}${LOCALE_PREFIX[locale]}/recesso?ordine=${code}`
   } catch {
     return undefined
   }

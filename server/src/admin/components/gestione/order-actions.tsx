@@ -99,7 +99,7 @@ export function DeliveryCell({ order }: { order: GestioneOrder }) {
     const undo = async () => {
       const confirmed = await prompt({
         title: 'Annullare la consegna?',
-        description: `La merce dell'ordine n. ${order.displayId} torna in magazzino e l'ordine torna da consegnare.`,
+        description: `La merce dell'ordine n. ${order.code} torna in magazzino e l'ordine torna da consegnare.`,
         confirmText: 'Annulla la consegna',
         cancelText: 'Lascia così',
       })
@@ -120,7 +120,7 @@ export function DeliveryCell({ order }: { order: GestioneOrder }) {
         size="small"
         variant="secondary"
         isLoading={action.isPending}
-        onClick={() => action.mutate({ path: `/admin/gestione/orders/${order.id}/deliver`, success: `Ordine n. ${order.displayId} consegnato: merce scalata dal magazzino.` })}
+        onClick={() => action.mutate({ path: `/admin/gestione/orders/${order.id}/deliver`, success: `Ordine n. ${order.code} consegnato: merce scalata dal magazzino.` })}
       >
         Consegnato
       </Button>

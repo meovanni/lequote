@@ -62,7 +62,7 @@ async function notifyCancellation(container: MedusaContainer, id: string, days: 
   ]
   const results = await Promise.allSettled(sends)
   for (const result of results) {
-    if (result.status === 'rejected') logger.error(`Email di annullamento dell'ordine ${order.displayId} non inviata: ${String(result.reason)}`)
+    if (result.status === 'rejected') logger.error(`Email di annullamento dell'ordine ${order.code} non inviata: ${String(result.reason)}`)
   }
 }
 

@@ -717,7 +717,7 @@ export const checkoutUi = {
 export const orderUi = {
   title: 'Ordine ricevuto',
   metaDescription: 'Conferma dell’ordine su Le Quote.',
-  number: (id: number) => `Ordine n. ${id}`,
+  number: (id: string) => `Ordine n. ${id}`,
   body: (email: string) => `Grazie. Ti scriviamo a ${email} quando l’ordine è pronto.`,
   loading: 'Carico l’ordine…',
   missing: 'Non c’è nessun ordine da mostrare.',
@@ -727,7 +727,7 @@ export const orderUi = {
   bankHolder: 'Intestatario',
   bankIban: 'IBAN',
   bankReason: 'Causale',
-  bankReasonValue: (id: number) => `Ordine ${id} Le Quote`,
+  bankReasonValue: (id: string) => `Ordine ${id} Le Quote`,
   bankAmount: 'Importo',
   bankNote: 'Prepariamo l’ordine quando il bonifico risulta accreditato.',
   pickupPaymentTitle: 'Pagamento al ritiro',

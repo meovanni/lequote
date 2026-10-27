@@ -673,7 +673,7 @@ export const de: Content = {
   orderUi: {
     title: 'Bestellung eingegangen',
     metaDescription: 'Bestellbestätigung bei Le Quote.',
-    number: (id: number) => `Bestellung Nr. ${id}`,
+    number: (id: string) => `Bestellung Nr. ${id}`,
     body: (email: string) => `Vielen Dank. Wir schreiben Ihnen an ${email}, sobald Ihre Bestellung bereit ist.`,
     loading: 'Bestellung wird geladen…',
     missing: 'Es gibt keine Bestellung anzuzeigen.',
@@ -683,7 +683,7 @@ export const de: Content = {
     bankHolder: 'Kontoinhaber',
     bankIban: 'IBAN',
     bankReason: 'Verwendungszweck',
-    bankReasonValue: (id: number) => `Ordine ${id} Le Quote`,
+    bankReasonValue: (id: string) => `Ordine ${id} Le Quote`,
     bankAmount: 'Betrag',
     bankNote: 'Wir bereiten die Bestellung vor, sobald die Überweisung eingegangen ist.',
     pickupPaymentTitle: 'Zahlung bei Abholung',

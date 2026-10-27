@@ -4,6 +4,7 @@ import { VENDITE_MODULE } from '../../modules/vendite'
 import { balanceDue, customerLabel, rankAgents, summarizeSales, type SaleOrder } from '../../modules/vendite/lib/sales'
 import type VenditeModuleService from '../../modules/vendite/service'
 import { deliveryOf } from '../magazzino'
+import { orderCode } from '../order-code'
 
 export type Period = { from?: Date; to?: Date }
 
@@ -99,6 +100,7 @@ export async function loadBookings(container: MedusaContainer, orderIds: string[
       return {
         id: order.id,
         displayId: order.display_id,
+        code: orderCode(order.display_id, order.created_at),
         createdAt: new Date(order.created_at).toISOString(),
         status: order.status,
         total,

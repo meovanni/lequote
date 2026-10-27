@@ -3,6 +3,7 @@ import { Modules } from '@medusajs/framework/utils'
 import { RECESSO_MODULE } from '../../src/modules/recesso'
 import type RecessoModuleService from '../../src/modules/recesso/service'
 import { isPickup, readyCart, seedShop } from '../helpers/shop'
+import { orderCode } from '../../src/lib/order-code'
 
 jest.setTimeout(180 * 1000)
 
@@ -26,7 +27,7 @@ medusaIntegrationTestRunner({
 
       const response = await api.post(
         '/store/withdrawals',
-        { name: 'Anna Di Marco', email: 'ANNA@example.com', order_reference: `n. ${placed.order.display_id}`, details: 'Tutto', locale: 'de' },
+        { name: 'Anna Di Marco', email: 'ANNA@example.com', order_reference: `n. ${orderCode(placed.order.display_id, placed.order.created_at).toLowerCase()}`, details: 'Tutto', locale: 'de' },
         store,
       )
       expect(response.status).toBe(201)

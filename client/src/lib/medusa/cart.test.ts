@@ -91,6 +91,7 @@ describe('toOrderSummary', () => {
     const order = toOrderSummary({
       id: 'order_1',
       display_id: 7,
+      created_at: '2026-12-31T23:30:00Z',
       email: 'anna@example.com',
       items: [{ id: 'oli_1', quantity: 1, unit_price: 15 }],
       item_total: 15,
@@ -100,7 +101,7 @@ describe('toOrderSummary', () => {
       shipping_methods: [{ name: 'Ritiro a Cerchio' }],
       payment_collections: [{ payments: [{ provider_id: 'pp_bonifico_lequote' }] }],
     })
-    expect(order.displayId).toBe(7)
+    expect(order.code).toBe('V7WHE27')
     expect(order.shippingName).toBe('Ritiro a Cerchio')
     expect(order.paymentMethod).toBe('bonifico')
     expect(order.lines).toHaveLength(1)
