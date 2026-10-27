@@ -80,7 +80,7 @@ export function Stagioni({ now = new Date() }: StagioniProps) {
                         <span className={`${styles.activityPeriod} specimen`}>
                           {formatPeriod(activity, stagioni.monthsLong, ui.periodRange)}
                         </span>
-                        {active && <span className="badge">{ui.seasonActive}</span>}
+                        {active && <span className={`badge ${styles.activeBadge}`}>{ui.seasonActive}</span>}
                       </span>
                       <span className={styles.bars} aria-hidden="true">
                         {monthSegments(activity).map((segment) => (

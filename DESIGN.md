@@ -119,7 +119,7 @@ Confirmed rejections: no Tailwind, no animation library (Motion/Framer/GSAP; thr
 The legacy token names (`--color-pergamena`, `--color-miele`, `--color-oliva`, `--color-bosco`…) remain as aliases of the neutrals above so older stylesheets keep working; new code uses the new names or the `--surface-*` tokens.
 
 ### Named Rules
-**The Single-Ink Rule.** Ink is the only accent. Product colours (olive green, honey amber) appear only in the product illustrations, photos and the Territorio diorama, never in the interface chrome.
+**The Single-Ink Rule.** Ink is the only accent. Product colours (olive green, honey amber) appear only in the product illustrations, photos and the Territorio diorama, never in the interface chrome. One deliberate exception: in the Stagioni calendar the activity in progress is tinted with a muted olive (`--color-stagione-olio`) or honey (`--color-stagione-miele`), with a dark variant of the same hue for its "in corso" label; every other bar stays neutral.
 
 **The Rhythm Rule.** Sections alternate White and Mist at full bleed; the hero is the only dark band.
 

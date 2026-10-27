@@ -18,6 +18,13 @@
   --color-grafite: #8a919a; /* tratti strutturali secondari (barre, marcatori), mai testo */
   --color-notte: #161b21; /* solo velo sulle foto (eroe) e testo su sfondi chiari forti */
 
+  /* Solo per il periodo in corso nel calendario delle stagioni: oliva e miele smorzati, con una
+     versione scura per il testo (contrasto AA sulla loro tinta chiara). */
+  --color-stagione-olio: #8f9a62;
+  --color-stagione-olio-scuro: #4c5629;
+  --color-stagione-miele: #d49a55;
+  --color-stagione-miele-scuro: #85501a;
+
   /* Unico colore semantico: errori di validazione nei form. */
   --color-error: #a8402c; /* testo su sfondo chiaro */
   --color-error-tint: #e2836a; /* testo su sfondo scuro (eroe) */

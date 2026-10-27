@@ -75,12 +75,16 @@
 
 .track {
   --bar-color: var(--color-oliva);
+  --season: var(--color-stagione-olio);
+  --season-ink: var(--color-stagione-olio-scuro);
   display: grid;
   gap: var(--space-3);
 }
 
 .track[data-line='miele'] {
   --bar-color: var(--color-miele);
+  --season: var(--color-stagione-miele);
+  --season-ink: var(--color-stagione-miele-scuro);
 }
 
 .trackHead {
@@ -140,8 +144,15 @@
   transition: background-color 0.3s ease;
 }
 
+/* Il periodo in corso prende il colore della sua linea, tenue: oliva per l'olio, miele per il miele. */
 .activity[data-active='true'] .bar {
-  background: var(--bar-color);
+  border-color: var(--season);
+  background: color-mix(in srgb, var(--season) 55%, var(--surface-card));
+}
+
+.activeBadge {
+  background: color-mix(in srgb, var(--season) 22%, var(--surface-card));
+  color: var(--season-ink);
 }
 
 .nowLine {
