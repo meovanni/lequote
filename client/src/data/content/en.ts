@@ -441,6 +441,24 @@ export const en: Content = {
               'Away from light and heat, with the cap tightly closed. Oil is at its best in the months after milling: that is why the label always shows the harvest season.',
           },
           {
+            id: 'conservare-miele',
+            question: 'How should I store the honey?',
+            answer:
+              'In a cool, dry place, away from direct light and heat, with the lid tightly closed: honey easily absorbs moisture and smells. It does not need the fridge. Always use a clean, dry spoon to take it out.',
+          },
+        ],
+      },
+      {
+        id: 'aspetto',
+        label: 'Natural appearance',
+        items: [
+          {
+            id: 'olio-posa',
+            question: 'There is sediment at the bottom of the container: is that normal?',
+            answer:
+              'Yes. We do not filter the oil any further, so that it keeps its full concentration of polyphenols and the aromatic notes that define our oil: the sediment at the bottom is the sign of that choice, not a defect. If you prefer, let the container rest and pour gently.',
+          },
+          {
             id: 'miele-cristallizzato',
             question: 'My honey has set solid: is that normal?',
             answer:

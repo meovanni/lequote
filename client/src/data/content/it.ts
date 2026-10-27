@@ -430,6 +430,24 @@ export const domande = {
             'Al riparo dalla luce e dal calore, con il tappo ben chiuso. L’olio dà il meglio nei mesi successivi alla molitura: per questo in etichetta trovi sempre la campagna di raccolta.',
         },
         {
+          id: 'conservare-miele',
+          question: 'Come conservo il miele?',
+          answer:
+            'In un luogo fresco e asciutto, lontano dalla luce diretta e dalle fonti di calore, con il coperchio ben chiuso: il miele assorbe facilmente umidità e odori. Non serve il frigorifero. Per prelevarlo usa sempre un cucchiaino pulito e asciutto.',
+        },
+      ],
+    },
+    {
+      id: 'aspetto',
+      label: 'Aspetto naturale',
+      items: [
+        {
+          id: 'olio-posa',
+          question: 'Ho trovato della posa sul fondo del contenitore: è normale?',
+          answer:
+            'Sì. Non filtriamo ulteriormente l’olio per conservare tutta la concentrazione di polifenoli e le note aromatiche che caratterizzano il nostro olio: la posa sul fondo è il segno di questa scelta, non un difetto. Se preferisci, lascia riposare il contenitore e versa con delicatezza.',
+        },
+        {
           id: 'miele-cristallizzato',
           question: 'Il miele si è solidificato: è normale?',
           answer:

@@ -441,6 +441,24 @@ export const de: Content = {
               'Vor Licht und Wärme geschützt, mit gut verschlossenem Deckel. Öl ist in den Monaten nach dem Mahlen am besten: Deshalb steht auf dem Etikett immer das Erntejahr.',
           },
           {
+            id: 'conservare-miele',
+            question: 'Wie bewahre ich den Honig auf?',
+            answer:
+              'An einem kühlen, trockenen Ort, vor direktem Licht und Wärme geschützt, mit gut verschlossenem Deckel: Honig nimmt leicht Feuchtigkeit und Gerüche auf. Ein Kühlschrank ist nicht nötig. Entnehmen Sie ihn immer mit einem sauberen, trockenen Löffel.',
+          },
+        ],
+      },
+      {
+        id: 'aspetto',
+        label: 'Natürliches Aussehen',
+        items: [
+          {
+            id: 'olio-posa',
+            question: 'Am Boden des Behälters hat sich ein Bodensatz gebildet: Ist das normal?',
+            answer:
+              'Ja. Wir filtern das Öl nicht weiter, damit es die volle Konzentration an Polyphenolen und die Aromen behält, die unser Öl ausmachen: Der Bodensatz ist das Zeichen dieser Entscheidung, kein Mangel. Wenn Sie möchten, lassen Sie den Behälter ruhen und gießen Sie vorsichtig aus.',
+          },
+          {
             id: 'miele-cristallizzato',
             question: 'Mein Honig ist fest geworden: Ist das normal?',
             answer:
