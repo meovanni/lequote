@@ -100,6 +100,18 @@ Aruba ("Dominio con email", 5 caselle) accanto a quello di colognasprelax.
 - `STOREFRONT_URL` e `VITE_SITE_URL`: `https://le-quote.it`.
 - VPS: Aruba Cloud VPS O2A4.
 
+## O1I2 al posto di O2A4? (2026-10-27)
+
+Domanda dei titolari: con il secondo sito tra almeno 10 mesi, basta il VPS O1I2 (1 vCPU, 2 GB,
+40 GB, 4,49 €/mese contro 6,29)? Risposta: no, resta O2A4.
+- I 4 GB servono a Medusa, non al secondo sito: Medusa da sola chiede almeno 2 GB, e sulla stessa
+  macchina girano anche Postgres, Redis, Caddy e il sistema. Con 2 GB si vivrebbe di swap.
+- O1I2 è della famiglia "Starter" (processore Intel Broadwell condiviso): nei test pubblici di
+  vpsbenchmarks ha voto F su CPU e prestazioni web. O2A4 è della famiglia "Standard" su NVMe.
+- Le fonti trovate dicono che si sale di taglio dentro la stessa famiglia; il passaggio da Starter a
+  Standard non è confermato e potrebbe voler dire rifare il server.
+- La differenza è di 1,80 € al mese, circa 26 € l'anno IVA inclusa.
+
 ## Backup: oltre a quello del fornitore
 
 Il backup del fornitore protegge dal guasto della macchina, non dalla perdita dell'account o da un
@@ -144,6 +156,7 @@ Lavoro nostro:
 - [Hetzner Cloud, review 2026 (backup al 20%)](https://betterstack.com/community/guides/web-servers/hetzner-cloud-review/)
 - [Hetzner CX e CAX non disponibili](https://stackvaluelab.com/hetzner-cx-cax-unavailable/)
 - [Aruba Cloud, piani VPS](https://www.arubacloud.com/vps/)
+- [vpsbenchmarks, Aruba VPS O1I2](https://vpsbenchmarks.com/hosters/aruba_cloud/plans/vps-o1i2)
 - [Aruba, listino cloud](https://www.aruba.it/listino-cloud.aspx)
 - [OVHcloud, VPS](https://www.ovhcloud.com/it/vps/)
 - [OVHcloud, datacenter di Milano](https://www.ovhcloud.com/fr/datacenter/europe/italy/milan/)
