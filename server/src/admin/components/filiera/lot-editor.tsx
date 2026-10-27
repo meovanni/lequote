@@ -114,7 +114,7 @@ export function LotEditor({ lotId }: { lotId: string }) {
   const detail = useLot(lotId)
   if (detail.isLoading) return <div className="m-4 h-40 animate-pulse rounded-lg bg-ui-bg-component" aria-label="Caricamento" />
   if (!detail.data) return <Text className="px-6 py-4 text-ui-fg-error">Lotto non trovato.</Text>
-  const { lot, publish_blockers: blockers, public_url: publicUrl } = detail.data
+  const { lot, publish_blockers: blockers, public_url: publicUrl, qr_url: qrUrl } = detail.data
 
   return (
     <div className="grid grid-cols-1 gap-4 bg-ui-bg-subtle px-6 py-4 xl:grid-cols-[minmax(0,1fr)_360px]">
@@ -130,7 +130,7 @@ export function LotEditor({ lotId }: { lotId: string }) {
           <Text size="small" weight="plus">Pubblicazione</Text>
           <PublishBox lot={lot} blockers={blockers} publicUrl={publicUrl} />
         </section>
-        <LotQrPanel lot={lot} publicUrl={publicUrl} />
+        <LotQrPanel lot={lot} qrUrl={qrUrl} />
       </div>
     </div>
   )

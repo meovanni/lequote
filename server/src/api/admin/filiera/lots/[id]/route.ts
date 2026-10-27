@@ -1,12 +1,12 @@
 import type { AuthenticatedMedusaRequest, MedusaResponse } from '@medusajs/framework/http'
 import type { z } from '@medusajs/framework/zod'
-import { lotPageUrl, storefrontUrl } from '../../../../../modules/filiera/lib/lot-qr'
+import { labelSiteUrl, lotPageUrl, storefrontUrl } from '../../../../../modules/filiera/lib/lot-qr'
 import { filiera } from '../../helpers'
 import type { LotUpdate } from '../../validators'
 
 const DETAIL_RELATIONS = ['campaign', 'packaging_establishment', 'stages']
 
-/** Indirizzo stampato nel QR; null se STOREFRONT_URL manca in produzione (il QR non si genera). */
+/** Pagina del lotto sul sito che risponde ora (in sviluppo quello locale); null se STOREFRONT_URL manca in produzione. */
 function publicUrl(code: string): string | null {
   try {
     return lotPageUrl(storefrontUrl(), code)
@@ -19,7 +19,8 @@ export async function GET(req: AuthenticatedMedusaRequest, res: MedusaResponse) 
   const service = filiera(req)
   const lot = await service.retrieveLot(req.params.id, { relations: DETAIL_RELATIONS })
   const blockers = await service.lotPublishBlockers(req.params.id)
-  res.json({ lot, publish_blockers: blockers, public_url: publicUrl(lot.code) })
+  // qr_url è l'indirizzo stampato nel QR: sempre il dominio vero (lot-qr.ts).
+  res.json({ lot, publish_blockers: blockers, public_url: publicUrl(lot.code), qr_url: lotPageUrl(labelSiteUrl(), lot.code) })
 }
 
 export async function POST(req: AuthenticatedMedusaRequest<z.infer<typeof LotUpdate>>, res: MedusaResponse) {

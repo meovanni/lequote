@@ -11,7 +11,7 @@ function qrPath(lot: Lot, format: 'svg' | 'png', download: boolean): string {
 }
 
 /** QR da stampare in etichetta: apre la pagina pubblica del lotto. */
-export function LotQrPanel({ lot, publicUrl }: { lot: Lot; publicUrl: string | null }) {
+export function LotQrPanel({ lot, qrUrl }: { lot: Lot; qrUrl: string }) {
   const published = lot.status === 'published'
 
   return (
@@ -23,11 +23,6 @@ export function LotQrPanel({ lot, publicUrl }: { lot: Lot; publicUrl: string | n
         </Text>
       </div>
 
-      {publicUrl === null ? (
-        <Alert variant="error">
-          Manca l’indirizzo del sito (STOREFRONT_URL nella configurazione del server): il QR non si può generare.
-        </Alert>
-      ) : (
         <div className="flex flex-col gap-4">
           <div className="flex items-start gap-4">
             <img
@@ -42,7 +37,7 @@ export function LotQrPanel({ lot, publicUrl }: { lot: Lot; publicUrl: string | n
             </Text>
           </div>
           <Text size="xsmall" className="font-mono break-all text-ui-fg-subtle">
-            {publicUrl}
+            {qrUrl}
           </Text>
           <div className="flex flex-wrap gap-2">
             <Button asChild size="small">
@@ -60,12 +55,10 @@ export function LotQrPanel({ lot, publicUrl }: { lot: Lot; publicUrl: string | n
             L’SVG è per la tipografia: resta nitido a ogni misura.
           </Text>
         </div>
-      )}
-
-      {!published && publicUrl !== null && (
+      {!published && (
         <Alert variant="info">
-          Il lotto è in bozza: la pagina si apre solo dopo la pubblicazione. Se cambi il codice del lotto, scarica di
-          nuovo il QR.
+          Il lotto è in bozza: la pagina si apre solo dopo la pubblicazione e con il sito online. Se cambi il codice
+          del lotto, scarica di nuovo il QR.
         </Alert>
       )}
     </Container>

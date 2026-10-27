@@ -102,7 +102,7 @@ export function useLot(id: string) {
   return useQuery({
     queryKey: [...ROOT, 'lot', id],
     queryFn: () =>
-      sdk.client.fetch<{ lot: Lot; publish_blockers: string[]; public_url: string | null }>(`/admin/filiera/lots/${id}`),
+      sdk.client.fetch<{ lot: Lot; publish_blockers: string[]; public_url: string | null; qr_url: string }>(`/admin/filiera/lots/${id}`),
   })
 }
 

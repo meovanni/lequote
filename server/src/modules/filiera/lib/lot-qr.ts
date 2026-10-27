@@ -35,6 +35,21 @@ export function storefrontUrl(env: Record<string, string | undefined> = process.
   return value.replace(/\/+$/, '')
 }
 
+/**
+ * Sito stampato nel QR delle etichette: sempre il dominio vero (https://le-quote.it), anche in
+ * sviluppo, perché le etichette si stampano prima di andare online e un QR verso "localhost"
+ * finirebbe su centinaia di bottiglie. LABEL_SITE_URL lo cambia solo se cambia il dominio.
+ */
+export const LABEL_SITE_URL = 'https://le-quote.it'
+
+export function labelSiteUrl(env: Record<string, string | undefined> = process.env): string {
+  const value = env.LABEL_SITE_URL?.trim() || LABEL_SITE_URL
+  if (!/^https:\/\/[^/\s]+/.test(value)) {
+    throw new Error(`LABEL_SITE_URL non valida (${value}): deve iniziare con https://.`)
+  }
+  return value.replace(/\/+$/, '')
+}
+
 /** Pagina pubblica del lotto. Il codice è già nella forma canonica (lot-code.ts). */
 export function lotPageUrl(siteUrl: string, code: string): string {
   return `${siteUrl}/lotto/${encodeURIComponent(code)}`

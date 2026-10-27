@@ -5,7 +5,7 @@ import {
   lotQrFileName,
   lotQrPng,
   lotQrSvg,
-  storefrontUrl,
+  labelSiteUrl,
   type QrFormat,
 } from '../../../../../../modules/filiera/lib/lot-qr'
 import { filiera } from '../../../helpers'
@@ -27,7 +27,7 @@ export async function GET(req: AuthenticatedMedusaRequest, res: MedusaResponse) 
 
   let siteUrl: string
   try {
-    siteUrl = storefrontUrl()
+    siteUrl = labelSiteUrl()
   } catch (error) {
     throw new MedusaError(MedusaError.Types.UNEXPECTED_STATE, (error as Error).message)
   }

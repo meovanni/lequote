@@ -1,6 +1,6 @@
 import jsQR from 'jsqr'
 import { PNG } from 'pngjs'
-import { lotPageUrl, lotQrFileName, lotQrPng, lotQrSvg, storefrontUrl } from '../lot-qr'
+import { labelSiteUrl, lotPageUrl, lotQrFileName, lotQrPng, lotQrSvg, storefrontUrl } from '../lot-qr'
 
 describe('storefrontUrl', () => {
   it('usa STOREFRONT_URL senza la barra finale', () => {
@@ -17,6 +17,14 @@ describe('storefrontUrl', () => {
 
   it('rifiuta un indirizzo che non è http o https', () => {
     expect(() => storefrontUrl({ STOREFRONT_URL: 'le-quote.it' })).toThrow(/STOREFRONT_URL/)
+  })
+})
+
+describe('labelSiteUrl', () => {
+  it('stampa sempre il dominio vero, anche in sviluppo', () => {
+    expect(labelSiteUrl({ NODE_ENV: 'development' })).toBe('https://le-quote.it')
+    expect(labelSiteUrl({ LABEL_SITE_URL: 'https://www.le-quote.it/' })).toBe('https://www.le-quote.it')
+    expect(() => labelSiteUrl({ LABEL_SITE_URL: 'http://localhost:5173' })).toThrow(/LABEL_SITE_URL/)
   })
 })
 
