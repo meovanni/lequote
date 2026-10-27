@@ -85,8 +85,17 @@ export function Footer() {
         </div>
       </Reveal>
 
+      {/* Il marchio grande sfuma da oliva a miele: dal mare alla montagna, da sinistra a destra. */}
       <div className={styles.bigWordmark} aria-hidden="true">
-        <Logo />
+        <Logo
+          fill="url(#footer-wordmark-gradient)"
+          defs={
+            <linearGradient id="footer-wordmark-gradient" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0" style={{ stopColor: 'var(--color-olio-nota)' }} />
+              <stop offset="1" style={{ stopColor: 'var(--color-miele-nota)' }} />
+            </linearGradient>
+          }
+        />
       </div>
     </footer>
   )

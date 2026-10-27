@@ -1,6 +1,6 @@
 ---
 name: Le Quote
-description: Brochure and (soon) shop for a family farm spanning two Abruzzo elevations, told through a white, near-colourless canvas with the logo's ink blue as the only accent, whisper-weight serif headlines, and a real-geography scroll reveal.
+description: Brochure and (soon) shop for a family farm spanning two Abruzzo elevations, told through a white, near-colourless canvas with the logo's ink blue as the only action colour and a muted olive or honey note in every section, whisper-weight serif headlines, and a real-geography scroll reveal.
 colors:
   white: "#fcfcfb"
   mist: "#f2f2ef"
@@ -89,13 +89,13 @@ components:
 
 The farm's own record book, set out like a specimen under laboratory glass. The system keeps the original ledger idea (precise, unhurried, fact over adjective) and adopts the restraint of a botanical-clinical reference (Seed): whisper-weight headlines, perfectly flat surfaces, pill-shaped controls, mono "specimen labels" for codes and dates, and a calm alternation between two near-white bands. Credibility comes from typographic confidence and chromatic silence, not visual volume. This matters more now that the site carries legally-relevant traceability content: it must read as a reference, not an advert.
 
-What stays Le Quote, not Seed: the logo's ink blue as the one colour, the one serif family (Fraunces), and the Territorio signature reveal. Seed's lime accent and its sans-serif display voice are deliberately not adopted.
+What stays Le Quote, not Seed: the logo's ink blue as the one action colour (with small olive and honey notes per section), the one serif family (Fraunces), and the Territorio signature reveal. Seed's lime accent and its sans-serif display voice are deliberately not adopted.
 
 Confirmed rejections: no Tailwind, no animation library (Motion/Framer/GSAP; three.js with React Three Fiber and @react-three/postprocessing are allowed for the Territorio diorama only), no box-shadows or drop-shadows, no decorative gradients (a functional legibility scrim over the hero photo is the single exception), no AI-purple or glass-panel decoration, no generic three-card feature grids, no em dashes in shipped copy or headings.
 
 **Key Characteristics:**
 - White canvas alternating with Mist bands as page rhythm; Night only under the hero photo.
-- One accent, the logo's Ink, for every interactive element; Graphite for structural marks.
+- One accent, the logo's Ink, for every interactive element; Graphite for structural marks; olive and honey notes only as small tints, one or more per section.
 - No olive green or honey tone in the interface: those colours belong to the product (bottle, jar), not to the chrome.
 - Whisper-weight Fraunces (300 to 380) for every display role.
 - Flat, shadowless surfaces; hierarchy from colour contrast, weight and space only.
@@ -119,7 +119,7 @@ Confirmed rejections: no Tailwind, no animation library (Motion/Framer/GSAP; thr
 The legacy token names (`--color-pergamena`, `--color-miele`, `--color-oliva`, `--color-bosco`…) remain as aliases of the neutrals above so older stylesheets keep working; new code uses the new names or the `--surface-*` tokens.
 
 ### Named Rules
-**The Single-Ink Rule.** Ink is the only accent. Product colours (olive green, honey amber) appear only in the product illustrations, photos and the Territorio diorama, never in the interface chrome. One deliberate exception: in the Stagioni calendar the activity in progress is tinted with a muted olive (`--color-stagione-olio`) or honey (`--color-stagione-miele`), with a dark variant of the same hue for its "in corso" label; every other bar stays neutral.
+**The Ink-Plus-Notes Rule.** Ink is the only action colour: buttons, links, focus and the cart stay Ink. Every section still carries at least one note of product colour, so no band reads anonymous: muted olive (`--color-olio-nota`) and honey (`--color-miele-nota`), with dark variants (`-scuro`) for text and filled pills (AA contrast). Notes in use: Stagioni tints the activity in progress; Filiera tints the active line tab, the step numbers, the chain thread and the elevation tag with its line's colour; Domande marks each topic with an olive and a honey dot; the footer wordmark fades from olive to honey (sea to mountain). Olio, Miele, Shop, Hero and Territorio get theirs from illustrations and photos. Keep notes tinted and small: never a coloured surface or a coloured button.
 
 **The Rhythm Rule.** Sections alternate White and Mist at full bleed; the hero is the only dark band.
 
@@ -196,6 +196,6 @@ One full-screen "slide" (replaces the old Chi siamo and Territorio sections), in
 - Don't add any shadow, glow or decorative gradient.
 - Don't use weight 600+ on headlines, or a sans-serif display face.
 - Don't bring olive green or honey amber back into the interface.
-- Don't introduce Seed's lime or any second accent hue.
+- Don't introduce Seed's lime or any hue beyond Ink and the two product notes; never use a note colour for an action.
 - Don't use em dashes in shipped copy or headings.
 - Don't introduce Tailwind, Motion/Framer or GSAP.

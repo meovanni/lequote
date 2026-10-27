@@ -157,8 +157,7 @@
   left: 50%;
   bottom: 0;
   width: min(1400px, 150vw);
-  color: var(--color-inchiostro);
-  opacity: 0.05;
+  opacity: 0.16;
   transform: translate(-50%, 28%);
   pointer-events: none;
   animation-name: footer-wordmark-drift;

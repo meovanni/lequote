@@ -66,6 +66,7 @@ export function Filiera() {
                   id={tabId(entry.line)}
                   type="button"
                   role="tab"
+                  data-line={entry.line}
                   aria-selected={selected}
                   aria-controls={panelId(entry.line)}
                   tabIndex={selected ? 0 : -1}
@@ -100,6 +101,7 @@ export function Filiera() {
               id={panelId(entry.line)}
               aria-labelledby={tabId(entry.line)}
               hidden={entry.line !== activeLine}
+              data-line={entry.line}
               className={styles.panel}
             >
               <motion.div
@@ -110,7 +112,7 @@ export function Filiera() {
                 transition={{ duration: 0.5 }}
               >
                 <h3 className="display-2">{entry.label}</h3>
-                <span className="specimen-tag specimen">{entry.elevation}</span>
+                <span className={`${styles.lineTag} specimen-tag specimen`}>{entry.elevation}</span>
                 <p className={`${styles.summary} body`}>{entry.summary}</p>
               </motion.div>
 

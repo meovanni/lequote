@@ -71,7 +71,11 @@
   position: absolute;
   inset: 0;
   border-radius: var(--radius-pill);
-  background: var(--surface-text);
+  background: var(--color-olio-nota-scuro);
+}
+
+.tab[data-line='miele'] .tabPill {
+  background: var(--color-miele-nota-scuro);
 }
 
 .tabLabel {
@@ -79,10 +83,18 @@
 }
 
 .panel {
+  /* La nota di colore della linea: oliva per l'olio, miele per il miele. */
+  --line: var(--color-olio-nota);
+  --line-ink: var(--color-olio-nota-scuro);
   display: grid;
   gap: var(--space-6);
   margin-top: var(--space-6);
   animation: filiera-panel-in 0.45s var(--ease-out) both;
+}
+
+.panel[data-line='miele'] {
+  --line: var(--color-miele-nota);
+  --line-ink: var(--color-miele-nota-scuro);
 }
 
 /* display:grid batterebbe il [hidden] del browser: lo ribadiamo esplicitamente. */
@@ -107,6 +119,12 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--space-3) var(--space-4);
+}
+
+.lineTag {
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--line) 18%, var(--surface-bg));
+  color: var(--line-ink);
 }
 
 .summary {
@@ -139,7 +157,7 @@
   top: 0;
   bottom: calc(-1 * var(--space-5));
   left: 1.25rem;
-  border-left: 1.5px solid var(--surface-border);
+  border-left: 1.5px solid color-mix(in srgb, var(--line) 55%, var(--surface-border));
 }
 
 .step:last-child::before {
@@ -150,8 +168,9 @@
   position: absolute;
   top: 0;
   left: 0;
-  background: var(--surface-bg);
-  color: var(--surface-accent);
+  background: color-mix(in srgb, var(--line) 22%, var(--surface-bg));
+  border-color: var(--line);
+  color: var(--line-ink);
 }
 
 .stepMeta {
@@ -288,7 +307,7 @@
     left: 0;
     right: calc(-1 * var(--space-5));
     border-left: none;
-    border-top: 1.5px solid var(--surface-border);
+    border-top: 1.5px solid color-mix(in srgb, var(--line) 55%, var(--surface-border));
   }
 }
 

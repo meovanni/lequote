@@ -31,7 +31,21 @@
 }
 
 .topicLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
   color: var(--surface-accent);
+}
+
+/* Nota di colore: un punto oliva e uno miele, i due prodotti, davanti a ogni argomento. */
+.topicLabel::before {
+  content: '';
+  flex: none;
+  width: 1.25rem;
+  height: 0.5rem;
+  background:
+    radial-gradient(circle at 0.25rem 50%, var(--color-olio-nota) 0.24rem, transparent 0.26rem),
+    radial-gradient(circle at 1rem 50%, var(--color-miele-nota) 0.24rem, transparent 0.26rem);
 }
 
 .items {

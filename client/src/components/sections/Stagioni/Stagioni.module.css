@@ -75,16 +75,16 @@
 
 .track {
   --bar-color: var(--color-oliva);
-  --season: var(--color-stagione-olio);
-  --season-ink: var(--color-stagione-olio-scuro);
+  --season: var(--color-olio-nota);
+  --season-ink: var(--color-olio-nota-scuro);
   display: grid;
   gap: var(--space-3);
 }
 
 .track[data-line='miele'] {
   --bar-color: var(--color-miele);
-  --season: var(--color-stagione-miele);
-  --season-ink: var(--color-stagione-miele-scuro);
+  --season: var(--color-miele-nota);
+  --season-ink: var(--color-miele-nota-scuro);
 }
 
 .trackHead {
