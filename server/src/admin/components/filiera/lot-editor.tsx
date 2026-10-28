@@ -1,6 +1,8 @@
 import { ExclamationCircle } from '@medusajs/icons'
 import { Button, Text, usePrompt } from '@medusajs/ui'
 import { suppliersFor, toDateInput, useFilieraAction, useLot, useSuppliers, type Lot } from '../../lib/filiera-api'
+import { BEST_BEFORE_MONTHS, NOMINAL_UNIT, nominalQuantityValue } from '../../../modules/filiera/lib/lot-label'
+import { InlineNumber } from '../gestione/inline-number'
 import { InlineSelect, InlineText, Labeled } from '../inline/inline-fields'
 import { LotQrPanel } from './lot-qr-panel'
 import { StagesEditor } from './stages-editor'
@@ -19,8 +21,14 @@ function LabelFields({ lot }: { lot: Lot }) {
       <Labeled label="Denominazione di vendita">
         <InlineText value={lot.product_name} label="Denominazione di vendita" required onSave={(value) => save({ product_name: value })} />
       </Labeled>
-      <Labeled label="Quantità nominale">
-        <InlineText value={lot.nominal_quantity} label="Quantità nominale" placeholder="es. 0,75 l" onSave={(value) => save({ nominal_quantity: value })} />
+      <Labeled label="Quantità nominale" hint={lot.product_line === 'olio' ? 'In litri, es. 0,75.' : 'In chili, es. 0,5.'}>
+        <InlineNumber
+          decimals
+          value={nominalQuantityValue(lot.nominal_quantity)}
+          label="Quantità nominale"
+          suffix={NOMINAL_UNIT[lot.product_line]}
+          onSave={(value) => save({ nominal_quantity: String(value) })}
+        />
       </Labeled>
       <Labeled label="Origine">
         <InlineText value={lot.origin} label="Origine" required onSave={(value) => save({ origin: value })} />
@@ -37,7 +45,7 @@ function LabelFields({ lot }: { lot: Lot }) {
       <Labeled label="Data di confezionamento">
         <InlineText type="date" value={toDateInput(lot.packaging_date)} label="Data di confezionamento" onSave={(value) => save({ packaging_date: value })} />
       </Labeled>
-      <Labeled label="Da consumarsi preferibilmente entro">
+      <Labeled label="Da consumarsi preferibilmente entro" hint={`Si calcola a ${BEST_BEFORE_MONTHS} mesi dal confezionamento; se la cambi a mano resta la tua.`}>
         <InlineText type="date" value={toDateInput(lot.best_before)} label="Termine minimo di conservazione" onSave={(value) => save({ best_before: value })} />
       </Labeled>
       <Labeled label="Pezzi prodotti" hint="Interno, non pubblicato.">

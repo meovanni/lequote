@@ -31,21 +31,27 @@ export interface CampaignAnalyses {
   analyses: PublicAnalysis[]
 }
 
+export type RawAnalysis = Omit<PublicAnalysis, 'nutritionBasis' | 'values'> & {
+  nutrition_basis?: PublicAnalysis['nutritionBasis']
+  values?: AnalysisValue[] | null
+}
+
 interface RawCampaign {
   product_line: ProductLine
   campaign: string
-  analyses?: (Omit<PublicAnalysis, 'nutritionBasis'> & { nutrition_basis?: PublicAnalysis['nutritionBasis'] })[] | null
+  analyses?: RawAnalysis[] | null
+}
+
+/** Un'analisi come la manda Medusa, con i nomi del sito. */
+export function toPublicAnalysis({ nutrition_basis, values, ...analysis }: RawAnalysis): PublicAnalysis {
+  return { ...analysis, nutritionBasis: nutrition_basis ?? '100 g', values: values ?? [] }
 }
 
 export function toCampaignAnalyses(raw: RawCampaign): CampaignAnalyses {
   return {
     productLine: raw.product_line,
     campaign: raw.campaign,
-    analyses: (raw.analyses ?? []).map(({ nutrition_basis, ...analysis }) => ({
-      ...analysis,
-      nutritionBasis: nutrition_basis ?? '100 g',
-      values: analysis.values ?? [],
-    })),
+    analyses: (raw.analyses ?? []).map(toPublicAnalysis),
   }
 }
 

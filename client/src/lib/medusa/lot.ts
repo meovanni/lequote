@@ -1,4 +1,5 @@
 import type { ProductLine } from '@/types'
+import { toPublicAnalysis, type PublicAnalysis, type RawAnalysis } from './analyses'
 import { StoreApiError, storeFetch } from './client'
 
 // Pagina pubblica di un lotto (/lotto/:codice), raggiunta dal QR in etichetta o dalla ricerca
@@ -18,7 +19,8 @@ export interface PublicLot {
   campaign: string | null
   stages: { name: string; date: string | null; place: string | null; fields: LotField[] }[]
   legal: LotField[]
-  analyses: { title: string; lab: string | null; date: string | null }[]
+  /** Analisi pubbliche della campagna, con i valori: il referto resta nel back office. */
+  analyses: PublicAnalysis[]
 }
 
 interface RawPublicLot {
@@ -28,7 +30,7 @@ interface RawPublicLot {
   campaign?: string | null
   stages?: PublicLot['stages'] | null
   legal?: LotField[] | null
-  analyses?: PublicLot['analyses'] | null
+  analyses?: RawAnalysis[] | null
 }
 
 /** Delle analisi escono solo titolo, laboratorio e data: il referto resta nel back office. */
@@ -40,7 +42,7 @@ export function toPublicLot(raw: RawPublicLot): PublicLot {
     campaign: raw.campaign ?? null,
     stages: raw.stages ?? [],
     legal: raw.legal ?? [],
-    analyses: raw.analyses ?? [],
+    analyses: (raw.analyses ?? []).map(toPublicAnalysis),
   }
 }
 

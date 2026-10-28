@@ -112,7 +112,7 @@ export function Filiera() {
                 transition={{ duration: 0.5 }}
               >
                 <h3 className="display-2">{entry.label}</h3>
-                <span className={`${styles.lineTag} specimen-tag specimen`}>{entry.elevation}</span>
+                <span className="line-tag specimen-tag specimen">{entry.elevation}</span>
                 <p className={`${styles.summary} body`}>{entry.summary}</p>
               </motion.div>
 

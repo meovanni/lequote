@@ -19,7 +19,7 @@ describe('toPublicLot', () => {
     )
     expect(lot.code).toBe('L2026-07')
     expect(lot.stages.map((stage) => stage.name)).toEqual(['Raccolta', 'Molitura'])
-    expect(lot.analyses[0]).toEqual({ title: 'Analisi chimica', lab: 'Lab Teramo', date: '2025-11-02' })
+    expect(lot.analyses[0]).toEqual({ title: 'Analisi chimica', lab: 'Lab Teramo', date: '2025-11-02', nutritionBasis: '100 g', values: [] })
   })
 
   it('regge campi mancanti senza inventare dati', () => {

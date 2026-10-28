@@ -718,7 +718,7 @@ export const en: Content = {
     metaTitle: 'Laboratory tests | Le Quote',
     metaDescription: 'The laboratory reports for Le Quote olive oil and honey, season by season: acidity, peroxides, nutrition values and panel test.',
     title: 'Our test results',
-    intro: 'Every season a laboratory tests our oil and honey. Here we publish the values from the reports, as we receive them, and the original document to download.',
+    intro: 'Every season a laboratory tests our oil and honey. Here we publish the values from the reports, as we receive them.',
     loading: 'Loading the test results…',
     error: 'We can’t show the test results right now. Please try again shortly, or write to us at info@le-quote.it.',
     empty: 'No test results have been published yet. They arrive with the first batches of the season.',

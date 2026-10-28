@@ -31,7 +31,7 @@ export function LegalDocumentPage({ page }: { page: LegalPage }) {
             {ui.draftNotice}
             {ui.translationNotice && ` ${ui.translationNotice}`}
           </p>
-          <h1 className="display-2">{document.title}</h1>
+          <h1 className="title-mark display-2">{document.title}</h1>
           <p className={`${styles.muted} specimen`}>{ui.updated(formatIsoDate(locale, LEGAL_UPDATED))}</p>
           {document.intro && <p className="body-lead">{document.intro}</p>}
         </header>

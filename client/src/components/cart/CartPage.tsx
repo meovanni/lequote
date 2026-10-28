@@ -20,7 +20,7 @@ export function CartPage() {
           <a href={shopHref} className={`${styles.back} mono-label`}>
             ← {cartUi.continueShopping}
           </a>
-          <h1 className="display-2">{cartUi.title}</h1>
+          <h1 className="title-mark display-2">{cartUi.title}</h1>
         </header>
 
         {loading ? (

@@ -19,7 +19,15 @@ const lot: PublicLot = {
     { label: 'Lotto', value: 'L2026-07' },
     { label: 'Da consumarsi preferibilmente entro', value: '2027-12-31' },
   ],
-  analyses: [{ title: 'Analisi chimica', lab: 'Lab Teramo', date: '2025-11-02' }],
+  analyses: [
+    {
+      title: 'Analisi chimica',
+      lab: 'Lab Teramo',
+      date: '2025-11-02',
+      nutritionBasis: '100 ml',
+      values: [{ key: 'acidita', label: 'Acidità libera', group: 'chimica', value: '0.21', unit: '% acido oleico' }],
+    },
+  ],
 }
 
 describe('LotPage', () => {
@@ -35,13 +43,15 @@ describe('LotPage', () => {
     expect(retrieve).toHaveBeenCalledWith('L2026-07')
     expect(screen.getByText('Campagna 2025/26')).toBeInTheDocument()
 
-    const stages = screen.getAllByRole('heading', { level: 3 }).map((heading) => heading.textContent)
+    const stages = within(screen.getByRole('region', { name: 'Il percorso' })).getAllByRole('heading', { level: 3 }).map((heading) => heading.textContent)
     expect(stages).toEqual(['Raccolta', 'Molitura'])
     expect(screen.getByText('20 ottobre 2025 · Roseto degli Abruzzi')).toBeInTheDocument()
     expect(screen.getByText('Leccino')).toBeInTheDocument()
 
     // Il referto non si apre dal sito: c'è l'analisi, non un link al PDF.
     expect(screen.getByText('Analisi chimica')).toBeInTheDocument()
+    // Analisi già espanse: i valori si leggono senza aprire nulla.
+    expect(screen.getByRole('rowheader', { name: 'Acidità libera' })).toBeInTheDocument()
     expect(screen.queryByRole('link', { name: 'Apri il referto' })).not.toBeInTheDocument()
 
     const legal = screen.getByText('Informazioni di legge').closest('details')!

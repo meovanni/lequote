@@ -51,7 +51,7 @@ export function OrderConfirmation() {
     return (
       <section className={styles.page} data-surface="light">
         <div className={styles.inner}>
-          <h1 className="display-2">{state.status === 'error' ? orderUi.title : orderUi.missing}</h1>
+          <h1 className="title-mark display-2">{state.status === 'error' ? orderUi.title : orderUi.missing}</h1>
           {state.status !== 'missing' && (
             <p className={`${styles.status} body`} role="status">
               {message}
@@ -71,7 +71,7 @@ export function OrderConfirmation() {
       <div className={styles.inner}>
         <header className={styles.header}>
           <span className="specimen-tag specimen">{orderUi.number(order.code)}</span>
-          <h1 className="display-2">{orderUi.title}</h1>
+          <h1 className="title-mark display-2">{orderUi.title}</h1>
           <p className="body-lead">{orderUi.body(order.email)}</p>
         </header>
 

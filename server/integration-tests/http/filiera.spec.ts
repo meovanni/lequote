@@ -106,6 +106,21 @@ medusaIntegrationTestRunner({
       expect(date.status).toBe(400)
     })
 
+    it('propone il termine minimo a 18 mesi dal confezionamento, finché non lo si cambia a mano', async () => {
+      const { lot } = await draftLot()
+      const day = (value: string) => value.slice(0, 10)
+
+      const first = await api.post(`/admin/filiera/lots/${lot.id}`, { packaging_date: '2026-11-15' }, admin)
+      expect(day(first.data.lot.best_before)).toBe('2028-05-15')
+
+      const moved = await api.post(`/admin/filiera/lots/${lot.id}`, { packaging_date: '2026-12-01' }, admin)
+      expect(day(moved.data.lot.best_before)).toBe('2028-06-01')
+
+      await api.post(`/admin/filiera/lots/${lot.id}`, { best_before: '2027-12-31' }, admin)
+      const kept = await api.post(`/admin/filiera/lots/${lot.id}`, { packaging_date: '2026-12-10' }, admin)
+      expect(day(kept.data.lot.best_before)).toBe('2027-12-31')
+    })
+
     it('non pubblica un lotto incompleto, che resta invisibile', async () => {
       const { lot } = await draftLot()
       const blocked = await api.post(`/admin/filiera/lots/${lot.id}/publish`, {}, admin).catch(fail)
@@ -150,7 +165,8 @@ medusaIntegrationTestRunner({
 
       const lookup = await api.get('/store/filiera/lots/L2026-07', store)
       // Sul sito escono solo titolo, laboratorio e data: il referto non è raggiungibile dal front.
-      expect(lookup.data.lot.analyses).toEqual([{ title: 'Analisi chimico-fisica', lab: null, date: null }])
+      expect(lookup.data.lot.analyses).toEqual([expect.objectContaining({ title: 'Analisi chimico-fisica', values: expect.any(Array) })])
+      expect(JSON.stringify(lookup.data.lot)).not.toMatch(/markdown|file_key|url/)
       expect(internal.data.analysis.id).toBeTruthy()
 
       const download = await api.get(`/filiera/analisi/${pub.data.analysis.id}`).catch(fail)

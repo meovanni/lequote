@@ -83,18 +83,11 @@
 }
 
 .panel {
-  /* La nota di colore della linea: oliva per l'olio, miele per il miele. */
-  --line: var(--color-olio-nota);
-  --line-ink: var(--color-olio-nota-scuro);
+  /* data-line sul pannello dà --line e --line-ink (global.css): oliva o miele. */
   display: grid;
   gap: var(--space-6);
   margin-top: var(--space-6);
   animation: filiera-panel-in 0.45s var(--ease-out) both;
-}
-
-.panel[data-line='miele'] {
-  --line: var(--color-miele-nota);
-  --line-ink: var(--color-miele-nota-scuro);
 }
 
 /* display:grid batterebbe il [hidden] del browser: lo ribadiamo esplicitamente. */
@@ -119,12 +112,6 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--space-3) var(--space-4);
-}
-
-.lineTag {
-  border-color: var(--line);
-  background: color-mix(in srgb, var(--line) 18%, var(--surface-bg));
-  color: var(--line-ink);
 }
 
 .summary {

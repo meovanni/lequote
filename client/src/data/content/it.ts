@@ -766,7 +766,7 @@ export const analysisUi = {
   metaTitle: 'Analisi di laboratorio | Le Quote',
   metaDescription: 'I referti di laboratorio dell’olio e del miele Le Quote, campagna per campagna: acidità, perossidi, valori nutrizionali e panel test.',
   title: 'Le nostre analisi',
-  intro: 'Ogni campagna facciamo analizzare olio e miele da un laboratorio. Qui pubblichiamo i valori dei referti, così come li riceviamo, e il documento originale da scaricare.',
+  intro: 'Ogni campagna facciamo analizzare olio e miele da un laboratorio. Qui pubblichiamo i valori dei referti, così come li riceviamo.',
   loading: 'Carico le analisi…',
   error: 'Non riusciamo a mostrare le analisi in questo momento. Riprova tra poco, oppure scrivici a info@le-quote.it.',
   empty: 'Non ci sono ancora analisi pubblicate. Arrivano con i primi lotti della campagna.',

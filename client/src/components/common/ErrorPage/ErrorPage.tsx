@@ -17,7 +17,7 @@ export function ErrorPage({ notFound }: ErrorPageProps) {
     <div className="error-page" data-surface="light">
       <title>{`${title} | ${SITE_NAME}`}</title>
       <meta name="robots" content="noindex" />
-      <h1 className="display-3">{title}</h1>
+      <h1 className="title-mark display-3">{title}</h1>
       <p className="body">{notFound ? ui.notFoundBody : ui.errorBody}</p>
       <a href={localizePath(locale, '/')} className="body">
         {ui.backHome}

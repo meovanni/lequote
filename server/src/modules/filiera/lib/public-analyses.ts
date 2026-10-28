@@ -40,6 +40,19 @@ function newestFirst(a: CampaignRecord, b: CampaignRecord): number {
   return byDate !== 0 ? byDate : b.label.localeCompare(a.label, 'it', { numeric: true })
 }
 
+type AnalysisRecord = CampaignRecord['analyses'][number]
+
+/** Un'analisi come la vede il pubblico: solo i valori letti e controllati, mai il referto. */
+export function toPublicAnalysis(analysis: AnalysisRecord): PublicAnalysis {
+  return {
+    title: analysis.title,
+    lab: analysis.lab,
+    date: analysis.date,
+    nutrition_basis: analysis.results?.nutrition_basis ?? '100 g',
+    values: (analysis.results?.values ?? []).filter((value) => value.value.trim() !== ''),
+  }
+}
+
 export function toPublicAnalyses(campaigns: CampaignRecord[]): PublicCampaignAnalyses[] {
   return [...campaigns]
     .filter((campaign) => campaign.lots.some((lot) => lot.status === 'published'))
@@ -51,13 +64,7 @@ export function toPublicAnalyses(campaigns: CampaignRecord[]): PublicCampaignAna
       analyses: campaign.analyses
         .filter((analysis) => analysis.visibility === 'public')
         .sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''))
-        .map((analysis) => ({
-          title: analysis.title,
-          lab: analysis.lab,
-          date: analysis.date,
-          nutrition_basis: analysis.results?.nutrition_basis ?? '100 g',
-          values: (analysis.results?.values ?? []).filter((value) => value.value.trim() !== ''),
-        })),
+        .map(toPublicAnalysis),
     }))
     .filter((campaign) => campaign.analyses.length > 0)
 }

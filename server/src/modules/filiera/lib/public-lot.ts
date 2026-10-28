@@ -2,6 +2,10 @@
 // consumatore. Tutto ciò che è "internal" (registri SIAN, codici BDA, allegati interni) resta
 // fuori; i campi "legal" finiscono nel pannello "Informazioni di legge", non nel racconto.
 
+import type { AnalysisResults } from './analysis-values'
+import { formatNominalQuantity } from './lot-label'
+import { toPublicAnalysis, type PublicAnalysis } from './public-analyses'
+
 export type Visibility = 'public' | 'legal' | 'internal'
 
 export type StageFieldValue = {
@@ -31,6 +35,7 @@ export type LotRecord = {
       lab: string | null
       date: string | null
       visibility: 'public' | 'internal'
+      results: AnalysisResults | null
     }[]
   } | null
   packaging_establishment: {
@@ -56,7 +61,8 @@ export type PublicLot = {
   campaign: string | null
   stages: { name: string; date: string | null; place: string | null; fields: LabelValue[] }[]
   legal: LabelValue[]
-  analyses: { title: string; lab: string | null; date: string | null }[]
+  /** Analisi pubbliche della campagna con i loro valori, dalla più recente. */
+  analyses: PublicAnalysis[]
 }
 
 function hasValue(value: string | number | null | undefined): value is string | number {
@@ -82,7 +88,7 @@ export function toPublicLot(lot: LotRecord): PublicLot | null {
   const fixedLegal: [string, string | null | undefined][] = [
     ['Lotto', lot.code],
     ['Origine', lot.origin],
-    ['Quantità nominale', lot.nominal_quantity],
+    ['Quantità nominale', formatNominalQuantity(lot.nominal_quantity, lot.product_line)],
     ['Da consumarsi preferibilmente entro', lot.best_before],
     ['Data di confezionamento', lot.packaging_date],
     ['Confezionato da', lot.packaging_establishment ? establishmentLabel(lot.packaging_establishment) : null],
@@ -107,6 +113,7 @@ export function toPublicLot(lot: LotRecord): PublicLot | null {
     legal,
     analyses: (lot.campaign?.analyses ?? [])
       .filter((analysis) => analysis.visibility === 'public')
-      .map(({ title, lab, date }) => ({ title, lab, date })),
+      .sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''))
+      .map(toPublicAnalysis),
   }
 }

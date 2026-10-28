@@ -33,7 +33,7 @@ export function ProductDetail({ handle }: ProductDetailProps) {
   const facts = acidity ? [{ label: productUi.acidityLabel, value: acidity }, ...page.facts] : page.facts
 
   return (
-    <article>
+    <article data-line={page.line}>
       <section className={styles.hero} data-surface="light">
         <div className={styles.heroInner}>
           <Reveal variant="sideLeft" className={styles.visual}>
@@ -48,7 +48,7 @@ export function ProductDetail({ handle }: ProductDetailProps) {
             <a href={sectionHref(locale, 'shop')} className={`${styles.back} mono-label`}>
               ← {productUi.backToShop}
             </a>
-            <span className={`${styles.eyebrow} specimen-tag specimen`}>{page.eyebrow}</span>
+            <span className={`${styles.eyebrow} line-tag specimen-tag specimen`}>{page.eyebrow}</span>
             <h1 className="display-1">
               <AnimatedWords text={page.name} immediate />
             </h1>

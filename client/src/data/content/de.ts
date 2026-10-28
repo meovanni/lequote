@@ -719,7 +719,7 @@ export const de: Content = {
     metaTitle: 'Laboranalysen | Le Quote',
     metaDescription: 'Die Laborberichte zu Olivenöl und Honig von Le Quote, Saison für Saison: Säuregehalt, Peroxide, Nährwerte und Panel-Test.',
     title: 'Unsere Analysen',
-    intro: 'Jede Saison lassen wir Öl und Honig von einem Labor analysieren. Hier veröffentlichen wir die Werte aus den Berichten, so wie wir sie erhalten, und das Originaldokument zum Herunterladen.',
+    intro: 'Jede Saison lassen wir Öl und Honig von einem Labor analysieren. Hier veröffentlichen wir die Werte aus den Berichten, so wie wir sie erhalten.',
     loading: 'Analysen werden geladen…',
     error: 'Wir können die Analysen gerade nicht anzeigen. Bitte versuchen Sie es gleich noch einmal oder schreiben Sie uns an info@le-quote.it.',
     empty: 'Es sind noch keine Analysen veröffentlicht. Sie kommen mit den ersten Chargen der Saison.',

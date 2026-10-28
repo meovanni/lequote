@@ -15,8 +15,22 @@ function lot(overrides: Partial<LotRecord> = {}): LotRecord {
       harvest_start: '2025-10-15',
       harvest_end: '2025-11-20',
       analyses: [
-        { id: 'anl_pub', title: 'Analisi chimico-fisica', lab: 'Laboratorio Alfa', date: '2025-12-10', visibility: 'public' },
-        { id: 'anl_int', title: 'Verbale interno', lab: 'Laboratorio Alfa', date: '2025-12-11', visibility: 'internal' },
+        {
+          id: 'anl_pub',
+          title: 'Analisi chimico-fisica',
+          lab: 'Laboratorio Alfa',
+          date: '2025-12-10',
+          visibility: 'public',
+          results: {
+            markdown: 'testo integrale del referto',
+            nutrition_basis: '100 ml',
+            values: [
+              { key: 'acidita', label: 'Acidità', group: 'chimica', value: '0.21', unit: '%' },
+              { key: 'perossidi', label: 'Perossidi', group: 'chimica', value: '', unit: null },
+            ],
+          },
+        },
+        { id: 'anl_int', title: 'Verbale interno', lab: 'Laboratorio Alfa', date: '2025-12-11', visibility: 'internal', results: null },
       ],
     },
     packaging_establishment: {
@@ -77,18 +91,25 @@ describe('toPublicLot', () => {
       expect.arrayContaining([
         { label: 'Lotto', value: 'L2026-01' },
         { label: 'Origine', value: 'Italia' },
-        { label: 'Quantità nominale', value: '0,5 l' },
+        { label: 'Quantità nominale', value: '0,5 L' },
         { label: 'Da consumarsi preferibilmente entro', value: '2027-12-31' },
         { label: 'Confezionato da', value: 'Frantoio Beta, Atri (TE)' },
       ]),
     )
   })
 
-  it('include solo le analisi pubbliche della campagna', () => {
+  it('include solo le analisi pubbliche della campagna, con i valori e senza il referto', () => {
     const result = toPublicLot(lot())!
     expect(result.analyses).toEqual([
-      { title: 'Analisi chimico-fisica', lab: 'Laboratorio Alfa', date: '2025-12-10' },
+      {
+        title: 'Analisi chimico-fisica',
+        lab: 'Laboratorio Alfa',
+        date: '2025-12-10',
+        nutrition_basis: '100 ml',
+        values: [{ key: 'acidita', label: 'Acidità', group: 'chimica', value: '0.21', unit: '%' }],
+      },
     ])
+    expect(JSON.stringify(result)).not.toContain('testo integrale')
   })
 
   it('omette i campi vuoti invece di mostrare valori mancanti', () => {

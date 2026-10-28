@@ -177,6 +177,40 @@ section[id] {
   white-space: nowrap;
 }
 
+/* Note di colore dei prodotti (DESIGN.md, Ink-Plus-Notes Rule). data-line su un contenitore
+   sceglie la linea: oliva per l'olio, miele per il miele; dentro, --line e --line-ink. */
+[data-line='olio'] {
+  --line: var(--color-olio-nota);
+  --line-ink: var(--color-olio-nota-scuro);
+}
+
+[data-line='miele'] {
+  --line: var(--color-miele-nota);
+  --line-ink: var(--color-miele-nota-scuro);
+}
+
+/* Etichetta tinta del colore della linea (da usare con specimen-tag). */
+.line-tag {
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--line) 18%, var(--surface-bg));
+  color: var(--line-ink);
+}
+
+/* Segno a due toni, oliva e miele, sotto il titolo delle pagine che non hanno una linea. */
+.title-mark::after {
+  content: '';
+  display: block;
+  width: 4.5rem;
+  height: 3px;
+  margin-top: var(--space-3, 0.75rem);
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--color-olio-nota) 0 50%, var(--color-miele-nota) 50% 100%);
+}
+
+.error-page .title-mark::after {
+  margin-inline: auto;
+}
+
 /* Badge: l'unico pieno di accento, per brevi segnali funzionali ("In corso"). */
 .badge {
   display: inline-flex;

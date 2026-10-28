@@ -5,6 +5,7 @@ import { formatIsoDate } from '@/lib/date'
 import { parseLotCode } from '@/lib/lotCode'
 import { retrievePublicLot, type PublicLot } from '@/lib/medusa/lot'
 import { LegalPanel } from '@/components/common/LegalPanel/LegalPanel'
+import { AnalysisBlock } from '@/components/analyses/AnalysisBlock'
 import styles from './LotPage.module.css'
 
 type LotState =
@@ -68,7 +69,7 @@ export function LotPage({ rawCode }: { rawCode: string }) {
     return (
       <section className={styles.page} data-surface="light">
         <div className={styles.inner}>
-          <h1 className="display-2">{title}</h1>
+          <h1 className="title-mark display-2">{title}</h1>
           <p className={`${styles.status} body`} role="status">
             {message}
           </p>
@@ -80,14 +81,14 @@ export function LotPage({ rawCode }: { rawCode: string }) {
 
   const { lot } = state
   return (
-    <section className={styles.page} data-surface="light">
+    <section className={styles.page} data-surface="light" data-line={lot.productLine}>
       <div className={styles.inner}>
         <header className={styles.header}>
           <p className="eyebrow">{lotUi.eyebrow}</p>
           <h1 className="display-2">{lotUi.lineName[lot.productLine]}</h1>
           <div className={styles.tags}>
-            <span className="specimen-tag specimen">{lot.code}</span>
-            {lot.campaign && <span className="specimen-tag specimen">{lotUi.campaign(lot.campaign)}</span>}
+            <span className="line-tag specimen-tag specimen">{lot.code}</span>
+            {lot.campaign && <span className="line-tag specimen-tag specimen">{lotUi.campaign(lot.campaign)}</span>}
           </div>
           {lotUi.sourceNote && <p className={`${styles.status} body-sm`}>{lotUi.sourceNote}</p>}
         </header>
@@ -130,16 +131,10 @@ export function LotPage({ rawCode }: { rawCode: string }) {
             <h2 id="lot-analyses" className="display-3">
               {lotUi.analysesTitle}
             </h2>
-            <ul className={styles.analyses}>
-              {lot.analyses.map((analysis) => (
-                <li key={`${analysis.title}-${analysis.date ?? ''}`} className={styles.analysis}>
-                  <span className="body">{analysis.title}</span>
-                  <span className={`${styles.stageMeta} specimen`}>
-                    {[analysis.lab, analysis.date && formatIsoDate(locale, analysis.date)].filter(Boolean).join(' · ')}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            {/* Le analisi della campagna già espanse, con tutti i valori letti dal referto. */}
+            {lot.analyses.map((analysis) => (
+              <AnalysisBlock key={`${analysis.title}-${analysis.date ?? ''}`} analysis={analysis} />
+            ))}
             <a href={localizePath(locale, '/analisi')} className={`${styles.inlineLink} body-sm`}>
               {lotUi.allAnalyses}
             </a>

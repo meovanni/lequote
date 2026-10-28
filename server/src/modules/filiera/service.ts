@@ -3,6 +3,7 @@ import { InjectTransactionManager, MedusaContext, MedusaError, MedusaService } f
 import type { AnalysisResults } from './lib/analysis-values'
 import { toPublicAnalyses, type PublicCampaignAnalyses } from './lib/public-analyses'
 import { toPublicLot, type LotRecord, type PublicLot } from './lib/public-lot'
+import { bestBeforeFor } from './lib/lot-label'
 import { publishBlockers } from './lib/publish-check'
 import { buildLotStages, type StageValuesInput, type TemplateForBuild } from './lib/stage-builder'
 import { Analysis, Campaign } from './models/campaign'
@@ -80,6 +81,7 @@ class FilieraModuleService extends MedusaService({
               lab: analysis.lab,
               date: isoDate(analysis.date),
               visibility: analysis.visibility,
+              results: (analysis.results as AnalysisResults | null) ?? null,
             })),
           }
         : null,
@@ -163,7 +165,8 @@ class FilieraModuleService extends MedusaService({
   @InjectTransactionManager()
   async createLotChecked(data: LotInput, @MedusaContext() context: Context = {}) {
     await this.assertCampaignLine(data.campaign_id, data.product_line, context)
-    return this.createLots({ ...data, status: 'draft' }, context)
+    const best_before = bestBeforeFor({}, data)
+    return this.createLots({ ...data, ...(best_before ? { best_before } : {}), status: 'draft' }, context)
   }
 
   @InjectTransactionManager()
@@ -184,6 +187,10 @@ class FilieraModuleService extends MedusaService({
   @InjectTransactionManager()
   async updateLotChecked(id: string, changes: LotChanges, @MedusaContext() context: Context = {}) {
     const lot = await this.lockLot(id, context)
+
+    // Il termine minimo segue il confezionamento (18 mesi) finché non lo si cambia a mano.
+    const best_before = bestBeforeFor(lot, changes)
+    if (best_before) changes = { ...changes, best_before }
 
     if (lot.status === 'published') {
       const identity = IDENTITY_FIELDS.filter((key) => changes[key] !== undefined && changes[key] !== lot[key])

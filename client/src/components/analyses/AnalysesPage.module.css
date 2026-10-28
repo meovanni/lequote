@@ -22,9 +22,7 @@
   gap: var(--space-3);
 }
 
-.status,
-.meta,
-.per {
+.status {
   color: var(--surface-text-muted);
 }
 
@@ -33,7 +31,7 @@
   flex-direction: column;
   gap: var(--space-5);
   padding-top: var(--space-6);
-  border-top: 1.5px solid var(--surface-text);
+  border-top: 1.5px solid var(--line, var(--surface-text));
 }
 
 .tags {
@@ -42,54 +40,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-}
-
-.analysis {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  padding-bottom: var(--space-5);
-  border-bottom: 1px solid var(--surface-border);
-}
-
-.analysis:last-child {
-  border-bottom: 0;
-}
-
-.analysisHead {
-  display: grid;
-  gap: var(--space-1);
-}
-
-.values {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.caption {
-  caption-side: top;
-  padding-bottom: var(--space-2);
-  color: var(--surface-text-muted);
-  text-align: left;
-}
-
-.values th,
-.values td {
-  padding: var(--space-2) 0;
-  border-bottom: 1px solid var(--surface-border);
-  text-align: left;
-  font-weight: inherit;
-  vertical-align: top;
-}
-
-.values th {
-  color: var(--surface-text-muted);
-  padding-right: var(--space-4);
-  width: 55%;
-}
-
-.values td {
-  font-variant-numeric: tabular-nums;
 }
 
 .links {

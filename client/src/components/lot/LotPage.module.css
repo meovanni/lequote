@@ -61,7 +61,7 @@
   top: 0;
   bottom: calc(-1 * var(--space-6));
   left: 1.25rem;
-  border-left: 1.5px solid var(--surface-border);
+  border-left: 1.5px solid color-mix(in srgb, var(--line, var(--surface-border)) 55%, var(--surface-border));
 }
 
 .stage:last-child::before {
@@ -72,8 +72,10 @@
   position: absolute;
   top: 0;
   left: 0;
-  background: var(--surface-bg);
-  color: var(--surface-accent);
+  /* Nota di colore della linea, come i numeri della sezione Filiera. */
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--line) 22%, var(--surface-bg));
+  color: var(--line-ink);
 }
 
 .stageMeta {
@@ -97,21 +99,6 @@
 
 .field dd {
   margin: 0;
-}
-
-.analyses {
-  display: grid;
-  gap: var(--space-4);
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.analysis {
-  display: grid;
-  gap: var(--space-1);
-  padding-block-end: var(--space-4);
-  border-bottom: 1px solid var(--surface-border);
 }
 
 .inlineLink {
