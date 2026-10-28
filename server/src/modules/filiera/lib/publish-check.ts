@@ -1,4 +1,5 @@
 import { parseLotCode } from './lot-code'
+import { nominalQuantities, type LotPackage } from './lot-label'
 
 // Un lotto diventa pubblico (pagina /lotto e QR) solo con i dati obbligatori di etichetta
 // completi (Reg. UE 1169/2011 art. 9; D.Lgs. 231/2017 art. 17). La stessa regola blocca la
@@ -8,7 +9,7 @@ export type PublishCandidate = {
   code: string
   product_name: string | null
   origin: string | null
-  nominal_quantity: string | null
+  packages: LotPackage[] | null
   best_before: Date | string | null
   campaign_id: string | null
   packaging_establishment_id: string | null
@@ -22,7 +23,8 @@ export function publishBlockers(lot: PublishCandidate): string[] {
   const required: [string, unknown][] = [
     ['Denominazione', lot.product_name],
     ['Origine', lot.origin],
-    ['Quantità nominale', lot.nominal_quantity],
+    // La quantità nominale in etichetta è la misura delle confezioni: serve almeno un formato.
+    ['Confezioni del lotto (quantità nominale)', nominalQuantities(lot.packages, 'olio')],
     ['Termine minimo di conservazione', lot.best_before],
     ['Campagna', lot.campaign_id],
     ['Stabilimento di confezionamento', lot.packaging_establishment_id],

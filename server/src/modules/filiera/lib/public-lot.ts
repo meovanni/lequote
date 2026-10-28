@@ -3,7 +3,7 @@
 // fuori; i campi "legal" finiscono nel pannello "Informazioni di legge", non nel racconto.
 
 import type { AnalysisResults } from './analysis-values'
-import { formatNominalQuantity } from './lot-label'
+import { nominalQuantities, type LotPackage } from './lot-label'
 import { toPublicAnalysis, type PublicAnalysis } from './public-analyses'
 
 export type Visibility = 'public' | 'legal' | 'internal'
@@ -21,7 +21,7 @@ export type LotRecord = {
   status: 'draft' | 'published'
   product_line: 'olio' | 'miele'
   product_name: string
-  nominal_quantity: string | null
+  packages: LotPackage[]
   best_before: string | null
   origin: string | null
   packaging_date: string | null
@@ -88,7 +88,7 @@ export function toPublicLot(lot: LotRecord): PublicLot | null {
   const fixedLegal: [string, string | null | undefined][] = [
     ['Lotto', lot.code],
     ['Origine', lot.origin],
-    ['Quantità nominale', formatNominalQuantity(lot.nominal_quantity, lot.product_line)],
+    ['Quantità nominale', nominalQuantities(lot.packages, lot.product_line)],
     ['Da consumarsi preferibilmente entro', lot.best_before],
     ['Data di confezionamento', lot.packaging_date],
     ['Confezionato da', lot.packaging_establishment ? establishmentLabel(lot.packaging_establishment) : null],

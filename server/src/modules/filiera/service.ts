@@ -3,7 +3,7 @@ import { InjectTransactionManager, MedusaContext, MedusaError, MedusaService } f
 import type { AnalysisResults } from './lib/analysis-values'
 import { toPublicAnalyses, type PublicCampaignAnalyses } from './lib/public-analyses'
 import { toPublicLot, type LotRecord, type PublicLot } from './lib/public-lot'
-import { bestBeforeFor } from './lib/lot-label'
+import { bestBeforeFor, type LotPackage } from './lib/lot-label'
 import { publishBlockers } from './lib/publish-check'
 import { buildLotStages, type StageValuesInput, type TemplateForBuild } from './lib/stage-builder'
 import { Analysis, Campaign } from './models/campaign'
@@ -17,11 +17,11 @@ export type LotChanges = {
   code?: string
   product_line?: 'olio' | 'miele'
   product_name?: string
-  nominal_quantity?: string | null
   origin?: string
   packaging_date?: Date | null
   best_before?: Date | null
-  units?: number | null
+  produced_quantity?: number | null
+  packages?: LotPackage[] | null
   notes?: string | null
   campaign_id?: string
   packaging_establishment_id?: string | null
@@ -66,7 +66,7 @@ class FilieraModuleService extends MedusaService({
       status: lot.status,
       product_line: lot.product_line,
       product_name: lot.product_name,
-      nominal_quantity: lot.nominal_quantity,
+      packages: (lot.packages as LotPackage[] | null) ?? [],
       origin: lot.origin,
       packaging_date: isoDate(lot.packaging_date),
       best_before: isoDate(lot.best_before),
@@ -140,7 +140,7 @@ class FilieraModuleService extends MedusaService({
       code: lot.code,
       product_name: lot.product_name,
       origin: lot.origin,
-      nominal_quantity: lot.nominal_quantity,
+      packages: (lot.packages as LotPackage[] | null) ?? [],
       best_before: lot.best_before,
       campaign_id: lot.campaign_id,
       packaging_establishment_id: lot.packaging_establishment_id,

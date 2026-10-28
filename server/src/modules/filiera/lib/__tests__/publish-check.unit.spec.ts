@@ -5,7 +5,7 @@ function candidate(overrides: Partial<PublishCandidate> = {}): PublishCandidate 
     code: 'L2026-01',
     product_name: 'Olio extravergine di oliva',
     origin: 'Italia',
-    nominal_quantity: '0,75 l',
+    packages: [{ size: 0.75, count: null }],
     best_before: new Date('2027-12-31'),
     campaign_id: 'cmp_1',
     packaging_establishment_id: 'est_1',
@@ -21,11 +21,11 @@ describe('publishBlockers', () => {
 
   it('elenca ogni dato obbligatorio di etichetta mancante', () => {
     const blockers = publishBlockers(
-      candidate({ nominal_quantity: ' ', best_before: null, packaging_establishment_id: null, origin: '' }),
+      candidate({ packages: [], best_before: null, packaging_establishment_id: null, origin: '' }),
     )
     expect(blockers).toEqual([
       'Origine',
-      'Quantità nominale',
+      'Confezioni del lotto (quantità nominale)',
       'Termine minimo di conservazione',
       'Stabilimento di confezionamento',
     ])

@@ -1,21 +1,24 @@
-import { bestBeforeFor, defaultBestBefore, formatNominalQuantity, nominalQuantityValue } from '../lot-label'
+import { bestBeforeFor, defaultBestBefore, nominalQuantities, packagedTotal } from '../lot-label'
 
 const day = (date: Date | undefined) => date?.toISOString().slice(0, 10)
 
-describe('quantità nominale', () => {
-  it('legge il numero, anche dai lotti scritti a mano', () => {
-    expect(nominalQuantityValue('0.75')).toBe(0.75)
-    expect(nominalQuantityValue('0,75 l')).toBe(0.75)
-    expect(nominalQuantityValue('5')).toBe(5)
-    expect(nominalQuantityValue(null)).toBeNull()
-    expect(nominalQuantityValue('mezzo chilo')).toBeNull()
+describe('confezioni del lotto', () => {
+  it('la quantità nominale è l’elenco delle misure, dalla più piccola, senza ripetizioni', () => {
+    const packages = [
+      { size: 5, count: 20 },
+      { size: 0.75, count: 100 },
+      { size: 20, count: 10 },
+      { size: 0.75, count: 12 },
+    ]
+    expect(nominalQuantities(packages, 'olio')).toBe('0,75 L · 5 L · 20 L')
+    expect(nominalQuantities([{ size: 0.5, count: null }], 'miele')).toBe('0,5 kg')
+    expect(nominalQuantities([], 'olio')).toBeNull()
+    expect(nominalQuantities(null, 'olio')).toBeNull()
   })
 
-  it('la mostra con l’unità della linea', () => {
-    expect(formatNominalQuantity('0.75', 'olio')).toBe('0,75 L')
-    expect(formatNominalQuantity('0,5 kg', 'miele')).toBe('0,5 kg')
-    expect(formatNominalQuantity('5', 'olio')).toBe('5 L')
-    expect(formatNominalQuantity(null, 'olio')).toBeNull()
+  it('somma i litri confezionati dei formati con i pezzi', () => {
+    expect(packagedTotal([{ size: 0.75, count: 100 }, { size: 5, count: 20 }, { size: 20, count: 10 }, { size: 1, count: null }])).toBe(375)
+    expect(packagedTotal([{ size: 0.25, count: 3 }])).toBe(0.75)
   })
 })
 

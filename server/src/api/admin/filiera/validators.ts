@@ -45,11 +45,14 @@ function ordered<T extends Record<string, unknown>>(first: keyof T, second: keyo
 const lotFields = {
   product_line: productLine,
   product_name: text,
-  nominal_quantity: z.string().trim().max(50).nullish(),
   origin: z.string().trim().min(1).max(100).optional(),
   packaging_date: isoDate,
   best_before: isoDate,
-  units: smallInt.nullish(),
+  produced_quantity: z.number().positive().max(1_000_000).nullish(),
+  packages: z
+    .array(z.object({ size: z.number().positive().max(10_000), count: smallInt.nullable() }).strict())
+    .max(20)
+    .nullish(),
   notes: optionalText,
   campaign_id: id,
   packaging_establishment_id: id.nullish(),

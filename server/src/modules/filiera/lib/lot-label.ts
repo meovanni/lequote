@@ -1,24 +1,35 @@
-// Dati di etichetta del lotto calcolati da altri dati: unità della quantità nominale (litri per
-// l'olio, chili per il miele) e termine minimo di conservazione proposto dal confezionamento.
+// Dati del lotto calcolati da altri dati: misure delle confezioni (litri per l'olio, chili per il
+// miele), quanto è stato confezionato e il termine minimo di conservazione proposto.
 
 export type ProductLine = 'olio' | 'miele'
 
-export const NOMINAL_UNIT: Record<ProductLine, string> = { olio: 'L', miele: 'kg' }
+/** Un formato confezionato nel lotto: misura in L o kg e numero di pezzi (interno). */
+export type LotPackage = { size: number; count: number | null }
+
+export const LOT_UNIT: Record<ProductLine, string> = { olio: 'L', miele: 'kg' }
 
 /** Mesi tra confezionamento e termine minimo di conservazione proposto. */
 export const BEST_BEFORE_MONTHS = 18
 
-/** Il numero della quantità nominale ("0.75", "0,75 l" dei lotti vecchi); null se non c'è. */
-export function nominalQuantityValue(text: string | null | undefined): number | null {
-  const match = /\d+(?:[.,]\d+)?/.exec(text ?? '')
-  return match ? Number(match[0].replace(',', '.')) : null
+/** "0,75 L", "5 kg". */
+export function formatMeasure(value: number, line: ProductLine): string {
+  return `${String(value).replace('.', ',')} ${LOT_UNIT[line]}`
 }
 
-/** Quantità nominale come la legge il pubblico: "0,75 L", "0,5 kg". Un testo senza numero resta com'è. */
-export function formatNominalQuantity(text: string | null | undefined, line: ProductLine): string | null {
-  const value = nominalQuantityValue(text)
-  if (value === null) return text?.trim() ? text.trim() : null
-  return `${String(value).replace('.', ',')} ${NOMINAL_UNIT[line]}`
+/**
+ * Quantità nominale per il pubblico (Reg. UE 1169/2011): il contenuto di ciascuna confezione,
+ * non il totale del lotto. Le misure del lotto dalla più piccola, "0,75 L · 5 L · 20 L"; null se
+ * non ce ne sono.
+ */
+export function nominalQuantities(packages: LotPackage[] | null | undefined, line: ProductLine): string | null {
+  const sizes = [...new Set((packages ?? []).map((item) => item.size).filter((size) => size > 0))].sort((a, b) => a - b)
+  return sizes.length > 0 ? sizes.map((size) => formatMeasure(size, line)).join(' · ') : null
+}
+
+/** Litri o chili confezionati: somma di misura × pezzi, contando solo i formati con i pezzi. */
+export function packagedTotal(packages: LotPackage[] | null | undefined): number {
+  const total = (packages ?? []).reduce((sum, item) => sum + item.size * (item.count ?? 0), 0)
+  return Math.round(total * 1000) / 1000
 }
 
 /** Il giorno (UTC, come le date del lotto) a BEST_BEFORE_MONTHS mesi; fine mese se il giorno non esiste (31/8 → 28/2). */

@@ -73,7 +73,7 @@ medusaIntegrationTestRunner({
       const context = await draftLot()
       await api.post(
         `/admin/filiera/lots/${context.lot.id}`,
-        { nominal_quantity: '0,75 l', best_before: '2027-12-31', packaging_establishment_id: context.establishmentId },
+        { packages: [{ size: 0.75, count: 100 }], best_before: '2027-12-31', packaging_establishment_id: context.establishmentId },
         admin,
       )
       await api.post(
@@ -125,7 +125,7 @@ medusaIntegrationTestRunner({
       const { lot } = await draftLot()
       const blocked = await api.post(`/admin/filiera/lots/${lot.id}/publish`, {}, admin).catch(fail)
       expect(blocked.status).toBe(400)
-      expect(blocked.data.message).toContain('Quantità nominale')
+      expect(blocked.data.message).toContain('Confezioni del lotto')
 
       const hidden = await api.get('/store/filiera/lots/l2026-07', store).catch(fail)
       expect(hidden.status).toBe(404)
@@ -215,7 +215,7 @@ medusaIntegrationTestRunner({
 
     it('protegge i lotti pubblici e le anagrafiche in uso', async () => {
       const { lot, establishmentId } = await publishedLot()
-      expect((await api.post(`/admin/filiera/lots/${lot.id}`, { nominal_quantity: null }, admin).catch(fail)).status).toBe(400)
+      expect((await api.post(`/admin/filiera/lots/${lot.id}`, { packages: [] }, admin).catch(fail)).status).toBe(400)
       expect((await api.post(`/admin/filiera/lots/${lot.id}`, { code: 'L2026-99' }, admin).catch(fail)).status).toBe(400)
       expect((await api.delete(`/admin/filiera/lots/${lot.id}`, admin).catch(fail)).status).toBe(400)
       expect((await api.delete(`/admin/filiera/registries/suppliers/${establishmentId}`, admin).catch(fail)).status).toBe(400)

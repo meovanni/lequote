@@ -1,4 +1,5 @@
 import { model } from '@medusajs/framework/utils'
+import type { LotPackage } from '../lib/lot-label'
 import type { StageFieldValue } from '../lib/public-lot'
 import { Campaign } from './campaign'
 import { Supplier } from './registries'
@@ -13,11 +14,13 @@ export const Lot = model
     status: model.enum(['draft', 'published']).default('draft'),
     product_line: model.enum(['olio', 'miele']),
     product_name: model.text(),
-    nominal_quantity: model.text().nullable(),
     origin: model.text().default('Italia'),
     packaging_date: model.dateTime().nullable(),
     best_before: model.dateTime().nullable(),
-    units: model.number().nullable(),
+    // Interni, per il magazzino: litri o chili prodotti e confezioni (formato × pezzi). Sul sito
+    // escono solo le misure delle confezioni, come quantità nominale.
+    produced_quantity: model.float().nullable(),
+    packages: model.json<LotPackage[]>().nullable(),
     notes: model.text().nullable(),
     campaign: model.belongsTo(() => Campaign, { mappedBy: 'lots' }),
     // Stabilimento di confezionamento (dicitura di legge): un fornitore, o in futuro il laboratorio aziendale.

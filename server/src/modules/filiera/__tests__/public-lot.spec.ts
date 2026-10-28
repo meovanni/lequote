@@ -37,7 +37,7 @@ moduleIntegrationTestRunner<FilieraModuleService>({
         code: 'L2026-01',
         product_line: 'olio',
         product_name: 'Olio extravergine di oliva',
-        nominal_quantity: '0,75 l',
+        packages: [{ size: 0.75, count: 100 }],
         best_before: new Date('2027-12-31'),
         campaign_id: campaign.id,
         packaging_establishment_id: establishment.id,
@@ -93,8 +93,8 @@ moduleIntegrationTestRunner<FilieraModuleService>({
       it('non cambia codice o campagna di un lotto pubblico', async () => {
         const { lot } = await publishedLot()
         await expect(service.updateLotChecked(lot.id, { code: 'L2026-99' })).rejects.toThrow('codice, linea e campagna')
-        await expect(service.updateLotChecked(lot.id, { nominal_quantity: null })).rejects.toThrow('Quantità nominale')
-        await expect(service.updateLotChecked(lot.id, { nominal_quantity: '0,5 l' })).resolves.toBeDefined()
+        await expect(service.updateLotChecked(lot.id, { packages: [] })).rejects.toThrow('Confezioni del lotto')
+        await expect(service.updateLotChecked(lot.id, { packages: [{ size: 0.5, count: 10 }] })).resolves.toBeDefined()
       })
 
       it('rifiuta un lotto di olio su una campagna di miele', async () => {

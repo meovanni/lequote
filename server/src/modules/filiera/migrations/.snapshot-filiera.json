@@ -1167,22 +1167,6 @@
           "enumItems": [],
           "mappedType": "text"
         },
-        "nominal_quantity": {
-          "name": "nominal_quantity",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
         "origin": {
           "name": "origin",
           "type": "text",
@@ -1231,9 +1215,9 @@
           "enumItems": [],
           "mappedType": "datetime"
         },
-        "units": {
-          "name": "units",
-          "type": "integer",
+        "produced_quantity": {
+          "name": "produced_quantity",
+          "type": "real",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
@@ -1245,7 +1229,23 @@
           "default": null,
           "comment": null,
           "enumItems": [],
-          "mappedType": "integer"
+          "mappedType": "float"
+        },
+        "packages": {
+          "name": "packages",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "json"
         },
         "notes": {
           "name": "notes",

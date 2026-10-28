@@ -39,7 +39,7 @@ export default async function devLot({ container }: ExecArgs) {
     campaign_id: campaign.id,
   })
   await filiera.updateLotChecked(lot.id, {
-    nominal_quantity: '0,75 l',
+    packages: [{ size: 0.75, count: 120 }, { size: 5, count: 10 }],
     best_before: new Date('2027-06-30'),
     packaging_date: new Date('2025-12-10'),
     packaging_establishment_id: establishment.id,

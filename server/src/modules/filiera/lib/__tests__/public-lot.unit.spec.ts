@@ -6,7 +6,7 @@ function lot(overrides: Partial<LotRecord> = {}): LotRecord {
     status: 'published',
     product_line: 'olio',
     product_name: 'Olio extravergine di oliva',
-    nominal_quantity: '0,5 l',
+    packages: [{ size: 5, count: 4 }, { size: 0.5, count: 30 }],
     best_before: '2027-12-31',
     origin: 'Italia',
     packaging_date: '2026-01-20',
@@ -91,7 +91,7 @@ describe('toPublicLot', () => {
       expect.arrayContaining([
         { label: 'Lotto', value: 'L2026-01' },
         { label: 'Origine', value: 'Italia' },
-        { label: 'Quantità nominale', value: '0,5 L' },
+        { label: 'Quantità nominale', value: '0,5 L · 5 L' },
         { label: 'Da consumarsi preferibilmente entro', value: '2027-12-31' },
         { label: 'Confezionato da', value: 'Frantoio Beta, Atri (TE)' },
       ]),

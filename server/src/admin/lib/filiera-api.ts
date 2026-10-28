@@ -44,11 +44,13 @@ export type Lot = {
   status: 'draft' | 'published'
   product_line: ProductLine
   product_name: string
-  nominal_quantity: string | null
+  /** Litri o chili prodotti: interno, per il magazzino. */
+  produced_quantity: number | null
+  /** Confezioni del lotto (formato × pezzi): sul sito escono solo le misure. */
+  packages: { size: number; count: number | null }[] | null
   origin: string
   packaging_date: string | null
   best_before: string | null
-  units: number | null
   notes: string | null
   campaign_id: string
   campaign?: Campaign | null

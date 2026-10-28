@@ -1,9 +1,10 @@
 import { ExclamationCircle } from '@medusajs/icons'
 import { Button, Text, usePrompt } from '@medusajs/ui'
 import { suppliersFor, toDateInput, useFilieraAction, useLot, useSuppliers, type Lot } from '../../lib/filiera-api'
-import { BEST_BEFORE_MONTHS, NOMINAL_UNIT, nominalQuantityValue } from '../../../modules/filiera/lib/lot-label'
+import { BEST_BEFORE_MONTHS, LOT_UNIT } from '../../../modules/filiera/lib/lot-label'
 import { InlineNumber } from '../gestione/inline-number'
 import { InlineSelect, InlineText, Labeled } from '../inline/inline-fields'
+import { LotPackages } from './lot-packages'
 import { LotQrPanel } from './lot-qr-panel'
 import { StagesEditor } from './stages-editor'
 
@@ -21,13 +22,13 @@ function LabelFields({ lot }: { lot: Lot }) {
       <Labeled label="Denominazione di vendita">
         <InlineText value={lot.product_name} label="Denominazione di vendita" required onSave={(value) => save({ product_name: value })} />
       </Labeled>
-      <Labeled label="Quantità nominale" hint={lot.product_line === 'olio' ? 'In litri, es. 0,75.' : 'In chili, es. 0,5.'}>
+      <Labeled label="Quantità prodotta" hint="Interno, per il magazzino: non compare sul sito.">
         <InlineNumber
           decimals
-          value={nominalQuantityValue(lot.nominal_quantity)}
-          label="Quantità nominale"
-          suffix={NOMINAL_UNIT[lot.product_line]}
-          onSave={(value) => save({ nominal_quantity: String(value) })}
+          value={lot.produced_quantity}
+          label="Quantità prodotta"
+          suffix={LOT_UNIT[lot.product_line]}
+          onSave={(value) => save({ produced_quantity: value })}
         />
       </Labeled>
       <Labeled label="Origine">
@@ -48,9 +49,11 @@ function LabelFields({ lot }: { lot: Lot }) {
       <Labeled label="Da consumarsi preferibilmente entro" hint={`Si calcola a ${BEST_BEFORE_MONTHS} mesi dal confezionamento; se la cambi a mano resta la tua.`}>
         <InlineText type="date" value={toDateInput(lot.best_before)} label="Termine minimo di conservazione" onSave={(value) => save({ best_before: value })} />
       </Labeled>
-      <Labeled label="Pezzi prodotti" hint="Interno, non pubblicato.">
-        <InlineText value={lot.units === null ? '' : String(lot.units)} label="Pezzi prodotti" onSave={(value) => save({ units: value === null ? null : Number(value) })} />
-      </Labeled>
+      <div className="md:col-span-2">
+        <Labeled label="Confezioni" hint="Sul sito, come quantità nominale, escono solo le misure (es. 0,75 L · 5 L); pezzi e totali restano interni.">
+          <LotPackages lot={lot} onSave={save} />
+        </Labeled>
+      </div>
       <Labeled label="Note interne">
         <InlineText multiline value={lot.notes} label="Note interne" onSave={(value) => save({ notes: value })} />
       </Labeled>
