@@ -1,3 +1,4 @@
+import { SELLER } from '@/data/business'
 import type {
   ProductLine,
   FaqTopic,
@@ -61,9 +62,7 @@ export const olio = {
     { name: 'Pendolino', note: 'impollinatore degli altri olivi del campo' },
   ],
   imageLabel: 'Foto: Bottiglia di olio EVO Le Quote',
-  imageLabelAlt: 'Foto: Bottiglia di olio EVO Le Quote, retro',
-  image: '/images/bottiglia1.png',
-  imageAlt: '/images/bottiglia2.png',
+  image: '',
 }
 
 export const miele = {
@@ -80,14 +79,14 @@ export const miele = {
   imageLabel: 'Foto: Le arnie sulle alture di Cerchio',
   imageLabelAlt: 'Foto: Vasetti di miele Le Quote',
   image: '/images/arnie.jpg',
-  imageAlt: '/images/miele.png',
+  imageAlt: '',
 }
 
 export const contatti = {
   eyebrow: 'Contatti',
   title: 'Vieni a trovarci, a qualsiasi quota',
   email: 'info@le-quote.it',
-  phone: '[Telefono da confermare]',
+  phone: SELLER.phone,
   note: 'Scriveteci per visite, degustazioni o informazioni sui nostri prodotti.',
 }
 
@@ -100,9 +99,8 @@ export const shop = {
   totalLabel: 'Totale',
 }
 
-// Ogni formato avrà una propria foto (image), non ancora disponibile: lasciata assente
-// (ImagePlaceholder mostra il riquadro segnaposto) finché non viene fornita, con il percorso
-// atteso indicato nel commento accanto a ciascuna riga, pronto da valorizzare.
+// Ogni formato può avere una propria foto (image), caricata dal back office (Contenuti): finché è
+// vuota lo shop mostra l'illustrazione del formato.
 export const shopCatalog: ShopProduct[] = [
   {
     id: 'olio',
@@ -112,18 +110,18 @@ export const shopCatalog: ShopProduct[] = [
     variants: [
       {
         id: 'olio-750ml',
-
         sku: 'OLIO-750ML',
         label: 'Bottiglia 750 ml',
         imageLabel: 'Foto: Bottiglia di olio EVO Le Quote da 750 ml',
-      }, // image: '/images/olio-750ml.jpg'
+        image: '',
+      },
       {
         id: 'olio-5l',
-
         sku: 'OLIO-5L',
         label: 'Latta 5 L',
         imageLabel: 'Foto: Latta di olio EVO Le Quote da 5 litri',
-      }, // image: '/images/olio-5l.jpg'
+        image: '',
+      },
     ],
   },
   {
@@ -134,18 +132,18 @@ export const shopCatalog: ShopProduct[] = [
     variants: [
       {
         id: 'miele-250g',
-
         sku: 'MIELE-250G',
         label: 'Vasetto 250 g',
         imageLabel: 'Foto: Vasetto di miele Le Quote da 250 g',
-      }, // image: '/images/miele-250g.jpg'
+        image: '',
+      },
       {
         id: 'miele-500g',
-
         sku: 'MIELE-500G',
         label: 'Vasetto 500 g',
         imageLabel: 'Foto: Vasetto di miele Le Quote da 500 g',
-      }, // image: '/images/miele-500g.jpg'
+        image: '',
+      },
     ],
   },
 ]
@@ -243,7 +241,7 @@ export const filiera = {
         },
         {
           label: 'Operatore',
-          value: 'Le Quote, Azienda Agricola, [sede da confermare]',
+          value: `Le Quote, Azienda Agricola, ${SELLER.address}`,
           reference: 'Reg. (UE) 1169/2011, art. 9',
         },
         {
@@ -290,7 +288,7 @@ export const filiera = {
         {
           id: 'invasettamento',
           title: 'Invasettamento',
-          place: '[Laboratorio da confermare]',
+          place: '',
           period: 'Dopo la smielatura',
           description: 'Ogni vasetto riceve il codice lotto e il termine minimo di conservazione.',
         },
@@ -323,7 +321,7 @@ export const filiera = {
         },
         {
           label: 'Operatore',
-          value: 'Le Quote, Azienda Agricola, [sede da confermare]',
+          value: `Le Quote, Azienda Agricola, ${SELLER.address}`,
           reference: 'Reg. (UE) 1169/2011, art. 9',
         },
       ],
@@ -398,7 +396,7 @@ export const domande = {
           id: 'come-ordinare',
           question: 'Come posso ordinare?',
           answer:
-            'Nello Shop scegli prodotti e quantità e completa l’ordine dal carrello. Puoi pagare con bonifico bancario: trovi le coordinate nella pagina di conferma e prepariamo l’ordine quando il pagamento è accreditato. Oppure prenoti i prodotti e li ritiri in una delle nostre sedi, a Roseto degli Abruzzi o a Cerchio, pagando al ritiro.',
+            'Nello Shop scegli prodotti e quantità e completa l’ordine dal carrello. Puoi pagare con bonifico bancario: ti comunichiamo le coordinate dopo l’ordine e lo prepariamo quando il pagamento è accreditato. Oppure prenoti i prodotti e li ritiri in una delle nostre sedi, a Roseto degli Abruzzi o a Cerchio, pagando al ritiro.',
         },
         {
           id: 'dove-spedite',
@@ -478,7 +476,7 @@ export const domande = {
 
 export const footer = {
   tagline: 'LE QUOTE: Olio e miele, dal mare alla montagna.',
-  legal: '© 2026 Le Quote, Azienda Agricola. P.IVA [da inserire].',
+  legal: `© 2026 Le Quote, Azienda Agricola. P.IVA ${SELLER.vat}.`,
   social: [
     { label: 'Instagram', href: '#' },
     { label: 'Facebook', href: '#' },
@@ -552,6 +550,7 @@ export const products = {
   'olio-extravergine': {
     line: 'olio',
     illustration: 'oil',
+    image: '',
     eyebrow: 'Olio extravergine',
     name: 'Olio extravergine di oliva',
     summary: 'Il blend della Riserva del Borsacchio: Moraiolo, Leccino e Pendolino, solo dai nostri oliveti.',
@@ -589,6 +588,7 @@ export const products = {
   miele: {
     line: 'miele',
     illustration: 'honey',
+    image: '',
     eyebrow: 'Miele',
     name: 'Miele di quota',
     summary: 'Solo millefiori di montagna, dagli alveari sulle alture di Cerchio: ogni annata ha le sue sfumature. Smielato a freddo.',
@@ -615,6 +615,8 @@ export const products = {
 export interface ProductPage {
   line: ProductLine
   illustration: 'oil' | 'honey'
+  /** Foto del prodotto dal back office; vuota = "Immagine in arrivo". */
+  image: string
   eyebrow: string
   name: string
   summary: string
@@ -682,7 +684,7 @@ export const checkoutUi = {
   paymentOptions: {
     bonifico: {
       label: 'Bonifico bancario',
-      note: 'Trovi le coordinate nella pagina di conferma. Prepariamo l’ordine quando il pagamento è accreditato.',
+      note: 'Ti comunichiamo le coordinate dopo l’ordine. Prepariamo l’ordine quando il pagamento è accreditato.',
     },
     ritiro: {
       label: 'Al ritiro',
@@ -726,6 +728,7 @@ export const orderUi = {
   bankTitle: 'Coordinate per il bonifico',
   bankHolder: 'Intestatario',
   bankIban: 'IBAN',
+  bankPending: 'Gli estremi per il pagamento ti saranno forniti a seguito della conferma dell’ordine.',
   bankReason: 'Causale',
   bankReasonValue: (id: string) => `Ordine ${id} Le Quote`,
   bankAmount: 'Importo',

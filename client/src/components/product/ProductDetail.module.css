@@ -22,9 +22,8 @@
   background: var(--surface-card);
 }
 
-.illustration {
-  width: min(56vw, 240px);
-  max-height: 56svh;
+.photo {
+  width: min(72vw, 320px);
 }
 
 .intro {
@@ -225,10 +224,8 @@
     align-items: center;
   }
 
-  .illustration {
-    width: auto;
-    height: min(64svh, 560px);
-    max-height: none;
+  .photo {
+    width: min(100%, 440px);
   }
 
   .detailsInner {

@@ -83,7 +83,7 @@ export const legalIt: LegalContent = {
             'Puoi pagare in due modi:',
             {
               list: [
-                `Bonifico bancario anticipato: le coordinate sono nella pagina di conferma e nell’email d’ordine. Prepariamo l’ordine quando il bonifico risulta accreditato; se non arriva entro ${BANK_TRANSFER_DAYS} giorni dall’ordine, l’ordine si annulla e te lo comunichiamo.`,
+                `Bonifico bancario anticipato: le coordinate te le comunichiamo dopo l’ordine, nella pagina di conferma o per email. Prepariamo l’ordine quando il bonifico risulta accreditato; se non arriva entro ${BANK_TRANSFER_DAYS} giorni dall’ordine, l’ordine si annulla e te lo comunichiamo.`,
                 'Pagamento al ritiro, solo se scegli il ritiro in azienda: paghi quando ritiri, con i mezzi indicati nel carrello.',
               ],
             },

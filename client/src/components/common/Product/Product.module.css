@@ -1,8 +1,0 @@
-.product {
-  display: block;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-  /* Il ritocco al passaggio del mouse ruota attorno alla base, come un oggetto appoggiato. */
-  transform-origin: 50% 95%;
-}

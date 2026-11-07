@@ -1,3 +1,4 @@
+import { SELLER } from '@/data/business'
 import type { Content } from './it'
 
 // English translation of it.ts. Same ids and structure; the Italian file is the reference and
@@ -84,9 +85,7 @@ export const en: Content = {
       { name: 'Pendolino', note: 'pollinator for the other olive trees in the field' },
     ],
     imageLabel: 'Photo: Bottle of Le Quote extra virgin olive oil',
-    imageLabelAlt: 'Photo: Bottle of Le Quote extra virgin olive oil, back',
-    image: '/images/bottiglia1.png',
-    imageAlt: '/images/bottiglia2.png',
+    image: '',
   },
 
   miele: {
@@ -102,14 +101,14 @@ export const en: Content = {
     imageLabel: 'Photo: The hives on the heights of Cerchio',
     imageLabelAlt: 'Photo: Jars of Le Quote honey',
     image: '/images/arnie.jpg',
-    imageAlt: '/images/miele.png',
+    imageAlt: '',
   },
 
   contatti: {
     eyebrow: 'Contact',
     title: 'Come and see us, at any altitude',
     email: 'info@le-quote.it',
-    phone: '[Phone to be confirmed]',
+    phone: SELLER.phone,
     note: 'Write to us for visits, tastings or information about our products.',
   },
 
@@ -134,12 +133,14 @@ export const en: Content = {
           sku: 'OLIO-750ML',
           label: '750 ml bottle',
           imageLabel: 'Photo: 750 ml bottle of Le Quote extra virgin olive oil',
+          image: '',
         },
         {
           id: 'olio-5l',
           sku: 'OLIO-5L',
           label: '5 L tin',
           imageLabel: 'Photo: 5 litre tin of Le Quote extra virgin olive oil',
+          image: '',
         },
       ],
     },
@@ -154,12 +155,14 @@ export const en: Content = {
           sku: 'MIELE-250G',
           label: '250 g jar',
           imageLabel: 'Photo: 250 g jar of Le Quote honey',
+          image: '',
         },
         {
           id: 'miele-500g',
           sku: 'MIELE-500G',
           label: '500 g jar',
           imageLabel: 'Photo: 500 g jar of Le Quote honey',
+          image: '',
         },
       ],
     },
@@ -255,7 +258,7 @@ export const en: Content = {
           },
           {
             label: 'Food business operator',
-            value: 'Le Quote, Azienda Agricola, [address to be confirmed]',
+            value: `Le Quote, Azienda Agricola, ${SELLER.address}`,
             reference: 'Reg. (EU) 1169/2011, art. 9',
           },
           {
@@ -302,7 +305,7 @@ export const en: Content = {
           {
             id: 'invasettamento',
             title: 'Jarring',
-            place: '[Facility to be confirmed]',
+            place: '',
             period: 'After extraction',
             description: 'Every jar gets the batch code and the best-before date.',
           },
@@ -335,7 +338,7 @@ export const en: Content = {
           },
           {
             label: 'Food business operator',
-            value: 'Le Quote, Azienda Agricola, [address to be confirmed]',
+            value: `Le Quote, Azienda Agricola, ${SELLER.address}`,
             reference: 'Reg. (EU) 1169/2011, art. 9',
           },
         ],
@@ -409,7 +412,7 @@ export const en: Content = {
             id: 'come-ordinare',
             question: 'How can I order?',
             answer:
-              'In the Shop choose products and quantities, then complete the order from the cart. You can pay by bank transfer: the details are on the confirmation page and we prepare the order once the payment has arrived. Or you can reserve the products and collect them at one of our sites, in Roseto degli Abruzzi or Cerchio, paying on collection.',
+              'In the Shop choose products and quantities, then complete the order from the cart. You can pay by bank transfer: we send you the details after you order and prepare the order once the payment has arrived. Or you can reserve the products and collect them at one of our sites, in Roseto degli Abruzzi or Cerchio, paying on collection.',
           },
           {
             id: 'dove-spedite',
@@ -521,6 +524,7 @@ export const en: Content = {
     'olio-extravergine': {
       line: 'olio',
       illustration: 'oil',
+      image: '',
       eyebrow: 'Extra virgin olive oil',
       name: 'Extra virgin olive oil',
       summary: 'The blend of the Borsacchio Reserve: Moraiolo, Leccino and Pendolino, only from our own groves.',
@@ -555,6 +559,7 @@ export const en: Content = {
     miele: {
       line: 'miele',
       illustration: 'honey',
+      image: '',
       eyebrow: 'Honey',
       name: 'Mountain honey',
       summary: 'Only mountain wildflower honey, from the hives on the heights of Cerchio: every year has its own nuances. Extracted cold.',
@@ -578,7 +583,7 @@ export const en: Content = {
 
   footer: {
     tagline: 'LE QUOTE: Olive oil and honey, from the sea to the mountains.',
-    legal: '© 2026 Le Quote, Azienda Agricola. VAT no. [to be added].',
+    legal: `© 2026 Le Quote, Azienda Agricola. VAT no. ${SELLER.vat}.`,
     social: [
       { label: 'Instagram', href: '#' },
       { label: 'Facebook', href: '#' },
@@ -637,7 +642,7 @@ export const en: Content = {
     paymentOptions: {
       bonifico: {
         label: 'Bank transfer',
-        note: 'You will find the bank details on the confirmation page. We prepare the order once the payment has cleared.',
+        note: 'We send you the bank details after you order. We prepare the order once the payment has cleared.',
       },
       ritiro: {
         label: 'On pickup',
@@ -681,6 +686,7 @@ export const en: Content = {
     bankTitle: 'Bank transfer details',
     bankHolder: 'Account holder',
     bankIban: 'IBAN',
+    bankPending: 'We will send you the payment details once your order is confirmed.',
     bankReason: 'Reference',
     bankReasonValue: (id: string) => `Ordine ${id} Le Quote`,
     bankAmount: 'Amount',

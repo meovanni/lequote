@@ -10,6 +10,7 @@ const RESOURCES = {
   withdrawal: 'Recessi dei clienti',
   agent: 'Agenti e riepiloghi delle vendite',
   sales: 'Area vendita degli agenti (/app/sell)',
+  content: 'Contenuti del sito: testi, foto, pubblicazione',
 }
 
 /** Nome nello stile di Medusa (ReadFiliera): diventa un identificatore nei tipi generati. */

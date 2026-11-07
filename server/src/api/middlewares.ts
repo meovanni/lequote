@@ -16,6 +16,7 @@ import { WithdrawalUpdate } from './admin/withdrawals/validators'
 import { AgentCreate, AgentInvite, AgentUpdate, BookingCreate, BookingUpdate, OrderImport, PaymentCreate, PaymentUpdate, SellBookingCreate } from './admin/backoffice/validators'
 import { guard } from './permissions'
 import { WithdrawalCreate } from './store/withdrawals/validators'
+import { ContentDraft, ContentImageUpload } from './admin/contenuti/validators'
 
 // Le rotte /admin richiedono già l'accesso al back office; qui si aggiungono i permessi per ruolo
 // e la validazione dei corpi. Le anagrafiche (/admin/filiera/registries/:kind) si validano nella
@@ -38,6 +39,8 @@ export default defineMiddlewares({
     ...guard('order', '/admin/gestione'),
     ...guard('agent', '/admin/agents'),
     ...guard('sales', '/admin/sell'),
+    // Contenuti del sito: testi, foto e pubblicazione.
+    ...guard('content', '/admin/contenuti'),
     { matcher: '/admin/filiera/lots', method: 'POST', middlewares: [validateAndTransformBody(LotCreate)] },
     { matcher: '/admin/filiera/lots/:id', method: 'POST', middlewares: [validateAndTransformBody(LotUpdate)] },
     { matcher: '/admin/filiera/lots/:id/stages', method: 'POST', middlewares: [validateAndTransformBody(LotStagesReplace)] },
@@ -73,6 +76,14 @@ export default defineMiddlewares({
     { matcher: '/admin/sell/bookings/:id', method: 'POST', middlewares: [validateAndTransformBody(BookingUpdate)] },
     { matcher: '/admin/sell/bookings/:id/payments', method: 'POST', middlewares: [validateAndTransformBody(PaymentCreate)] },
     { matcher: '/admin/sell/bookings/:id/payments/:paymentId', method: 'POST', middlewares: [validateAndTransformBody(PaymentUpdate)] },
+    { matcher: '/admin/contenuti/testi', method: 'POST', middlewares: [validateAndTransformBody(ContentDraft)] },
+    {
+      // Foto in base64: fino a 10 MB di file, circa 14 MB di corpo.
+      matcher: '/admin/contenuti/immagini',
+      method: 'POST',
+      bodyParser: { sizeLimit: '15mb' },
+      middlewares: [validateAndTransformBody(ContentImageUpload)],
+    },
     { matcher: '/store/withdrawals', method: 'POST', middlewares: [validateAndTransformBody(WithdrawalCreate)] },
     { matcher: '/admin/withdrawals/:id', method: 'POST', middlewares: [validateAndTransformBody(WithdrawalUpdate)] },
   ],

@@ -10,9 +10,6 @@ import type { ShopProduct, ShopVariantOption } from '@/types'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
 import { ImagePlaceholder } from '@/components/common/ImagePlaceholder/ImagePlaceholder'
 import { Reveal } from '@/components/common/Reveal/Reveal'
-import { OilBottle } from '@/components/common/Product/OilBottle'
-import { HoneyJar } from '@/components/common/Product/HoneyJar'
-import { OilTin } from '@/components/common/Product/OilTin'
 import { QuantityStepper } from '@/components/common/QuantityStepper/QuantityStepper'
 import { REVEAL_VIEWPORT, riseChild, staggerParent } from '@/lib/motion'
 import styles from './Shop.module.css'
@@ -27,23 +24,14 @@ interface VariantCardProps {
   loading: boolean
 }
 
-// Illustrazioni dei formati al posto delle foto, finché le foto vere non arrivano (option.image).
+// Foto del formato dal back office; finché manca, il riquadro dice "Immagine in arrivo".
 function VariantImage({ product, option }: { product: ShopProduct; option: ShopVariantOption }) {
-  const illustration = {
-    'olio-750ml': <OilBottle label={option.imageLabel} />,
-    'olio-5l': <OilTin label={option.imageLabel} />,
-    'miele-250g': <HoneyJar label={option.imageLabel} quantity="250 g" />,
-    'miele-500g': <HoneyJar label={option.imageLabel} />,
-  }[option.id]
-  if (illustration && !option.image) {
-    return <div className={styles.illustration} data-format={option.id}>{illustration}</div>
-  }
   return (
     <ImagePlaceholder
       label={option.imageLabel}
       aspectRatio="1 / 1"
       variant={product.id === 'olio' ? 'oliva' : 'miele'}
-      src={option.image}
+      src={option.image || undefined}
       fit="cover"
     />
   )

@@ -1,5 +1,6 @@
 import {
   BANK_TRANSFER,
+  bankTransferDetails,
   escapeHtml,
   renderCustomerConfirmation,
   renderOwnerAlert,
@@ -35,6 +36,18 @@ describe('toEmailLocale', () => {
   })
 })
 
+describe('bankTransferDetails', () => {
+  it('usa IBAN e intestatario pubblicati dal back office, altrimenti quelli di partenza', () => {
+    expect(bankTransferDetails({ 'business.BANK_TRANSFER.iban': 'IT60X0542811101000000123456' })).toEqual({
+      holder: BANK_TRANSFER.holder,
+      iban: 'IT60X0542811101000000123456',
+    })
+    const email = renderCustomerConfirmation(order, { holder: 'Le Quote S.S.', iban: 'IT60X0542811101000000123456' })
+    expect(email.text).toContain('IBAN: IT60X0542811101000000123456')
+    expect(email.text).toContain('Le Quote S.S.')
+  })
+})
+
 describe('renderCustomerConfirmation', () => {
   it('porta alla funzione di recesso con la dicitura di legge, se il link è noto', () => {
     const withLink = renderCustomerConfirmation({ ...order, withdrawalUrl: 'https://le-quote.it/recesso?ordine=BBTHK26' })
@@ -47,7 +60,10 @@ describe('renderCustomerConfirmation', () => {
     expect(email.subject).toContain('n. BBTHK26')
     expect(email.text).toContain('2 × Olio Extravergine, Bottiglia 750 ml')
     expect(email.text).toMatch(/Totale: 35,00\s€/)
-    expect(email.text).toContain(`IBAN: ${BANK_TRANSFER.iban}`)
+    // Senza IBAN inserito dai titolari: gli estremi arrivano dopo la conferma.
+    expect(BANK_TRANSFER.iban).toBe('')
+    expect(email.text).not.toContain('IBAN')
+    expect(email.text).toContain("Gli estremi per il pagamento ti saranno forniti a seguito della conferma dell'ordine.")
     expect(email.text).toContain('Causale: Ordine BBTHK26 Le Quote')
     expect(email.text).toContain('Orari: [da confermare]')
   })

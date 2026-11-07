@@ -14,8 +14,7 @@ export interface ShopVariantOption {
   /** Codice del formato nel back office: prezzo e disponibilità arrivano da Medusa. */
   sku: string
   label: string
-  /** Assente finché la foto del formato non è disponibile: ImagePlaceholder mostra un
-   * riquadro segnaposto coerente col resto del sito finché non viene valorizzato. */
+  /** Foto del formato caricata dal back office; vuota o assente, lo shop mostra l'illustrazione. */
   image?: string
   imageLabel: string
 }

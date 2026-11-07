@@ -4,7 +4,7 @@ import { useContent, useLocale } from '@/i18n/LocaleContext'
 import { localizePath } from '@/i18n/locales'
 import { formatPrice } from '@/lib/price'
 import { lineLabel } from '@/cart/lineLabel'
-import { BANK_TRANSFER } from '@/data/business'
+import { site } from '@/data/published'
 import { legalByLocale } from '@/data/legal'
 import { retrieveOrder, type OrderSummary } from '@/lib/medusa/cart'
 import { CartTotals } from '@/components/cart/CartTotals'
@@ -66,6 +66,7 @@ export function OrderConfirmation() {
   }
 
   const { order } = state
+  const bank = site.business.BANK_TRANSFER
   return (
     <section className={styles.page} data-surface="light">
       <div className={styles.inner}>
@@ -82,15 +83,20 @@ export function OrderConfirmation() {
                 <h2 id="order-bank" className={`${styles.blockTitle} mono-label`}>
                   {orderUi.bankTitle}
                 </h2>
+                {!bank.iban && <p className="body">{orderUi.bankPending}</p>}
                 <dl className={styles.details}>
-                  <div className={styles.detail}>
-                    <dt className="body-sm">{orderUi.bankHolder}</dt>
-                    <dd className="body">{BANK_TRANSFER.holder}</dd>
-                  </div>
-                  <div className={styles.detail}>
-                    <dt className="body-sm">{orderUi.bankIban}</dt>
-                    <dd className="body mono-figure">{BANK_TRANSFER.iban}</dd>
-                  </div>
+                  {bank.iban && bank.holder && (
+                    <div className={styles.detail}>
+                      <dt className="body-sm">{orderUi.bankHolder}</dt>
+                      <dd className="body">{bank.holder}</dd>
+                    </div>
+                  )}
+                  {bank.iban && (
+                    <div className={styles.detail}>
+                      <dt className="body-sm">{orderUi.bankIban}</dt>
+                      <dd className="body mono-figure">{bank.iban}</dd>
+                    </div>
+                  )}
                   <div className={styles.detail}>
                     <dt className="body-sm">{orderUi.bankReason}</dt>
                     <dd className="body">{orderUi.bankReasonValue(order.code)}</dd>

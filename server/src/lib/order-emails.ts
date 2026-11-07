@@ -2,10 +2,22 @@
 // avviso ai titolari (in italiano). Funzioni pure: ricevono l'ordine già letto e restituiscono
 // oggetto, testo semplice e HTML. I dati tra parentesi quadre non sono ancora stati forniti
 // (docs/plan.md); gli stessi valori stanno in client/src/data/business.ts per la pagina di conferma.
+// Quelli cambiati dal back office (Contenuti › Dati aziendali) arrivano con bankTransferDetails.
 
-export const BANK_TRANSFER = {
-  holder: '[Intestatario del conto da fornire]',
-  iban: '[IBAN da fornire]',
+export type BankTransfer = { holder: string; iban: string }
+
+// Vuote finché i titolari non le inseriscono: l'email dice che gli estremi arrivano dopo la conferma.
+export const BANK_TRANSFER: BankTransfer = {
+  holder: '',
+  iban: '',
+}
+
+/** Coordinate del bonifico: quelle pubblicate dal back office, altrimenti quelle di partenza. */
+export function bankTransferDetails(shared: Record<string, string>): BankTransfer {
+  return {
+    holder: shared['business.BANK_TRANSFER.holder'] ?? BANK_TRANSFER.holder,
+    iban: shared['business.BANK_TRANSFER.iban'] ?? BANK_TRANSFER.iban,
+  }
 }
 
 export type EmailLocale = 'it' | 'en' | 'de'
@@ -89,6 +101,7 @@ const COPY = {
     tax: (amount: string) => `IVA inclusa: ${amount}`,
     bankTitle: 'Come pagare con bonifico',
     holder: 'Intestatario',
+    bankPending: "Gli estremi per il pagamento ti saranno forniti a seguito della conferma dell'ordine.",
     reason: 'Causale',
     reasonValue: (id: string) => `Ordine ${id} Le Quote`,
     amount: 'Importo',
@@ -114,6 +127,7 @@ const COPY = {
     tax: (amount: string) => `VAT included: ${amount}`,
     bankTitle: 'How to pay by bank transfer',
     holder: 'Account holder',
+    bankPending: 'We will send you the payment details once your order is confirmed.',
     reason: 'Reference',
     reasonValue: (id: string) => `Ordine ${id} Le Quote`,
     amount: 'Amount',
@@ -139,6 +153,7 @@ const COPY = {
     tax: (amount: string) => `inkl. MwSt.: ${amount}`,
     bankTitle: 'Bezahlung per Überweisung',
     holder: 'Kontoinhaber',
+    bankPending: 'Die Zahlungsdaten erhalten Sie nach der Bestätigung Ihrer Bestellung.',
     reason: 'Verwendungszweck',
     reasonValue: (id: string) => `Ordine ${id} Le Quote`,
     amount: 'Betrag',
@@ -223,7 +238,7 @@ export function summaryBlocks(order: OrderEmailData, locale: EmailLocale): Block
   ]
 }
 
-export function renderCustomerConfirmation(order: OrderEmailData): RenderedEmail {
+export function renderCustomerConfirmation(order: OrderEmailData, bank: BankTransfer = BANK_TRANSFER): RenderedEmail {
   const locale = order.locale
   const copy = COPY[locale]
   const payment: Block[] =
@@ -232,8 +247,7 @@ export function renderCustomerConfirmation(order: OrderEmailData): RenderedEmail
           {
             title: copy.bankTitle,
             rows: [
-              `${copy.holder}: ${BANK_TRANSFER.holder}`,
-              `IBAN: ${BANK_TRANSFER.iban}`,
+              ...(bank.iban ? [...(bank.holder ? [`${copy.holder}: ${bank.holder}`] : []), `IBAN: ${bank.iban}`] : [copy.bankPending]),
               `${copy.reason}: ${copy.reasonValue(order.code)}`,
               `${copy.amount}: ${formatEuro(locale, order.total)}`,
               copy.bankNote,

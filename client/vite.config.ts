@@ -14,9 +14,10 @@ export default defineConfig({
   // Le chiamate alla Store API e i referti pubblici delle analisi vanno a Medusa (porta 9000)
   // dallo stesso indirizzo della vetrina: niente CORS, e il sito funziona anche aperto dal
   // telefono sulla rete locale (così si prova anche il QR del lotto).
+  // Le foto caricate dalla sezione Contenuti del back office le serve Medusa (/contenuti/immagini).
   // I test end-to-end puntano a un Medusa separato con MEDUSA_PROXY_TARGET.
   server: {
-    proxy: { '/store': medusaTarget, '/filiera': medusaTarget },
+    proxy: { '/store': medusaTarget, '/filiera': medusaTarget, '/contenuti': medusaTarget },
   },
   // La scena 3D di Territorio si importa in modo pigro: senza questo Vite scopre three e la
   // fiber solo a pagina aperta, rifà il bundle delle dipendenze e la pagina resta con due React.

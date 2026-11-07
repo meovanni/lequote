@@ -82,7 +82,7 @@ export const legalEn: LegalContent = {
             'You can pay in two ways:',
             {
               list: [
-                `Bank transfer in advance: the details are on the confirmation page and in the order email. We prepare the order once the transfer has cleared; if it does not arrive within ${BANK_TRANSFER_DAYS} days of the order, the order is cancelled and we let you know.`,
+                `Bank transfer in advance: we give you the details after you order, on the confirmation page or by email. We prepare the order once the transfer has cleared; if it does not arrive within ${BANK_TRANSFER_DAYS} days of the order, the order is cancelled and we let you know.`,
                 'Payment on collection, only if you choose to collect at the farm: you pay when you collect, by the means shown in the cart.',
               ],
             },

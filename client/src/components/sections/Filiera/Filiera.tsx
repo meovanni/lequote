@@ -132,7 +132,7 @@ export function Filiera() {
                     </span>
                     <h4 className="display-3">{step.title}</h4>
                     <p className={`${styles.stepMeta} specimen`}>
-                      <span>{step.place}</span>
+                      {step.place && <span>{step.place}</span>}
                       <span className={styles.stepPeriod}>{step.period}</span>
                     </p>
                     <p className={`${styles.stepText} body-sm`}>{step.description}</p>

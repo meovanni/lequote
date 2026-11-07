@@ -23,7 +23,8 @@ Fatto (2026-10-11):
 
 Da verificare con il commercialista: aliquota IVA sulle spese di spedizione (oggi l'aliquota ordinaria 22%; di norma segue quella dei beni).
 
-Da fare: editor dei modelli di fase, contenuti (FAQ, calendario), Etichette, magazzino per lotto, distinzione bonifico / pagamento al ritiro.
+Da fare: editor dei modelli di fase, Etichette, magazzino per lotto, distinzione bonifico / pagamento al ritiro.
+- Contenuti del sito (2026-11-05, ADR 0006): voce "Contenuti del sito" nel back office per cambiare testi e foto di tutte le pagine in IT/EN/DE, dati aziendali compresi; modifiche in bozza, "Pubblica" rigenera la vetrina. Aggiungere o togliere voci (nuove domande, nuove fasi) resta da fare.
 
 ### Avvio in locale (Windows)
 Da `server/`, la prima volta: `npm install`, `npm run setup` (crea `.env` con segreti casuali), poi in un terminale `npm run db` (Postgres, resta aperto) e in un altro `npm run migrate`, `npm run seed`, `npm run dev`. Back office su http://localhost:9000/app. Se Postgres resta acceso dopo aver chiuso il terminale: `npm run db:stop`.

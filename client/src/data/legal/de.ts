@@ -82,7 +82,7 @@ export const legalDe: LegalContent = {
             'Sie können auf zwei Arten bezahlen:',
             {
               list: [
-                `Banküberweisung im Voraus: Die Bankverbindung steht auf der Bestätigungsseite und in der Bestell-E-Mail. Wir bereiten die Bestellung vor, sobald die Überweisung eingegangen ist; geht sie nicht innerhalb von ${BANK_TRANSFER_DAYS} Tagen nach der Bestellung ein, wird die Bestellung storniert und wir informieren Sie.`,
+                `Banküberweisung im Voraus: Die Bankverbindung teilen wir Ihnen nach der Bestellung mit, auf der Bestätigungsseite oder per E-Mail. Wir bereiten die Bestellung vor, sobald die Überweisung eingegangen ist; geht sie nicht innerhalb von ${BANK_TRANSFER_DAYS} Tagen nach der Bestellung ein, wird die Bestellung storniert und wir informieren Sie.`,
                 'Zahlung bei Abholung, nur wenn Sie die Abholung auf dem Hof wählen: Sie bezahlen bei der Abholung mit den im Warenkorb genannten Zahlungsmitteln.',
               ],
             },

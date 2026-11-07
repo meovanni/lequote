@@ -1,16 +1,16 @@
 import { useContent } from '@/i18n/LocaleContext'
 import { SectionHeading } from '@/components/common/SectionHeading/SectionHeading'
 import { Reveal } from '@/components/common/Reveal/Reveal'
-import { OilBottle } from '@/components/common/Product/OilBottle'
+import { ImagePlaceholder } from '@/components/common/ImagePlaceholder/ImagePlaceholder'
 import styles from './Olio.module.css'
 
 export function Olio() {
-  const { olio, ui } = useContent()
+  const { olio } = useContent()
   return (
     <section id="olio" data-surface="light-alt" className={styles.section}>
       <div className={styles.inner}>
         <Reveal variant="sideLeft" className={styles.images}>
-          <OilBottle className={styles.bottle} label={ui.oilBottleLabel} />
+          <ImagePlaceholder className={styles.bottle} label={olio.imageLabel} aspectRatio="4 / 5" src={olio.image || undefined} />
         </Reveal>
 
         <div className={styles.text}>

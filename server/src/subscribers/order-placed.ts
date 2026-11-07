@@ -1,6 +1,8 @@
 import type { SubscriberArgs, SubscriberConfig } from '@medusajs/framework'
 import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
-import { renderCustomerConfirmation, renderOwnerAlert } from '../lib/order-emails'
+import { bankTransferDetails, renderCustomerConfirmation, renderOwnerAlert } from '../lib/order-emails'
+import { CONTENUTI_MODULE } from '../modules/contenuti'
+import type ContenutiModuleService from '../modules/contenuti/service'
 import { adminOrderUrl, loadOrderEmailData } from '../lib/order-email-data'
 
 // Ordine dal sito: conferma al cliente e avviso ai titolari (ORDER_ALERT_EMAIL). Un invio fallito
@@ -16,6 +18,8 @@ export default async function orderPlaced({ event, container }: SubscriberArgs<{
   }
   const order = { id: event.data.id, code: emailData.code, email: emailData.email }
   const alertTo = process.env.ORDER_ALERT_EMAIL
+  // IBAN e intestatario come sono pubblicati sul sito (Contenuti › Dati aziendali).
+  const bank = bankTransferDetails(await container.resolve<ContenutiModuleService>(CONTENUTI_MODULE).publishedShared())
   const adminUrl = adminOrderUrl(order.id)
 
   const sends = [
@@ -24,7 +28,7 @@ export default async function orderPlaced({ event, container }: SubscriberArgs<{
           to: order.email,
           channel: 'email',
           template: 'order-confirmation',
-          content: renderCustomerConfirmation(emailData),
+          content: renderCustomerConfirmation(emailData, bank),
           ...(alertTo && { provider_data: { replyTo: alertTo } }),
         })
       : Promise.resolve(),

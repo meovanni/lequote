@@ -2,7 +2,7 @@ import { CameraIcon } from '@/components/common/icons/Icons'
 import { useLocale } from '@/i18n/LocaleContext'
 import styles from './ImagePlaceholder.module.css'
 
-const PLACEHOLDER_TEXT = { it: 'Foto in arrivo', en: 'Photo coming soon', de: 'Foto folgt' } as const
+const PLACEHOLDER_TEXT = { it: 'Immagine in arrivo', en: 'Image coming soon', de: 'Bild folgt' } as const
 
 interface ImagePlaceholderProps {
   label: string

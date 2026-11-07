@@ -1,3 +1,4 @@
+import { SELLER } from '@/data/business'
 import type { Content } from './it'
 
 // Deutsche Übersetzung von it.ts. Gleiche ids und Struktur; maßgeblich ist die italienische
@@ -84,9 +85,7 @@ export const de: Content = {
       { name: 'Pendolino', note: 'Bestäuber für die anderen Olivenbäume im Hain' },
     ],
     imageLabel: 'Foto: Flasche natives Olivenöl extra von Le Quote',
-    imageLabelAlt: 'Foto: Flasche natives Olivenöl extra von Le Quote, Rückseite',
-    image: '/images/bottiglia1.png',
-    imageAlt: '/images/bottiglia2.png',
+    image: '',
   },
 
   miele: {
@@ -102,14 +101,14 @@ export const de: Content = {
     imageLabel: 'Foto: Die Bienenstöcke auf den Höhen von Cerchio',
     imageLabelAlt: 'Foto: Honiggläser von Le Quote',
     image: '/images/arnie.jpg',
-    imageAlt: '/images/miele.png',
+    imageAlt: '',
   },
 
   contatti: {
     eyebrow: 'Kontakt',
     title: 'Besuchen Sie uns, auf jeder Höhe',
     email: 'info@le-quote.it',
-    phone: '[Telefon noch zu bestätigen]',
+    phone: SELLER.phone,
     note: 'Schreiben Sie uns für Besuche, Verkostungen oder Informationen zu unseren Produkten.',
   },
 
@@ -134,12 +133,14 @@ export const de: Content = {
           sku: 'OLIO-750ML',
           label: 'Flasche 750 ml',
           imageLabel: 'Foto: 750-ml-Flasche natives Olivenöl extra von Le Quote',
+          image: '',
         },
         {
           id: 'olio-5l',
           sku: 'OLIO-5L',
           label: 'Kanister 5 L',
           imageLabel: 'Foto: 5-Liter-Kanister natives Olivenöl extra von Le Quote',
+          image: '',
         },
       ],
     },
@@ -154,12 +155,14 @@ export const de: Content = {
           sku: 'MIELE-250G',
           label: 'Glas 250 g',
           imageLabel: 'Foto: 250-g-Glas Honig von Le Quote',
+          image: '',
         },
         {
           id: 'miele-500g',
           sku: 'MIELE-500G',
           label: 'Glas 500 g',
           imageLabel: 'Foto: 500-g-Glas Honig von Le Quote',
+          image: '',
         },
       ],
     },
@@ -255,7 +258,7 @@ export const de: Content = {
           },
           {
             label: 'Lebensmittelunternehmer',
-            value: 'Le Quote, Azienda Agricola, [Anschrift noch zu bestätigen]',
+            value: `Le Quote, Azienda Agricola, ${SELLER.address}`,
             reference: 'VO (EU) 1169/2011, Art. 9',
           },
           {
@@ -302,7 +305,7 @@ export const de: Content = {
           {
             id: 'invasettamento',
             title: 'Abfüllung',
-            place: '[Betrieb noch zu bestätigen]',
+            place: '',
             period: 'Nach dem Schleudern',
             description: 'Jedes Glas erhält die Chargennummer und das Mindesthaltbarkeitsdatum.',
           },
@@ -335,7 +338,7 @@ export const de: Content = {
           },
           {
             label: 'Lebensmittelunternehmer',
-            value: 'Le Quote, Azienda Agricola, [Anschrift noch zu bestätigen]',
+            value: `Le Quote, Azienda Agricola, ${SELLER.address}`,
             reference: 'VO (EU) 1169/2011, Art. 9',
           },
         ],
@@ -409,7 +412,7 @@ export const de: Content = {
             id: 'come-ordinare',
             question: 'Wie kann ich bestellen?',
             answer:
-              'Wählen Sie im Shop Produkte und Mengen und schließen Sie die Bestellung im Warenkorb ab. Sie können per Banküberweisung bezahlen: Die Bankdaten finden Sie auf der Bestätigungsseite, und wir bereiten die Bestellung vor, sobald die Zahlung eingegangen ist. Oder Sie reservieren die Produkte und holen sie an einem unserer Standorte ab, in Roseto degli Abruzzi oder Cerchio, und bezahlen bei der Abholung.',
+              'Wählen Sie im Shop Produkte und Mengen und schließen Sie die Bestellung im Warenkorb ab. Sie können per Banküberweisung bezahlen: Die Bankdaten teilen wir Ihnen nach der Bestellung mit, und wir bereiten die Bestellung vor, sobald die Zahlung eingegangen ist. Oder Sie reservieren die Produkte und holen sie an einem unserer Standorte ab, in Roseto degli Abruzzi oder Cerchio, und bezahlen bei der Abholung.',
           },
           {
             id: 'dove-spedite',
@@ -522,6 +525,7 @@ export const de: Content = {
     'olio-extravergine': {
       line: 'olio',
       illustration: 'oil',
+      image: '',
       eyebrow: 'Natives Olivenöl extra',
       name: 'Natives Olivenöl extra',
       summary: 'Die Cuvée des Reservats Borsacchio: Moraiolo, Leccino und Pendolino, nur aus unseren eigenen Hainen.',
@@ -556,6 +560,7 @@ export const de: Content = {
     miele: {
       line: 'miele',
       illustration: 'honey',
+      image: '',
       eyebrow: 'Honig',
       name: 'Honig aus der Höhe',
       summary: 'Nur Bergblütenhonig, von den Bienenstöcken auf den Höhen von Cerchio: Jeder Jahrgang hat seine eigenen Nuancen. Kalt geschleudert.',
@@ -579,7 +584,7 @@ export const de: Content = {
 
   footer: {
     tagline: 'LE QUOTE: Olivenöl und Honig, vom Meer bis in die Berge.',
-    legal: '© 2026 Le Quote, Azienda Agricola. USt-IdNr. [noch einzutragen].',
+    legal: `© 2026 Le Quote, Azienda Agricola. USt-IdNr. ${SELLER.vat}.`,
     social: [
       { label: 'Instagram', href: '#' },
       { label: 'Facebook', href: '#' },
@@ -638,7 +643,7 @@ export const de: Content = {
     paymentOptions: {
       bonifico: {
         label: 'Banküberweisung',
-        note: 'Die Bankverbindung finden Sie auf der Bestätigungsseite. Wir bereiten die Bestellung vor, sobald die Zahlung eingegangen ist.',
+        note: 'Die Bankverbindung teilen wir Ihnen nach der Bestellung mit. Wir bereiten die Bestellung vor, sobald die Zahlung eingegangen ist.',
       },
       ritiro: {
         label: 'Bei Abholung',
@@ -682,6 +687,7 @@ export const de: Content = {
     bankTitle: 'Bankverbindung für die Überweisung',
     bankHolder: 'Kontoinhaber',
     bankIban: 'IBAN',
+    bankPending: 'Die Zahlungsdaten erhalten Sie nach der Bestätigung Ihrer Bestellung.',
     bankReason: 'Verwendungszweck',
     bankReasonValue: (id: string) => `Ordine ${id} Le Quote`,
     bankAmount: 'Betrag',

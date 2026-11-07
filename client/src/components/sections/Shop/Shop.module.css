@@ -108,11 +108,12 @@
     opacity 0.3s ease;
 }
 
+/* In basso, per non coprire la scritta "Immagine in arrivo" al centro del riquadro. */
 .unavailableBadge {
   position: absolute;
-  top: 50%;
+  bottom: var(--space-4);
   left: 50%;
-  translate: -50% -50%;
+  translate: -50% 0;
   padding: 0.35rem 0.8rem;
   border-radius: var(--radius-button);
   background: var(--color-inchiostro);
@@ -224,35 +225,6 @@
   transform: scale(0.98);
 }
 
-/* Riquadro dell'illustrazione animata: stesso formato quadrato delle foto dei formati. */
-.illustration {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 1 / 1;
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--surface-text) 6%, transparent);
-}
-
-.illustration svg {
-  height: 100%;
-  width: auto;
-  max-width: 100%;
-}
-
-/* L'SVG è alto e stretto: va contenuto nel quadrato, non deve allungarlo. */
-.illustration {
-  position: relative;
-}
-
-.illustration svg {
-  position: absolute;
-  inset: 8%;
-  width: 84%;
-  height: 84%;
-}
-
 /* Il nome del prodotto porta alla sua scheda. */
 .productLink {
   text-decoration: underline;
@@ -298,11 +270,4 @@
 .addButton:disabled {
   opacity: 0.5;
   cursor: progress;
-}
-
-/* Il vasetto piccolo resta più piccolo del grande, appoggiato alla stessa base. */
-.illustration[data-format='miele-250g'] svg {
-  inset: auto 20% 8%;
-  width: 60%;
-  height: 68%;
 }

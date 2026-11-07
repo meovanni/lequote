@@ -5,8 +5,7 @@ import { usePublicAnalyses } from '@/hooks/usePublicAnalyses'
 import { latestValues } from '@/lib/medusa/analyses'
 import { valueText } from '@/lib/analysisDisplay'
 import type { ProductHandle } from '@/data/content/handles'
-import { OilBottle } from '@/components/common/Product/OilBottle'
-import { HoneyJar } from '@/components/common/Product/HoneyJar'
+import { ImagePlaceholder } from '@/components/common/ImagePlaceholder/ImagePlaceholder'
 import { LegalPanel } from '@/components/common/LegalPanel/LegalPanel'
 import { Reveal } from '@/components/common/Reveal/Reveal'
 import { AnimatedWords } from '@/components/common/AnimatedWords/AnimatedWords'
@@ -37,11 +36,12 @@ export function ProductDetail({ handle }: ProductDetailProps) {
       <section className={styles.hero} data-surface="light">
         <div className={styles.heroInner}>
           <Reveal variant="sideLeft" className={styles.visual}>
-            {page.illustration === 'oil' ? (
-              <OilBottle className={styles.illustration} label={ui.oilBottleLabel} />
-            ) : (
-              <HoneyJar className={styles.illustration} label={ui.honeyJarLabel} />
-            )}
+            <ImagePlaceholder
+              className={styles.photo}
+              label={page.illustration === 'oil' ? ui.oilBottleLabel : ui.honeyJarLabel}
+              aspectRatio="4 / 5"
+              src={page.image || undefined}
+            />
           </Reveal>
 
           <div className={styles.intro}>

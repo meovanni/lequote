@@ -112,6 +112,20 @@ Domanda dei titolari: con il secondo sito tra almeno 10 mesi, basta il VPS O1I2 
   Standard non è confermato e potrebbe voler dire rifare il server.
 - La differenza è di 1,80 € al mese, circa 26 € l'anno IVA inclusa.
 
+## Quattro siti sulla stessa macchina: O4A8 (2026-11-07)
+
+Sullo stesso VPS andranno Le Quote, colognasprelax, un sito personale di una pagina e Cantine San
+Flaviano (NestJS + MongoDB), tutti con pochi accessi. Memoria stimata:
+- Le Quote: Medusa circa 1 GB, Postgres e Redis circa 0,3 GB;
+- "Pubblica" dei contenuti (ADR 0006) compila la vetrina sul server: circa 1–1,5 GB per un minuto;
+- Cantine San Flaviano: NestJS circa 0,2 GB, MongoDB 0,3–0,5 GB (cache limitata con
+  `--wiredTigerCacheSizeGB 0.25`, altrimenti ne prende metà della RAM);
+- siti statici, Caddy e sistema: circa 0,4 GB.
+
+A regime circa 2,5–3 GB, con un picco oltre i 4 GB quando si pubblica: il taglio O2A4 non basta più.
+Scelta: **Aruba Cloud VPS O4A8** (4 vCPU, 8 GB, 80 GB, 11,79 €/mese + IVA dal listino del
+2026-10-22, circa 173 € l'anno IVA inclusa). Ogni sito con il suo dominio e "Dominio con email".
+
 ## Backup: oltre a quello del fornitore
 
 Il backup del fornitore protegge dal guasto della macchina, non dalla perdita dell'account o da un
@@ -166,3 +180,11 @@ Lavoro nostro:
 - [Aruba, offerte dominio con email](https://hosting.aruba.it/en/domain-hosting-offers-aruba)
 - [Aruba, rinnovo dominio .it 2026](https://www.danielechiuri.it/aruba-dominio-it-prezzo-rinnovo-2026/)
 - [netcup, recensione 2026](https://valebyte.com/en/blog/netcup-review-2026-the-price-performance-king-and-its-fine-print/)
+
+## Contenuti dal back office (2026-11-05, ADR 0006)
+
+- Caddy inoltra a Medusa anche `/contenuti/*` (le foto caricate), come `/store/*`.
+- Il server deve poter rigenerare la vetrina: `STOREFRONT_DIR` punta ai sorgenti di `client/` con le
+  dipendenze installate, `STOREFRONT_BUILD_COMMAND` compila e copia `build/client/` nella cartella
+  servita da Caddy.
+- `CONTENT_IMAGES_DIR` (foto caricate) va nei backup insieme al database.

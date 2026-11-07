@@ -64,3 +64,6 @@ build
 e2e/.state
 test-results
 playwright-report
+
+# Modifiche ai contenuti pubblicate dal back office (le scrive il server con "Pubblica")
+src/data/published/published.generated.json
