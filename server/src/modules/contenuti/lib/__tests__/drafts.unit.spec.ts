@@ -21,10 +21,17 @@ describe('normalizeChange', () => {
     expect(normalizeChange(field({ kind: 'long' }), 'it', 'Riga uno\r\nRiga due\n')).toEqual({ ok: true, value: 'Riga uno\nRiga due' })
   })
 
-  it('vuoto o uguale al testo di partenza vuol dire nessuna modifica', () => {
-    expect(normalizeChange(field(), 'it', '')).toEqual({ ok: true, value: null })
+  it('null o uguale al testo di partenza vuol dire nessuna modifica', () => {
     expect(normalizeChange(field(), 'it', null)).toEqual({ ok: true, value: null })
     expect(normalizeChange(field(), 'it', 'Le Quote ')).toEqual({ ok: true, value: null })
+  })
+
+  it('svuotato, un testo resta vuoto sul sito (il telefono da non pubblicare); una foto torna quella di partenza', () => {
+    expect(normalizeChange(field(), 'it', '  ')).toEqual({ ok: true, value: '' })
+    expect(normalizeChange(field({ kind: 'image', scope: 'shared', defaults: { shared: '/foto.jpg' } }), 'shared', '')).toEqual({ ok: true, value: null })
+    expect(normalizeChange(field({ kind: 'link' }), 'it', '')).toEqual({ ok: true, value: '' })
+    // Se il testo di partenza è già vuoto non c'è niente da cambiare.
+    expect(normalizeChange(field({ scope: 'shared', defaults: { shared: '' } }), 'shared', '')).toEqual({ ok: true, value: null })
   })
 
   it('rifiuta contenuti sconosciuti, bloccati o nella lingua sbagliata', () => {

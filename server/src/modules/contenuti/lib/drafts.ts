@@ -23,8 +23,9 @@ export const LINKED: Record<string, string[]> = { 'hero.poster': ['hero.posterSm
 export type Change = { ok: true; value: string | null } | { ok: false; error: string }
 
 /**
- * Il valore da salvare in bozza, o il motivo per cui non si può. Vuoto o uguale al testo di
- * partenza diventa null: nessuna modifica, vale il testo del codice.
+ * Il valore da salvare in bozza, o il motivo per cui non si può. null o uguale al testo di
+ * partenza: nessuna modifica, vale il testo del codice. Un testo svuotato resta vuoto sul sito
+ * (il telefono da non pubblicare); una foto tolta torna invece quella di partenza.
  */
 export function normalizeChange(field: ContentField | undefined, scope: Scope, value: string | null): Change {
   if (!field) return { ok: false, error: 'Questo contenuto non esiste.' }
@@ -32,8 +33,10 @@ export function normalizeChange(field: ContentField | undefined, scope: Scope, v
   const scopeOk = field.scope === 'shared' ? scope === 'shared' : scope !== 'shared'
   if (!scopeOk) return { ok: false, error: 'Lingua non valida per questo contenuto.' }
 
-  const text = value === null ? '' : field.kind === 'long' ? value.replace(/\r\n/g, '\n').trim() : value.replace(/\s+/g, ' ').trim()
-  if (text === '' || text === field.defaults[scope]) return { ok: true, value: null }
+  if (value === null) return { ok: true, value: null }
+  const text = field.kind === 'long' ? value.replace(/\r\n/g, '\n').trim() : value.replace(/\s+/g, ' ').trim()
+  if (text === (field.defaults[scope] ?? '')) return { ok: true, value: null }
+  if (text === '') return field.kind === 'image' ? { ok: true, value: null } : { ok: true, value: '' }
   if (text.length > MAX_TEXT) return { ok: false, error: `Il testo supera ${MAX_TEXT} caratteri.` }
   if (field.kind === 'image' && !IMAGE_URL.test(text)) return { ok: false, error: 'Carica la foto dal pulsante della sezione.' }
   if (field.kind === 'link' && !LINK.test(text)) {

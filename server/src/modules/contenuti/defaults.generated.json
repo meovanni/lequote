@@ -1077,9 +1077,9 @@
           "kind": "text",
           "scope": "locale",
           "defaults": {
-            "it": "Le Quote, Azienda Agricola, [sede legale da fornire]",
-            "en": "Le Quote, Azienda Agricola, [sede legale da fornire]",
-            "de": "Le Quote, Azienda Agricola, [sede legale da fornire]"
+            "it": "{ragione sociale}, {sede legale}",
+            "en": "{ragione sociale}, {sede legale}",
+            "de": "{ragione sociale}, {sede legale}"
           }
         },
         {
@@ -1561,9 +1561,9 @@
           "kind": "text",
           "scope": "locale",
           "defaults": {
-            "it": "Le Quote, Azienda Agricola, [sede legale da fornire]",
-            "en": "Le Quote, Azienda Agricola, [sede legale da fornire]",
-            "de": "Le Quote, Azienda Agricola, [sede legale da fornire]"
+            "it": "{ragione sociale}, {sede legale}",
+            "en": "{ragione sociale}, {sede legale}",
+            "de": "{ragione sociale}, {sede legale}"
           }
         },
         {
@@ -2175,19 +2175,8 @@
           }
         },
         {
-          "key": "shopCatalog.0.variants.0.label",
-          "label": "Prodotto › Olio Extravergine › Bottiglia 750 ml › Etichetta",
-          "kind": "text",
-          "scope": "locale",
-          "defaults": {
-            "it": "Bottiglia 750 ml",
-            "en": "750 ml bottle",
-            "de": "Flasche 750 ml"
-          }
-        },
-        {
           "key": "shopCatalog.0.variants.0.imageLabel",
-          "label": "Prodotto › Olio Extravergine › Bottiglia 750 ml › Descrizione della foto",
+          "label": "Prodotto › Olio Extravergine › Formato 1 › Descrizione della foto",
           "kind": "text",
           "scope": "locale",
           "defaults": {
@@ -2198,7 +2187,7 @@
         },
         {
           "key": "shopCatalog.0.variants.0.image",
-          "label": "Prodotto › Olio Extravergine › Bottiglia 750 ml › Foto",
+          "label": "Prodotto › Olio Extravergine › Formato 1 › Foto",
           "kind": "image",
           "scope": "shared",
           "defaults": {
@@ -2206,19 +2195,8 @@
           }
         },
         {
-          "key": "shopCatalog.0.variants.1.label",
-          "label": "Prodotto › Olio Extravergine › Latta 5 L › Etichetta",
-          "kind": "text",
-          "scope": "locale",
-          "defaults": {
-            "it": "Latta 5 L",
-            "en": "5 L tin",
-            "de": "Kanister 5 L"
-          }
-        },
-        {
           "key": "shopCatalog.0.variants.1.imageLabel",
-          "label": "Prodotto › Olio Extravergine › Latta 5 L › Descrizione della foto",
+          "label": "Prodotto › Olio Extravergine › Formato 2 › Descrizione della foto",
           "kind": "text",
           "scope": "locale",
           "defaults": {
@@ -2229,7 +2207,7 @@
         },
         {
           "key": "shopCatalog.0.variants.1.image",
-          "label": "Prodotto › Olio Extravergine › Latta 5 L › Foto",
+          "label": "Prodotto › Olio Extravergine › Formato 2 › Foto",
           "kind": "image",
           "scope": "shared",
           "defaults": {
@@ -2259,19 +2237,8 @@
           }
         },
         {
-          "key": "shopCatalog.1.variants.0.label",
-          "label": "Prodotto › Miele › Vasetto 250 g › Etichetta",
-          "kind": "text",
-          "scope": "locale",
-          "defaults": {
-            "it": "Vasetto 250 g",
-            "en": "250 g jar",
-            "de": "Glas 250 g"
-          }
-        },
-        {
           "key": "shopCatalog.1.variants.0.imageLabel",
-          "label": "Prodotto › Miele › Vasetto 250 g › Descrizione della foto",
+          "label": "Prodotto › Miele › Formato 1 › Descrizione della foto",
           "kind": "text",
           "scope": "locale",
           "defaults": {
@@ -2282,7 +2249,7 @@
         },
         {
           "key": "shopCatalog.1.variants.0.image",
-          "label": "Prodotto › Miele › Vasetto 250 g › Foto",
+          "label": "Prodotto › Miele › Formato 1 › Foto",
           "kind": "image",
           "scope": "shared",
           "defaults": {
@@ -2290,19 +2257,8 @@
           }
         },
         {
-          "key": "shopCatalog.1.variants.1.label",
-          "label": "Prodotto › Miele › Vasetto 500 g › Etichetta",
-          "kind": "text",
-          "scope": "locale",
-          "defaults": {
-            "it": "Vasetto 500 g",
-            "en": "500 g jar",
-            "de": "Glas 500 g"
-          }
-        },
-        {
           "key": "shopCatalog.1.variants.1.imageLabel",
-          "label": "Prodotto › Miele › Vasetto 500 g › Descrizione della foto",
+          "label": "Prodotto › Miele › Formato 2 › Descrizione della foto",
           "kind": "text",
           "scope": "locale",
           "defaults": {
@@ -2313,7 +2269,7 @@
         },
         {
           "key": "shopCatalog.1.variants.1.image",
-          "label": "Prodotto › Miele › Vasetto 500 g › Foto",
+          "label": "Prodotto › Miele › Formato 2 › Foto",
           "kind": "image",
           "scope": "shared",
           "defaults": {
@@ -2443,9 +2399,9 @@
           "kind": "long",
           "scope": "locale",
           "defaults": {
-            "it": "Sì, su appuntamento: scrivici a info@le-quote.it indicando quale delle due sedi vuoi visitare.",
-            "en": "Yes, by appointment: write to info@le-quote.it saying which of the two sites you would like to visit.",
-            "de": "Ja, nach Vereinbarung: Schreiben Sie an info@le-quote.it und geben Sie an, welchen der beiden Standorte Sie besuchen möchten."
+            "it": "Sì, su appuntamento: scrivici a {email} indicando quale delle due sedi vuoi visitare.",
+            "en": "Yes, by appointment: write to {email} saying which of the two sites you would like to visit.",
+            "de": "Ja, nach Vereinbarung: Schreiben Sie an {email} und geben Sie an, welchen der beiden Standorte Sie besuchen möchten."
           }
         },
         {
@@ -2648,10 +2604,11 @@
           "kind": "text",
           "scope": "locale",
           "defaults": {
-            "it": "info@le-quote.it",
-            "en": "info@le-quote.it",
-            "de": "info@le-quote.it"
-          }
+            "it": "{email}",
+            "en": "{email}",
+            "de": "{email}"
+          },
+          "locked": "È il dato «Email»: si cambia in Azienda › Dati aziendali, e vale per tutto il sito."
         },
         {
           "key": "contatti.phone",
@@ -2659,10 +2616,11 @@
           "kind": "text",
           "scope": "locale",
           "defaults": {
-            "it": "[telefono da fornire]",
-            "en": "[telefono da fornire]",
-            "de": "[telefono da fornire]"
-          }
+            "it": "{telefono}",
+            "en": "{telefono}",
+            "de": "{telefono}"
+          },
+          "locked": "È il dato «Telefono»: si cambia in Azienda › Dati aziendali, e vale per tutto il sito."
         },
         {
           "key": "contatti.note",
@@ -2699,9 +2657,9 @@
           "kind": "text",
           "scope": "locale",
           "defaults": {
-            "it": "© 2026 Le Quote, Azienda Agricola. P.IVA [P.IVA da fornire].",
-            "en": "© 2026 Le Quote, Azienda Agricola. VAT no. [P.IVA da fornire].",
-            "de": "© 2026 Le Quote, Azienda Agricola. USt-IdNr. [P.IVA da fornire]."
+            "it": "© 2026 Le Quote, Azienda Agricola. P.IVA {partita iva}.",
+            "en": "© 2026 Le Quote, Azienda Agricola. VAT no. {partita iva}.",
+            "de": "© 2026 Le Quote, Azienda Agricola. USt-IdNr. {partita iva}."
           }
         },
         {
@@ -2822,74 +2780,8 @@
           }
         },
         {
-          "key": "footerNavItems.0.label",
-          "label": "Menu in fondo › Territorio › Etichetta",
-          "kind": "text",
-          "scope": "locale",
-          "defaults": {
-            "it": "Territorio",
-            "en": "Land",
-            "de": "Land"
-          }
-        },
-        {
-          "key": "footerNavItems.1.label",
-          "label": "Menu in fondo › Olio › Etichetta",
-          "kind": "text",
-          "scope": "locale",
-          "defaults": {
-            "it": "Olio",
-            "en": "Oil",
-            "de": "Öl"
-          }
-        },
-        {
-          "key": "footerNavItems.2.label",
-          "label": "Menu in fondo › Miele › Etichetta",
-          "kind": "text",
-          "scope": "locale",
-          "defaults": {
-            "it": "Miele",
-            "en": "Honey",
-            "de": "Honig"
-          }
-        },
-        {
-          "key": "footerNavItems.3.label",
-          "label": "Menu in fondo › Filiera › Etichetta",
-          "kind": "text",
-          "scope": "locale",
-          "defaults": {
-            "it": "Filiera",
-            "en": "Supply chain",
-            "de": "Herkunft"
-          }
-        },
-        {
-          "key": "footerNavItems.4.label",
-          "label": "Menu in fondo › Stagioni › Etichetta",
-          "kind": "text",
-          "scope": "locale",
-          "defaults": {
-            "it": "Stagioni",
-            "en": "Seasons",
-            "de": "Jahreszeiten"
-          }
-        },
-        {
-          "key": "footerNavItems.5.label",
-          "label": "Menu in fondo › Shop › Etichetta",
-          "kind": "text",
-          "scope": "locale",
-          "defaults": {
-            "it": "Shop",
-            "en": "Shop",
-            "de": "Shop"
-          }
-        },
-        {
-          "key": "footerNavItems.6.label",
-          "label": "Menu in fondo › Domande frequenti › Etichetta",
+          "key": "footerExtraNavItems.0.label",
+          "label": "Menu in fondo (in più) › Domande frequenti › Etichetta",
           "kind": "text",
           "scope": "locale",
           "defaults": {
@@ -2899,8 +2791,8 @@
           }
         },
         {
-          "key": "footerNavItems.7.label",
-          "label": "Menu in fondo › Contatti › Etichetta",
+          "key": "footerExtraNavItems.1.label",
+          "label": "Menu in fondo (in più) › Contatti › Etichetta",
           "kind": "text",
           "scope": "locale",
           "defaults": {
@@ -3566,9 +3458,9 @@
           "kind": "long",
           "scope": "locale",
           "defaults": {
-            "it": "Prezzi e disponibilità non sono raggiungibili in questo momento. Riprova più tardi o scrivici a info@le-quote.it.",
-            "en": "Prices and availability cannot be reached right now. Try again later or write to us at info@le-quote.it.",
-            "de": "Preise und Verfügbarkeit sind gerade nicht erreichbar. Versuchen Sie es später erneut oder schreiben Sie uns an info@le-quote.it."
+            "it": "Prezzi e disponibilità non sono raggiungibili in questo momento. Riprova più tardi o scrivici a {email}.",
+            "en": "Prices and availability cannot be reached right now. Try again later or write to us at {email}.",
+            "de": "Preise und Verfügbarkeit sind gerade nicht erreichbar. Versuchen Sie es später erneut oder schreiben Sie uns an {email}."
           }
         },
         {
@@ -4483,9 +4375,9 @@
           "kind": "long",
           "scope": "locale",
           "defaults": {
-            "it": "L’ordine non è andato a buon fine e non ti è stato addebitato nulla. Riprova, oppure scrivici a info@le-quote.it.",
-            "en": "The order did not go through and you have not been charged. Please try again, or write to info@le-quote.it.",
-            "de": "Die Bestellung ist fehlgeschlagen, es wurde nichts belastet. Bitte versuchen Sie es erneut oder schreiben Sie an info@le-quote.it."
+            "it": "L’ordine non è andato a buon fine e non ti è stato addebitato nulla. Riprova, oppure scrivici a {email}.",
+            "en": "The order did not go through and you have not been charged. Please try again, or write to {email}.",
+            "de": "Die Bestellung ist fehlgeschlagen, es wurde nichts belastet. Bitte versuchen Sie es erneut oder schreiben Sie an {email}."
           }
         }
       ]
@@ -4545,9 +4437,9 @@
           "kind": "long",
           "scope": "locale",
           "defaults": {
-            "it": "Non riusciamo a mostrare l’ordine in questo momento. Se hai appena ordinato, l’ordine è registrato: ti scriviamo noi. Per dubbi: info@le-quote.it.",
-            "en": "We can’t show the order right now. If you have just ordered, the order is recorded and we will write to you. Questions: info@le-quote.it.",
-            "de": "Die Bestellung kann gerade nicht angezeigt werden. Wenn Sie eben bestellt haben, ist sie erfasst: Wir melden uns. Fragen: info@le-quote.it."
+            "it": "Non riusciamo a mostrare l’ordine in questo momento. Se hai appena ordinato, l’ordine è registrato: ti scriviamo noi. Per dubbi: {email}.",
+            "en": "We can’t show the order right now. If you have just ordered, the order is recorded and we will write to you. Questions: {email}.",
+            "de": "Die Bestellung kann gerade nicht angezeigt werden. Wenn Sie eben bestellt haben, ist sie erfasst: Wir melden uns. Fragen: {email}."
           }
         },
         {
@@ -4636,17 +4528,6 @@
             "it": "Pagamento al ritiro",
             "en": "Payment on pickup",
             "de": "Zahlung bei Abholung"
-          }
-        },
-        {
-          "key": "orderUi.pickupPaymentBody",
-          "label": "«Paghi in azienda quando ritiri l’ordine: [contanti e/o ca…»",
-          "kind": "long",
-          "scope": "locale",
-          "defaults": {
-            "it": "Paghi in azienda quando ritiri l’ordine: [contanti e/o carta, da confermare].",
-            "en": "Pay at the farm when you collect the order: [cash and/or card, to be confirmed].",
-            "de": "Sie bezahlen auf dem Hof bei der Abholung: [bar und/oder Karte, noch zu bestätigen]."
           }
         },
         {
@@ -4838,9 +4719,9 @@
           "kind": "long",
           "scope": "locale",
           "defaults": {
-            "it": "Non riusciamo a mostrare il lotto in questo momento. Riprova tra poco, oppure scrivici a info@le-quote.it.",
-            "en": "We can’t show the batch right now. Please try again shortly, or write to us at info@le-quote.it.",
-            "de": "Die Charge kann gerade nicht angezeigt werden. Bitte versuchen Sie es gleich noch einmal oder schreiben Sie an info@le-quote.it."
+            "it": "Non riusciamo a mostrare il lotto in questo momento. Riprova tra poco, oppure scrivici a {email}.",
+            "en": "We can’t show the batch right now. Please try again shortly, or write to us at {email}.",
+            "de": "Die Charge kann gerade nicht angezeigt werden. Bitte versuchen Sie es gleich noch einmal oder schreiben Sie an {email}."
           }
         },
         {
@@ -4933,9 +4814,9 @@
           "kind": "long",
           "scope": "locale",
           "defaults": {
-            "it": "Non riusciamo a mostrare le analisi in questo momento. Riprova tra poco, oppure scrivici a info@le-quote.it.",
-            "en": "We can’t show the test results right now. Please try again shortly, or write to us at info@le-quote.it.",
-            "de": "Wir können die Analysen gerade nicht anzeigen. Bitte versuchen Sie es gleich noch einmal oder schreiben Sie uns an info@le-quote.it."
+            "it": "Non riusciamo a mostrare le analisi in questo momento. Riprova tra poco, oppure scrivici a {email}.",
+            "en": "We can’t show the test results right now. Please try again shortly, or write to us at {email}.",
+            "de": "Wir können die Analysen gerade nicht anzeigen. Bitte versuchen Sie es gleich noch einmal oder schreiben Sie uns an {email}."
           }
         },
         {
@@ -5424,9 +5305,9 @@
           "kind": "long",
           "scope": "locale",
           "defaults": {
-            "it": "Il venditore è Le Quote, Azienda Agricola [ragione sociale da fornire], [sede legale da fornire], P.IVA [P.IVA da fornire]. Contatti: email info@le-quote.it, PEC [PEC da fornire], telefono [telefono da fornire].",
-            "en": "The seller is Le Quote, Azienda Agricola [ragione sociale da fornire], [sede legale da fornire], VAT no. [P.IVA da fornire]. Contacts: email info@le-quote.it, certified email (PEC) [PEC da fornire], phone [telefono da fornire].",
-            "de": "Verkäufer ist Le Quote, Azienda Agricola [ragione sociale da fornire], [sede legale da fornire], USt-IdNr. [P.IVA da fornire]. Kontakt: E-Mail info@le-quote.it, zertifizierte E-Mail (PEC) [PEC da fornire], Telefon [telefono da fornire]."
+            "it": "Il venditore è {ragione sociale}, {sede legale}, P.IVA {partita iva}. Contatti: email {email}, PEC {pec}, telefono {telefono}.",
+            "en": "The seller is {ragione sociale}, {sede legale}, VAT no. {partita iva}. Contacts: email {email}, certified email (PEC) {pec}, phone {telefono}.",
+            "de": "Verkäufer ist {ragione sociale}, {sede legale}, USt-IdNr. {partita iva}. Kontakt: E-Mail {email}, zertifizierte E-Mail (PEC) {pec}, Telefon {telefono}."
           }
         },
         {
@@ -5765,9 +5646,9 @@
           "kind": "long",
           "scope": "locale",
           "defaults": {
-            "it": "In caso di difetto scrivici a info@le-quote.it: secondo i casi sostituiamo il prodotto oppure riduciamo il prezzo o ti rimborsiamo, senza spese per te.",
-            "en": "If there is a defect write to us at info@le-quote.it: depending on the case we replace the product, or reduce the price or refund you, at no cost to you.",
-            "de": "Bei einem Mangel schreiben Sie uns an info@le-quote.it: Je nach Fall ersetzen wir das Produkt, mindern den Preis oder erstatten ihn, ohne Kosten für Sie."
+            "it": "In caso di difetto scrivici a {email}: secondo i casi sostituiamo il prodotto oppure riduciamo il prezzo o ti rimborsiamo, senza spese per te.",
+            "en": "If there is a defect write to us at {email}: depending on the case we replace the product, or reduce the price or refund you, at no cost to you.",
+            "de": "Bei einem Mangel schreiben Sie uns an {email}: Je nach Fall ersetzen wir das Produkt, mindern den Preis oder erstatten ihn, ohne Kosten für Sie."
           }
         },
         {
@@ -5798,9 +5679,9 @@
           "kind": "long",
           "scope": "locale",
           "defaults": {
-            "it": "Per reclami scrivici a info@le-quote.it o via PEC a [PEC da fornire]: rispondiamo entro [10, da confermare] giorni lavorativi.",
-            "en": "For complaints write to info@le-quote.it or by certified email to [PEC da fornire]: we reply within [10, to be confirmed] working days.",
-            "de": "Beschwerden richten Sie an info@le-quote.it oder per zertifizierter E-Mail an [PEC da fornire]: Wir antworten innerhalb von [10, noch zu bestätigen] Werktagen."
+            "it": "Per reclami scrivici a {email} o via PEC a {pec}: rispondiamo entro [10, da confermare] giorni lavorativi.",
+            "en": "For complaints write to {email} or by certified email to {pec}: we reply within [10, to be confirmed] working days.",
+            "de": "Beschwerden richten Sie an {email} oder per zertifizierter E-Mail an {pec}: Wir antworten innerhalb von [10, noch zu bestätigen] Werktagen."
           }
         },
         {
@@ -5992,9 +5873,9 @@
           "kind": "long",
           "scope": "locale",
           "defaults": {
-            "it": "Il modo più semplice è il pulsante “Recedere dal contratto qui” in cima a questa pagina: ricevi subito la ricevuta per email. In alternativa inviaci una dichiarazione chiara prima della scadenza: per email a info@le-quote.it, via PEC a [PEC da fornire] o per lettera a [sede legale da fornire]. Puoi usare il modulo tipo qui sotto, ma non è obbligatorio. Ti confermiamo la ricezione senza ritardo.",
-            "en": "The simplest way is the “Withdraw from contract here” button at the top of this page: you get the receipt by email straight away. Alternatively, send us a clear statement before the deadline: by email to info@le-quote.it, by certified email to [PEC da fornire] or by letter to [sede legale da fornire]. You may use the model form below, but you do not have to. We confirm receipt without delay.",
-            "de": "Am einfachsten ist die Schaltfläche „Vertrag hier widerrufen“ oben auf dieser Seite: Sie erhalten die Bestätigung sofort per E-Mail. Alternativ senden Sie uns vor Ablauf der Frist eine eindeutige Erklärung: per E-Mail an info@le-quote.it, per zertifizierter E-Mail an [PEC da fornire] oder per Brief an [sede legale da fornire]. Sie können das Musterformular unten verwenden, müssen es aber nicht. Wir bestätigen den Eingang unverzüglich."
+            "it": "Il modo più semplice è il pulsante “Recedere dal contratto qui” in cima a questa pagina: ricevi subito la ricevuta per email. In alternativa inviaci una dichiarazione chiara prima della scadenza: per email a {email}, via PEC a {pec} o per lettera a {sede legale}. Puoi usare il modulo tipo qui sotto, ma non è obbligatorio. Ti confermiamo la ricezione senza ritardo.",
+            "en": "The simplest way is the “Withdraw from contract here” button at the top of this page: you get the receipt by email straight away. Alternatively, send us a clear statement before the deadline: by email to {email}, by certified email to {pec} or by letter to {sede legale}. You may use the model form below, but you do not have to. We confirm receipt without delay.",
+            "de": "Am einfachsten ist die Schaltfläche „Vertrag hier widerrufen“ oben auf dieser Seite: Sie erhalten die Bestätigung sofort per E-Mail. Alternativ senden Sie uns vor Ablauf der Frist eine eindeutige Erklärung: per E-Mail an {email}, per zertifizierter E-Mail an {pec} oder per Brief an {sede legale}. Sie können das Musterformular unten verwenden, müssen es aber nicht. Wir bestätigen den Eingang unverzüglich."
           }
         },
         {
@@ -6135,9 +6016,9 @@
           "kind": "long",
           "scope": "locale",
           "defaults": {
-            "it": "Destinatario: Le Quote, Azienda Agricola [ragione sociale da fornire], [sede legale da fornire], P.IVA [P.IVA da fornire], info@le-quote.it, PEC [PEC da fornire].",
-            "en": "To: Le Quote, Azienda Agricola [ragione sociale da fornire], [sede legale da fornire], VAT no. [P.IVA da fornire], info@le-quote.it, PEC [PEC da fornire].",
-            "de": "An: Le Quote, Azienda Agricola [ragione sociale da fornire], [sede legale da fornire], USt-IdNr. [P.IVA da fornire], info@le-quote.it, PEC [PEC da fornire]."
+            "it": "Destinatario: {ragione sociale}, {sede legale}, P.IVA {partita iva}, {email}, PEC {pec}.",
+            "en": "To: {ragione sociale}, {sede legale}, VAT no. {partita iva}, {email}, PEC {pec}.",
+            "de": "An: {ragione sociale}, {sede legale}, USt-IdNr. {partita iva}, {email}, PEC {pec}."
           }
         },
         {
@@ -6296,9 +6177,9 @@
           "kind": "long",
           "scope": "locale",
           "defaults": {
-            "it": "Le Quote, Azienda Agricola [ragione sociale da fornire], [sede legale da fornire], P.IVA [P.IVA da fornire]. Per qualsiasi richiesta sui tuoi dati: info@le-quote.it.",
-            "en": "Le Quote, Azienda Agricola [ragione sociale da fornire], [sede legale da fornire], VAT no. [P.IVA da fornire]. For any request about your data: info@le-quote.it.",
-            "de": "Le Quote, Azienda Agricola [ragione sociale da fornire], [sede legale da fornire], USt-IdNr. [P.IVA da fornire]. Für Anfragen zu Ihren Daten: info@le-quote.it."
+            "it": "{ragione sociale}, {sede legale}, P.IVA {partita iva}. Per qualsiasi richiesta sui tuoi dati: {email}.",
+            "en": "{ragione sociale}, {sede legale}, VAT no. {partita iva}. For any request about your data: {email}.",
+            "de": "{ragione sociale}, {sede legale}, USt-IdNr. {partita iva}. Für Anfragen zu Ihren Daten: {email}."
           }
         },
         {
@@ -6615,9 +6496,9 @@
           "kind": "long",
           "scope": "locale",
           "defaults": {
-            "it": "Puoi chiederci in ogni momento l’accesso ai tuoi dati, la rettifica, la cancellazione, la limitazione del trattamento, la portabilità, e opporti ai trattamenti basati sul legittimo interesse, scrivendo a info@le-quote.it. Rispondiamo entro un mese.",
-            "en": "At any time you can ask us for access to your data, rectification, erasure, restriction of processing, portability, and object to processing based on legitimate interest, by writing to info@le-quote.it. We reply within one month.",
-            "de": "Sie können jederzeit Auskunft über Ihre Daten, Berichtigung, Löschung, Einschränkung der Verarbeitung und Datenübertragbarkeit verlangen sowie Verarbeitungen auf Grundlage berechtigter Interessen widersprechen, per E-Mail an info@le-quote.it. Wir antworten innerhalb eines Monats."
+            "it": "Puoi chiederci in ogni momento l’accesso ai tuoi dati, la rettifica, la cancellazione, la limitazione del trattamento, la portabilità, e opporti ai trattamenti basati sul legittimo interesse, scrivendo a {email}. Rispondiamo entro un mese.",
+            "en": "At any time you can ask us for access to your data, rectification, erasure, restriction of processing, portability, and object to processing based on legitimate interest, by writing to {email}. We reply within one month.",
+            "de": "Sie können jederzeit Auskunft über Ihre Daten, Berichtigung, Löschung, Einschränkung der Verarbeitung und Datenübertragbarkeit verlangen sowie Verarbeitungen auf Grundlage berechtigter Interessen widersprechen, per E-Mail an {email}. Wir antworten innerhalb eines Monats."
           }
         },
         {
@@ -6950,9 +6831,9 @@
           "kind": "long",
           "scope": "locale",
           "defaults": {
-            "it": "L’invio non è riuscito. Riprova, oppure manda la dichiarazione per email a info@le-quote.it: vale comunque, purché parta entro i 14 giorni.",
-            "en": "Sending failed. Please try again, or email your statement to info@le-quote.it: it is still valid as long as it is sent within the 14 days.",
-            "de": "Das Senden ist fehlgeschlagen. Bitte versuchen Sie es erneut oder senden Sie die Erklärung per E-Mail an info@le-quote.it: Sie gilt trotzdem, sofern sie innerhalb der 14 Tage abgeschickt wird."
+            "it": "L’invio non è riuscito. Riprova, oppure manda la dichiarazione per email a {email}: vale comunque, purché parta entro i 14 giorni.",
+            "en": "Sending failed. Please try again, or email your statement to {email}: it is still valid as long as it is sent within the 14 days.",
+            "de": "Das Senden ist fehlgeschlagen. Bitte versuchen Sie es erneut oder senden Sie die Erklärung per E-Mail an {email}: Sie gilt trotzdem, sofern sie innerhalb der 14 Tage abgeschickt wird."
           }
         },
         {
@@ -6961,9 +6842,9 @@
           "kind": "long",
           "scope": "locale",
           "defaults": {
-            "it": "Troppi invii da questa connessione. Riprova tra un’ora, oppure scrivici a info@le-quote.it.",
-            "en": "Too many submissions from this connection. Try again in an hour, or write to info@le-quote.it.",
-            "de": "Zu viele Übermittlungen von dieser Verbindung. Versuchen Sie es in einer Stunde erneut oder schreiben Sie an info@le-quote.it."
+            "it": "Troppi invii da questa connessione. Riprova tra un’ora, oppure scrivici a {email}.",
+            "en": "Too many submissions from this connection. Try again in an hour, or write to {email}.",
+            "de": "Zu viele Übermittlungen von dieser Verbindung. Versuchen Sie es in einer Stunde erneut oder schreiben Sie an {email}."
           }
         }
       ]
@@ -7349,9 +7230,9 @@
           "kind": "long",
           "scope": "locale",
           "defaults": {
-            "it": "Ricarica la pagina; se il problema resta, scrivici a info@le-quote.it.",
-            "en": "Reload the page; if the problem persists, write to us at info@le-quote.it.",
-            "de": "Laden Sie die Seite neu; besteht das Problem weiter, schreiben Sie uns an info@le-quote.it."
+            "it": "Ricarica la pagina; se il problema resta, scrivici a {email}.",
+            "en": "Reload the page; if the problem persists, write to us at {email}.",
+            "de": "Laden Sie die Seite neu; besteht das Problem weiter, schreiben Sie uns an {email}."
           }
         },
         {
@@ -7377,6 +7258,38 @@
           }
         }
       ]
+    }
+  ],
+  "tokens": [
+    {
+      "token": "{ragione sociale}",
+      "key": "business.SELLER.name",
+      "label": "Ragione sociale"
+    },
+    {
+      "token": "{sede legale}",
+      "key": "business.SELLER.address",
+      "label": "Sede legale"
+    },
+    {
+      "token": "{partita iva}",
+      "key": "business.SELLER.vat",
+      "label": "Partita IVA"
+    },
+    {
+      "token": "{email}",
+      "key": "business.SELLER.email",
+      "label": "Email"
+    },
+    {
+      "token": "{pec}",
+      "key": "business.SELLER.pec",
+      "label": "PEC"
+    },
+    {
+      "token": "{telefono}",
+      "key": "business.SELLER.phone",
+      "label": "Telefono"
     }
   ]
 }

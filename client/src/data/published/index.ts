@@ -7,7 +7,8 @@ import { legalEn } from '@/data/legal/en'
 import { legalDe } from '@/data/legal/de'
 import type { LegalContent } from '@/data/legal/types'
 import * as businessDefaults from '@/data/business'
-import { applyOverrides, flattenStrings, replaceEverywhere, withinPrefix, type Overrides } from './overrides'
+import { applyOverrides, flattenStrings, withinPrefix, type Overrides } from './overrides'
+import { detokenize, tokenPairs, tokenize } from './tokens'
 
 // Contenuti del sito come li vede il visitatore: i testi di partenza (content/, legal/, business.ts)
 // con sopra le modifiche pubblicate dal back office. Il back office, premendo "Pubblica", scrive
@@ -34,16 +35,18 @@ const BASE_LEGAL: Record<Locale, LegalContent> = { it: legalIt, en: legalEn, de:
 export function resolvePublished(source: PublishedContent) {
   const business = applyOverrides({ ...businessDefaults }, withinPrefix(source.shared, 'business'))
   // I dati aziendali compaiono anche dentro i testi (sede, P.IVA, email nelle pagine legali e
-  // nelle risposte): un dato cambiato si aggiorna ovunque compaia il valore di partenza.
+  // nelle risposte). Ogni testo passa per i segnaposto ({partita iva}): il valore di partenza o
+  // quello attuale scritto per esteso diventa segnaposto, e il segnaposto diventa il valore attuale.
   const before = flattenStrings({ ...businessDefaults })
   const after = flattenStrings(business)
-  const pairs = Object.entries(before).map(([key, value]) => [value, after[key] ?? value] as const)
+  const pairs = tokenPairs(Object.fromEntries(Object.keys(before).map((key) => [key, [before[key], after[key]]])))
+  const withBusiness = <T>(texts: T): T => detokenize(tokenize(texts, pairs), after)
 
   const forLocale = (locale: Locale) => {
     const overrides = { ...source.shared, ...source.texts[locale] }
     return {
-      content: replaceEverywhere(applyOverrides(BASE_CONTENT[locale], overrides), pairs),
-      legal: replaceEverywhere(applyOverrides(BASE_LEGAL[locale], withinPrefix(overrides, 'legal')), pairs),
+      content: withBusiness(applyOverrides(BASE_CONTENT[locale], overrides)),
+      legal: withBusiness(applyOverrides(BASE_LEGAL[locale], withinPrefix(overrides, 'legal'))),
     }
   }
   const resolved = Object.fromEntries(LOCALES.map((locale) => [locale, forLocale(locale)])) as Record<

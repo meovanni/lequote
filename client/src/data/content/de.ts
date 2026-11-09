@@ -40,13 +40,7 @@ export const de: Content = {
     { id: 'shop', label: 'Shop' },
   ],
 
-  footerNavItems: [
-    { id: 'territorio', label: 'Land' },
-    { id: 'olio', label: 'Öl' },
-    { id: 'miele', label: 'Honig' },
-    { id: 'filiera', label: 'Herkunft' },
-    { id: 'stagioni', label: 'Jahreszeiten' },
-    { id: 'shop', label: 'Shop' },
+  footerExtraNavItems: [
     { id: 'domande', label: 'Häufige Fragen' },
     { id: 'contatti', label: 'Kontakt' },
   ],
@@ -131,14 +125,12 @@ export const de: Content = {
         {
           id: 'olio-750ml',
           sku: 'OLIO-750ML',
-          label: 'Flasche 750 ml',
           imageLabel: 'Foto: 750-ml-Flasche natives Olivenöl extra von Le Quote',
           image: '',
         },
         {
           id: 'olio-5l',
           sku: 'OLIO-5L',
-          label: 'Kanister 5 L',
           imageLabel: 'Foto: 5-Liter-Kanister natives Olivenöl extra von Le Quote',
           image: '',
         },
@@ -153,14 +145,12 @@ export const de: Content = {
         {
           id: 'miele-250g',
           sku: 'MIELE-250G',
-          label: 'Glas 250 g',
           imageLabel: 'Foto: 250-g-Glas Honig von Le Quote',
           image: '',
         },
         {
           id: 'miele-500g',
           sku: 'MIELE-500G',
-          label: 'Glas 500 g',
           imageLabel: 'Foto: 500-g-Glas Honig von Le Quote',
           image: '',
         },
@@ -258,7 +248,7 @@ export const de: Content = {
           },
           {
             label: 'Lebensmittelunternehmer',
-            value: `Le Quote, Azienda Agricola, ${SELLER.address}`,
+            value: `${SELLER.name}, ${SELLER.address}`,
             reference: 'VO (EU) 1169/2011, Art. 9',
           },
           {
@@ -338,7 +328,7 @@ export const de: Content = {
           },
           {
             label: 'Lebensmittelunternehmer',
-            value: `Le Quote, Azienda Agricola, ${SELLER.address}`,
+            value: `${SELLER.name}, ${SELLER.address}`,
             reference: 'VO (EU) 1169/2011, Art. 9',
           },
         ],
@@ -693,7 +683,6 @@ export const de: Content = {
     bankAmount: 'Betrag',
     bankNote: 'Wir bereiten die Bestellung vor, sobald die Überweisung eingegangen ist.',
     pickupPaymentTitle: 'Zahlung bei Abholung',
-    pickupPaymentBody: 'Sie bezahlen auf dem Hof bei der Abholung: [bar und/oder Karte, noch zu bestätigen].',
     deliveryLabel: 'Lieferung',
     summaryTitle: 'Übersicht',
     backHome: 'Zur Startseite',

@@ -17,9 +17,8 @@ export const navItems: NavItem[] = [
   { id: 'shop', label: 'Shop' },
 ]
 
-// Il footer porta anche le sezioni che non stanno nella barra principale.
-export const footerNavItems: NavItem[] = [
-  ...navItems,
+// Il footer ripete il menu in alto e aggiunge le sezioni che non stanno nella barra principale.
+export const footerExtraNavItems: NavItem[] = [
   { id: 'domande', label: 'Domande frequenti' },
   { id: 'contatti', label: 'Contatti' },
 ]
@@ -111,14 +110,12 @@ export const shopCatalog: ShopProduct[] = [
       {
         id: 'olio-750ml',
         sku: 'OLIO-750ML',
-        label: 'Bottiglia 750 ml',
         imageLabel: 'Foto: Bottiglia di olio EVO Le Quote da 750 ml',
         image: '',
       },
       {
         id: 'olio-5l',
         sku: 'OLIO-5L',
-        label: 'Latta 5 L',
         imageLabel: 'Foto: Latta di olio EVO Le Quote da 5 litri',
         image: '',
       },
@@ -133,14 +130,12 @@ export const shopCatalog: ShopProduct[] = [
       {
         id: 'miele-250g',
         sku: 'MIELE-250G',
-        label: 'Vasetto 250 g',
         imageLabel: 'Foto: Vasetto di miele Le Quote da 250 g',
         image: '',
       },
       {
         id: 'miele-500g',
         sku: 'MIELE-500G',
-        label: 'Vasetto 500 g',
         imageLabel: 'Foto: Vasetto di miele Le Quote da 500 g',
         image: '',
       },
@@ -241,7 +236,7 @@ export const filiera = {
         },
         {
           label: 'Operatore',
-          value: `Le Quote, Azienda Agricola, ${SELLER.address}`,
+          value: `${SELLER.name}, ${SELLER.address}`,
           reference: 'Reg. (UE) 1169/2011, art. 9',
         },
         {
@@ -321,7 +316,7 @@ export const filiera = {
         },
         {
           label: 'Operatore',
-          value: `Le Quote, Azienda Agricola, ${SELLER.address}`,
+          value: `${SELLER.name}, ${SELLER.address}`,
           reference: 'Reg. (UE) 1169/2011, art. 9',
         },
       ],
@@ -734,7 +729,6 @@ export const orderUi = {
   bankAmount: 'Importo',
   bankNote: 'Prepariamo l’ordine quando il bonifico risulta accreditato.',
   pickupPaymentTitle: 'Pagamento al ritiro',
-  pickupPaymentBody: 'Paghi in azienda quando ritiri l’ordine: [contanti e/o carta, da confermare].',
   deliveryLabel: 'Consegna',
   summaryTitle: 'Riepilogo',
   backHome: 'Torna alla home',
@@ -822,7 +816,7 @@ export const it = {
   meta,
   ui,
   navItems,
-  footerNavItems,
+  footerExtraNavItems,
   hero,
   territorio,
   olio,

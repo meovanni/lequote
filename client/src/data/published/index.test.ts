@@ -32,6 +32,22 @@ describe('resolvePublished', () => {
     expect(site.contentByLocale.de.contatti.email).toBe('ciao@le-quote.it')
   })
 
+  it('un testo modificato a mano segue i dati aziendali, sia con i segnaposto sia per esteso', () => {
+    const site = resolvePublished({
+      texts: { it: { 'footer.legal': 'Le Quote, P.IVA {partita iva}.', 'contatti.title': 'Scrivici: 02173860673' } },
+      shared: { 'business.SELLER.vat': '02173860673' },
+    })
+    expect(site.contentByLocale.it.footer.legal).toBe('Le Quote, P.IVA 02173860673.')
+    expect(site.contentByLocale.it.contatti.title).toBe('Scrivici: 02173860673')
+  })
+
+  it('il menu in fondo ripete quello in alto, con le sue modifiche', () => {
+    const site = resolvePublished({ texts: { it: { 'navItems.0.label': 'La terra' } }, shared: {} })
+    const { navItems, footerExtraNavItems } = site.contentByLocale.it
+    expect(navItems[0].label).toBe('La terra')
+    expect(footerExtraNavItems.map((item) => item.id)).toEqual(['domande', 'contatti'])
+  })
+
   it('le funzioni dei testi continuano a funzionare', () => {
     const site = resolvePublished({ texts: { it: { 'shop.title': 'Compra' } }, shared: {} })
     expect(site.contentByLocale.it.shop.summaryCount(2)).toBe('2 articoli')

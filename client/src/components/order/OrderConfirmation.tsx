@@ -114,7 +114,7 @@ export function OrderConfirmation() {
                 <h2 id="order-pickup" className={`${styles.blockTitle} mono-label`}>
                   {orderUi.pickupPaymentTitle}
                 </h2>
-                <p className="body">{orderUi.pickupPaymentBody}</p>
+                <p className="body">{content.checkoutUi.paymentOptions.ritiro.note}</p>
               </section>
             )}
 

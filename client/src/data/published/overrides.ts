@@ -19,7 +19,7 @@ export function flattenStrings(value: unknown, prefix = ''): Record<string, stri
   return Object.assign({}, ...entries.map(([key, item]) => flattenStrings(item, prefix ? `${prefix}.${key}` : key)))
 }
 
-function mapStrings<T>(value: T, change: (text: string, path: string) => string, path = ''): T {
+export function mapStrings<T>(value: T, change: (text: string, path: string) => string, path = ''): T {
   const child = (key: string) => (path ? `${path}.${key}` : key)
   if (typeof value === 'string') return change(value, path) as T
   if (Array.isArray(value)) return value.map((item, index) => mapStrings(item, change, child(String(index)))) as T

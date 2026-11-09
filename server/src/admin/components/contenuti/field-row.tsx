@@ -16,6 +16,9 @@ export function fieldState(field: ContentField, scope: Scope, entries: EntryMap)
   }
 }
 
+/** Il testo contiene un dato aziendale come segnaposto ({partita iva}, {sede legale}). */
+const usesTokens = (field: ContentField) => Object.values(field.defaults).some((text) => /\{[a-z ]+\}/.test(text ?? ''))
+
 const scopesOf = (field: ContentField): Scope[] => (field.scope === 'shared' ? ['shared'] : LOCALES)
 
 export const isModified = (field: ContentField, entries: EntryMap) => scopesOf(field).some((scope) => fieldState(field, scope, entries).modified)
@@ -49,6 +52,11 @@ export function FieldRow({ field, entries, storefront, sectionLabel }: FieldRowP
       <Text size="small" weight="plus">
         {field.label}
       </Text>
+      {!field.locked && usesTokens(field) && (
+        <Text size="xsmall" className="text-ui-fg-subtle">
+          Le parti tra graffe, come {"{partita iva}"}, prendono il valore da Azienda › Dati aziendali: lasciale nel testo.
+        </Text>
+      )}
       {field.locked && (
         <Text size="xsmall" className="flex items-start gap-1 text-ui-fg-subtle">
           <LockClosedSolid className="mt-px shrink-0" />

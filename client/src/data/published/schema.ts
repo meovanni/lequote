@@ -8,6 +8,7 @@ import { legalDe } from '@/data/legal/de'
 import { LEGAL_PAGES } from '@/data/legal/types'
 import * as businessDefaults from '@/data/business'
 import { flattenStrings } from './overrides'
+import { BUSINESS_TOKENS, tokenPairs, tokenize } from './tokens'
 
 // Elenco dei contenuti modificabili dal back office (sezione Contenuti), con i testi di partenza
 // nelle tre lingue. Lo genera "npm run content:export" in server/src/modules/contenuti: il server
@@ -35,9 +36,18 @@ export interface ContentSection {
   fields: ContentField[]
 }
 
+export interface ContentToken {
+  token: string
+  /** Campo dei dati aziendali da cui prende il valore ("business.SELLER.vat"). */
+  key: string
+  label: string
+}
+
 export interface ContentSchema {
   version: 1
   sections: ContentSection[]
+  /** Segnaposto dei dati aziendali che i testi possono contenere ({partita iva}). */
+  tokens: ContentToken[]
 }
 
 const legalLabels = legalIt.ui.linkLabels
@@ -53,7 +63,7 @@ const SECTIONS: { id: string; group: string; label: string; prefixes: string[] }
   { id: 'domande', group: 'Home', label: 'Domande frequenti', prefixes: ['domande'] },
   { id: 'contatti', group: 'Home', label: 'Contatti', prefixes: ['contatti'] },
   { id: 'footer', group: 'Home', label: 'Piè di pagina', prefixes: ['footer'] },
-  { id: 'menu', group: 'Home', label: 'Menu', prefixes: ['navItems', 'footerNavItems'] },
+  { id: 'menu', group: 'Home', label: 'Menu', prefixes: ['navItems', 'footerExtraNavItems'] },
   { id: 'meta', group: 'Home', label: 'Google e condivisioni', prefixes: ['meta'] },
   { id: 'prodotto-olio', group: 'Schede prodotto', label: 'Olio extravergine', prefixes: ['products.olio-extravergine'] },
   { id: 'prodotto-miele', group: 'Schede prodotto', label: 'Miele', prefixes: ['products.miele'] },
@@ -150,7 +160,7 @@ const WORDS: Record<string, string> = {
   variants: 'Formato',
   shopCatalog: 'Prodotto',
   navItems: 'Menu in alto',
-  footerNavItems: 'Menu in fondo',
+  footerExtraNavItems: 'Menu in fondo (in più)',
   // Dati aziendali
   SELLER: 'Venditore',
   BANK_TRANSFER: 'Bonifico',
@@ -243,13 +253,17 @@ export function buildContentSchema(): ContentSchema {
   }
   const flat = Object.fromEntries(LOCALES.map((locale) => [locale, flattenStrings(sources[locale])])) as Record<Locale, Record<string, string>>
   const shared = flattenStrings({ business: { ...businessDefaults } })
+  // Nei testi i dati aziendali compaiono come segnaposto: si cambiano in Dati aziendali, una volta.
+  const businessFlat = flattenStrings({ ...businessDefaults })
+  const pairs = tokenPairs(Object.fromEntries(Object.entries(businessFlat).map(([key, value]) => [key, [value]])))
+  const tokenized = Object.fromEntries(LOCALES.map((locale) => [locale, tokenize(flat[locale], pairs)])) as Record<Locale, Record<string, string>>
   const allKeys = [...new Set([...LOCALES.flatMap((locale) => Object.keys(flat[locale])), ...Object.keys(shared)])]
 
   const fieldFor = (key: string): ContentField => {
     if (key in shared) {
       return { key, label: '', kind: kindOf(key, [shared[key]]), scope: 'shared', defaults: { shared: shared[key] } }
     }
-    const defaults = Object.fromEntries(LOCALES.filter((locale) => key in flat[locale]).map((locale) => [locale, flat[locale][key]]))
+    const defaults = Object.fromEntries(LOCALES.filter((locale) => key in flat[locale]).map((locale) => [locale, tokenized[locale][key]]))
     const kind = kindOf(key, Object.values(defaults))
     // Le foto sono le stesse in ogni lingua: un solo valore, quello italiano di partenza.
     if (kind === 'image') return { key, label: '', kind, scope: 'shared', defaults: { shared: defaults.it ?? '' } }
@@ -267,12 +281,21 @@ export function buildContentSchema(): ContentSchema {
         const rest = key.slice(prefix.length + 1).split('.').filter(Boolean)
         const prefixLabel = section.prefixes.length > 1 ? [word(prefix)] : []
         const label = [...prefixLabel, labelFor(rest, nodeAt(root, prefix.split('.')))].filter(Boolean).join(' › ')
-        return [{ ...field, label: LABELS[key] ?? (label || word(prefix)), ...(LOCKED[key] && { locked: LOCKED[key] }) }]
+        const locked = LOCKED[key] ?? followsBusiness(field)
+        return [{ ...field, label: LABELS[key] ?? (label || word(prefix)), ...(locked && { locked }) }]
       })
     return { id: section.id, group: section.group, label: section.label, fields }
   })
 
-  return { version: 1, sections }
+  const tokens = BUSINESS_TOKENS.map(({ token, key, label }) => ({ token, key: `business.${key}`, label }))
+  return { version: 1, sections, tokens }
+}
+
+/** Un campo fatto solo di un dato aziendale (il telefono nei Contatti) si cambia in Dati aziendali. */
+function followsBusiness(field: ContentField): string | undefined {
+  const values = Object.values(field.defaults)
+  const token = BUSINESS_TOKENS.find(({ token }) => values.length > 0 && values.every((value) => value === token))
+  return token && `È il dato «${token.label}»: si cambia in Azienda › Dati aziendali, e vale per tutto il sito.`
 }
 
 /** Chiavi modificabili che non stanno in nessuna sezione: devono restare zero (test). */

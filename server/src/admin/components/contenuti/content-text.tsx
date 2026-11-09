@@ -3,7 +3,7 @@ import { useEffect, useState, type KeyboardEvent } from 'react'
 
 // Campo di testo del sito, modificabile sul posto come i campi della pagina Gestione: si salva
 // uscendo dal campo o con Invio (Maiusc+Invio va a capo nei testi lunghi), Esc annulla. Svuotato,
-// torna al testo di partenza.
+// resta vuoto sul sito; il testo di partenza si rimette con «Testo di partenza» accanto al campo.
 
 const FIELD = clx(
   'txt-compact-small w-full min-w-0 resize-y rounded-md border bg-transparent px-2 py-1.5 text-ui-fg-base outline-none transition-colors',
@@ -30,7 +30,7 @@ export function ContentText({ value, label, multiline, modified, disabled = fals
   const commit = () => {
     const next = multiline ? text.trim() : text.replace(/\s+/g, ' ').trim()
     if (next === value.trim()) return
-    onSave(next === '' ? null : next)
+    onSave(next)
   }
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (!multiline || !event.shiftKey)) {
@@ -48,6 +48,7 @@ export function ContentText({ value, label, multiline, modified, disabled = fals
   return multiline ? (
     <textarea
       aria-label={label}
+      placeholder="Vuoto: sul sito non compare"
       value={text}
       rows={rowsFor(value)}
       disabled={disabled}
@@ -59,6 +60,7 @@ export function ContentText({ value, label, multiline, modified, disabled = fals
   ) : (
     <input
       aria-label={label}
+      placeholder="Vuoto: sul sito non compare"
       value={text}
       disabled={disabled}
       onChange={(event) => setText(event.target.value)}

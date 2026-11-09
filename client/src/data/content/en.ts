@@ -40,13 +40,7 @@ export const en: Content = {
     { id: 'shop', label: 'Shop' },
   ],
 
-  footerNavItems: [
-    { id: 'territorio', label: 'Land' },
-    { id: 'olio', label: 'Oil' },
-    { id: 'miele', label: 'Honey' },
-    { id: 'filiera', label: 'Supply chain' },
-    { id: 'stagioni', label: 'Seasons' },
-    { id: 'shop', label: 'Shop' },
+  footerExtraNavItems: [
     { id: 'domande', label: 'FAQ' },
     { id: 'contatti', label: 'Contact' },
   ],
@@ -131,14 +125,12 @@ export const en: Content = {
         {
           id: 'olio-750ml',
           sku: 'OLIO-750ML',
-          label: '750 ml bottle',
           imageLabel: 'Photo: 750 ml bottle of Le Quote extra virgin olive oil',
           image: '',
         },
         {
           id: 'olio-5l',
           sku: 'OLIO-5L',
-          label: '5 L tin',
           imageLabel: 'Photo: 5 litre tin of Le Quote extra virgin olive oil',
           image: '',
         },
@@ -153,14 +145,12 @@ export const en: Content = {
         {
           id: 'miele-250g',
           sku: 'MIELE-250G',
-          label: '250 g jar',
           imageLabel: 'Photo: 250 g jar of Le Quote honey',
           image: '',
         },
         {
           id: 'miele-500g',
           sku: 'MIELE-500G',
-          label: '500 g jar',
           imageLabel: 'Photo: 500 g jar of Le Quote honey',
           image: '',
         },
@@ -258,7 +248,7 @@ export const en: Content = {
           },
           {
             label: 'Food business operator',
-            value: `Le Quote, Azienda Agricola, ${SELLER.address}`,
+            value: `${SELLER.name}, ${SELLER.address}`,
             reference: 'Reg. (EU) 1169/2011, art. 9',
           },
           {
@@ -338,7 +328,7 @@ export const en: Content = {
           },
           {
             label: 'Food business operator',
-            value: `Le Quote, Azienda Agricola, ${SELLER.address}`,
+            value: `${SELLER.name}, ${SELLER.address}`,
             reference: 'Reg. (EU) 1169/2011, art. 9',
           },
         ],
@@ -692,7 +682,6 @@ export const en: Content = {
     bankAmount: 'Amount',
     bankNote: 'We prepare the order once the transfer has cleared.',
     pickupPaymentTitle: 'Payment on pickup',
-    pickupPaymentBody: 'Pay at the farm when you collect the order: [cash and/or card, to be confirmed].',
     deliveryLabel: 'Delivery',
     summaryTitle: 'Summary',
     backHome: 'Back to home',

@@ -43,6 +43,22 @@ describe('contenuti modificabili dal back office', () => {
     )
   })
 
+  it('nei testi i dati aziendali sono segnaposto; i campi che sono solo un dato si cambiano in Dati aziendali', () => {
+    const byKey = new Map(fields.map((field) => [field.key, field]))
+    expect(byKey.get('footer.legal')?.defaults.it).toContain('{partita iva}')
+    expect(byKey.get('legal.documents.condizioni-di-vendita.sections.0.body.0')?.defaults.de).toContain('{sede legale}')
+    expect(byKey.get('contatti.phone')?.locked).toMatch(/Dati aziendali/)
+    expect(byKey.get('business.SELLER.vat')?.defaults.shared).not.toContain('{')
+    expect(schema.tokens.map((token) => token.key)).toContain('business.SELLER.vat')
+  })
+
+  it('lo stesso testo non compare due volte: formati, menu in fondo, pagamento al ritiro', () => {
+    const keys = fields.map((field) => field.key)
+    expect(keys.some((key) => /^shopCatalog.d+.variants.d+.label$/.test(key))).toBe(false)
+    expect(keys.filter((key) => key.startsWith('footerExtraNavItems.'))).toHaveLength(2)
+    expect(keys).not.toContain('orderUi.pickupPaymentBody')
+  })
+
   it('le diciture imposte dalla legge sono bloccate', () => {
     const locked = fields.filter((field) => field.locked).map((field) => field.key)
     expect(locked).toEqual(

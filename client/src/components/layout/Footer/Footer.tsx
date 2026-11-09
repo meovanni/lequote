@@ -9,7 +9,7 @@ import { ADMIN_URL } from '@/lib/site'
 import styles from './Footer.module.css'
 
 export function Footer() {
-  const { contatti, footer, footerNavItems, ui } = useContent()
+  const { contatti, footer, navItems, footerExtraNavItems, ui } = useContent()
   const locale = useLocale()
   const legal = legalByLocale[locale]
   return (
@@ -20,11 +20,14 @@ export function Footer() {
         </Reveal>
 
         <div className={styles.general}>
-          <a href={`mailto:${contatti.email}`} className="body">
-            {contatti.email}
-          </a>
-          <span className="body">{contatti.phone}</span>
-          <p className={`${styles.note} body-sm`}>{contatti.note}</p>
+          {/* Un dato svuotato nel back office non si mostra (per esempio il telefono). */}
+          {contatti.email && (
+            <a href={`mailto:${contatti.email}`} className="body">
+              {contatti.email}
+            </a>
+          )}
+          {contatti.phone && <span className="body">{contatti.phone}</span>}
+          {contatti.note && <p className={`${styles.note} body-sm`}>{contatti.note}</p>}
         </div>
       </div>
 
@@ -37,7 +40,7 @@ export function Footer() {
 
           <nav aria-label={ui.footerNavLabel}>
             <ul className={styles.navList}>
-              {footerNavItems.map((item) => (
+              {[...navItems, ...footerExtraNavItems].map((item) => (
                 <li key={item.id}>
                   <a href={sectionHref(locale, item.id)} className="body-sm">
                     {item.label}
@@ -48,7 +51,7 @@ export function Footer() {
           </nav>
 
           <ul className={styles.social}>
-            {footer.social.map((social) => (
+            {footer.social.filter((social) => social.label && social.href).map((social) => (
               <li key={social.label}>
                 <a href={social.href} className="body-sm">
                   {social.label}

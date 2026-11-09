@@ -26,9 +26,18 @@ export interface ContentSection {
   fields: ContentField[]
 }
 
+export interface ContentToken {
+  token: string
+  /** Campo dei dati aziendali da cui il segnaposto prende il valore ("business.SELLER.vat"). */
+  key: string
+  label: string
+}
+
 export interface ContentSchema {
   version: 1
   sections: ContentSection[]
+  /** Segnaposto dei dati aziendali nei testi ({partita iva}), vedi lib/tokens.ts. */
+  tokens: ContentToken[]
 }
 
 export const CONTENT_SCHEMA = generated as unknown as ContentSchema

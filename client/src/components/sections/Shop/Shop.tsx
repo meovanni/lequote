@@ -38,11 +38,13 @@ function VariantImage({ product, option }: { product: ShopProduct; option: ShopV
 }
 
 function VariantCard({ product, option, variant, loading }: VariantCardProps) {
-  const { cartUi, productUi } = useContent()
+  const { cartUi, productUi, products } = useContent()
   const locale = useLocale()
   const { cart, busy, addItem, setQuantity } = useCart()
   const line = variant ? cart?.lines.find((item) => item.variantId === variant.id) : undefined
-  const itemName = `${product.name}, ${option.label}`
+  // Il nome del formato è uno solo, quello della scheda prodotto.
+  const label = products[product.handle as keyof typeof products]?.variantLabels[option.sku] ?? option.sku
+  const itemName = `${product.name}, ${label}`
   const max = variant?.stock ?? MAX_PER_LINE
   const unavailable = !loading && (!variant || !variant.purchasable)
 
@@ -96,7 +98,7 @@ function VariantCard({ product, option, variant, loading }: VariantCardProps) {
         {unavailable && <span className={`${styles.unavailableBadge} mono-label`}>{productUi.unavailable}</span>}
       </div>
       <div className={styles.variantCardBody}>
-        <span className="body">{option.label}</span>
+        <span className="body">{label}</span>
         <span className={`${styles.variantPrice} mono-figure`}>
           {variant?.price != null ? formatPrice(locale, variant.price) : '—'}
         </span>

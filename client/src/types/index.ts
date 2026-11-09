@@ -13,7 +13,6 @@ export interface ShopVariantOption {
   id: string
   /** Codice del formato nel back office: prezzo e disponibilità arrivano da Medusa. */
   sku: string
-  label: string
   /** Foto del formato caricata dal back office; vuota o assente, lo shop mostra l'illustrazione. */
   image?: string
   imageLabel: string
