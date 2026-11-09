@@ -188,3 +188,23 @@ Lavoro nostro:
   dipendenze installate, `STOREFRONT_BUILD_COMMAND` compila e copia `build/client/` nella cartella
   servita da Caddy.
 - `CONTENT_IMAGES_DIR` (foto caricate) va nei backup insieme al database.
+
+## Online (2026-11-07)
+
+- VPS Aruba O4A8 `vps-siti`, 80.211.141.123, Ubuntu 24.04. Accesso solo con chiave SSH
+  (`~/.ssh/vps-siti` sul PC), firewall 22/80/443, fail2ban, aggiornamenti automatici (riavvio alle
+  4:30 se serve), swap 2 GB, log dei container limitati a 30 MB.
+- DNS su Aruba (technorail): `@` A 80.211.141.123, `www` CNAME `le-quote.it`. MX invariati.
+- Proxy condiviso in `/srv/proxy` (Caddy, un file per sito in `sites/`), pagine statiche in `/srv/www/<sito>`.
+- Le Quote in `/srv/lequote`: codice in `app/`, variabili in `app/deploy/lequote/.env`, dati in `data/`.
+- Rilascio dal PC: `bash deploy/deploy.sh` (copia i file, ricostruisce, rigenera la vetrina).
+- Backup: `/usr/local/bin/backup-lequote` ogni notte alle 3:30 in `/srv/backup/lequote`
+  (database + referti + foto + modifiche pubblicate, 14 giorni). Manca ancora la copia fuori dal VPS.
+- Dati iniziali: seed di produzione più il lotto L01011026 con campagna (2026/2027), analisi e
+  Frantoio San Michele copiati dal database locale.
+- Utenti del back office, senza comandi: Impostazioni › Utenti › Invita, con il campo Ruoli
+  (Super Admin = amministratore). Medusa non manda l'email d'invito: il link si copia dal menu
+  dell'invito, dove c'è anche "Reinvia" quando scade (24 ore). Ruolo di un utente esistente:
+  Impostazioni › Ruoli › il ruolo › Aggiungi utenti. Gli agenti si invitano dalla loro scheda.
+  `medusa user --invite` sul server dà già il Super Admin; `src/scripts/ensure-roles.ts` serve solo
+  a recuperare utenti rimasti senza ruolo.

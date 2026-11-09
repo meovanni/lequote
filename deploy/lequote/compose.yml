@@ -1,0 +1,57 @@
+# Le Quote sul VPS (/srv/lequote/app/deploy/lequote). Dati in /srv/lequote/data, pagine statiche in
+# /srv/www/le-quote (servite da Caddy, vedi deploy/proxy). Variabili in .env accanto a questo file.
+name: lequote
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - /srv/lequote/data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_NAME}']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ['redis-server', '--save', '', '--appendonly', 'no', '--maxmemory', '128mb']
+
+  medusa:
+    build:
+      context: ../..
+      dockerfile: deploy/lequote/Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # Postgres nella rete interna dei container, senza SSL (Medusa in produzione lo darebbe per scontato).
+      DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}?sslmode=disable
+      REDIS_URL: redis://redis:6379
+      STOREFRONT_DIR: /app/client
+      STOREFRONT_BUILD_COMMAND: build-site
+      CONTENT_IMAGES_DIR: /data/contenuti
+      FILIERA_FILES_DIR: /data/filiera
+    volumes:
+      - /srv/www/le-quote:/data/www
+      - /srv/lequote/data/published:/data/published
+      - /srv/lequote/data/contenuti:/data/contenuti
+      - /srv/lequote/data/filiera:/data/filiera
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      default:
+      web:
+        aliases: [lequote-medusa]
+
+networks:
+  web:
+    external: true

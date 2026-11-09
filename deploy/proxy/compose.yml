@@ -1,0 +1,28 @@
+# Caddy davanti a tutti i siti del VPS (/srv/proxy): HTTPS automatico, un file per sito in sites/.
+# Le pagine statiche stanno in /srv/www/<sito>; i back end sono raggiungibili sulla rete "web".
+name: proxy
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./sites:/etc/caddy/sites:ro
+      - /srv/www:/srv/www:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - web
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  web:
+    name: web

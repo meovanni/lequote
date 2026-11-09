@@ -1,0 +1,15 @@
+{
+	# Avvisi di Let's Encrypt sui certificati.
+	email info@le-quote.it
+}
+
+(sicurezza) {
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+}
+
+import sites/*.caddy

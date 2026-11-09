@@ -19,6 +19,9 @@ export default defineConfig({
   server: {
     proxy: { '/store': medusaTarget, '/filiera': medusaTarget, '/contenuti': medusaTarget },
   },
+  // Il prerender legge le pagine da un server di anteprima temporaneo e lo cerca su 127.0.0.1: nei
+  // container "localhost" diventa ::1 e il build fallisce, quindi l'indirizzo è fisso.
+  preview: { host: '127.0.0.1' },
   // La scena 3D di Territorio si importa in modo pigro: senza questo Vite scopre three e la
   // fiber solo a pagina aperta, rifà il bundle delle dipendenze e la pagina resta con due React.
   optimizeDeps: {

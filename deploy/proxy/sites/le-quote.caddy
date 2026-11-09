@@ -1,0 +1,23 @@
+# Le Quote: vetrina statica, back end e back office Medusa sullo stesso dominio.
+le-quote.it {
+	import sicurezza
+	encode zstd gzip
+
+	@medusa path /store/* /admin/* /auth/* /app /app/* /contenuti/* /hooks/* /health
+	handle @medusa {
+		reverse_proxy lequote-medusa:9000
+	}
+
+	handle {
+		root * /srv/www/le-quote
+		@assets path /assets/*
+		header @assets Cache-Control "public, max-age=31536000, immutable"
+		# Pagine prerenderizzate; le altre (/lotto/..., /ordine) passano dal guscio dell'app.
+		try_files {path} {path}/index.html /__spa-fallback.html
+		file_server
+	}
+}
+
+www.le-quote.it {
+	redir https://le-quote.it{uri} permanent
+}
