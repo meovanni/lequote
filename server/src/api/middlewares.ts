@@ -17,6 +17,7 @@ import { AgentCreate, AgentInvite, AgentUpdate, BookingCreate, BookingUpdate, Or
 import { guard } from './permissions'
 import { WithdrawalCreate } from './store/withdrawals/validators'
 import { ContentDraft, ContentImageUpload } from './admin/contenuti/validators'
+import { DdtCreate, InvoiceCreate } from './admin/documenti/validators'
 
 // Le rotte /admin richiedono già l'accesso al back office; qui si aggiungono i permessi per ruolo
 // e la validazione dei corpi. Le anagrafiche (/admin/filiera/registries/:kind) si validano nella
@@ -34,9 +35,12 @@ export default defineMiddlewares({
     // Ordini dal gestionale e incassi: stessi permessi degli ordini di Medusa.
     ...guard('order', '/admin/backoffice/orders'),
     ...guard('order', '/admin/backoffice/catalog'),
+    ...guard('order', '/admin/backoffice/customers'),
     ...guard('order', '/admin/backoffice/order-imports'),
     // Pagina Gestione: magazzino, prezzi e consegne stanno con gli ordini.
     ...guard('order', '/admin/gestione'),
+    // DDT e fatture: con gli ordini.
+    ...guard('order', '/admin/documenti'),
     ...guard('agent', '/admin/agents'),
     ...guard('sales', '/admin/sell'),
     // Contenuti del sito: testi, foto e pubblicazione.
@@ -61,6 +65,9 @@ export default defineMiddlewares({
     { matcher: '/admin/filiera/stage-templates', method: 'POST', middlewares: [validateAndTransformBody(StageTemplateCreate)] },
     { matcher: '/admin/filiera/stage-templates/:id', method: 'POST', middlewares: [validateAndTransformBody(StageTemplateUpdate)] },
     { matcher: '/admin/filiera/supplier-types', method: 'POST', middlewares: [validateAndTransformBody(SupplierTypeCreate)] },
+    { matcher: '/admin/gestione/orders/:id/ddt', method: 'POST', middlewares: [validateAndTransformBody(DdtCreate)] },
+    { matcher: '/admin/sell/bookings/:id/ddt', method: 'POST', middlewares: [validateAndTransformBody(DdtCreate)] },
+    { matcher: '/admin/documenti/fatture', method: 'POST', middlewares: [validateAndTransformBody(InvoiceCreate)] },
     { matcher: '/admin/gestione/stock', method: 'POST', middlewares: [validateAndTransformBody(StockSet)] },
     { matcher: '/admin/gestione/pack', method: 'POST', middlewares: [validateAndTransformBody(PackCreate)] },
     { matcher: '/admin/gestione/prices', method: 'POST', middlewares: [validateAndTransformBody(PriceSet)] },

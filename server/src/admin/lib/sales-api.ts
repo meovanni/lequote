@@ -1,5 +1,6 @@
 import { toast } from '@medusajs/ui'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import type { OrderDocuments } from './documenti-api'
 import { sdk } from './sdk'
 
 // Tipi e accesso ai dati delle vendite: ordini dal gestionale, incassi, agenti, area vendita.
@@ -45,6 +46,8 @@ export type Booking = {
   /** Consegna segnata nella pagina Gestione; null se ancora da consegnare. */
   delivered: { at: string; by: string | null } | null
   lines: BookingLine[]
+  /** DDT e fattura emessi per l'ordine (non annullati). */
+  documents: OrderDocuments
 }
 
 export type PaymentMethod = 'contanti' | 'bonifico' | 'assegno' | 'carta' | 'altro'

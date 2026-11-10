@@ -5,6 +5,8 @@ import { useSalesAction } from '../../lib/sales-api'
 import { InlineText, Labeled } from '../inline/inline-fields'
 import { LinesEditor } from '../sales/lines-editor'
 import { PaymentsEditor } from '../sales/payments-editor'
+import { DdtPanel } from '../documenti/ddt-panel'
+import { documentPdfUrl, refLabel } from '../../lib/documenti-api'
 
 // Il dettaglio di un ordine si apre sotto la sua riga: dati del cliente modificabili sul posto,
 // prodotti (anche da aggiungere), incassi correggibili. Niente scheda a parte.
@@ -63,6 +65,22 @@ export function OrderDetail({ order, formats }: { order: GestioneOrder; formats:
         <Button size="small" variant="transparent" className="self-start" asChild>
           <Link to={`/orders/${order.id}`}>Scheda completa di Medusa</Link>
         </Button>
+      </div>
+      <div className="flex flex-col gap-4 border-t border-ui-border-base pt-4 lg:col-span-3">
+        <DdtPanel orderId={order.id} ddt={order.documents.ddt} canceled={!open} path={`/admin/gestione/orders/${order.id}/ddt`} canCancel />
+        {order.documents.fattura && (
+          <div className="flex flex-wrap items-center gap-2">
+            <Text size="small" weight="plus">
+              Fatturato:
+            </Text>
+            <Text size="small">{refLabel('fattura', order.documents.fattura)}</Text>
+            <Button size="small" variant="secondary" asChild>
+              <a href={documentPdfUrl(order.documents.fattura.id)} target="_blank" rel="noreferrer">
+                Apri PDF
+              </a>
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )

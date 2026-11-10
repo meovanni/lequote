@@ -1,5 +1,8 @@
 import type { MedusaContainer } from '@medusajs/framework/types'
 import { ContainerRegistrationKeys } from '@medusajs/framework/utils'
+import { DOCUMENTI_MODULE } from '../../modules/documenti'
+import type DocumentiModuleService from '../../modules/documenti/service'
+import type { OrderDocuments } from '../../modules/documenti/service'
 import { VENDITE_MODULE } from '../../modules/vendite'
 import { balanceDue, customerLabel, rankAgents, summarizeSales, type SaleOrder } from '../../modules/vendite/lib/sales'
 import type VenditeModuleService from '../../modules/vendite/service'
@@ -58,6 +61,8 @@ export type BookingView = SaleOrder & {
   /** Consegna segnata nella pagina Gestione (lib/magazzino.ts); null se ancora da consegnare. */
   delivered: { at: string; by: string | null } | null
   lines: { id: string; variantId: string | null; sku: string; title: string; subtitle: string; quantity: number; unitPrice: number; total: number }[]
+  /** DDT e fattura emessi (non annullati) per l'ordine. */
+  documents: OrderDocuments[string]
 }
 
 /** Ordini collegati a un agente (link agente-ordine). */
@@ -75,6 +80,7 @@ export async function loadBookings(container: MedusaContainer, orderIds: string[
   const { data } = await query.graph({ entity: 'order', fields: ORDER_FIELDS, filters: { id: orderIds } })
   const vendite: VenditeModuleService = container.resolve(VENDITE_MODULE)
   const payments = await vendite.listSalePayments({ order_id: orderIds })
+  const documents = await container.resolve<DocumentiModuleService>(DOCUMENTI_MODULE).documentsForOrders(orderIds)
 
   return (data as unknown as RawOrder[])
     .filter((order) => inPeriod(new Date(order.created_at), period))
@@ -121,6 +127,7 @@ export async function loadBookings(container: MedusaContainer, orderIds: string[
         },
         delivered: handedOver ? { at: handedOver.at, by: handedOver.by } : null,
         lines,
+        documents: documents[order.id] ?? {},
       }
     })
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))

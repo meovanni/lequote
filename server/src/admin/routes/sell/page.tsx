@@ -11,6 +11,9 @@ import { LinesEditor, type LineOption } from '../../components/sales/lines-edito
 import { PaymentsEditor } from '../../components/sales/payments-editor'
 import { ByCustomerTable, ByProductTable, PeriodFilter, RankingTable, SummaryFigures } from '../../components/sales/summary'
 import { useUnsavedChanges } from '../../lib/unsaved-changes'
+import { DdtPanel } from '../../components/documenti/ddt-panel'
+import { agentDdtPdfUrl } from '../../lib/documenti-api'
+import { scrollIntoMain } from '../../lib/scroll'
 import {
   formatDay,
   formatEuro,
@@ -49,7 +52,7 @@ function NewBooking({ catalog, onDone }: { catalog: Catalog | undefined; onDone:
   useUnsavedChanges(dirty)
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    scrollIntoMain(ref.current)
   }, [])
   return (
     <Container ref={ref} className="scroll-mt-4 px-4 py-5 sm:px-6">
@@ -62,6 +65,7 @@ function NewBooking({ catalog, onDone }: { catalog: Catalog | undefined; onDone:
       {catalog ? (
         <BookingForm
           catalog={catalog}
+          customersPath="/admin/sell/customers"
           submitting={action.isPending}
           submitLabel="Inserisci prenotazione"
           onDirtyChange={setDirty}
@@ -114,6 +118,15 @@ function BookingDetail({ booking, catalog }: { booking: Booking; catalog: Catalo
       </div>
       <LinesEditor key={JSON.stringify(booking.lines)} lines={booking.lines} options={optionsOf(catalog)} editable={open} path={`/admin/sell/bookings/${booking.id}`} />
       <PaymentsEditor payments={booking.payments} basePath={`/admin/sell/bookings/${booking.id}/payments`} editable={booking.status !== 'canceled'} />
+      <div className="lg:col-span-3">
+        <DdtPanel
+          orderId={booking.id}
+          ddt={booking.documents.ddt}
+          canceled={booking.status === 'canceled'}
+          path={`/admin/sell/bookings/${booking.id}/ddt`}
+          pdfUrl={agentDdtPdfUrl(booking.id)}
+        />
+      </div>
     </div>
   )
 }

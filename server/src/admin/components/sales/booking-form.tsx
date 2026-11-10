@@ -2,6 +2,7 @@ import { ChevronDownMini } from '@medusajs/icons'
 import { Button, clx, Heading, Input, Label, RadioGroup, Select, Text, Textarea } from '@medusajs/ui'
 import { useEffect, useState, type FormEvent } from 'react'
 import { FormField, orNull } from '../form-field'
+import { CustomerPicker, type KnownCustomer } from './customer-picker'
 import { ProductPicker } from './product-picker'
 import { formatEuro, type Catalog } from '../../lib/sales-api'
 
@@ -35,6 +36,8 @@ type BookingFormProps = {
   onSubmit: (body: Record<string, unknown>) => void
   /** Avvisa quando ci sono dati inseriti e non ancora inviati (per chiedere conferma prima di uscire). */
   onDirtyChange?: (dirty: boolean) => void
+  /** Rubrica dei clienti già visti: quella del gestionale o, per gli agenti, i loro clienti. */
+  customersPath?: string
 }
 
 /**
@@ -42,7 +45,7 @@ type BookingFormProps = {
  * Bastano il nome o il cognome del cliente e un prodotto: il resto è facoltativo e sta in
  * "Altri dati". A destra il riepilogo con il totale resta in vista mentre si scelgono i prodotti.
  */
-export function BookingForm({ catalog, showAgent = false, submitting, submitLabel, onSubmit, onDirtyChange }: BookingFormProps) {
+export function BookingForm({ catalog, showAgent = false, submitting, submitLabel, onSubmit, onDirtyChange, customersPath = '/admin/backoffice/customers' }: BookingFormProps) {
   const [kind, setKind] = useState<'privato' | 'azienda'>('privato')
   const [customer, setCustomer] = useState<Customer>(EMPTY)
   const [moreData, setMoreData] = useState(false)
@@ -51,6 +54,12 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
   const [agentId, setAgentId] = useState(NONE)
   const [notes, setNotes] = useState('')
 
+  const pick = (known: KnownCustomer) => {
+    setKind(known.kind)
+    setCustomer(Object.fromEntries(Object.keys(EMPTY).map((key) => [key, known[key as keyof Customer] ?? ''])) as Customer)
+    // I dati fuori dal primo blocco (indirizzo, email, codice fiscale) si vedono subito.
+    if (known.email || known.fiscal_code || known.address_1 || known.city) setMoreData(true)
+  }
   const set = (key: keyof Customer) => (value: string) => setCustomer((current) => ({ ...current, [key]: value }))
   const lines = catalog.variants
     .map((variant) => ({ variant, quantity: Number(quantities[variant.variantId] || 0) }))
@@ -130,6 +139,7 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
               </div>
             </RadioGroup>
           </div>
+          <CustomerPicker path={customersPath} onPick={pick} />
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {business && input('company', 'Ragione sociale', 'Negozio, ristorante, bottega.')}
             {business && input('vat_number', 'Partita IVA', '11 cifre.')}

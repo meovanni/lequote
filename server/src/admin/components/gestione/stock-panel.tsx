@@ -53,7 +53,7 @@ function LineCard({ line, formats }: { line: LineRow; formats: FormatRow[] }) {
   const bulkWord = line.line === 'olio' ? 'da imbottigliare' : 'da invasettare'
 
   return (
-    <Container className="flex flex-col gap-4 p-0">
+    <Container className="flex min-w-0 flex-col gap-4 p-0">
       <div className="flex flex-wrap items-end justify-between gap-3 px-6 pt-5">
         <div>
           <Heading level="h2">{LINE_LABEL[line.line]}</Heading>
@@ -65,7 +65,9 @@ function LineCard({ line, formats }: { line: LineRow; formats: FormatRow[] }) {
         {line.freeBulk < 0 && <Badge color="red">Mancano {formatVolume(-line.freeBulk, line.unit)} di sfuso per gli ordini aperti</Badge>}
       </div>
 
-      <table className="w-full">
+      {/* Su uno schermo stretto la tabella scorre dentro la card invece di uscirne. */}
+      <div className="overflow-x-auto">
+      <table className="w-full whitespace-nowrap">
         <thead>
           <tr className="txt-compact-xsmall-plus text-ui-fg-muted">
             <th className="px-6 pb-2 text-left font-normal">Formato</th>
@@ -118,6 +120,7 @@ function LineCard({ line, formats }: { line: LineRow; formats: FormatRow[] }) {
           })}
         </tbody>
       </table>
+      </div>
       <Text size="xsmall" className="px-6 pb-4 text-ui-fg-muted">
         Clicca su un numero per correggerlo. Il prezzo standard di ogni formato è il prodotto che contiene a {formatEuro(line.unitPrice)} al {perUnit} più il
         costo di confezione, arrotondato per eccesso ai 50 centesimi; cliccando sul prezzo lo scegli a mano. Gli ordini prendono prima i pezzi pronti,
@@ -129,7 +132,8 @@ function LineCard({ line, formats }: { line: LineRow; formats: FormatRow[] }) {
 
 export function StockPanel({ lines, formats }: { lines: LineRow[]; formats: FormatRow[] }) {
   return (
-    <div className="grid grid-cols-1 gap-3 2xl:grid-cols-2">
+    // Affiancate solo quando ognuna ha lo spazio per le sue sette colonne (circa 900 px).
+    <div className="grid grid-cols-1 gap-3 min-[1900px]:grid-cols-2">
       {lines.map((line) => (
         <LineCard key={line.line} line={line} formats={formats} />
       ))}

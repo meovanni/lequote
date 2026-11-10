@@ -7,6 +7,7 @@ import { BookingForm } from '../sales/booking-form'
 import { InlineLines } from '../sales/inline-lines'
 import { OrderImportModal } from '../sales/order-import-modal'
 import { DeliveryCell, PaymentCell } from './order-actions'
+import { scrollIntoMain } from '../../lib/scroll'
 import { OrderDetail } from './order-detail'
 
 type Filter = 'consegnare' | 'incassare' | 'tutti'
@@ -52,7 +53,7 @@ function NewOrder({ onDone }: { onDone: () => void }) {
   const ref = useRef<HTMLDivElement>(null)
   // Il modulo si apre sopra l'elenco: lo si porta in vista subito.
   useEffect(() => {
-    ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    scrollIntoMain(ref.current)
   }, [])
   return (
     <Container ref={ref} className="scroll-mt-4 px-6 py-5">
@@ -133,6 +134,7 @@ export function OrdersPanel({ orders, formats, lines }: { orders: GestioneOrder[
             {filter === 'consegnare' ? 'Niente da consegnare.' : filter === 'incassare' ? 'Niente da incassare.' : 'Nessun ordine.'}
           </Text>
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="txt-compact-xsmall-plus border-t border-ui-border-base text-ui-fg-muted">
@@ -167,7 +169,7 @@ export function OrdersPanel({ orders, formats, lines }: { orders: GestioneOrder[
                         </button>
                       </td>
                       <td className="lq-figure py-2 text-ui-fg-subtle">{formatDay(order.createdAt)}</td>
-                      <td className="py-2 pl-4">
+                      <td className="min-w-40 py-2 pl-4">
                         {order.customer}
                         {order.agent && <span className="text-ui-fg-muted"> · {order.agent}</span>}
                       </td>
@@ -202,6 +204,7 @@ export function OrdersPanel({ orders, formats, lines }: { orders: GestioneOrder[
               })}
             </tbody>
           </table>
+          </div>
         )}
       </Container>
     </div>

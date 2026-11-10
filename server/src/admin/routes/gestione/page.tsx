@@ -3,6 +3,7 @@ import { BuildingStorefront } from '@medusajs/icons'
 import { Container, Heading, Text } from '@medusajs/ui'
 import { OrdersPanel } from '../../components/gestione/orders-panel'
 import { StockPanel } from '../../components/gestione/stock-panel'
+import { DocumentsPanel } from '../../components/documenti/documents-panel'
 import { useGestione } from '../../lib/gestione-api'
 
 // La pagina di tutti i giorni: magazzino e ordini insieme, tutto modificabile sul posto. Si apre
@@ -32,6 +33,7 @@ const GestionePage = () => {
     <div className="flex flex-col gap-3">
       <StockPanel lines={lines} formats={formats} />
       <OrdersPanel orders={orders} formats={formats} lines={lines} />
+      <DocumentsPanel />
     </div>
   )
 }

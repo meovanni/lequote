@@ -75,7 +75,7 @@ medusaIntegrationTestRunner({
     it('tornare al testo di partenza e pubblicare toglie la modifica', async () => {
       await api.post('/admin/contenuti/testi', { key: 'hero.title', scope: 'it', value: 'Le Quote Bio' }, admin)
       await publishAndWait()
-      await api.post('/admin/contenuti/testi', { key: 'hero.title', scope: 'it', value: '' }, admin)
+      await api.post('/admin/contenuti/testi', { key: 'hero.title', scope: 'it', value: null }, admin)
       expect((await status()).pending).toBe(1)
       await publishAndWait()
       expect((await status()).entries.find((entry) => entry.key === 'hero.title')).toBeUndefined()
