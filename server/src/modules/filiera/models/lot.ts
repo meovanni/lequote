@@ -11,6 +11,9 @@ export const Lot = model
   .define('filiera_lot', {
     id: model.id({ prefix: 'lot' }).primaryKey(),
     code: model.text().unique().searchable(),
+    // Codice nell'indirizzo dei QR già stampati, se poi il codice è cambiato: le bottiglie in giro
+    // devono continuare ad aprire la pagina del lotto. null: il QR usa il codice.
+    qr_code: model.text().nullable(),
     status: model.enum(['draft', 'published']).default('draft'),
     product_line: model.enum(['olio', 'miele']),
     product_name: model.text(),

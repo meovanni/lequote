@@ -1,5 +1,5 @@
 .section {
-  min-height: 100svh;
+  min-height: var(--screen);
   display: flex;
   flex-direction: column;
   justify-content: center;

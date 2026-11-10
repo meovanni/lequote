@@ -220,7 +220,7 @@
   }
 
   .visual {
-    min-height: min(78svh, 680px);
+    min-height: min(calc(var(--screen) * 0.78), 680px);
     align-items: center;
   }
 

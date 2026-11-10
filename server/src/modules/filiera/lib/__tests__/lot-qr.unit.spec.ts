@@ -1,6 +1,6 @@
 import jsQR from 'jsqr'
 import { PNG } from 'pngjs'
-import { labelSiteUrl, lotPageUrl, lotQrFileName, lotQrPng, lotQrSvg, storefrontUrl } from '../lot-qr'
+import { labelSiteUrl, lotLinkCode, lotPageUrl, lotQrFileName, lotQrPng, lotQrSvg, storefrontUrl } from '../lot-qr'
 
 describe('storefrontUrl', () => {
   it('usa STOREFRONT_URL senza la barra finale', () => {
@@ -31,6 +31,13 @@ describe('labelSiteUrl', () => {
 describe('lotPageUrl', () => {
   it('punta alla pagina del lotto con il codice canonico', () => {
     expect(lotPageUrl('https://le-quote.it', 'L2026-07')).toBe('https://le-quote.it/lotto/L2026-07')
+  })
+})
+
+describe('lotLinkCode', () => {
+  it('resta sul codice dei QR già stampati dopo un cambio di codice', () => {
+    expect(lotLinkCode({ code: 'L011026', qr_code: 'L01011026' })).toBe('L01011026')
+    expect(lotLinkCode({ code: 'L011026', qr_code: null })).toBe('L011026')
   })
 })
 

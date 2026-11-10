@@ -1,6 +1,7 @@
 import type { AuthenticatedMedusaRequest, MedusaResponse } from '@medusajs/framework/http'
 import { MedusaError } from '@medusajs/framework/utils'
 import {
+  lotLinkCode,
   lotPageUrl,
   lotQrFileName,
   lotQrPng,
@@ -31,7 +32,7 @@ export async function GET(req: AuthenticatedMedusaRequest, res: MedusaResponse) 
   } catch (error) {
     throw new MedusaError(MedusaError.Types.UNEXPECTED_STATE, (error as Error).message)
   }
-  const url = lotPageUrl(siteUrl, lot.code)
+  const url = lotPageUrl(siteUrl, lotLinkCode(lot))
 
   const disposition = req.query.download === '1' ? 'attachment' : 'inline'
   res.setHeader('Content-Disposition', `${disposition}; filename="${lotQrFileName(lot.code, format)}"`)

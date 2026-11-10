@@ -15,6 +15,8 @@ const PUBLIC_LOT_RELATIONS = ['campaign', 'campaign.analyses', 'packaging_establ
 
 export type LotChanges = {
   code?: string
+  /** Solo dal servizio: il codice dei QR già stampati (models/lot.ts). */
+  qr_code?: string
   product_line?: 'olio' | 'miele'
   product_name?: string
   origin?: string
@@ -57,7 +59,10 @@ class FilieraModuleService extends MedusaService({
 }) {
   /** Lotto pubblicato nella sola forma visibile al consumatore, oppure null. */
   async retrievePublicLot(code: string): Promise<PublicLot | null> {
-    const [lot] = await this.listLots({ code }, { relations: PUBLIC_LOT_RELATIONS, take: 1 })
+    // Prima il codice attuale, poi quello dei QR stampati prima di un cambio di codice.
+    const find = async (filter: { code: string } | { qr_code: string }) =>
+      (await this.listLots(filter, { relations: PUBLIC_LOT_RELATIONS, take: 1 })).at(0)
+    const lot = (await find({ code })) ?? (await find({ qr_code: code }))
     if (!lot) return null
 
     // Solo i campi che la proiezione pubblica può usare: i dati interni non vengono nemmeno letti.
@@ -201,6 +206,11 @@ class FilieraModuleService extends MedusaService({
       if (blockers.length > 0) {
         invalid(`Il lotto è pubblico: la modifica lascerebbe vuoti ${blockers.join(', ')}. Ritiralo dalla pubblicazione per modificarlo.`)
       }
+    }
+
+    // Il QR si prepara anche in bozza e può essere già in etichetta: resta sul primo codice.
+    if (changes.code !== undefined && changes.code !== lot.code && !lot.qr_code) {
+      changes = { ...changes, qr_code: lot.code }
     }
 
     if (changes.campaign_id || changes.product_line) {

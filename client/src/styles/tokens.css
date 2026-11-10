@@ -8,6 +8,9 @@
 */
 
 :root {
+  /* Altezza dello schermo: 100svh, fissata in px sul telefono (lib/nativeScroll.ts). */
+  --screen: 100svh;
+
   /* Palette (2026-10-24): bianchi neutri e l'inchiostro del logo. Niente crema, verde oliva o
      ottone miele: il colore lo portano le foto e i prodotti, non le superfici. */
   --color-bianco: #fcfcfb; /* sfondo primario: bianco con un filo di calore, non da ufficio */

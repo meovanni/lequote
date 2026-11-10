@@ -3,7 +3,7 @@
   overflow: hidden;
   background: var(--surface-bg);
   color: var(--surface-text);
-  min-height: 100svh;
+  min-height: var(--screen);
   display: flex;
   align-items: flex-end;
   scroll-snap-align: start;

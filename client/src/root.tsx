@@ -15,6 +15,7 @@ import { SITE_NAME } from '@/lib/site'
 import { HTML_LANG, localeFromPathname } from '@/i18n/locales'
 import { ErrorPage } from '@/components/common/ErrorPage/ErrorPage'
 import { useSectionLinks } from '@/hooks/useSectionLinks'
+import { STABLE_SCREEN_SCRIPT } from '@/lib/nativeScroll'
 import type { Route } from './+types/root'
 
 const ORGANIZATION_LD = {
@@ -39,6 +40,8 @@ export function Layout({ children }: { children: ReactNode }) {
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {/* Prima dei fogli di stile: le sezioni nascono già con l'altezza fissata (lib/nativeScroll.ts). */}
+        <script dangerouslySetInnerHTML={{ __html: STABLE_SCREEN_SCRIPT }} />
         <Meta />
         <Links />
         <script

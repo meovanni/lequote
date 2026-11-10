@@ -35,7 +35,7 @@ describe('LotPage', () => {
     retrieve.mockReset()
   })
 
-  it('mostra campagna, fasi in ordine con le date per esteso, analisi e informazioni di legge', async () => {
+  it('mostra campagna, fasi in ordine con il mese della raccolta, analisi e informazioni di legge', async () => {
     retrieve.mockResolvedValue(lot)
     render(<LotPage rawCode="l2026-07" />)
 
@@ -45,7 +45,7 @@ describe('LotPage', () => {
 
     const stages = within(screen.getByRole('region', { name: 'Il percorso' })).getAllByRole('heading', { level: 3 }).map((heading) => heading.textContent)
     expect(stages).toEqual(['Raccolta', 'Molitura'])
-    expect(screen.getByText('20 ottobre 2025 · Roseto degli Abruzzi')).toBeInTheDocument()
+    expect(screen.getByText('ottobre 2025 · Roseto degli Abruzzi')).toBeInTheDocument()
     expect(screen.getByText('Leccino')).toBeInTheDocument()
 
     // Il referto non si apre dal sito: c'è l'analisi, non un link al PDF.

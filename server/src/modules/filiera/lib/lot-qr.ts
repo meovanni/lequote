@@ -55,6 +55,11 @@ export function lotPageUrl(siteUrl: string, code: string): string {
   return `${siteUrl}/lotto/${encodeURIComponent(code)}`
 }
 
+/** Codice nell'indirizzo del QR: quello dei QR già stampati, se il codice è cambiato dopo. */
+export function lotLinkCode(lot: { code: string; qr_code?: string | null }): string {
+  return lot.qr_code || lot.code
+}
+
 export function lotQrFileName(code: string, format: QrFormat): string {
   return `qr-lotto-${code}.${format}`
 }

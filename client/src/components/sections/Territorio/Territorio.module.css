@@ -22,7 +22,7 @@
 .stage {
   position: sticky;
   top: 0;
-  height: 100svh;
+  height: var(--screen);
   overflow: hidden;
 }
 
@@ -167,7 +167,7 @@
 
   .stage {
     position: relative;
-    height: max(100svh, 560px);
+    height: max(var(--screen), 560px);
   }
 
   .copy > * {
@@ -213,7 +213,7 @@
 
 .section[data-mode='static'] .canvas {
   position: relative;
-  height: min(70svh, 640px);
+  height: min(calc(var(--screen) * 0.70), 640px);
 }
 
 .section[data-mode='static'] .copy {

@@ -1113,6 +1113,22 @@
           "enumItems": [],
           "mappedType": "text"
         },
+        "qr_code": {
+          "name": "qr_code",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
         "status": {
           "name": "status",
           "type": "text",

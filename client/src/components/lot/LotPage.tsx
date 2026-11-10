@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react'
 import { useContent, useLocale } from '@/i18n/LocaleContext'
-import { localizePath, sectionHref } from '@/i18n/locales'
-import { formatIsoDate } from '@/lib/date'
+import { localizePath, sectionHref, type Locale } from '@/i18n/locales'
+import { formatIsoDate, formatIsoMonth } from '@/lib/date'
 import { parseLotCode } from '@/lib/lotCode'
 import { retrievePublicLot, type PublicLot } from '@/lib/medusa/lot'
 import { LegalPanel } from '@/components/common/LegalPanel/LegalPanel'
 import { AnalysisBlock } from '@/components/analyses/AnalysisBlock'
 import styles from './LotPage.module.css'
+
+/** La raccolta dura settimane: se ne scrive il mese, non il giorno. */
+const stageDate = (locale: Locale, stage: { name: string; date: string }) =>
+  (/^raccolta/i.test(stage.name) ? formatIsoMonth : formatIsoDate)(locale, stage.date)
 
 type LotState =
   | { status: 'loading' }
@@ -46,6 +50,12 @@ export function LotPage({ rawCode }: { rawCode: string }) {
       cancelled = true
     }
   }, [rawCode])
+
+  // Aperta da un QR stampato prima di un cambio di codice: il titolo dice il codice attuale.
+  const currentCode = state.status === 'ready' ? state.lot.code : null
+  useEffect(() => {
+    if (currentCode) document.title = lotUi.metaTitle(currentCode)
+  }, [currentCode, lotUi])
 
   const links = (
     <div className={styles.links}>
@@ -107,7 +117,7 @@ export function LotPage({ rawCode }: { rawCode: string }) {
                   <h3 className="display-3">{stage.name}</h3>
                   {(stage.date || stage.place) && (
                     <p className={`${styles.stageMeta} specimen`}>
-                      {[stage.date && formatIsoDate(locale, stage.date), stage.place].filter(Boolean).join(' · ')}
+                      {[stage.date && stageDate(locale, { name: stage.name, date: stage.date }), stage.place].filter(Boolean).join(' · ')}
                     </p>
                   )}
                   {stage.fields.length > 0 && (

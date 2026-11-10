@@ -3,7 +3,7 @@
   background: var(--surface-bg);
   color: var(--surface-text);
   padding-block: var(--space-7) var(--space-8);
-  min-height: 70svh;
+  min-height: calc(var(--screen) * 0.70);
 }
 
 .inner {

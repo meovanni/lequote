@@ -68,6 +68,8 @@ export function TerrainScene({ progress, labels, active, lite, onReady, onError 
   return (
     <Canvas
       flat
+      // Misura solo al ridimensionamento, non a ogni scroll: la scena non riceve clic.
+      resize={{ scroll: false }}
       dpr={lite ? [1, 1.5] : [1, 1.75]}
       frameloop={active ? 'always' : 'never'}
       camera={{ fov: 32, near: 2, far: 1600, position: poseAt(0).position }}

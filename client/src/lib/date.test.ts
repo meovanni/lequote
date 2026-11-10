@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatIsoDate } from './date'
+import { formatIsoDate, formatIsoMonth } from './date'
 
 describe('formatIsoDate', () => {
   it('scrive la data nella lingua della pagina, senza slittare di un giorno', () => {
@@ -12,5 +12,14 @@ describe('formatIsoDate', () => {
     expect(formatIsoDate('it', 'ottobre 2025')).toBe('ottobre 2025')
     expect(formatIsoDate('it', '2027-02-31')).toBe('2027-02-31')
     expect(formatIsoDate('it', '0,75 l')).toBe('0,75 l')
+  })
+})
+
+describe('formatIsoMonth', () => {
+  it('scrive solo mese e anno', () => {
+    expect(formatIsoMonth('it', '2026-10-01')).toBe('ottobre 2026')
+    expect(formatIsoMonth('en', '2026-10-31')).toBe('October 2026')
+    expect(formatIsoMonth('de', '2026-01-01')).toBe('Januar 2026')
+    expect(formatIsoMonth('it', 'autunno')).toBe('autunno')
   })
 })
