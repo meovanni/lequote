@@ -1,8 +1,8 @@
 import { ChevronDownMini } from '@medusajs/icons'
 import { Button, clx, Heading, Input, Label, RadioGroup, Select, Text, Textarea } from '@medusajs/ui'
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { FormField, orNull } from '../form-field'
-import { CustomerPicker, type KnownCustomer } from './customer-picker'
+import { CustomerSuggestions, type KnownCustomer } from './customer-picker'
 import { ProductPicker } from './product-picker'
 import { formatEuro, type Catalog } from '../../lib/sales-api'
 
@@ -53,8 +53,10 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
   const [deliveryId, setDeliveryId] = useState(NONE)
   const [agentId, setAgentId] = useState(NONE)
   const [notes, setNotes] = useState('')
+  const [pickedKey, setPickedKey] = useState<string | null>(null)
 
   const pick = (known: KnownCustomer) => {
+    setPickedKey(known.key)
     setKind(known.kind)
     setCustomer(Object.fromEntries(Object.keys(EMPTY).map((key) => [key, known[key as keyof Customer] ?? ''])) as Customer)
     // I dati fuori dal primo blocco (indirizzo, email, codice fiscale) si vedono subito.
@@ -66,6 +68,10 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
     .filter((line) => line.quantity > 0)
   const estimate = lines.reduce((sum, line) => sum + (line.variant.price ?? 0) * line.quantity, 0)
   const business = kind === 'azienda'
+  const typed = useMemo(
+    () => ({ first_name: customer.first_name, last_name: customer.last_name, phone: customer.phone, company: business ? customer.company : '', vat_number: business ? customer.vat_number : '' }),
+    [customer.first_name, customer.last_name, customer.phone, customer.company, customer.vat_number, business],
+  )
   const named = Boolean(customer.first_name.trim() || customer.last_name.trim())
   const overStock = lines.some(({ variant, quantity }) => variant.available !== null && quantity > variant.available)
   const missing = [!named && 'il nome o il cognome del cliente', lines.length === 0 && 'almeno un prodotto'].filter(Boolean)
@@ -139,7 +145,6 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
               </div>
             </RadioGroup>
           </div>
-          <CustomerPicker path={customersPath} onPick={pick} />
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {business && input('company', 'Ragione sociale', 'Negozio, ristorante, bottega.')}
             {business && input('vat_number', 'Partita IVA', '11 cifre.')}
@@ -147,6 +152,7 @@ export function BookingForm({ catalog, showAgent = false, submitting, submitLabe
             {input('last_name', business ? 'Cognome del referente' : 'Cognome')}
             {input('phone', 'Telefono')}
           </div>
+          <CustomerSuggestions path={customersPath} typed={typed} pickedKey={pickedKey} onPick={pick} />
           <button
             type="button"
             className="flex w-fit items-center gap-1 text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
