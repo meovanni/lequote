@@ -264,9 +264,14 @@ export async function documentPdf(container: MedusaContainer, id: string): Promi
   return { file, name }
 }
 
-const csvCell = (value: string | number) => {
-  const raw = typeof value === 'number' ? value.toFixed(2).replace('.', ',') : value
-  return /[";\n]/.test(raw) ? `"${raw.replace(/"/g, '""')}"` : raw
+/**
+ * Una cella del CSV. I testi (nomi, indirizzi, PEC) arrivano anche da clienti e agenti: se
+ * cominciano come una formula (= + - @, tab, a capo) Excel li eseguirebbe, quindi si premette un
+ * apostrofo e restano testo.
+ */
+export const csvCell = (value: string | number) => {
+  const raw = typeof value === 'number' ? value.toFixed(2).replace('.', ',') : /^[=+\-@\t\r]/.test(value) ? `'${value}` : value
+  return /[";\r\n]/.test(raw) ? `"${raw.replace(/"/g, '""')}"` : raw
 }
 
 /** Riepilogo delle fatture dell'anno per il commercialista: una riga per aliquota di ogni fattura. */

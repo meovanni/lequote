@@ -12,6 +12,9 @@ type CartForValidation = {
   payment_collection?: { payment_sessions?: ({ provider_id?: string | null } | null)[] | null } | null
 }
 
+/** Chiavi dei metadata d'ordine scritte solo dal server (consegna, cliente, chi ha inserito, note, firma). */
+const RESERVED_ORDER_KEYS = new Set(['delivered', 'inserted_by', 'customer', 'notes', 'backoffice_signature'])
+
 // Prima di creare l'ordine: il pagamento al ritiro vale solo con il ritiro in sede, quello del
 // gestionale solo per i carrelli costruiti e firmati dal server. Dal sito si ordinano solo i formati
 // confezionati (lo sfuso "da imbottigliare" passa dal gestionale) e nei limiti del magazzino.
@@ -42,6 +45,12 @@ completeCartWorkflow.hooks.validate(async ({ cart }, { container }) => {
   }
   // I carrelli del gestionale sono già controllati da placeBooking (lib/bookings/create.ts).
   if (signed) return
+
+  // Le chiavi che il gestionale scrive nell'ordine non possono arrivare da un carrello del sito.
+  const reserved = Object.keys((cart as CartForValidation).metadata ?? {}).filter((key) => RESERVED_ORDER_KEYS.has(key))
+  if (reserved.length > 0) {
+    throw new MedusaError(MedusaError.Types.NOT_ALLOWED, 'Carrello non valido.')
+  }
 
   const { data: carts } = await query.graph({ entity: 'cart', fields: ['id', 'items.variant_sku', 'items.quantity'], filters: { id: cart.id } })
   const items = ((carts[0] as unknown as { items?: ({ variant_sku: string | null; quantity: unknown } | null)[] } | undefined)?.items ?? []).flatMap(

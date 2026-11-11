@@ -98,8 +98,39 @@ function contentRows(data: WithdrawalEmailData, locale: EmailLocale): string[] {
   ]
 }
 
+/**
+ * Ricevuta quando numero d'ordine ed email non corrispondono a un ordine: l'indirizzo è solo quello
+ * scritto da chi ha compilato il modulo, quindi non si ripete niente di ciò che ha scritto (la
+ * ricevuta non diventa un modo per mandare testo a terzi a nome del negozio). Data e ora restano.
+ */
+const UNMATCHED = {
+  it: {
+    greeting: 'Buongiorno,',
+    body: (at: string) => `il ${at} abbiamo ricevuto una dichiarazione di recesso inviata dal nostro sito con questo indirizzo email. Non l’abbiamo ancora collegata a un ordine: ti scriviamo a breve per completarla.`,
+    notYou: 'Se non l’hai inviata tu, ignora questa email.',
+  },
+  en: {
+    greeting: 'Hello,',
+    body: (at: string) => `on ${at} we received a withdrawal statement sent from our website with this email address. We have not yet matched it to an order: we will write to you shortly to complete it.`,
+    notYou: 'If you did not send it, please ignore this email.',
+  },
+  de: {
+    greeting: 'Guten Tag,',
+    body: (at: string) => `am ${at} ist über unsere Website mit dieser E-Mail-Adresse eine Widerrufserklärung eingegangen. Wir konnten sie noch keiner Bestellung zuordnen und melden uns in Kürze.`,
+    notYou: 'Falls Sie sie nicht gesendet haben, ignorieren Sie diese E-Mail.',
+  },
+}
+
 export function renderWithdrawalReceipt(data: WithdrawalEmailData): RenderedEmail {
   const copy = COPY[data.locale]
+  if (!data.matchedOrderId) {
+    const unmatched = UNMATCHED[data.locale]
+    const blocks: Block[] = [
+      { rows: [unmatched.greeting, unmatched.body(formatTimestamp(data.locale, data.submittedAt))] },
+      { rows: [unmatched.notYou, copy.signature] },
+    ]
+    return { subject: copy.subject, text: toText(blocks), html: toHtml(blocks) }
+  }
   const blocks: Block[] = [
     { rows: [copy.greeting(data.name), copy.intro] },
     { rows: contentRows(data, data.locale) },
@@ -110,7 +141,13 @@ export function renderWithdrawalReceipt(data: WithdrawalEmailData): RenderedEmai
 
 export function renderOwnerWithdrawal(data: WithdrawalEmailData, adminOrderUrl: string | null): RenderedEmail {
   const blocks: Block[] = [
-    { rows: [`Nuovo recesso dal sito (${data.locale}). Il cliente ha già ricevuto la ricevuta automatica.`] },
+    {
+      rows: [
+        data.matchedOrderId
+          ? `Nuovo recesso dal sito (${data.locale}). Il cliente ha già ricevuto la ricevuta automatica.`
+          : `Nuovo recesso dal sito (${data.locale}). All’indirizzo indicato è partita una ricevuta breve, senza il contenuto della dichiarazione: mandagli tu la conferma completa quando hai trovato l’ordine.`,
+      ],
+    },
     { rows: contentRows(data, 'it') },
     {
       rows: [

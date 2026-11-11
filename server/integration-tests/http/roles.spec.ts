@@ -37,6 +37,40 @@ medusaIntegrationTestRunner({
       expect(create.status).toBe(403)
     })
 
+    it('l’agente non passa dalle rotte di Medusa senza permessi propri (ricerca, layout, ruoli)', async () => {
+      const admin = await adminWithRoles(getContainer(), 'titolare@test.local')
+      const agent = await adminWithRoles(getContainer(), 'bruno@test.local', [AGENT_ROLE_ID])
+      expect((await api.get('/admin/search?q=test', admin).catch(fail)).status).not.toBe(403)
+      expect((await api.get('/admin/search?q=test', agent).catch(fail)).status).toBe(403)
+      const layout = { is_default: true, configuration: { widgets: { prova: { hidden: true } } } }
+      expect((await api.post('/admin/layouts/order.details/configuration', layout, agent).catch(fail)).status).toBe(403)
+      expect((await api.post('/admin/rbac/roles', { name: 'Amministratore' }, agent).catch(fail)).status).toBe(403)
+    })
+
+    it('un tipo di anagrafica scritto con caratteri codificati non aggira i permessi', async () => {
+      const agent = await adminWithRoles(getContainer(), 'bruno@test.local', [AGENT_ROLE_ID])
+      for (const path of ['/admin/filiera/registries/supplier%73', '/admin/filiera/registries/grove%73']) {
+        expect((await api.get(path, agent).catch(fail)).status).toBe(400)
+      }
+    })
+
+    it('chi accetta un invito diventa l’utente con l’email dell’invito, non con quella che scrive', async () => {
+      const users = getContainer().resolve(Modules.USER)
+      const [invite] = await users.createInvites([{ email: 'giulia@test.local' }])
+      const { data: registered } = await api.post('/auth/user/emailpass/register', { email: 'giulia@test.local', password: 'password-di-prova' })
+      const accepted = await api.post(
+        `/admin/invites/accept?token=${invite.token}`,
+        { email: 'Bruno@test.local', first_name: 'Giulia' },
+        { headers: { authorization: `Bearer ${registered.token}` } },
+      )
+      expect(accepted.data.user.email).toBe('giulia@test.local')
+    })
+
+    it('i clienti non possono registrarsi: il sito non ha account cliente', async () => {
+      const response = await api.post('/auth/customer/emailpass/register', { email: 'chiunque@test.local', password: 'password-di-prova' }).catch(fail)
+      expect(response.status).toBeGreaterThanOrEqual(400)
+    })
+
     it('dà il ruolo di amministratore agli utenti che non ne hanno, una volta sola', async () => {
       const user = await getContainer().resolve(Modules.USER).createUsers({ email: 'vecchio@test.local' })
       expect((await ensureRoles(getContainer())).promoted).toBe(1)

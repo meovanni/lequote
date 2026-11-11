@@ -133,13 +133,28 @@ medusaIntegrationTestRunner({
 
     it('dal sito il pagamento del gestionale è rifiutato, anche con metadati inventati', async () => {
       const cartId = await readyCart(api, store, isPickup, 'pp_bonifico_lequote')
-      await api.post(`/store/carts/${cartId}`, { metadata: { inserted_by: { type: 'admin' }, backoffice_signature: 'a'.repeat(64) } }, store)
+      const forged = { inserted_by: { type: 'admin' }, backoffice_signature: 'a'.repeat(64) }
+      // Dal negozio i metadati non passano; anche se arrivassero nel carrello per altra via, la firma non torna.
+      expect((await api.post(`/store/carts/${cartId}`, { metadata: forged }, store).catch(fail)).status).toBe(400)
+      await getContainer().resolve(Modules.CART).updateCarts(cartId, { metadata: forged })
       const { data: cart } = await api.get(`/store/carts/${cartId}?fields=payment_collection.id`, store)
       await api.post(`/store/payment-collections/${cart.cart.payment_collection.id}/payment-sessions`, { provider_id: 'pp_gestionale_lequote' }, store)
 
       const response = await api.post(`/store/carts/${cartId}/complete`, {}, store).catch(fail)
       expect(response.status).toBe(400)
       expect(response.data.message).toMatch(/gestionale/)
+      expect(await getContainer().resolve(Modules.ORDER).listOrders({})).toHaveLength(0)
+    })
+
+    it('un carrello del sito con le chiavi del gestionale (consegna, autore, cliente) non diventa un ordine', async () => {
+      const cartId = await readyCart(api, store, isPickup, 'pp_bonifico_lequote')
+      expect((await api.post('/store/carts', { metadata: { delivered: { at: 'x' } } }, store).catch(fail)).status).toBe(400)
+      await getContainer()
+        .resolve(Modules.CART)
+        .updateCarts(cartId, { metadata: { delivered: { at: '2026-01-01', movements: [{ sku: 'OLIO-750ML', delta: -100 }] } } })
+
+      const response = await api.post(`/store/carts/${cartId}/complete`, {}, store).catch(fail)
+      expect(response.status).toBe(400)
       expect(await getContainer().resolve(Modules.ORDER).listOrders({})).toHaveLength(0)
     })
   },

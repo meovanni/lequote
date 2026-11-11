@@ -15,6 +15,7 @@ import { PackCreate, PriceSet, StockSet } from './admin/gestione/validators'
 import { WithdrawalUpdate } from './admin/withdrawals/validators'
 import { AgentCreate, AgentInvite, AgentUpdate, BookingCreate, BookingUpdate, OrderImport, PaymentCreate, PaymentUpdate, SellBookingCreate } from './admin/backoffice/validators'
 import { guard } from './permissions'
+import { acceptInviteWithInvitedEmail, rejectEncodedPath, rejectStoreCartMetadata } from './request-guards'
 import { WithdrawalCreate } from './store/withdrawals/validators'
 import { ContentDraft, ContentImageUpload } from './admin/contenuti/validators'
 import { DdtCreate, InvoiceCreate } from './admin/documenti/validators'
@@ -45,6 +46,24 @@ export default defineMiddlewares({
     ...guard('sales', '/admin/sell'),
     // Contenuti del sito: testi, foto e pubblicazione.
     ...guard('content', '/admin/contenuti'),
+    // Rotte di Medusa senza permessi propri: chiuse a chi non ha i permessi corrispondenti (gli agenti).
+    {
+      matcher: '/admin/search',
+      methods: ['GET'],
+      policies: [
+        { resource: 'order', operation: 'read' },
+        { resource: 'customer', operation: 'read' },
+        { resource: 'user', operation: 'read' },
+      ],
+    },
+    { matcher: '/admin/search-indexes', methods: ['GET', 'POST'], policies: [{ resource: 'store', operation: 'update' }] },
+    { matcher: '/admin/search-indexes/*', methods: ['GET', 'POST', 'DELETE'], policies: [{ resource: 'store', operation: 'update' }] },
+    { matcher: '/admin/layouts/*', methods: ['POST', 'DELETE'], policies: [{ resource: 'user', operation: 'update' }] },
+    { matcher: '/admin/rbac/roles', methods: ['POST'], policies: [{ resource: 'rbac_role', operation: 'create' }] },
+    { matcher: '/admin/filiera/registries/*', middlewares: [rejectEncodedPath] },
+    { matcher: '/admin/invites/accept', method: 'POST', middlewares: [acceptInviteWithInvitedEmail] },
+    { matcher: '/store/carts', method: 'POST', middlewares: [rejectStoreCartMetadata] },
+    { matcher: '/store/carts/:id', method: 'POST', middlewares: [rejectStoreCartMetadata] },
     { matcher: '/admin/filiera/lots', method: 'POST', middlewares: [validateAndTransformBody(LotCreate)] },
     { matcher: '/admin/filiera/lots/:id', method: 'POST', middlewares: [validateAndTransformBody(LotUpdate)] },
     { matcher: '/admin/filiera/lots/:id/stages', method: 'POST', middlewares: [validateAndTransformBody(LotStagesReplace)] },

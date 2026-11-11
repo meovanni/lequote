@@ -76,6 +76,8 @@ module.exports = defineConfig({
       authCors: required('AUTH_CORS'),
       jwtSecret: required('JWT_SECRET'),
       cookieSecret: required('COOKIE_SECRET'),
+      // Il sito non ha account cliente: niente registrazione né accesso dei clienti (resta solo lo staff).
+      authMethodsPerActor: { customer: [] },
     },
   },
   modules: [{ resolve: './src/modules/filiera' }, { resolve: './src/modules/recesso' }, { resolve: './src/modules/vendite' }, { resolve: './src/modules/magazzino' }, { resolve: './src/modules/contenuti' }, { resolve: './src/modules/documenti' }, paymentModule, notificationModule],

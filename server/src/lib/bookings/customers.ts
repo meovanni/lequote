@@ -4,8 +4,8 @@ import type { BookingCustomer } from './types'
 
 // Clienti già noti, per non riscriverne i dati a ogni nuovo ordine. Gli ordini del gestionale sono
 // ordini "ospite" (Medusa non ne fa un'anagrafica), quindi la rubrica si ricava dagli ordini, con i
-// dati dell'ordine più recente di ciascuno; per i titolari si aggiungono i clienti dell'anagrafica
-// di Medusa (Clienti, negli strumenti avanzati, e chi si è registrato sul sito) senza ordini qui.
+// dati dell'ordine più recente di ciascuno (vedi toKnownCustomers); per i titolari si aggiungono i
+// clienti creati a mano nell'anagrafica di Medusa (Clienti, negli strumenti avanzati).
 
 export type KnownCustomer = Required<{ [K in keyof BookingCustomer]: NonNullable<BookingCustomer[K]> }> & {
   key: string
@@ -35,6 +35,8 @@ type RawAccount = {
   phone: string | null
   metadata: Record<string, unknown> | null
   addresses?: RawAddress[] | null
+  /** Vero per chi si è registrato da sé (con password): dati scelti da chiunque, non si usano. */
+  has_account?: boolean | null
 }
 
 const MAX_ORDERS = 2000
@@ -84,14 +86,22 @@ function accountFields(account: RawAccount): Fields {
   }
 }
 
+/** Ordine inserito dal gestionale (titolari o agenti): il server ne scrive l'autore, il sito no. */
+const fromBackOffice = (order: RawOrder) => Boolean(order.metadata?.inserted_by)
+
 /**
- * Un cliente per chiave, con i dati dell'ordine più recente (gli ordini arrivano dal più recente);
- * poi i clienti dell'anagrafica di Medusa che dagli ordini non risultano (stessa chiave o email).
+ * Un cliente per chiave. I dati vengono dall'ordine più recente inserito dal gestionale, e solo se
+ * non ce n'è uno da quello più recente del sito: chiunque può ordinare dal sito con il nome di un
+ * cliente vero, e non deve poterne cambiare email e indirizzo nella rubrica. Gli ordini del sito
+ * annullati (bonifici mai pagati, prove) non contano. Gli ordini arrivano dal più recente.
+ * Poi i clienti creati a mano nell'anagrafica di Medusa (non quelli registrati da sé sul sito) che
+ * dagli ordini non risultano (stessa chiave o email).
  */
 export function toKnownCustomers(orders: RawOrder[], accounts: RawAccount[] = []): KnownCustomer[] {
   const byKey = new Map<string, KnownCustomer>()
-  for (const order of orders) {
-    if (order.status === 'draft') continue
+  const usable = orders.filter((order) => order.status !== 'draft' && (fromBackOffice(order) || order.status !== 'canceled'))
+  const ranked = [...usable.filter(fromBackOffice), ...usable.filter((order) => !fromBackOffice(order))]
+  for (const order of ranked) {
     const address = order.shipping_address ?? {}
     const meta = (order.metadata?.customer ?? {}) as Record<string, unknown>
     const fields = {
@@ -114,6 +124,7 @@ export function toKnownCustomers(orders: RawOrder[], accounts: RawAccount[] = []
   }
   const emails = new Set([...byKey.values()].map((entry) => entry.email.toLowerCase()).filter(Boolean))
   for (const account of accounts) {
+    if (account.has_account) continue
     const fields = accountFields(account)
     if (!fields.first_name && !fields.last_name && !fields.company) continue
     const customer = known(fields, account.metadata?.kind, 0, account.created_at)
@@ -141,7 +152,8 @@ export async function knownCustomers(container: MedusaContainer, orderIds?: stri
       ? Promise.resolve({ data: [] })
       : query.graph({
           entity: 'customer',
-          fields: ['created_at', 'email', 'first_name', 'last_name', 'company_name', 'phone', 'metadata', 'addresses.*'],
+          fields: ['created_at', 'email', 'first_name', 'last_name', 'company_name', 'phone', 'metadata', 'has_account', 'addresses.*'],
+          filters: { has_account: false },
           pagination: { take: MAX_ACCOUNTS, order: { created_at: 'DESC' } },
         }),
   ])

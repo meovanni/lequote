@@ -25,6 +25,16 @@ describe('rubrica dei clienti dagli ordini', () => {
     expect(customers[1]).toMatchObject({ first_name: 'gio', last_name: 'meo', phone: '333', vat_number: '' })
   })
 
+  it('un ordine del sito con il nome di un cliente del gestionale non ne cambia i dati; quelli annullati non contano', () => {
+    const bo = order('bo', '2026-10-01', { first_name: 'Mario', last_name: 'Rossi', phone: '333', city: 'Teramo' })
+    const backOffice = { ...bo, email: 'mario@example.com', metadata: { ...bo.metadata, inserted_by: { type: 'admin', name: 'Titolare' } } }
+    const site = { ...order('site', '2026-11-10', { first_name: 'Mario', last_name: 'Rossi', phone: '999', city: 'Altrove' }), email: 'altro@example.test' }
+    const canceled = { ...order('x', '2026-11-11', { first_name: 'Luca', last_name: 'Bianchi' }, {}, 'canceled'), email: 'x@example.test' }
+    const customers = toKnownCustomers([canceled, site, backOffice])
+    expect(customers).toHaveLength(1)
+    expect(customers[0]).toMatchObject({ email: 'mario@example.com', phone: '333', city: 'Teramo', orders: 2 })
+  })
+
   it('aggiunge i clienti dell’anagrafica di Medusa senza ordini, senza doppioni', () => {
     const account = (overrides: Record<string, unknown>) => ({
       created_at: '2026-11-11',
@@ -45,6 +55,8 @@ describe('rubrica dei clienti dagli ordini', () => {
         account({ first_name: 'gio', last_name: 'meo' }),
         account({ first_name: 'Giovanni', email: 'GIO@example.com' }),
         account({ email: 'solo@example.com' }),
+        // Registrato da sé sul sito: dati scelti da chiunque, non entra nella rubrica.
+        account({ first_name: 'Anna', last_name: 'Verdi', email: 'finta@example.test', has_account: true, metadata: { vat_number: '11111111111' } }),
       ],
     )
     expect(customers.map((customer) => [customer.label, customer.kind, customer.orders])).toEqual([

@@ -33,6 +33,15 @@ describe('ricevuta di recesso', () => {
     expect(email.html).toContain('Anna &lt;Di Marco&gt;')
   })
 
+  it('se l’ordine non è riconosciuto non ripete niente di ciò che ha scritto chi ha compilato il modulo', () => {
+    const relay = { ...data, name: 'Visita https://example.invalid', details: 'Aggiorna l’IBAN su https://example.invalid', orderReference: 'XX', matchedOrderId: null }
+    for (const locale of ['it', 'en', 'de'] as const) {
+      const email = renderWithdrawalReceipt({ ...relay, locale })
+      expect(`${email.text}${email.html}`).not.toMatch(/example\.invalid|XX/)
+      expect(email.text).toContain('21/10/2026'.slice(0, 2))
+    }
+  })
+
   it('è nella lingua scelta dal cliente', () => {
     expect(renderWithdrawalReceipt({ ...data, locale: 'de' }).subject).toMatch(/Widerruf/)
     expect(renderWithdrawalReceipt({ ...data, locale: 'en' }).subject).toMatch(/withdrawal/i)
