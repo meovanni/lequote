@@ -19,7 +19,7 @@ type Props = {
 }
 
 const details = (customer: KnownCustomer) =>
-  [customer.vat_number && `P.IVA ${customer.vat_number}`, customer.city, customer.phone, customer.orders === 1 ? '1 ordine' : `${customer.orders} ordini`]
+  [customer.vat_number && `P.IVA ${customer.vat_number}`, customer.city, customer.phone, customer.orders === 0 ? 'nessun ordine' : customer.orders === 1 ? '1 ordine' : `${customer.orders} ordini`]
     .filter(Boolean)
     .join(' · ')
 

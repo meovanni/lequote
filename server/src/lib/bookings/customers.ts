@@ -2,9 +2,10 @@ import type { MedusaContainer } from '@medusajs/framework/types'
 import { ContainerRegistrationKeys } from '@medusajs/framework/utils'
 import type { BookingCustomer } from './types'
 
-// Clienti già visti negli ordini, per non riscriverne i dati a ogni nuovo ordine: Medusa non ha
-// un'anagrafica per gli ordini del gestionale (sono ordini "ospite"), quindi la rubrica si ricava
-// dagli ordini stessi, con i dati dell'ordine più recente di ciascuno.
+// Clienti già noti, per non riscriverne i dati a ogni nuovo ordine. Gli ordini del gestionale sono
+// ordini "ospite" (Medusa non ne fa un'anagrafica), quindi la rubrica si ricava dagli ordini, con i
+// dati dell'ordine più recente di ciascuno; per i titolari si aggiungono i clienti dell'anagrafica
+// di Medusa (Clienti, negli strumenti avanzati, e chi si è registrato sul sito) senza ordini qui.
 
 export type KnownCustomer = Required<{ [K in keyof BookingCustomer]: NonNullable<BookingCustomer[K]> }> & {
   key: string
@@ -22,7 +23,22 @@ type RawOrder = {
   shipping_address: Record<string, string | null> | null
 }
 
+type RawAddress = Record<string, string | null | boolean>
+
+/** Un cliente dell'anagrafica di Medusa. */
+type RawAccount = {
+  created_at: string | Date
+  email: string | null
+  first_name: string | null
+  last_name: string | null
+  company_name: string | null
+  phone: string | null
+  metadata: Record<string, unknown> | null
+  addresses?: RawAddress[] | null
+}
+
 const MAX_ORDERS = 2000
+const MAX_ACCOUNTS = 2000
 
 const clean = (value: unknown) => (typeof value === 'string' ? value.replace(/\s+/g, ' ').trim() : '')
 
@@ -33,8 +49,46 @@ export function knownCustomerKey(customer: Pick<KnownCustomer, 'vat_number' | 'f
   return `nome:${[customer.company, customer.first_name, customer.last_name].map(clean).join('|').toLowerCase()}`
 }
 
-/** Un cliente per chiave, con i dati dell'ordine più recente; gli ordini arrivano dal più recente. */
-export function toKnownCustomers(orders: RawOrder[]): KnownCustomer[] {
+type Fields = Omit<KnownCustomer, 'kind' | 'key' | 'label' | 'orders' | 'lastOrderAt'>
+
+function known(fields: Fields, kindHint: unknown, orders: number, at: string | Date): KnownCustomer {
+  const kind = kindHint === 'azienda' || fields.company || fields.vat_number ? 'azienda' : 'privato'
+  const person = [fields.first_name, fields.last_name].filter(Boolean).join(' ')
+  return {
+    ...fields,
+    kind,
+    key: knownCustomerKey(fields),
+    label: fields.company ? `${fields.company}${person ? ` (${person})` : ''}` : person,
+    orders,
+    lastOrderAt: new Date(at).toISOString(),
+  }
+}
+
+/** I dati di un cliente dell'anagrafica di Medusa: l'indirizzo di spedizione predefinito, o il primo. */
+function accountFields(account: RawAccount): Fields {
+  const addresses = account.addresses ?? []
+  const address = addresses.find((entry) => entry.is_default_shipping) ?? addresses[0] ?? {}
+  const meta = account.metadata ?? {}
+  return {
+    first_name: clean(account.first_name) || clean(address.first_name),
+    last_name: clean(account.last_name) || clean(address.last_name),
+    company: clean(account.company_name) || clean(address.company),
+    vat_number: clean(meta.vat_number),
+    fiscal_code: clean(meta.fiscal_code),
+    email: clean(account.email),
+    phone: clean(account.phone) || clean(address.phone),
+    address_1: clean(address.address_1),
+    postal_code: clean(address.postal_code),
+    city: clean(address.city),
+    province: clean(address.province),
+  }
+}
+
+/**
+ * Un cliente per chiave, con i dati dell'ordine più recente (gli ordini arrivano dal più recente);
+ * poi i clienti dell'anagrafica di Medusa che dagli ordini non risultano (stessa chiave o email).
+ */
+export function toKnownCustomers(orders: RawOrder[], accounts: RawAccount[] = []): KnownCustomer[] {
   const byKey = new Map<string, KnownCustomer>()
   for (const order of orders) {
     if (order.status === 'draft') continue
@@ -55,34 +109,41 @@ export function toKnownCustomers(orders: RawOrder[]): KnownCustomer[] {
     }
     if (!fields.first_name && !fields.last_name && !fields.company) continue
     const key = knownCustomerKey(fields)
-    const known = byKey.get(key)
-    if (known) {
-      byKey.set(key, { ...known, orders: known.orders + 1 })
-      continue
-    }
-    const kind = meta.kind === 'azienda' || fields.company ? 'azienda' : 'privato'
-    const person = [fields.first_name, fields.last_name].filter(Boolean).join(' ')
-    byKey.set(key, {
-      ...fields,
-      kind,
-      key,
-      label: fields.company ? `${fields.company}${person ? ` (${person})` : ''}` : person,
-      orders: 1,
-      lastOrderAt: new Date(order.created_at).toISOString(),
-    })
+    const existing = byKey.get(key)
+    byKey.set(key, existing ? { ...existing, orders: existing.orders + 1 } : known(fields, meta.kind, 1, order.created_at))
+  }
+  const emails = new Set([...byKey.values()].map((entry) => entry.email.toLowerCase()).filter(Boolean))
+  for (const account of accounts) {
+    const fields = accountFields(account)
+    if (!fields.first_name && !fields.last_name && !fields.company) continue
+    const customer = known(fields, account.metadata?.kind, 0, account.created_at)
+    if (byKey.has(customer.key) || (fields.email && emails.has(fields.email.toLowerCase()))) continue
+    byKey.set(customer.key, customer)
   }
   return [...byKey.values()].sort((a, b) => a.label.localeCompare(b.label, 'it'))
 }
 
-/** La rubrica dagli ordini: tutti per i titolari, solo i propri per un agente (orderIds). */
+/**
+ * La rubrica: per i titolari tutti gli ordini più l'anagrafica di Medusa; per un agente
+ * (orderIds) solo i clienti dei suoi ordini.
+ */
 export async function knownCustomers(container: MedusaContainer, orderIds?: string[]): Promise<KnownCustomer[]> {
   if (orderIds && orderIds.length === 0) return []
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
-  const { data } = await query.graph({
-    entity: 'order',
-    fields: ['id', 'created_at', 'status', 'email', 'metadata', 'shipping_address.*'],
-    filters: orderIds ? { id: orderIds } : {},
-    pagination: { take: MAX_ORDERS, order: { created_at: 'DESC' } },
-  })
-  return toKnownCustomers(data as unknown as RawOrder[])
+  const [orders, accounts] = await Promise.all([
+    query.graph({
+      entity: 'order',
+      fields: ['id', 'created_at', 'status', 'email', 'metadata', 'shipping_address.*'],
+      filters: orderIds ? { id: orderIds } : {},
+      pagination: { take: MAX_ORDERS, order: { created_at: 'DESC' } },
+    }),
+    orderIds
+      ? Promise.resolve({ data: [] })
+      : query.graph({
+          entity: 'customer',
+          fields: ['created_at', 'email', 'first_name', 'last_name', 'company_name', 'phone', 'metadata', 'addresses.*'],
+          pagination: { take: MAX_ACCOUNTS, order: { created_at: 'DESC' } },
+        }),
+  ])
+  return toKnownCustomers(orders.data as unknown as RawOrder[], accounts.data as unknown as RawAccount[])
 }

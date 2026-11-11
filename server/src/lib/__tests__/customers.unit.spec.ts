@@ -24,4 +24,35 @@ describe('rubrica dei clienti dagli ordini', () => {
     ])
     expect(customers[1]).toMatchObject({ first_name: 'gio', last_name: 'meo', phone: '333', vat_number: '' })
   })
+
+  it('aggiunge i clienti dell’anagrafica di Medusa senza ordini, senza doppioni', () => {
+    const account = (overrides: Record<string, unknown>) => ({
+      created_at: '2026-11-11',
+      email: null,
+      first_name: null,
+      last_name: null,
+      company_name: null,
+      phone: null,
+      metadata: null,
+      addresses: [],
+      ...overrides,
+    })
+    const customers = toKnownCustomers(
+      [{ ...order('o1', '2026-10-01', { first_name: 'Gio', last_name: 'Meo' }), email: 'gio@example.com' }],
+      [
+        account({ first_name: 'Anna', last_name: 'Verdi', email: 'anna@example.com', addresses: [{ address_1: 'Via Roma 1', city: 'Teramo', is_default_shipping: true }] }),
+        account({ company_name: 'Enoteca Blu', metadata: { vat_number: '09876543210' } }),
+        account({ first_name: 'gio', last_name: 'meo' }),
+        account({ first_name: 'Giovanni', email: 'GIO@example.com' }),
+        account({ email: 'solo@example.com' }),
+      ],
+    )
+    expect(customers.map((customer) => [customer.label, customer.kind, customer.orders])).toEqual([
+      ['Anna Verdi', 'privato', 0],
+      ['Enoteca Blu', 'azienda', 0],
+      ['Gio Meo', 'privato', 1],
+    ])
+    expect(customers[0]).toMatchObject({ email: 'anna@example.com', address_1: 'Via Roma 1', city: 'Teramo' })
+    expect(customers[1]).toMatchObject({ key: 'piva:09876543210', vat_number: '09876543210' })
+  })
 })
